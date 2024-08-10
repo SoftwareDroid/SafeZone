@@ -9,12 +9,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class ParsedWordFilter {
 
     private String version;
     private List<WordGroup> wordGroups;
-    private Set<String> ignoredApps;
+    private Set<String> ignoredApps = new TreeSet<>();
 
     public ParsedWordFilter(XmlResourceParser inputStream) throws XmlPullParserException, IOException {
 
@@ -23,84 +24,86 @@ public class ParsedWordFilter {
         int eventType = inputStream.getEventType(); //TODO: app ingnore list
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_TAG) {
-                if (inputStream.getName().equals("adult_filer")) {
+                String tagName = inputStream.getName();
+
+                if (tagName.equals("filter")) {
                     version = inputStream.getAttributeValue(null, "version");
-                } else if (inputStream.getName().equals("group")) {
+                } else if (tagName.equals("group")) {
                     WordGroup wordGroup = new WordGroup();
                     wordGroup.setName(inputStream.getAttributeValue(null, "name"));
+                    String lang = inputStream.getAttributeValue("en", "lang");
 
-                    try {
-                        wordGroup.setRead(Integer.parseInt(inputStream.getAttributeValue("0", "read")));
-                        wordGroup.setWrite(Integer.parseInt(inputStream.getAttributeValue("0", "write")));
-                    }
-                    catch (NumberFormatException exp)
-                    {
+                    wordGroup.setRead(inputStream.getAttributeIntValue(null, "read", 0));
+                    wordGroup.setWrite(inputStream.getAttributeIntValue(null, "write", 0));
 
-                    }
                     wordGroups.add(wordGroup);
-                } else if (inputStream.getName().equals("word")) {
+                } else if (tagName.equals("word")) {
                     String word = inputStream.nextText();
                     WordGroup lastGroup = wordGroups.get(wordGroups.size() - 1);
-                    lastGroup.addWord(word + " ");
+                    lastGroup.addWord(word);
+                } else if (tagName.equals("app")) {
+                    String appName = inputStream.nextText();
+                    ignoredApps.add(appName);
                 }
-            } else if (inputStream.getName().equals("app")) {
-                String appName = inputStream.nextText();
-                ignoredApps.add(appName);
             }
+            eventType = inputStream.next();
         }
-        eventType = inputStream.next();
     }
 
 
-public Set<String> getIgnoredApps() {return ignoredApps;}
-public String getVersion() {
-    return version;
-}
-
-public List<WordGroup> getWordGroups() {
-    return wordGroups;
-}
-
-public static class WordGroup {
-    private String name;
-    private int read;
-    private int write;
-    private List<String> words;
-
-    public WordGroup() {
-        words = new ArrayList<>();
+    public Set<String> getIgnoredApps() {
+        return ignoredApps;
     }
 
-    public String getName() {
-        return name;
+    public String getVersion() {
+        return version;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public List<WordGroup> getWordGroups() {
+        return wordGroups;
     }
 
-    public int getReadScore() {
-        return read;
-    }
+    public static class WordGroup {
+        private String name;
+        private String language;
+        private int read;
+        private int write;
+        private List<String> words;
 
-    public void setRead(int read) {
-        this.read = read;
-    }
+        public WordGroup() {
+            words = new ArrayList<>();
+        }
 
-    public int getWriteScore() {
-        return write;
-    }
+        public String getName() {
+            return name;
+        }
 
-    public void setWrite(int write) {
-        this.write = write;
-    }
+        public void setName(String name) {
+            this.name = name;
+        }
 
-    public List<String> getWords() {
-        return words;
-    }
+        public int getReadScore() {
+            return read;
+        }
 
-    public void addWord(String word) {
-        words.add(word);
+        public void setRead(int read) {
+            this.read = read;
+        }
+
+        public int getWriteScore() {
+            return write;
+        }
+
+        public void setWrite(int write) {
+            this.write = write;
+        }
+
+        public List<String> getWords() {
+            return words;
+        }
+
+        public void addWord(String word) {
+            words.add(word);
+        }
     }
-}
 }

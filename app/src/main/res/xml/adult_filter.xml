@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<adult_filer version="1.0">
+<filter version="1.0">
     <ignored_apps>
         <app>net.tandem</app>
         <app>org.thoughtcrime.securesms</app>
@@ -34,19 +34,19 @@
             <word>cock cage</word>
             <word>financial domination</word>
             <word>asshole</word>
-            <word>sex</word>
-            <word>ass</word>
+            <word>sex </word>
+            <word>ass </word>
             <word>penis</word>
             <word>erotic</word>
             <word>erotica</word>
             <word>dildo</word>
-            <word>anal</word>
+            <word>anal </word>
             <word>facesitting</word>
             <word>face sitting</word>
-            <word>cbt</word>
+            <word>cbt </word>
             <word>pegging</word>
             <word>femdom</word>
-            <word>bbw</word>
+            <word>bbw </word>
             <word>findom</word>
             <word>dominatrix</word>
             <word>mistress</word>
@@ -675,4 +675,4 @@
         </group>
 
     </word_groups>
-</adult_filer>
+</filter>
