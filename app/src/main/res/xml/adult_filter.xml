@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="utf-8"?>
+<adult_filer version="1.0">
+    <ignored_apps>
+        <app>net.tandem</app>
+        <app>org.thoughtcrime.securesms</app>
+        <app>org.telegram.messenger</app>
+        <app>com.whatsapp</app>
+        <app>cz.mobilesoft.appblock</app>
+        <app>com.standardnotes</app>
+        <app>de.c24.bankapp</app>
+        <app>ws.xsoh.etar</app>
+        <app>com.android.settings</app>
+        <app>com.example.ourpact3</app>
+        <app>com.ichi2.anki</app>
+        <app>com.epson.epsonsmart</app>
+        <app>de.mm20.launcher2</app>
+        <app>de.reimardoeffinger.quickdic</app>
+    </ignored_apps>
+    <word_groups>
+        <group
+            name="xxx"
+            read="40"
+            write="100">
+            <word>porn</word>
+            <word>mastrubade</word>
+            <word>porno</word>
+            <word>sexuality</word>
+            <word>cum</word>
+            <word>orgasm</word>
+            <word>edging</word>
+            <word>chastity</word>
+            <word>cock cage</word>
+            <word>financial domination</word>
+            <word>asshole</word>
+            <word>sex</word>
+            <word>ass</word>
+            <word>penis</word>
+            <word>erotic</word>
+            <word>dildo</word>
+            <word>anal</word>
+            <word>facesitting</word>
+            <word>face sitting</word>
+            <word>cbt</word>
+            <word>pegging</word>
+            <word>femdom</word>
+            <word>bbw</word>
+            <word>findom</word>
+            <word>dominatrix</word>
+            <word>mistress</word>
+            <word>xxx</word>
+            <word>sexual</word>
+            <word>nude</word>
+            <word>cuckold</word>
+            <word>sissy</word>
+            <word>humiliation</word>
+            <word>degradation</word>
+            <word>hardcore</word>
+            <word>softcore</word>
+            <word>pornstar</word>
+            <word>stockings</word>
+            <word>corset</word>
+            <word>bsdm</word>
+            <word>bondage</word>
+            <word>figging</word>
+            <word>fetish</word>
+            <word>submission</word>
+            <word>discipline</word>
+            <word>kink</word>
+            <!-- German terms-->
+            <word>hure</word>
+        </group>
+
+        <group
+            name="naked_terms"
+            read="60"
+            write="100">
+            <word>topless</word>
+            <word>bottomless</word>
+            <word>in the buff</word>
+            <word>in the raw</word>
+            <word>in the nude</word>
+            <word>skyclad</word>
+            <word>unclothed</word>
+            <word>nudity</word>
+            <word>bare</word>
+            <word>exposed</word>
+            <word>undressed</word>
+            <word>stripped</word>
+            <word>nakedness</word>
+            <word>naked</word>
+            <word>unclad</word>
+            <word>exposed</word>
+            <word>unadorned</word>
+            <word>unclothed</word>
+            <word>nudity</word>
+            <word>bare</word>
+            <word>exposed</word>
+            <word>undressed</word>
+            <word>stripped</word>
+            <word>disrobed</word>
+            <word>uncovered</word>
+            <word>bare-assed</word>
+            <word>skinned</word>
+            <word>unrobed</word>
+            <word>unswathed</word>
+            <word>unveiled</word>
+            <word>unwrapped</word>
+            <word>nude</word>
+            <word>naked</word>
+            <word>unclad</word>
+            <word>uncostumed</word>
+            <word>unarmored</word>
+            <word>unprotected</word>
+            <word>unarmoured</word>
+            <word>ungarbed</word>
+            <word>unappareled</word>
+            <word>unattired</word>
+            <word>unberuffled</word>
+            <word>unbuckled</word>
+            <word>unbuttoned</word>
+            <word>unzipped</word>
+            <word>topless</word>
+            <word>bottomless</word>
+            <word>in the buff</word>
+            <word>in the raw</word>
+            <word>in the nude</word>
+            <word>skyclad</word>
+            <word>stark naked</word>
+            <word>buck naked</word>
+            <word>naked</word>
+            <word>starkers</word>
+            <word>bare-ass</word>
+            <word>skinned</word>
+            <word>nude</word>
+        </group>
+        <group
+            name="naked_german"
+            read="60"
+            write="100">
+            <word>oben-ohne</word>
+            <word>oben ohne</word>
+            <word>nackt</word>
+            <word>unbekleidet</word>
+            <word>nacktheit</word>
+            <word>nackt</word>
+            <word>bloß</word>
+            <word>entblößt</word>
+            <word>entkleidet</word>
+            <word>entblößt</word>
+            <word>unbedeckt</word>
+            <word>barbusig</word>
+        </group>
+        <group
+            name="masturbation_terms"
+            read="20"
+            write="100">
+            <word>masturbation</word>
+            <word>self-pleasure</word>
+            <word>self-love</word>
+            <word>hand job</word>
+            <word>jerk off</word>
+            <word>jack off</word>
+            <word>whack off</word>
+            <word>beat off</word>
+            <word>get off</word>
+            <word>orgasm</word>
+            <word>climax</word>
+            <word>ejaculation</word>
+            <word>sexual fantasy</word>
+            <word>sexual dream</word>
+        </group>
+        <group
+            name="femdom2"
+            read="32"
+            write="100">
+            <word>scat</word>
+            <word>coprophilia</word>
+            <word>feces</word>
+            <word>poop</word>
+            <word>shit</word>
+            <word>crapping</word>
+            <word>defecation</word>
+            <word>toilet play</word>
+            <word>water sports</word>
+            <word>golden shower</word>
+            <word>pee</word>
+            <word>urine</word>
+            <word>piss</word>
+            <word>urination</word>
+            <word>enema</word>
+            <word>anal play</word>
+            <word>ass play</word>
+            <word>rectal play</word>
+            <word>scat play</word>
+            <word>coprophagic</word>
+            <word>fecalphilia</word>
+            <word>urophilia</word>
+            <word>omorphilia</word>
+        </group>
+        <!-- mostly femdom tems -->
+        <group
+            name="patricks_list"
+            read="30"
+            write="100">
+            <word>hot</word>
+            <word>asian</word>
+            <word>japanese</word>
+            <word>fat</word>
+            <word>female</word>
+            <word>slave</word>
+            <word>fart</word>
+            <word>worship</word>
+            <word>farting</word>
+            <word>torture</word>
+            <word>punishment</word>
+            <word>obedience</word>
+            <word>servitude</word>
+            <word>worship</word>
+            <word>collar</word>
+            <word>leash</word>
+            <word>paddling</word>
+            <word>whipping</word>
+            <word>caning</word>
+            <word>flogging</word>
+            <word>spanking</word>
+            <word>latex</word>
+            <word>farts</word>
+            <word>lick my</word>
+            <word>smell my</word>
+            <word>eat my</word>
+            <word>piss</word>
+            <word>scat</word>
+            <word>dirty</word>
+            <word>hairy</word>
+            <word>shitty</word>
+            <word>chubby</word>
+        </group>
+        <group
+            name="female_names"
+            read="20"
+            write="50">
+            <word>girl</word>
+            <word>lady</word>
+            <word>gf</word>
+            <word>girlfriend</word>
+            <word>wife</word>
+            <word>mother</word>
+            <word>sister</word>
+            <word>daughter</word>
+            <word>aunt</word>
+            <word>niece</word>
+            <word>grandmother</word>
+            <word>grandma</word>
+            <word>mom</word>
+            <word>mum</word>
+            <word>mommy</word>
+            <word>female</word>
+            <word>woman</word>
+            <word>princess</word>
+            <word>queen</word>
+            <word>bride</word>
+            <word>diva</word>
+            <word>madam</word>
+            <word>miss</word>
+            <word>ms</word>
+            <word>mrs</word>
+            <word>missus</word>
+        </group>
+        <group
+            name="female_body_parts"
+            read="20"
+            write="100">
+            <word>breasts</word>
+            <word>cleavage</word>
+            <word>bust</word>
+            <word>chest</word>
+            <word>nipples</word>
+            <word>areola</word>
+            <word>bra</word>
+            <word>buttocks</word>
+            <word>booty</word>
+            <word>buttocks</word>
+            <word>bum</word>
+            <word>bottom</word>
+            <word>glutes</word>
+            <word>bootie</word>
+            <word>bootilicious</word>
+            <word>vaginal</word>
+            <word>labia</word>
+            <word>clitoris</word>
+            <word>ovaries</word>
+            <word>uterus</word>
+            <word>cervix</word>
+            <word>menstruation</word>
+            <word>pubic hair</word>
+            <word>vagina</word>
+            <word>vag</word>
+            <word>pussy</word>
+            <word>puss</word>
+            <word>cat</word>
+            <word>kitty</word>
+            <word>snatch</word>
+            <word>twat</word>
+            <word>cunt</word>
+            <word>slit</word>
+            <word>slot</word>
+            <word>cooch</word>
+            <word>coochie</word>
+            <word>cooter</word>
+            <word>muff</word>
+            <word>muffin</word>
+            <word>beaver</word>
+            <word>beav</word>
+            <word>love tunnel</word>
+            <word>lady parts</word>
+            <word>private parts</word>
+            <word>female genitalia</word>
+            <word>genital area</word>
+            <word>pubic area</word>
+            <word>clit</word>
+            <word>clitty</word>
+            <word>love button</word>
+            <word>joy button</word>
+            <word>pleasure button</word>
+            <word>clitty cat</word>
+            <word>clit cat</word>
+            <word>little man in the boat</word>
+            <word>rosebud</word>
+        </group>
+        <group
+            name="male_body_parts"
+            read="20"
+            write="100">
+            <word>penis</word>
+            <word>cock</word>
+            <word>dick</word>
+            <word>prick</word>
+            <word>pecker</word>
+            <word>rod</word>
+            <word>shaft</word>
+            <word>member</word>
+            <word>manhood</word>
+            <word>junk</word>
+            <word>family jewels</word>
+            <word>balls</word>
+            <word>testicles</word>
+            <word>testes</word>
+            <word>scrotum</word>
+            <word>nuts</word>
+            <word>bollocks</word>
+            <word>gonads</word>
+            <word>semen</word>
+            <word>cum</word>
+            <word>sperm</word>
+            <word>ejaculate</word>
+            <word>erection</word>
+            <word>boner</word>
+            <word>hard-on</word>
+        </group>
+        <group
+            name="sex_techniques"
+            read="35"
+            write="100">
+            <word>missionary</word>
+            <word>doggy style</word>
+            <word>cowgirl</word>
+            <word>69</word>
+            <word>oral sex</word>
+            <word>oral play</word>
+            <word>blowjob</word>
+            <word>handjob</word>
+            <word>fingering</word>
+            <word>anal</word>
+            <word>rimming</word>
+            <word>analingus</word>
+            <word>fellatio</word>
+            <word>cunnilingus</word>
+            <word>tribadism</word>
+            <word>scissoring</word>
+            <word>grinding</word>
+            <word>dry humping</word>
+            <word>sex swing</word>
+            <word>bondage</word>
+            <word>role-playing</word>
+            <word>dirty talk</word>
+            <word>sex toys</word>
+            <word>vibrators</word>
+            <word>dildo</word>
+            <word>anal beads</word>
+            <word>butt plugs</word>
+            <word>strap-on</word>
+            <word>kama sutra</word>
+            <word>tantric sex</word>
+            <word>erotic massage</word>
+            <word>sensual massage</word>
+            <word>foreplay</word>
+            <word>afterplay</word>
+        </group>
+        <group
+            name="sex_toys"
+            read="20"
+            write="100">
+            <word>dildo</word>
+            <word>vibrator</word>
+            <word>anal beads</word>
+            <word>butt plug</word>
+            <word>strap-on</word>
+            <word>cock ring</word>
+            <word>penis ring</word>
+            <word>testicle cuff</word>
+            <word>ball stretcher</word>
+            <word>urethral sound</word>
+            <word>anal toy</word>
+            <word>prostate massager</word>
+            <word>clitoral stimulator</word>
+            <word>labia spreader</word>
+            <word>nipple clamp</word>
+            <word>breast pump</word>
+            <word>sex swing</word>
+            <word>bondage gear</word>
+            <word>handcuffs</word>
+            <word>blindfold</word>
+            <word>gag</word>
+            <word>whip</word>
+            <word>paddle</word>
+            <word>spanking toy</word>
+            <word>erotically charged furniture</word>
+            <word>sex pillow</word>
+            <word>love doll</word>
+            <word>real doll</word>
+            <word>sex robot</word>
+        </group>
+        <group
+            name="female_clothing_arousing"
+            read="20"
+            write="100">
+            <word>lingerie</word>
+            <word>bikini</word>
+            <word>thong</word>
+            <word>g-string</word>
+            <word>corset</word>
+            <word>bustier</word>
+            <word>teddy</word>
+            <word>camisole</word>
+            <word>chemise</word>
+            <word>nightie</word>
+            <word>negligee</word>
+            <word>stockings</word>
+            <word>garter belt</word>
+            <word>suspenders</word>
+            <word>high heels</word>
+            <word>stiletto</word>
+            <word>fishnet</word>
+            <word>leather</word>
+            <word>latex</word>
+            <word>lace</word>
+            <word>miniskirt</word>
+            <word>shorts</word>
+            <word>hot pants</word>
+            <word>booty shorts</word>
+            <word>cleavage-baring top</word>
+            <word>push-up bra</word>
+            <word>see-through top</word>
+        </group>
+        <!-- German Words -->
+        <group
+            name="deutsche_worte"
+            read="20"
+            write="100">
+            <word>arschloch</word>
+            <word>vagina</word>
+            <word>gesichtssitzen</word>
+            <word>after</word>
+            <word>po</word>
+            <word>kot</word>
+            <word>scheiße</word>
+            <word>fotze</word>
+            <word>möse</word>
+            <word>pimmel</word>
+            <word>schwanz</word>
+            <word>eier</word>
+            <word>arsch</word>
+            <word>hintern</word>
+            <word>popo</word>
+            <word>kitzler</word>
+            <word>klitoris</word>
+            <word>vulva</word>
+            <word>penis</word>
+            <word>sex</word>
+            <word>ficken</word>
+            <word>vögeln</word>
+            <word>bumsen</word>
+            <word>blasen</word>
+            <word>lutschen</word>
+            <word>lecken</word>
+            <word>küssen</word>
+            <word>umarmen</word>
+            <word>streicheln</word>
+            <word>kuscheln</word>
+            <word>anal</word>
+            <word>analverkehr</word>
+            <word>oralverkehr</word>
+            <word>vaginalverkehr</word>
+            <word>sodomie</word>
+            <word>päderastie</word>
+            <word>inzest</word>
+            <word>sexuelle nötigung</word>
+            <word>sexuelle belästigung</word>
+            <word>prostitution</word>
+            <word>zuhälterei</word>
+            <word>sexuelle</word>
+            <word>pädophilie</word>
+            <word>hebephilie</word>
+            <word>nekrophilie</word>
+            <word>zoophilie</word>
+        </group>
+        <group
+            name="weibliche_körperteile_sexuell"
+            read="20"
+            write="100">
+            <word>brust</word>
+            <word>busen</word>
+            <word>möpse</word>
+            <word>titten</word>
+            <word>brüste</word>
+            <word>schamlippen</word>
+            <word>vulva</word>
+            <word>klitoris</word>
+            <word>kitzler</word>
+            <word>scheide</word>
+            <word>vagina</word>
+            <word>po</word>
+            <word>arsch</word>
+            <word>hüfte</word>
+            <word>taille</word>
+            <word>bauch</word>
+            <word>schambehaarung</word>
+            <word>venusberg</word>
+            <word>mons veneris</word>
+            <word>labia</word>
+            <word>labien</word>
+            <word>schamlippen</word>
+            <word>klitorisvorhaut</word>
+        </group>
+        <group
+            name="femdom_begriffe_deutsch"
+            read="20"
+            write="100">
+            <word>domina</word>
+            <word>herrin</word>
+            <word>skavin</word>
+            <word>untergebene</word>
+            <word>dienerin</word>
+            <word>erniedrigung</word>
+            <word>demütigung</word>
+            <word>unterwerfung</word>
+            <word>gehorsam</word>
+            <word>fügsamkeit</word>
+            <word>sklaverei</word>
+            <word>leibeigenschaft</word>
+            <word>untertänigkeit</word>
+            <word>ergebenheit</word>
+            <word>hörigkeit</word>
+            <word>knechtschaft</word>
+            <word>unterdrückung</word>
+            <word>beherrschung</word>
+            <word>überlegenheit</word>
+            <word>machtspiel</word>
+            <word>rollenverteilung</word>
+            <word>verhaltensregeln</word>
+            <word>disziplin</word>
+            <word>bestrafung</word>
+            <word>erziehung</word>
+        </group>
+        <group
+            name="weibliche_kleidungsstücke_anstößig"
+            read="20"
+            write="100">
+            <word>bh</word>
+            <word>string</word>
+            <word>tanga</word>
+            <word>thong</word>
+            <word>g-string</word>
+            <word>unterwäsche</word>
+            <word>korsett</word>
+            <word>bustier</word>
+            <word>stringtanga</word>
+            <word>mini-string</word>
+            <word>erotische kleidung</word>
+            <word>sexy kleidung</word>
+            <word>reizwäsche</word>
+            <word>erotische wäsche</word>
+            <word>sexfarbene kleidung</word>
+            <word>erotische accessoires</word>
+            <word>sexy accessoires</word>
+            <word>erotische schuhe</word>
+            <word>sexy schuhe</word>
+            <word>stöckelschuhe</word>
+            <word>high heels</word>
+            <word>erotische strümpfe</word>
+            <word>sexy strümpfe</word>
+            <word>strumpfhosen</word>
+        </group>
+        <group
+            name="weibliche_bezeichnungen"
+            read="20"
+            write="100">
+            <word>freundin</word>
+            <word>frau</word>
+            <word>mutter</word>
+            <word>tochter</word>
+            <word>schwester</word>
+            <word>geliebte</word>
+            <word>liebste</word>
+            <word>herzallerliebste</word>
+            <word>prinzessin</word>
+            <word>herrin</word>
+            <word>domina</word>
+            <word>sklavin</word>
+            <word>dienerin</word>
+            <word>untergebene</word>
+            <word>partnerin</word>
+            <word>verehrte</word>
+        </group>
+        <group
+            name="sexspielzeuge_deutsch"
+            read="20"
+            write="100">
+            <word>liebeskugel</word>
+            <word>lustkugel</word>
+            <word>erotische kugel</word>
+            <word>sexkugel</word>
+            <word>analstöpsel</word>
+            <word>analkugel</word>
+            <word>prostata massager</word>
+            <word>klitoris stimulator</word>
+            <word>labia spreizer</word>
+            <word>nippelklemme</word>
+            <word>brustpumpe</word>
+            <word>erotisch geladene möbel</word>
+            <word>sexsitz</word>
+            <word>liebesbank</word>
+            <word>sexstuhl</word>
+            <word>erotischer</word>
+            <word>erotische</word>
+            <word>sexsessel</word>
+        </group>
+        <group
+            name="masturbation_begriffe"
+            read="20"
+            write="100">
+            <word>onanie</word>
+            <word>selbstbefriedigung</word>
+            <word>masturbation</word>
+        </group>
+        <group
+            name="facesitting"
+            read="60"
+            write="100">
+            <word>facesitting</word>
+            <word>gesichtssitz</word>
+            <word>facialsitz</word>
+            <word>gesichtsverkehr</word>
+            <word>facialverkehr</word>
+            <word>smothering</word>
+            <word>gesichtserstickung</word>
+            <word>facialerstickung</word>
+            <word>gesichtsdominanz</word>
+            <word>facialdominanz</word>
+            <word>gesichtsunterwerfung</word>
+            <word>facialunterwerfung</word>
+        </group>
+
+    </word_groups>
+</adult_filer>
