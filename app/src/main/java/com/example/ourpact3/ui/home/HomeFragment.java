@@ -16,11 +16,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ourpact3.databinding.FragmentHomeBinding;
 
-import android.net.Uri;
 import android.content.ComponentName;
 import android.text.TextUtils;
 
-import com.example.ourpact3.KeyLogger;
+import com.example.ourpact3.ContentFilerService;
 
 public class HomeFragment extends Fragment {
 
@@ -142,7 +141,7 @@ public class HomeFragment extends Fragment {
     }
 
     private boolean hasAccessibilityServicePermission(Context context) {
-        boolean var = isAccessibilityServiceEnabled(context, KeyLogger.class);
+        boolean var = isAccessibilityServiceEnabled(context, ContentFilerService.class);
         return var;
         /*
         String permission = android.Manifest.permission.BIND_ACCESSIBILITY_SERVICE;

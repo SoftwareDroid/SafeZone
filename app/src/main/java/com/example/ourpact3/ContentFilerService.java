@@ -1,29 +1,20 @@
 package com.example.ourpact3;
 
 import android.accessibilityservice.AccessibilityService;
-import android.provider.Settings;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.accessibility.AccessibilityEvent;
-
-import com.example.ourpact3.ContentFilter;
-
-import org.json.JSONObject;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.graphics.PixelFormat;
-
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import java.io.InputStream;
 import android.widget.TextView;
+import android.content.res.XmlResourceParser;
 
 // https://developer.android.com/guide/topics/ui/accessibility/service
-public class KeyLogger extends AccessibilityService {
-    private static final ContentFilter contentFilter = new ContentFilter();
+public class ContentFilerService extends AccessibilityService {
+    private static ContentFilter contentFilter;
     private WindowManager windowManager;
     private View overlayView;
 
@@ -31,6 +22,7 @@ public class KeyLogger extends AccessibilityService {
     public void onServiceConnected() {
         Log.i("FOO", "Starting service");
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        contentFilter = new ContentFilter(getResources().getXml(R.xml.adult_filter));
     }
 
     @Override
