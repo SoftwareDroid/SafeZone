@@ -3,6 +3,9 @@
 Search
 - Suchhistorie in PocketCast Ignorieren
 Mit wenn "Recent searches" und "CLEAR ALL" ein Treffer hat
+Beachte Blatt Worliste now, stop_processing, priority, n actions, words
+fucntions: bool feedText -> isTriggering, reset(), getActions 
+
 - App ID und Klasse generisch machen
 
 
