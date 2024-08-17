@@ -1,6 +1,7 @@
 package com.example.ourpact3;
 
 import android.accessibilityservice.AccessibilityService;
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -8,15 +9,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.graphics.PixelFormat;
-import java.io.InputStream;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.TextView;
-import android.content.res.XmlResourceParser;
 
 // https://developer.android.com/guide/topics/ui/accessibility/service
 public class ContentFilerService extends AccessibilityService {
     private static ContentFilter contentFilter;
     private WindowManager windowManager;
     private View overlayView;
+    private String LOG_TAG = "ContentFiler";
+    public PocketCastsSearchFiler pocketCastFilter = new PocketCastsSearchFiler(this);
 
     @Override
     public void onServiceConnected() {
@@ -25,45 +31,76 @@ public class ContentFilerService extends AccessibilityService {
         contentFilter = new ContentFilter(getResources().getXml(R.xml.adult_filter));
     }
 
+
+
+
+    @SuppressLint("NewApi")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-
+        pocketCastFilter.processEvent(event);
+        return;
         //   String uuid = Helper.getUuid();
         // Date now = DateTimeHelper.getCurrentDay();
-        String accessibilityEvent = null;
-        String msg = null;
 //        Log.i("FOO","hallo" + event.getEventType());
-        switch (event.getEventType()) {
+        /*switch (event.getEventType()) {
             case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED: {
-                accessibilityEvent = "TYPE_VIEW_TEXT_CHANGED";
-                msg = String.valueOf(event.getText());
-                ContentFilter.FilterResult result = contentFilter.runFiler(event.getSource());
-                if (result.filterOut) {
-                    Log.i("FOO", "Evil keyword found");
-                    showOverlayWindow(result.keywords);
+                if (pocketCastFilter.packageName.equals(event.getPackageName().toString()) || event.getPackageName().toString().equals("org.mozilla.firefox")) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                    String timestamp = dateFormat.format(new Date(System.currentTimeMillis()));
+                    String className = event.getSource().getClassName().toString();
+                    String text = event.getSource().getText().toString();
+                    Log.d(LOG_TAG, "Timestamp: " + System.currentTimeMillis() + "\n" +
+                            "  Package Name: " + event.getPackageName().toString() + "\n" +
+                            "  Class Name: " + event.getSource().getClassName().toString() + "\n" +
+                            "  Text: " + event.getSource().getText().toString() + "\n" +
+//                            "  Window: " + event.getSource().getWindow().toString() + "\n" +
+//                            "  Number of Child Nodes: " + event.getSource().getWindow().getChildCount() + "\n" +
+                            "  Event Time: " + event.getEventTime() + "\n" +
+                            "  Source: " + event.getSource() + "\n" +
+                            "  ContentDescription: " + event.getSource().getContentDescription());
+
+//                    for (AccessibilityNodeInfo.AccessibilityAction action : event.getSource().getActionList()) {
+//                        Log.d("ContentFilter", "action id: " + action + " class " + action.getClass() + " label: '" + action.getLabel() + "'");
+//                        {
+//                        }
+//                        // min api 3ß
+//                        if (action.getId() == AccessibilityNodeInfo.AccessibilityAction.ACTION_IME_ENTER.getId()) {
+//                            // NOte: catch pocket cast search, browser url search
+//                            Log.d("ContentFilter", " action " + action + " Search with: " + event.getSource().getText().toString());   //TODO: works
+//                            break;
+//
+//                        }
+//                    }
                 }
+                //NOTE pocket cast search: catch class Names; android.widget.AutoCompleteTextView
+                break;
+            }
+            case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED: {
+                if (event.getContentChangeTypes() == AccessibilityEvent.CONTENT_CHANGE_TYPE_TEXT) {
+                    AccessibilityNodeInfo root = getRootInActiveWindow();
 
+
+//                    Log.d(LOG_TAG, "ev2 :" + event);
+
+                    // Text has changed, do something
+                }
                 break;
             }
-            case AccessibilityEvent.TYPE_VIEW_FOCUSED: {
-                accessibilityEvent = "TYPE_VIEW_FOCUSED";
-                msg = String.valueOf(event.getText());
-                break;
-            }
-            case AccessibilityEvent.TYPE_VIEW_CLICKED: {
-                accessibilityEvent = "TYPE_VIEW_CLICKED";
-                msg = String.valueOf(event.getText());
-                break;
-            }
+
+
             default:
-        }
+                if (event.getPackageName() != null && contentFilter != null && pocketCastFilter != null && pocketCastFilter.packageName.equals(event.getPackageName().toString())) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
-        if (accessibilityEvent == null) {
-            return;
-        }
+                    String timestamp = dateFormat.format(new Date(System.currentTimeMillis()));
 
+//                    Log.d("ContentFilter", "new event at " + timestamp.toString() + "\n " + event.toString());
+                }
+        }*/
 
     }
+
+
 
 
     private void showOverlayWindow(String forbiddenKeyword) {
@@ -80,7 +117,8 @@ public class ContentFilerService extends AccessibilityService {
             TextView overlayTextView = overlayView.findViewById(R.id.overlay_text);
             overlayTextView.setText("Forbidden keyword:" + forbiddenKeyword);
 
-            overlayView.findViewById(R.id.close_button).setOnClickListener(v -> {
+            overlayView.findViewById(R.id.close_button).setOnClickListener(v ->
+            {
                 hideOverlayWindow();
             });
 
@@ -89,7 +127,7 @@ public class ContentFilerService extends AccessibilityService {
                     WindowManager.LayoutParams.MATCH_PARENT,
 //                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                     WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE                     | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                             | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                     PixelFormat.OPAQUE);
             windowManager.addView(overlayView, params);

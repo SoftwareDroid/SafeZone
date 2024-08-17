@@ -27,7 +27,7 @@ public class ContentFilter {
 
     public FilterResult runFiler(AccessibilityNodeInfo node) {
         FilterResult result = new ContentFilter.FilterResult();
-        int sumScore = 0;
+        /*int sumScore = 0;
         if (node != null && adultFilter != null) {
             String appName = node.getPackageName().toString();
             if (adultFilter.getIgnoredApps().contains(appName)) {
@@ -54,7 +54,7 @@ public class ContentFilter {
                     }
                 }
             }
-        }
+        }*/
         return result;
     }
 }

@@ -1,0 +1,8 @@
+1. Businesslogic
+
+Search
+- Suchhistorie in PocketCast Ignorieren
+Mit wenn "Recent searches" und "CLEAR ALL" ein Treffer hat
+- App ID und Klasse generisch machen
+
+
