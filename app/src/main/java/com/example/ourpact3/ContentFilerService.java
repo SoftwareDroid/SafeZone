@@ -5,6 +5,8 @@ import static androidx.core.content.ContextCompat.getSystemService;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -17,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.ourpact3.model.IFilterResultCallback;
 import com.example.ourpact3.model.PipelineResult;
+import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicManager;
 
@@ -124,7 +127,7 @@ public class ContentFilerService extends AccessibilityService implements IFilter
     }
 
 
-    private void showOverlayWindow(String text)
+    private void showOverlayWindow(String text, PipelineResult result2)
     {
         // we need the permission to show the overlay which blocks input
         /*if(!Settings.canDrawOverlays(getApplicationContext()))
@@ -138,9 +141,12 @@ public class ContentFilerService extends AccessibilityService implements IFilter
 
             TextView overlayTextView = overlayView.findViewById(R.id.overlay_text);
             overlayTextView.setText(text);
-
             overlayView.findViewById(R.id.close_button).setOnClickListener(v ->
             {
+                if(result2.triggerApp != null && result2.windowAction == PipelineWindowAction.KILL_WINDOW)
+                {
+                    closeOtherApp(result2.triggerApp);
+                }
                 hideOverlayWindow();
             });
 
@@ -170,7 +176,12 @@ public class ContentFilerService extends AccessibilityService implements IFilter
     {
     }
 
-
+    private void closeOtherApp(String packageName) {
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager != null) {
+            activityManager.killBackgroundProcesses(packageName);
+        }
+    }
     @Override
     public void onPipelineResult(PipelineResult result)
     {
@@ -178,7 +189,7 @@ public class ContentFilerService extends AccessibilityService implements IFilter
         {
             case WARNING:
             case KILL_WINDOW:
-                this.showOverlayWindow("test " + result);
+                this.showOverlayWindow("test " + result,result);
                 break;
 
             case NOTHING:
