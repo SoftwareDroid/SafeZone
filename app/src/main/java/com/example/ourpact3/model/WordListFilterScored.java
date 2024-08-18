@@ -17,9 +17,9 @@ public class WordListFilterScored extends WordProcessorFilterBase
         final int writeScore;
     }
 
-    public WordListFilterScored(ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, ArrayList<FilterAppAction> actions)
+    public WordListFilterScored(String name,ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, PipelineResult result)
     {
-        super(actions);
+        super(result,name);
         this.ignoreCase = ignoreCase;
         this.topicManager = topicManager;
         this.topicScorings = topicScorings;
@@ -30,7 +30,7 @@ public class WordListFilterScored extends WordProcessorFilterBase
     private boolean ignoreCase;
     private int currentScore;
     private final int MAX_SCORE = 100;
-    public boolean feedWord(String text, boolean editable)
+    public PipelineResult feedWord(String text, boolean editable)
     {
         if(ignoreCase)
         {
@@ -49,11 +49,12 @@ public class WordListFilterScored extends WordProcessorFilterBase
                 currentScore += editable? scoring.writeScore : scoring.readScore;
                 if(currentScore >= MAX_SCORE)
                 {
-                    return true;
+                    result.triggerWord = text;
+                    return result;
                 }
             }
         }
-        return false;
+        return null;
     }
     public void reset()
     {

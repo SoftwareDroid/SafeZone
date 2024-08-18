@@ -1,5 +1,8 @@
 package com.example.ourpact3;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
 import android.util.Log;
@@ -12,6 +15,8 @@ import android.graphics.PixelFormat;
 
 import android.widget.TextView;
 
+import com.example.ourpact3.model.IFilterResultCallback;
+import com.example.ourpact3.model.PipelineResult;
 import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicManager;
 
@@ -19,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // https://developer.android.com/guide/topics/ui/accessibility/service
-public class ContentFilerService extends AccessibilityService {
+public class ContentFilerService  extends AccessibilityService implements IFilterResultCallback{
     private static ContentFilter contentFilter;
     private WindowManager windowManager;
     private View overlayView;
@@ -30,6 +35,7 @@ public class ContentFilerService extends AccessibilityService {
     @Override
     public void onServiceConnected() {
         Log.i("FOO", "Starting service");
+        pocketCastFilter.setCallback(this);//TODO: add callback
 //        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 //        contentFilter = new ContentFilter(getResources().getXml(R.xml.adult_filter));
         // Add sample topic
@@ -119,19 +125,18 @@ public class ContentFilerService extends AccessibilityService {
 
 
 
-    private void showOverlayWindow(String forbiddenKeyword) {
+    private void showOverlayWindow(String text) {
         // we need the permission to show the overlay which blocks input
         /*if(!Settings.canDrawOverlays(getApplicationContext()))
         {
             return;
         }*/
-
         if (overlayView == null && windowManager != null) {
-            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
             overlayView = inflater.inflate(R.layout.overlay_window, null);
 
             TextView overlayTextView = overlayView.findViewById(R.id.overlay_text);
-            overlayTextView.setText("Forbidden keyword:" + forbiddenKeyword);
+            overlayTextView.setText(text);
 
             overlayView.findViewById(R.id.close_button).setOnClickListener(v ->
             {
@@ -159,8 +164,23 @@ public class ContentFilerService extends AccessibilityService {
 
     @Override
     public void onInterrupt() {
-
     }
 
 
+    @Override
+    public void onPipelineResult(PipelineResult result)
+    {
+        switch (result.windowAction)
+        {
+            case WARNING:
+                this.showOverlayWindow("test " + result);
+                break;
+            case NOTHING:
+                break;
+        }
+        if(result.logging)
+        {
+            Log.i(LOG_TAG," pipeline result " + result);
+        }
+    }
 }

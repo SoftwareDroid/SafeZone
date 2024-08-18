@@ -3,14 +3,16 @@ package com.example.ourpact3.model;
 import java.util.ArrayList;
 
 public abstract class WordProcessorFilterBase {
-    WordProcessorFilterBase(ArrayList<FilterAppAction> actions)
+    WordProcessorFilterBase(PipelineResult result, String name)
     {
-        this.actions = actions;
+        this.result = result;
+        this.result.triggerFilter = name;
+        this.name = name;
     }
-    private ArrayList<FilterAppAction> actions;
+    protected PipelineResult result;
+    public final String name;
     private int priority;
     public int getPriority(){return priority;}
-    public abstract boolean feedWord(String text, boolean editable);
+    public abstract PipelineResult feedWord(String text, boolean editable);
     public abstract void reset();
-    public ArrayList<FilterAppAction> getActions(){return actions;}
 }

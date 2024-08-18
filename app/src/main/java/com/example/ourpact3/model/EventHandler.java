@@ -4,5 +4,5 @@ import java.util.ArrayList;
 
 public class EventHandler {
     public ArrayList<Trigger> triggers; //If any hits
-    public ArrayList<FilterResult> actions;
+    public ArrayList<PipelineResult> actions;
 }

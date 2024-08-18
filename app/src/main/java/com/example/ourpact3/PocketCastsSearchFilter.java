@@ -1,5 +1,7 @@
 package com.example.ourpact3;
 
+import com.example.ourpact3.model.IFilterResultCallback;
+import com.example.ourpact3.model.PipelineResult;
 import com.example.ourpact3.model.WordListFilterExact;
 import com.example.ourpact3.model.WordListFilterScored;
 import com.example.ourpact3.model.WordListFilterScored.TopicScoring;
@@ -11,7 +13,7 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.example.ourpact3.model.FilterAppAction;
+import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.model.TopicManager;
 import com.example.ourpact3.model.WordProcessorFilterBase;
 
@@ -26,14 +28,18 @@ public class PocketCastsSearchFilter
         this.service = service;
         this.topicManager = topicManager;
         filters = new ArrayList<WordProcessorFilterBase>();
-
+        PipelineResult resultIgnoreSearch = new PipelineResult();
+        resultIgnoreSearch.windowAction = PipelineWindowAction.NOTHING;
+        resultIgnoreSearch.logging = true;
         // Add test Filter
-        WordProcessorFilterBase ignoreSearch = new WordListFilterExact(new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, new ArrayList<>(List.of(FilterAppAction.LOGGING, FilterAppAction.PIPELINE_ABORT)));
+        WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null",new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, resultIgnoreSearch);
         filters.add(ignoreSearch);
 
-
+        PipelineResult pornResult = new PipelineResult();
+        resultIgnoreSearch.windowAction = PipelineWindowAction.KILL;
+        resultIgnoreSearch.logging = true;
         TopicScoring sampleScoring = new TopicScoring("porn", 30, 40);
-        WordListFilterScored blockAdultStuff = new WordListFilterScored(new ArrayList<>(List.of(sampleScoring)), false, topicManager, new ArrayList<>(List.of(FilterAppAction.LOGGING)));
+        WordListFilterScored blockAdultStuff = new WordListFilterScored("block adult stuff",new ArrayList<>(List.of(sampleScoring)), false, topicManager, pornResult);
         filters.add(blockAdultStuff);
     }
 
@@ -46,8 +52,12 @@ public class PocketCastsSearchFilter
     private int delayCount = 0;
     private boolean pipelineRunning = false;
     private ArrayList<WordProcessorFilterBase> filters; //TODO: create and sort
+    private IFilterResultCallback callback;
+    private ArrayList<PipelineWindowAction> pipelineResult = new ArrayList<PipelineWindowAction>();
+    public void setCallback(IFilterResultCallback callback) {
+        this.callback = callback;
+    }
 
-    private ArrayList<FilterAppAction> pipelineResult = new ArrayList<FilterAppAction>();
     private Handler handler = new Handler();
     private Runnable searchRunnable = new Runnable()
     {
@@ -110,24 +120,12 @@ public class PocketCastsSearchFilter
             for (WordProcessorFilterBase processor : filters)
             {
                 // feed word into filer
-                if (processor.feedWord(text, node.isEditable()))
+                PipelineResult result = processor.feedWord(text, node.isEditable());
+                if (result != null)
                 {
-                    // processor finished
-                    ArrayList<FilterAppAction> actions = processor.getActions();
-                    pipelineResult.addAll(actions);
-                    //TODO: make better
-                    for (FilterAppAction action : processor.getActions())
-                    {
-                        switch (action)
-                        {
-                            case LOGGING:
-                                Log.d(LOG_TAG, " " + processor + " Filter needs to log this: " + text);
-                                break;
-                            case PIPELINE_ABORT:
-                                Log.d(LOG_TAG, "Pipline aborted by " + text);
-                                pipelineRunning = false;
-                        }
-                    }
+                    // Forward result to callback
+                    this.callback.onPipelineResult(result);
+                    pipelineRunning = result.windowAction != PipelineWindowAction.NOTHING;
                 }
             }
             Log.d(LOG_TAG, "NODE_TEXT: " + node.getText() + " \n Editable: " + node.isEditable());
