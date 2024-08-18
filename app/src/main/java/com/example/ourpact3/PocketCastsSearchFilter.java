@@ -36,9 +36,9 @@ public class PocketCastsSearchFilter
         filters.add(ignoreSearch);
 
         PipelineResult pornResult = new PipelineResult();
-        resultIgnoreSearch.windowAction = PipelineWindowAction.KILL_WINDOW;
-        resultIgnoreSearch.logging = true;
-        TopicScoring sampleScoring = new TopicScoring("porn", 30, 40);
+        pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
+        pornResult.logging = true;
+        TopicScoring sampleScoring = new TopicScoring("porn", 100, 100);
         WordListFilterScored blockAdultStuff = new WordListFilterScored("block adult stuff",new ArrayList<>(List.of(sampleScoring)), false, topicManager, pornResult);
         filters.add(blockAdultStuff);
     }

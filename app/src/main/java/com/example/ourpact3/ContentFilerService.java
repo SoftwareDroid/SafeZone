@@ -4,9 +4,11 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static androidx.core.content.ContextCompat.getSystemService;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -35,7 +37,8 @@ public class ContentFilerService extends AccessibilityService implements IFilter
     private String LOG_TAG = "ContentFiler";
     private TopicManager topicManager = new TopicManager();
     public PocketCastsSearchFilter pocketCastFilter = new PocketCastsSearchFilter(this, this.topicManager);
-
+//    private Handler handler = new Handler();
+//    private boolean isRunning = false;
     @Override
     public void onServiceConnected()
     {
@@ -55,7 +58,13 @@ public class ContentFilerService extends AccessibilityService implements IFilter
 
         topicManager.addTopic(adultTopic);
         topicManager.addTopic(adultChildTopic);
+        //New
 
+        AccessibilityServiceInfo info = new AccessibilityServiceInfo();
+        info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
+        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
+        info.flags = AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;
+        setServiceInfo(info);
     }
 
 
@@ -189,10 +198,16 @@ public class ContentFilerService extends AccessibilityService implements IFilter
         {
             case WARNING:
             case KILL_WINDOW:
+
                 this.showOverlayWindow("test " + result,result);
                 break;
-
+            case PERFORM_BACK_ACTION:
+                performGlobalAction(GLOBAL_ACTION_BACK);
+                performGlobalAction(GLOBAL_ACTION_BACK);
+                break;
             case NOTHING:
+                break;
+            case STOP_FURTHER_PROCESSING:
                 break;
         }
         if (result.logging)
