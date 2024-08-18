@@ -4,7 +4,7 @@ public enum PipelineWindowAction
 {
     KILL_WINDOW,
     WARNING,
-    NOTHING, // Only this action doesn't abort the pipeline
+    CONTINUE_PIPELINE, // Only this action doesn't abort the pipeline
     PERFORM_BACK_ACTION,
     STOP_FURTHER_PROCESSING,
 }

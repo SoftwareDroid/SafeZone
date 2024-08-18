@@ -1,14 +1,10 @@
 package com.example.ourpact3;
 
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -205,7 +201,7 @@ public class ContentFilerService extends AccessibilityService implements IFilter
                 performGlobalAction(GLOBAL_ACTION_BACK);
                 performGlobalAction(GLOBAL_ACTION_BACK);
                 break;
-            case NOTHING:
+            case CONTINUE_PIPELINE:
                 break;
             case STOP_FURTHER_PROCESSING:
                 break;

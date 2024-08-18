@@ -83,7 +83,7 @@ public class PocketCastsSearchFilter
     @SuppressLint("NewApi")
     public void processEvent(AccessibilityEvent event)
     {
-        if (!event.getPackageName().toString().equals(packageName))
+        if (event.getPackageName() == null || !event.getPackageName().toString().equals(packageName) || pipelineRunning)
         {
             return;
         }
@@ -112,8 +112,6 @@ public class PocketCastsSearchFilter
 
     private void processNode(AccessibilityNodeInfo node)
     {
-//        Log.d(LOG_TAG," search in: " + node);
-        // process all nodes with text
         if (node.getText() != null && node.getText().length() > 1)
         {
             String text = node.getText().toString();
@@ -125,20 +123,26 @@ public class PocketCastsSearchFilter
                 {
                     // Forward result to callback
                     this.callback.onPipelineResult(result);
-                    pipelineRunning = result.windowAction != PipelineWindowAction.NOTHING;
-                }
-            }
-            Log.d(LOG_TAG, "NODE_TEXT: " + node.getText() + " \n Editable: " + node.isEditable());
-        }
+                    pipelineRunning = result.windowAction != PipelineWindowAction.CONTINUE_PIPELINE;
 
-        int childCount = node.getChildCount();
-        for (int n = 0; n < childCount; n++)
-        {
-            AccessibilityNodeInfo childNode = node.getChild(n);
-            if (childNode != null && pipelineRunning)
-            {
-                processNode(childNode); //TODO: also return pipeline result
-            }
+                }
+                // abort all further processing with other processors
+                if(!pipelineRunning)
+                {
+                    return;
+                }
+                // process all children for current processor
+                int childCount = node.getChildCount();
+                for (int n = 0; n < childCount; n++)
+                {
+                    AccessibilityNodeInfo childNode = node.getChild(n);
+                    if (childNode != null)
+                    {
+                        processNode(childNode);
+                    }
+                }
+            } //End of processors
+            Log.d(LOG_TAG, "NODE_TEXT: " + node.getText() + " \n Editable: " + node.isEditable());
         }
 
     }

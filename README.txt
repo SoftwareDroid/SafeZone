@@ -7,6 +7,7 @@ use: app_dev.sh # needs icon under ubuntu for start menu
 TODO
 FIX Search
 In Recent searches tiggert nicht die Abort Pipeplie zu erst
+FIXEN PocketCasts muss bedienbar bleiben auch bei 100 scoring
 
 
 1. XML einlesen und verwenden
