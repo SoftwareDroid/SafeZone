@@ -17,7 +17,7 @@ public class WordListFilterScored extends WordProcessorFilterBase
         final int writeScore;
     }
 
-    public WordListFilterScored(ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, ArrayList<FilerAppAction> actions)
+    public WordListFilterScored(ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, ArrayList<FilterAppAction> actions)
     {
         super(actions);
         this.ignoreCase = ignoreCase;

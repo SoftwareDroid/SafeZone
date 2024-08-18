@@ -28,15 +28,21 @@ public class TopicManager
                 return; // topic with same id and language already exists, do nothing
             }
         }
-        // Check for cyles
-        HashSet<String> visited = new HashSet<>();
-        HashSet<String> recursionStack = new HashSet<>();
 
-        // Check for cycles in the new topic's included topics
-        for (String includedTopicId : topic.includedTopics) {
-            if (hasCycle(includedTopicId, visited, recursionStack, topics)) {
-                Log.i("TopicManger","Cycle detected when adding topic: " + topic.getTopicId());
-                return; // Cycle detected, do not add the topic
+        if(topic.includedTopics != null)
+        {
+            // Check for cyles
+            HashSet<String> visited = new HashSet<>();
+            HashSet<String> recursionStack = new HashSet<>();
+
+            // Check for cycles in the new topic's included topics
+            for (String includedTopicId : topic.includedTopics)
+            {
+                if (hasCycle(includedTopicId, visited, recursionStack, topics))
+                {
+                    Log.i("TopicManger", "Cycle detected when adding topic: " + topic.getTopicId());
+                    return; // Cycle detected, do not add the topic
+                }
             }
         }
 
@@ -64,7 +70,7 @@ public class TopicManager
                 String includedTopicId = includedTopic.getTopicId();
                 // If the included topic is not visited, recurse on it
                 if (!visited.contains(includedTopicId)) {
-                    if (hascycle(includedTopicId, visited, recursionStack, topics)) {
+                    if (hasCycle(includedTopicId, visited, recursionStack, topics)) {
                         return true;
                     }
                 } else if (recursionStack.contains(includedTopicId)) {

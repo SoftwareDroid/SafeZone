@@ -11,8 +11,7 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.example.ourpact3.model.FilerAppAction;
-import com.example.ourpact3.model.Topic;
+import com.example.ourpact3.model.FilterAppAction;
 import com.example.ourpact3.model.TopicManager;
 import com.example.ourpact3.model.WordProcessorFilterBase;
 
@@ -29,12 +28,12 @@ public class PocketCastsSearchFilter
         filters = new ArrayList<WordProcessorFilterBase>();
 
         // Add test Filter
-        WordProcessorFilterBase ignoreSearch = new WordListFilterExact(new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, new ArrayList<>(List.of(FilerAppAction.LOGGING,FilerAppAction.PIPELINE_ABORT)));
+        WordProcessorFilterBase ignoreSearch = new WordListFilterExact(new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, new ArrayList<>(List.of(FilterAppAction.LOGGING, FilterAppAction.PIPELINE_ABORT)));
         filters.add(ignoreSearch);
 
 
         TopicScoring sampleScoring = new TopicScoring("porn", 30, 40);
-        WordListFilterScored blockAdultStuff = new WordListFilterScored(new ArrayList<>(List.of(sampleScoring)), false, topicManager, new ArrayList<>(List.of(FilerAppAction.LOGGING)));
+        WordListFilterScored blockAdultStuff = new WordListFilterScored(new ArrayList<>(List.of(sampleScoring)), false, topicManager, new ArrayList<>(List.of(FilterAppAction.LOGGING)));
         filters.add(blockAdultStuff);
     }
 
@@ -48,12 +47,14 @@ public class PocketCastsSearchFilter
     private boolean pipelineRunning = false;
     private ArrayList<WordProcessorFilterBase> filters; //TODO: create and sort
 
+    private ArrayList<FilterAppAction> pipelineResult = new ArrayList<FilterAppAction>();
     private Handler handler = new Handler();
     private Runnable searchRunnable = new Runnable()
     {
         @Override
         public void run()
         {
+            pipelineResult.clear();
             pipelineRunning = true;
             for (WordProcessorFilterBase processor : filters)
             {
@@ -112,7 +113,10 @@ public class PocketCastsSearchFilter
                 if (processor.feedWord(text, node.isEditable()))
                 {
                     // processor finished
-                    for (FilerAppAction action : processor.getActions())
+                    ArrayList<FilterAppAction> actions = processor.getActions();
+                    pipelineResult.addAll(actions);
+                    //TODO: make better
+                    for (FilterAppAction action : processor.getActions())
                     {
                         switch (action)
                         {
@@ -122,7 +126,6 @@ public class PocketCastsSearchFilter
                             case PIPELINE_ABORT:
                                 Log.d(LOG_TAG, "Pipline aborted by " + text);
                                 pipelineRunning = false;
-                                return;
                         }
                     }
                 }
@@ -136,8 +139,9 @@ public class PocketCastsSearchFilter
             AccessibilityNodeInfo childNode = node.getChild(n);
             if (childNode != null && pipelineRunning)
             {
-                processNode(childNode);
+                processNode(childNode); //TODO: also return pipeline result
             }
         }
+
     }
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class WordListFilterExact extends WordProcessorFilterBase
 {
-    public WordListFilterExact(ArrayList<String> listOfWords, boolean ignoreCase, ArrayList<FilerAppAction> actions)
+    public WordListFilterExact(ArrayList<String> listOfWords, boolean ignoreCase, ArrayList<FilterAppAction> actions)
     {
         super(actions);
         this.ignoreCase = ignoreCase;
