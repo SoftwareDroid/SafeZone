@@ -10,11 +10,13 @@ import android.view.View;
 import android.view.WindowManager;
 import android.graphics.PixelFormat;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.TextView;
+
+import com.example.ourpact3.model.Topic;
+import com.example.ourpact3.model.TopicManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // https://developer.android.com/guide/topics/ui/accessibility/service
 public class ContentFilerService extends AccessibilityService {
@@ -22,13 +24,27 @@ public class ContentFilerService extends AccessibilityService {
     private WindowManager windowManager;
     private View overlayView;
     private String LOG_TAG = "ContentFiler";
-    public PocketCastsSearchFiler pocketCastFilter = new PocketCastsSearchFiler(this);
+    private TopicManager topicManager = new TopicManager();
+    public PocketCastsSearchFilter pocketCastFilter = new PocketCastsSearchFilter(this,this.topicManager);
 
     @Override
     public void onServiceConnected() {
         Log.i("FOO", "Starting service");
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        contentFilter = new ContentFilter(getResources().getXml(R.xml.adult_filter));
+//        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+//        contentFilter = new ContentFilter(getResources().getXml(R.xml.adult_filter));
+        // Add sample topic
+        Topic adultTopic = new Topic();
+        adultTopic.id = "porn";
+        adultTopic.words = new ArrayList<String>(List.of("porn", "femdom", "naked"));
+        adultTopic.includedTopics = new ArrayList<String>(List.of("female"));
+
+        Topic adultChildTopic = new Topic();
+        adultChildTopic.id = "female";
+        adultChildTopic.words = new ArrayList<String>(List.of("girl", "butt"));
+
+        topicManager.addTopic(adultTopic);
+        topicManager.addTopic(adultChildTopic);
+
     }
 
 

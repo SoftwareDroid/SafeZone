@@ -1,6 +1,5 @@
-package com.example.ourpact3;
+package com.example.ourpact3.model;
 
-import com.example.ourpact3.model.FilerAppAction;
 import java.util.ArrayList;
 
 public abstract class WordProcessorFilterBase {

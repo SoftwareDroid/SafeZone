@@ -1,5 +1,9 @@
 package com.example.ourpact3;
 
+import com.example.ourpact3.model.WordListFilterExact;
+import com.example.ourpact3.model.WordListFilterScored;
+import com.example.ourpact3.model.WordListFilterScored.TopicScoring;
+
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
 import android.os.Handler;
@@ -8,27 +12,37 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.example.ourpact3.model.FilerAppAction;
+import com.example.ourpact3.model.Topic;
+import com.example.ourpact3.model.TopicManager;
+import com.example.ourpact3.model.WordProcessorFilterBase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PocketCastsSearchFiler
+public class PocketCastsSearchFilter
 {
-    PocketCastsSearchFiler(AccessibilityService service)
+    PocketCastsSearchFilter(AccessibilityService service, TopicManager topicManager)
 
     {
         this.service = service;
+        this.topicManager = topicManager;
         filters = new ArrayList<WordProcessorFilterBase>();
+
         // Add test Filter
-        WordProcessorFilterBase ignoreSearch = new WordListFilterExact(new ArrayList<>(List.of("Recent searches","CLEAR ALL")),false,new ArrayList<>(List.of(
-                FilerAppAction.NOTHING)));
+        WordProcessorFilterBase ignoreSearch = new WordListFilterExact(new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, new ArrayList<>(List.of(FilerAppAction.LOGGING,FilerAppAction.PIPELINE_ABORT)));
         filters.add(ignoreSearch);
+
+
+        TopicScoring sampleScoring = new TopicScoring("porn", 30, 40);
+        WordListFilterScored blockAdultStuff = new WordListFilterScored(new ArrayList<>(List.of(sampleScoring)), false, topicManager, new ArrayList<>(List.of(FilerAppAction.LOGGING)));
+        filters.add(blockAdultStuff);
     }
 
     public AccessibilityService service;
     public String packageName = "au.com.shiftyjelly.pocketcasts";
     private String LOG_TAG = "ContentFiler";
     private int SEARCH_DELAY_MS = 500;
+    private TopicManager topicManager;
     private final int MAX_DELAYED_CALLS = 3;
     private int delayCount = 0;
     private boolean pipelineRunning = false;
@@ -41,7 +55,7 @@ public class PocketCastsSearchFiler
         public void run()
         {
             pipelineRunning = true;
-            for(WordProcessorFilterBase processor : filters)
+            for (WordProcessorFilterBase processor : filters)
             {
                 processor.reset();
             }
@@ -92,20 +106,21 @@ public class PocketCastsSearchFiler
         if (node.getText() != null && node.getText().length() > 1)
         {
             String text = node.getText().toString();
-            for(WordProcessorFilterBase processor : filters)
+            for (WordProcessorFilterBase processor : filters)
             {
                 // feed word into filer
-                if(processor.feedWord(text,node.isEditable()))
+                if (processor.feedWord(text, node.isEditable()))
                 {
                     // processor finished
                     for (FilerAppAction action : processor.getActions())
                     {
-                        switch (action) {
+                        switch (action)
+                        {
                             case LOGGING:
-                                Log.d(LOG_TAG,  " " + processor + " Filter needs to log this: " + text);
+                                Log.d(LOG_TAG, " " + processor + " Filter needs to log this: " + text);
                                 break;
                             case PIPELINE_ABORT:
-                                Log.d(LOG_TAG,"Pipline aborted by " + text);
+                                Log.d(LOG_TAG, "Pipline aborted by " + text);
                                 pipelineRunning = false;
                                 return;
                         }
