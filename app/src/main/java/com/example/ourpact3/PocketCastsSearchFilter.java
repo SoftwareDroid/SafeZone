@@ -29,14 +29,14 @@ public class PocketCastsSearchFilter
         this.topicManager = topicManager;
         filters = new ArrayList<WordProcessorFilterBase>();
         PipelineResult resultIgnoreSearch = new PipelineResult();
-        resultIgnoreSearch.windowAction = PipelineWindowAction.NOTHING;
+        resultIgnoreSearch.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
         resultIgnoreSearch.logging = true;
         // Add test Filter
         WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null",new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, resultIgnoreSearch);
         filters.add(ignoreSearch);
 
         PipelineResult pornResult = new PipelineResult();
-        resultIgnoreSearch.windowAction = PipelineWindowAction.KILL;
+        resultIgnoreSearch.windowAction = PipelineWindowAction.KILL_WINDOW;
         resultIgnoreSearch.logging = true;
         TopicScoring sampleScoring = new TopicScoring("porn", 30, 40);
         WordListFilterScored blockAdultStuff = new WordListFilterScored("block adult stuff",new ArrayList<>(List.of(sampleScoring)), false, topicManager, pornResult);

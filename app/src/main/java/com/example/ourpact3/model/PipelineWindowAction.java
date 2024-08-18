@@ -2,7 +2,8 @@ package com.example.ourpact3.model;
 
 public enum PipelineWindowAction
 {
-    KILL,
+    KILL_WINDOW,
     WARNING,
     NOTHING, // Only this action doesn't abort the pipeline
+    STOP_FURTHER_PROCESSING,
 }

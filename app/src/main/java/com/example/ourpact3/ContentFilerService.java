@@ -24,16 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 // https://developer.android.com/guide/topics/ui/accessibility/service
-public class ContentFilerService  extends AccessibilityService implements IFilterResultCallback{
+public class ContentFilerService extends AccessibilityService implements IFilterResultCallback
+{
     private static ContentFilter contentFilter;
     private WindowManager windowManager;
     private View overlayView;
     private String LOG_TAG = "ContentFiler";
     private TopicManager topicManager = new TopicManager();
-    public PocketCastsSearchFilter pocketCastFilter = new PocketCastsSearchFilter(this,this.topicManager);
+    public PocketCastsSearchFilter pocketCastFilter = new PocketCastsSearchFilter(this, this.topicManager);
 
     @Override
-    public void onServiceConnected() {
+    public void onServiceConnected()
+    {
         Log.i("FOO", "Starting service");
         pocketCastFilter.setCallback(this);//TODO: add callback
 //        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -54,11 +56,10 @@ public class ContentFilerService  extends AccessibilityService implements IFilte
     }
 
 
-
-
     @SuppressLint("NewApi")
     @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
+    public void onAccessibilityEvent(AccessibilityEvent event)
+    {
         pocketCastFilter.processEvent(event);
         return;
         //   String uuid = Helper.getUuid();
@@ -123,16 +124,16 @@ public class ContentFilerService  extends AccessibilityService implements IFilte
     }
 
 
-
-
-    private void showOverlayWindow(String text) {
+    private void showOverlayWindow(String text)
+    {
         // we need the permission to show the overlay which blocks input
         /*if(!Settings.canDrawOverlays(getApplicationContext()))
         {
             return;
         }*/
-        if (overlayView == null && windowManager != null) {
-            LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+        if (overlayView == null && windowManager != null)
+        {
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
             overlayView = inflater.inflate(R.layout.overlay_window, null);
 
             TextView overlayTextView = overlayView.findViewById(R.id.overlay_text);
@@ -155,15 +156,18 @@ public class ContentFilerService  extends AccessibilityService implements IFilte
         }
     }
 
-    private void hideOverlayWindow() {
-        if (overlayView != null) {
+    private void hideOverlayWindow()
+    {
+        if (overlayView != null)
+        {
             windowManager.removeView(overlayView);
             overlayView = null;
         }
     }
 
     @Override
-    public void onInterrupt() {
+    public void onInterrupt()
+    {
     }
 
 
@@ -173,14 +177,16 @@ public class ContentFilerService  extends AccessibilityService implements IFilte
         switch (result.windowAction)
         {
             case WARNING:
+            case KILL_WINDOW:
                 this.showOverlayWindow("test " + result);
                 break;
+
             case NOTHING:
                 break;
         }
-        if(result.logging)
+        if (result.logging)
         {
-            Log.i(LOG_TAG," pipeline result " + result);
+            Log.i(LOG_TAG, " pipeline result " + result);
         }
     }
 }
