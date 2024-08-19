@@ -136,7 +136,7 @@ public class PocketCastsSearchFilter
                 for (int n = 0; n < childCount; n++)
                 {
                     AccessibilityNodeInfo childNode = node.getChild(n);
-                    if (childNode != null)
+                    if (childNode != null && pipelineRunning)
                     {
                         processNode(childNode);
                     }

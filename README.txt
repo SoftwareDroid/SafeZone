@@ -10,6 +10,8 @@ In Recent searches tiggert nicht die Abort Pipeplie zu erst
 FIXEN PocketCasts muss bedienbar bleiben auch bei 100 scoring
 
 
+Rumspielen mit Pocketcasts, nächste App Telegram (lokale gruppen + sex zeug verhindern)
+
 1. XML einlesen und verwenden
 2. App Close button schließt die APP
 3b. DeviceADmin + Abschalt Prevention einbauen

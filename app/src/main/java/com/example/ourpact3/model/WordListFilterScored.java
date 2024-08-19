@@ -12,42 +12,45 @@ public class WordListFilterScored extends WordProcessorFilterBase
             this.readScore = read;
             this.writeScore = write;
         }
+
         final String topicId;
         final int readScore;
         final int writeScore;
     }
 
-    public WordListFilterScored(String name,ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, PipelineResult result)
+    public WordListFilterScored(String name, ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, PipelineResult result)
     {
-        super(result,name);
+        super(result, name);
         this.ignoreCase = ignoreCase;
         this.topicManager = topicManager;
         this.topicScorings = topicScorings;
         assert topicManager != null;
     }
-    private ArrayList<TopicScoring>  topicScorings;
+
+    private ArrayList<TopicScoring> topicScorings;
     private TopicManager topicManager;
     private boolean ignoreCase;
     private int currentScore;
     private final int MAX_SCORE = 100;
+
     public PipelineResult feedWord(String text, boolean editable)
     {
-        if(ignoreCase)
+        if (ignoreCase)
         {
             text = text.toLowerCase();
         }
 
-        for(TopicScoring scoring : this.topicScorings)
+        for (TopicScoring scoring : this.topicScorings)
         {
-            if((editable && scoring.writeScore == 0) || (!editable && scoring.readScore == 0))
+            if ((editable && scoring.writeScore == 0) || (!editable && scoring.readScore == 0))
             {
                 continue;
             }
 
-            if(topicManager.isStringInTopic(text,scoring.topicId, TopicManager.TopicMatchMode.TOPIC_WORD_IS_INFIX,ignoreCase))
+            if (topicManager.isStringInTopic(text, scoring.topicId, TopicManager.TopicMatchMode.TOPIC_WORD_IS_INFIX, ignoreCase, TopicManager.ALL_LANGUAGE_CODE))
             {
-                currentScore += editable? scoring.writeScore : scoring.readScore;
-                if(currentScore >= MAX_SCORE)
+                currentScore += editable ? scoring.writeScore : scoring.readScore;
+                if (currentScore >= MAX_SCORE)
                 {
                     result.triggerWord = text;
                     return result;
@@ -56,6 +59,7 @@ public class WordListFilterScored extends WordProcessorFilterBase
         }
         return null;
     }
+
     public void reset()
     {
         currentScore = 0;

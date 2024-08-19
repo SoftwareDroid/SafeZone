@@ -9,6 +9,42 @@ import java.util.HashSet;
 public class TopicManager
 {
     private HashMap<String, ArrayList<Topic>> topics = new HashMap<String, ArrayList<Topic>>(); // topic id -> topics for all languages
+
+    /**
+     * Removes redundant words for faster filtering later
+     *
+     * @param topic  new topic to add
+     * @param bucket of on topic
+     */
+    private void removeWordsAlreadyInOtherLanguage(Topic topic, ArrayList<Topic> bucket)
+    {
+        if (bucket == null || topic == null)
+        {
+            return;
+        }
+        // Iterate through existing topics to collect existing words
+        HashSet<String> existingWords = new HashSet<>();
+        for (Topic existingTopic : bucket)
+        {
+            existingWords.addAll(existingTopic.words);
+        }
+
+        // Filter the new topic's words and create a new Topic with the filtered words
+        ArrayList<String> filteredWords = new ArrayList<>();
+        for (String word : topic.words)
+        {
+            if (!existingWords.contains(word))
+            {
+                filteredWords.add(word);
+            }
+        }
+
+        if (filteredWords.size() != topic.words.size())
+        {
+            topic.words = filteredWords;
+        }
+    }
+
     public void addTopic(Topic topic)
     {
         String topicId = topic.getTopicId();
@@ -16,20 +52,23 @@ public class TopicManager
         {
             return;
         }
-        if (!topics.containsKey(topicId))
+        ArrayList<Topic> siblingTopics = topics.get(topicId);
+        if (siblingTopics == null)
         {
             topics.put(topicId, new ArrayList<Topic>());
-        }
-        for (Topic existingTopic : topics.get(topicId))
+        } else
         {
-            if (existingTopic.getLanguage().equals(topic.getLanguage()))
+            for (Topic existingTopic : siblingTopics)
             {
-                Log.i("TopicManager", " topic with same language already exists");
-                return; // topic with same id and language already exists, do nothing
+                if (existingTopic.getLanguage().equals(topic.getLanguage()))
+                {
+                    Log.i("TopicManager", " topic with same language already exists");
+                    return; // topic with same id and language already exists, do nothing
+                }
             }
         }
 
-        if(topic.includedTopics != null)
+        if (topic.includedTopics != null)
         {
             // Check for cyles
             HashSet<String> visited = new HashSet<>();
@@ -38,16 +77,17 @@ public class TopicManager
             // Check for cycles in the new topic's included topics
             for (String includedTopicId : topic.includedTopics)
             {
-                if (hasCycle(includedTopicId, visited, recursionStack, topics))
+                if (hasIncludeCycle(includedTopicId, visited, recursionStack, topics))
                 {
                     Log.i("TopicManger", "Cycle detected when adding topic: " + topic.getTopicId());
                     return; // Cycle detected, do not add the topic
                 }
             }
         }
-
+        removeWordsAlreadyInOtherLanguage(topic, this.topics.get(topic.id));
         topics.get(topicId).add(topic);
     }
+
 
     public enum TopicMatchMode
     {
@@ -58,22 +98,28 @@ public class TopicManager
 
 
     // Function to check for cycles
-    private boolean hasCycle(String topicId, HashSet<String> visited, HashSet<String> recursionStack, HashMap<String, ArrayList<Topic>> topics) {
+    private boolean hasIncludeCycle(String topicId, HashSet<String> visited, HashSet<String> recursionStack, HashMap<String, ArrayList<Topic>> topics)
+    {
         // Mark the current node as visited and add to recursion stack
         visited.add(topicId);
         recursionStack.add(topicId);
 
         // Get the included topics for the current topic
         ArrayList<Topic> includedTopics = topics.get(topicId);
-        if (includedTopics != null) {
-            for (Topic includedTopic : includedTopics) {
+        if (includedTopics != null)
+        {
+            for (Topic includedTopic : includedTopics)
+            {
                 String includedTopicId = includedTopic.getTopicId();
                 // If the included topic is not visited, recurse on it
-                if (!visited.contains(includedTopicId)) {
-                    if (hasCycle(includedTopicId, visited, recursionStack, topics)) {
+                if (!visited.contains(includedTopicId))
+                {
+                    if (hasIncludeCycle(includedTopicId, visited, recursionStack, topics))
+                    {
                         return true;
                     }
-                } else if (recursionStack.contains(includedTopicId)) {
+                } else if (recursionStack.contains(includedTopicId))
+                {
                     // If the included topic is in the recursion stack, we found a cycle
                     return true;
                 }
@@ -85,13 +131,13 @@ public class TopicManager
         return false;
     }
 
-
-    public boolean isStringInTopic(String text, String topicId, TopicMatchMode mode, boolean checkAgainstLowerCase)
+    public static final String ALL_LANGUAGE_CODE = "*";
+    public boolean isStringInTopic(String text, String topicId, TopicMatchMode mode, boolean checkAgainstLowerCase,String language)
     {
         ArrayList<Topic> topicsInAllLanguages = topics.get(topicId);
-        if (topicsInAllLanguages == null)
+        if (topicsInAllLanguages == null || language == null)
         {
-            Log.d("TopicManager", "search in missing topic " + topicId);
+            Log.d("TopicManager", "search error " + topicId);
             return false;
         }
 
@@ -100,6 +146,11 @@ public class TopicManager
             if (topicInOneLang.words == null || topicInOneLang.words.isEmpty())
             {
                 Log.d("TopicManager", " topic " + topicInOneLang.getTopicId() + " has no words");
+                continue;
+            }
+            // only check for same language for if check for all is on
+            if(!language.equals(ALL_LANGUAGE_CODE) && !language.equals(topicInOneLang.getLanguage()))
+            {
                 continue;
             }
 
@@ -141,7 +192,8 @@ public class TopicManager
                 {
                     for (String childrenTopicIds : topicInOneLang.includedTopics)
                     {
-                        if (this.isStringInTopic(text, childrenTopicIds, mode, checkAgainstLowerCase))
+                        // only check same language recursively. To prevent redundant checks
+                        if (this.isStringInTopic(text, childrenTopicIds, mode, checkAgainstLowerCase,topicInOneLang.getLanguage()))
                         {
                             return true;
                         }
