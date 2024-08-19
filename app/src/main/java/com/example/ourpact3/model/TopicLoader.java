@@ -94,8 +94,15 @@ public class TopicLoader
     {
         InputStream inputStream = assets.open(filePath);
         byte[] buffer = new byte[inputStream.available()];
-        inputStream.read(buffer);
+        int bytesRead = inputStream.read(buffer);
         inputStream.close();
+
+        if (bytesRead != buffer.length) {
+            // handle the case where not all bytes were read
+            // you can either retry reading, or throw an exception
+            throw new IOException("Failed to read entire file");
+        }
+
         return new String(buffer);
     }
 }

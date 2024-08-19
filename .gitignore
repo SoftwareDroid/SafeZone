@@ -13,6 +13,7 @@
 /captures
 .externalNativeBuild
 .cxx
+.idea/
 local.properties
 Sure, here's a sample `.gitignore` file for an Android Studio project:
 
