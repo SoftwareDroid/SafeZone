@@ -138,6 +138,7 @@ public class PocketCastsSearchFilter
                     AccessibilityNodeInfo childNode = node.getChild(n);
                     if (childNode != null && pipelineRunning)
                     {
+
                         processNode(childNode);
                     }
                 }

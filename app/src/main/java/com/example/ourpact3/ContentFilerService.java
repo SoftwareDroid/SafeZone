@@ -44,11 +44,11 @@ public class ContentFilerService extends AccessibilityService implements IFilter
 //        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 //        contentFilter = new ContentFilter(getResources().getXml(R.xml.adult_filter));
         // Add sample topic
-        Topic adultTopic = new Topic("porn", "en");
+        Topic adultTopic = new Topic("porn", "topics/en");
         adultTopic.setWords(new ArrayList<String>(List.of("porn", "femdom", "naked")));
         adultTopic.setIncludedTopics(new ArrayList<String>(List.of("female")));
 
-        Topic adultChildTopic = new Topic("female", "en");
+        Topic adultChildTopic = new Topic("female", "topics/en");
         adultChildTopic.setWords(new ArrayList<String>(List.of("girl", "butt")));
 
         topicManager.addTopic(adultTopic);

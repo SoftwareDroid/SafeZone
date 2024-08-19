@@ -31,7 +31,7 @@ public class ParsedWordFilter {
                 } else if (tagName.equals("group")) {
                     WordGroup wordGroup = new WordGroup();
                     wordGroup.setName(inputStream.getAttributeValue(null, "name"));
-                    String lang = inputStream.getAttributeValue("en", "lang");
+                    String lang = inputStream.getAttributeValue("topics/en", "lang");
 
                     wordGroup.setRead(inputStream.getAttributeIntValue(null, "read", 0));
                     wordGroup.setWrite(inputStream.getAttributeIntValue(null, "write", 0));
