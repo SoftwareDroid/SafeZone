@@ -33,7 +33,8 @@ public class ContentFilerService extends AccessibilityService implements IFilter
     private String LOG_TAG = "ContentFiler";
     private TopicManager topicManager = new TopicManager();
     public PocketCastsSearchFilter pocketCastFilter = new PocketCastsSearchFilter(this, this.topicManager);
-//    private Handler handler = new Handler();
+
+    //    private Handler handler = new Handler();
 //    private boolean isRunning = false;
     @Override
     public void onServiceConnected()
@@ -43,14 +44,12 @@ public class ContentFilerService extends AccessibilityService implements IFilter
 //        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 //        contentFilter = new ContentFilter(getResources().getXml(R.xml.adult_filter));
         // Add sample topic
-        Topic adultTopic = new Topic();
-        adultTopic.id = "porn";
-        adultTopic.words = new ArrayList<String>(List.of("porn", "femdom", "naked"));
-        adultTopic.includedTopics = new ArrayList<String>(List.of("female"));
+        Topic adultTopic = new Topic("porn", "en");
+        adultTopic.setWords(new ArrayList<String>(List.of("porn", "femdom", "naked")));
+        adultTopic.setIncludedTopics(new ArrayList<String>(List.of("female")));
 
-        Topic adultChildTopic = new Topic();
-        adultChildTopic.id = "female";
-        adultChildTopic.words = new ArrayList<String>(List.of("girl", "butt"));
+        Topic adultChildTopic = new Topic("female", "en");
+        adultChildTopic.setWords(new ArrayList<String>(List.of("girl", "butt")));
 
         topicManager.addTopic(adultTopic);
         topicManager.addTopic(adultChildTopic);
@@ -148,7 +147,7 @@ public class ContentFilerService extends AccessibilityService implements IFilter
             overlayTextView.setText(text);
             overlayView.findViewById(R.id.close_button).setOnClickListener(v ->
             {
-                if(result2.triggerApp != null && result2.windowAction == PipelineWindowAction.KILL_WINDOW)
+                if (result2.triggerApp != null && result2.windowAction == PipelineWindowAction.KILL_WINDOW)
                 {
                     closeOtherApp(result2.triggerApp);
                 }
@@ -181,12 +180,15 @@ public class ContentFilerService extends AccessibilityService implements IFilter
     {
     }
 
-    private void closeOtherApp(String packageName) {
+    private void closeOtherApp(String packageName)
+    {
         ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        if (activityManager != null) {
+        if (activityManager != null)
+        {
             activityManager.killBackgroundProcesses(packageName);
         }
     }
+
     @Override
     public void onPipelineResult(PipelineResult result)
     {
@@ -195,7 +197,7 @@ public class ContentFilerService extends AccessibilityService implements IFilter
             case WARNING:
             case KILL_WINDOW:
 
-                this.showOverlayWindow("test " + result,result);
+                this.showOverlayWindow("test " + result, result);
                 break;
             case PERFORM_BACK_ACTION:
                 performGlobalAction(GLOBAL_ACTION_BACK);

@@ -4,6 +4,8 @@ adb shell settings put secure enabled_accessibility_services com.example.ourpact
 
 use: app_dev.sh # needs icon under ubuntu for start menu
 
+Create to and from json method with AI
+
 TODO
 FIX Search
 In Recent searches tiggert nicht die Abort Pipeplie zu erst

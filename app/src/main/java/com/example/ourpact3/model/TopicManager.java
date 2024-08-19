@@ -18,7 +18,8 @@ public class TopicManager
      */
     private void removeWordsAlreadyInOtherLanguage(Topic topic, ArrayList<Topic> bucket)
     {
-        if (bucket == null || topic == null)
+        ArrayList<String> wordsInTopic = topic.getWords();
+        if (bucket == null || topic == null || wordsInTopic == null)
         {
             return;
         }
@@ -26,12 +27,12 @@ public class TopicManager
         HashSet<String> existingWords = new HashSet<>();
         for (Topic existingTopic : bucket)
         {
-            existingWords.addAll(existingTopic.words);
+            existingWords.addAll(existingTopic.getWords());
         }
 
         // Filter the new topic's words and create a new Topic with the filtered words
         ArrayList<String> filteredWords = new ArrayList<>();
-        for (String word : topic.words)
+        for (String word : wordsInTopic)
         {
             if (!existingWords.contains(word))
             {
@@ -39,16 +40,30 @@ public class TopicManager
             }
         }
 
-        if (filteredWords.size() != topic.words.size())
+        if (filteredWords.size() != wordsInTopic.size())
         {
-            topic.words = filteredWords;
+            topic.setWords(filteredWords);
         }
+    }
+
+    /**
+     * only small letters a-z, numbers and underscore is allowd
+     * @param topicID
+     * @return if valid
+     */
+    public static boolean isValidTopicID(String topicID)
+    {
+        if(topicID != null)
+        {
+            return topicID.matches("^[a-z0-9_]+$");
+        }
+        return false;
     }
 
     public void addTopic(Topic topic)
     {
         String topicId = topic.getTopicId();
-        if (topicId == null)
+        if (topicId == null || TopicManager.isValidTopicID(topicId))
         {
             return;
         }
@@ -68,14 +83,14 @@ public class TopicManager
             }
         }
 
-        if (topic.includedTopics != null)
+        if (topic.getIncludedTopics() != null)
         {
             // Check for cyles
             HashSet<String> visited = new HashSet<>();
             HashSet<String> recursionStack = new HashSet<>();
 
             // Check for cycles in the new topic's included topics
-            for (String includedTopicId : topic.includedTopics)
+            for (String includedTopicId : topic.getIncludedTopics())
             {
                 if (hasIncludeCycle(includedTopicId, visited, recursionStack, topics))
                 {
@@ -84,7 +99,7 @@ public class TopicManager
                 }
             }
         }
-        removeWordsAlreadyInOtherLanguage(topic, this.topics.get(topic.id));
+        removeWordsAlreadyInOtherLanguage(topic, this.topics.get(topic.getTopicId()));
         topics.get(topicId).add(topic);
     }
 
@@ -143,7 +158,8 @@ public class TopicManager
 
         for (Topic topicInOneLang : topicsInAllLanguages)
         {
-            if (topicInOneLang.words == null || topicInOneLang.words.isEmpty())
+            ArrayList<String> words = topicInOneLang.getWords();
+            if (words == null || words.isEmpty())
             {
                 Log.d("TopicManager", " topic " + topicInOneLang.getTopicId() + " has no words");
                 continue;
@@ -154,7 +170,7 @@ public class TopicManager
                 continue;
             }
 
-            for (String word : topicInOneLang.words)
+            for (String word : words)
             {
                 if (checkAgainstLowerCase)
                 {
@@ -188,9 +204,10 @@ public class TopicManager
                     }
                 }
                 // Check child topic if existing
-                if (topicInOneLang.includedTopics != null)
+                ArrayList<String> includedTopics = topicInOneLang.getIncludedTopics();
+                if (includedTopics != null)
                 {
-                    for (String childrenTopicIds : topicInOneLang.includedTopics)
+                    for (String childrenTopicIds : includedTopics)
                     {
                         // only check same language recursively. To prevent redundant checks
                         if (this.isStringInTopic(text, childrenTopicIds, mode, checkAgainstLowerCase,topicInOneLang.getLanguage()))
