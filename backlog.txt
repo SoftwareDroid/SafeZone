@@ -21,8 +21,16 @@ fucntions: bool feedText -> isTriggering, reset(), getActions
 diese müssen auch per JSON abspeicherbar sein.
 Aber hier nicht in assests
 
-1.6 Exportieren und Impotieren aller Settings
+1.6 Exportieren und Impotieren aller Settings (Rules + own topics as maybe zip)
 
-=================================================================================
+============================Part 2 UI=====================================================
 
 2.0 In App anzeigen, welche Regeln aktiv sind und Infos dazu
+
+=================================Part 3 make nice=========================================
+
+3.0 Lizenz festlegen
+
+3.1 Willkommens Bildschrirm
+
+3.2 Prevent Uninstall
