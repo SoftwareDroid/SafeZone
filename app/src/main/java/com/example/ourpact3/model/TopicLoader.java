@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class TopicLoader
 {
-    private String root = "topics/";
+    private String root = "topics";
 
     public void setRootFolder(String root)
     {
@@ -43,7 +43,7 @@ public class TopicLoader
         try
         {
             String[] allLang = assets.list(root);
-            if (allLang == null)
+            if (allLang == null || allLang.length == 0)
             {
                 return null;
             }

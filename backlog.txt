@@ -1,5 +1,17 @@
 1. Businesslogic
 
+1. 1 Topic Loader debuggen
+Warum bekomme ich eine leere Liste zurück?
+
+1.2 Mit PocketCasts rumspielen
+schauen ob Recent Searches correct erkannt wird
+
+1.3 Für weitere Apps auslegen
+mit Telegram testen block local groups example
+
+1.4 Mit Firefox testen
+porn Filter für Firefox erstellen
+
 Search
 - Suchhistorie in PocketCast Ignorieren
 Mit wenn "Recent searches" und "CLEAR ALL" ein Treffer hat
@@ -8,4 +20,12 @@ fucntions: bool feedText -> isTriggering, reset(), getActions
 
 - App ID und Klasse generisch machen
 
+1.5 Rules für Apps erstellen (erstmal ohne GUI)
+diese müssen auch per JSON abspeicherbar sein.
+Aber hier nicht in assests
 
+1.6 Exportieren und Impotieren aller Settings
+
+=================================================================================
+
+2.0 In App anzeigen, welche Regeln aktiv sind und Infos dazu
