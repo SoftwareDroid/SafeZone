@@ -11,7 +11,13 @@
       <SelectionState runConfigName="useAppContext() (1)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="loadTopic()">
+      <SelectionState runConfigName="loadSampleTopic()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="testSerialization2()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="testSerialization()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

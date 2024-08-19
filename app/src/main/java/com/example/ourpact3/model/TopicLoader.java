@@ -14,11 +14,11 @@ import java.util.Set;
 
 public class TopicLoader
 {
-    private String root = "topics";
+    private String root = "topics/";
 
     public void setRootFolder(String root)
     {
-        if (root != null)
+        if (root != null && root.endsWith("/"))
         {
             this.root = root;
         }
@@ -26,7 +26,7 @@ public class TopicLoader
 
     public static class TopicDescriptor
     {
-        public String id;
+        public String file_name;
         public String language;
     }
 
@@ -60,7 +60,7 @@ public class TopicLoader
                             for (String file : files)
                             {
                                 TopicDescriptor descriptor = new TopicDescriptor();
-                                descriptor.id = file;
+                                descriptor.file_name = file;
                                 descriptor.language = lang;
                                 result.add(descriptor);
                             }
@@ -80,7 +80,7 @@ public class TopicLoader
         AssetManager assets = context.getAssets();
         try
         {
-            String fileContent = readAssetFile(assets, root + descriptor.language + "/" + descriptor.id + ".json");
+            String fileContent = readAssetFile(assets, root + descriptor.language + "/" + descriptor.file_name);
             JSONObject jsonObject = new JSONObject(fileContent);
             return Topic.fromJson(jsonObject);
         } catch (IOException | JSONException e)

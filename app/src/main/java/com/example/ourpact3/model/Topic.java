@@ -19,6 +19,7 @@ public class Topic {
         this.lang = lang;
         this.words = new ArrayList<>();
         this.includedTopics = new ArrayList<>();
+        this.description = "";
     }
 
     // Public getters for id and lang
@@ -71,7 +72,7 @@ public class Topic {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("lang", lang);
         jsonObject.put("id", id);
-        jsonObject.put("description", description);
+        jsonObject.put("description",description);
 
         // Convert ArrayList to JSONArray
         JSONArray wordsArray = new JSONArray(words);

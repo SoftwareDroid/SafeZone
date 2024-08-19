@@ -1,8 +1,5 @@
 1. Businesslogic
 
-1. 1 Topic Loader debuggen
-Warum bekomme ich eine leere Liste zurück?
-
 1.2 Mit PocketCasts rumspielen
 schauen ob Recent Searches correct erkannt wird
 
