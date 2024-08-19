@@ -23,6 +23,7 @@ Aber hier nicht in assests
 
 1.6 Exportieren und Impotieren aller Settings (Rules + own topics as maybe zip)
 
+1.7 Tests mit KI erstellen für die Klassen TopicManger und Rules Zeug 
 ============================Part 2 UI=====================================================
 
 2.0 In App anzeigen, welche Regeln aktiv sind und Infos dazu
@@ -34,3 +35,6 @@ Aber hier nicht in assests
 3.1 Willkommens Bildschrirm
 
 3.2 Prevent Uninstall
+
+=================================Unsortiertes Zeug======================================
+4.1 Debug Funktionlitlt einbauen alle gefunden Schlüsselwörter farbig anmahlen z. B grüner Rahmen

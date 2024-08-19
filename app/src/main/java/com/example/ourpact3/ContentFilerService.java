@@ -67,6 +67,11 @@ public class ContentFilerService extends AccessibilityService implements IFilter
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
+        // never process this for UI control reasons
+        if(event.getPackageName().equals(this.getPackageName()))
+        {
+          return;
+        }
         pocketCastFilter.processEvent(event);
         return;
         //   String uuid = Helper.getUuid();
