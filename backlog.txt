@@ -21,6 +21,10 @@ porn Filter für Firefox erstellen
 diese müssen auch per JSON abspeicherbar sein.
 Aber hier nicht in assests
 
+1.5.1
+Porn liste XML -> JSON
+und besser machen
+
 1.6 Exportieren und Impotieren aller Settings (Rules + own topics as maybe zip)
 
 1.7 Tests mit KI erstellen für die Klassen TopicManger und Rules Zeug
@@ -29,12 +33,20 @@ Aber hier nicht in assests
 
 2.0 In App anzeigen, welche Regeln aktiv sind und Infos dazu
 
+2.1 Logs durch Callback oder throw Exceptions austauschen. Für Fehlermeldungen für User
+
 2.5 Prevent Uninstall
 =================================Part 3 make nice for other Users=========================================
 
 3.0 Lizenz festlegen
 
+3.0.1 Rename App
+
 3.1 Willkommens Bildschrirm
 
+3.2 Increae Package version
 =================================Unsortiertes Zeug/Sonstige Ideen======================================
-4.1 Debug Funktionlitlt einbauen alle gefunden Schlüsselwörter farbig anmahlen z. B grüner Rahmen
+4.x Debug Funktionlitlt einbauen alle gefunden Schlüsselwörter farbig anmahlen z. B grüner Rahmen
+
+4.x JSON topics ggf. n topics in eine Datei
+
