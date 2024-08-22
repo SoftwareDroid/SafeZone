@@ -28,54 +28,65 @@ public class PocketCastsSearchFilter
         this.service = service;
         this.topicManager = topicManager;
         filters = new ArrayList<WordProcessorFilterBase>();
-        PipelineResult resultIgnoreSearch = new PipelineResult();
-        resultIgnoreSearch.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
-        resultIgnoreSearch.logging = true;
-        // Add test Filter
-        WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null",new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, resultIgnoreSearch);
-        filters.add(ignoreSearch);
-
-        PipelineResult pornResult = new PipelineResult();
-        pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
-        pornResult.logging = true;
-        TopicScoring sampleScoring = new TopicScoring("porn", 100, 100);
-        WordListFilterScored blockAdultStuff = new WordListFilterScored("block adult stuff",new ArrayList<>(List.of(sampleScoring)), false, topicManager, pornResult);
-        filters.add(blockAdultStuff);
+        {
+            PipelineResult resultIgnoreSearch = new PipelineResult();
+            resultIgnoreSearch.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
+            resultIgnoreSearch.logging = true;
+            // Add test Filter
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, resultIgnoreSearch);
+            filters.add(ignoreSearch);
+        }
+        {
+            PipelineResult pornResult = new PipelineResult();
+            pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
+            pornResult.logging = true;
+            TopicScoring sampleScoring = new TopicScoring("porn", 100, 100);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored("block adult stuff", new ArrayList<>(List.of(sampleScoring)), false, topicManager, pornResult);
+            filters.add(blockAdultStuff);
+        }
     }
 
     public AccessibilityService service;
     public String packageName = "au.com.shiftyjelly.pocketcasts";
+    private boolean pipelineRunning = false;
     private String LOG_TAG = "ContentFiler";
     private int SEARCH_DELAY_MS = 500;
     private TopicManager topicManager;
     private final int MAX_DELAYED_CALLS = 3;
     private int delayCount = 0;
-    private boolean pipelineRunning = false;
     private ArrayList<WordProcessorFilterBase> filters; //TODO: create and sort
     private IFilterResultCallback callback;
-    private ArrayList<PipelineWindowAction> pipelineResult = new ArrayList<PipelineWindowAction>();
-    public void setCallback(IFilterResultCallback callback) {
-        this.callback = callback;
+
+    public void setCallback(IFilterResultCallback callback)
+    {
+        if (callback != null)
+        {
+            this.callback = callback;
+        }
     }
 
-    private Handler handler = new Handler();
-    private Runnable searchRunnable = new Runnable()
+    private final Handler handler = new Handler();
+    private final Runnable searchRunnable = new Runnable()
     {
         @Override
         public void run()
         {
-            pipelineResult.clear();
             pipelineRunning = true;
-            for (WordProcessorFilterBase processor : filters)
-            {
-                processor.reset();
-            }
             delayCount = 0;
             AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
+            Log.d(LOG_TAG, "Start Search");
             if (rootNode != null)
             {
-                Log.d(LOG_TAG, "Start Search");
-                processNode(rootNode);
+
+                for (WordProcessorFilterBase processor : filters)
+                {
+                    processor.reset();
+                    processNode(rootNode, processor);
+                    if (!pipelineRunning)
+                    {
+                        return;
+                    }
+                }
             }
         }
     };
@@ -83,7 +94,7 @@ public class PocketCastsSearchFilter
     @SuppressLint("NewApi")
     public void processEvent(AccessibilityEvent event)
     {
-        if (event.getPackageName() == null || !event.getPackageName().toString().equals(packageName) || pipelineRunning)
+        if (event.getPackageName() == null || !event.getPackageName().toString().equals(packageName)  || handler.hasCallbacks(searchRunnable))
         {
             return;
         }
@@ -110,41 +121,40 @@ public class PocketCastsSearchFilter
         }
     }
 
-    private void processNode(AccessibilityNodeInfo node)
+    /**
+     * @param node
+     * @param currentFilter
+     * @return
+     */
+    private void processNode(AccessibilityNodeInfo node, WordProcessorFilterBase currentFilter)
     {
         if (node.getText() != null && node.getText().length() > 1)
         {
             String text = node.getText().toString();
-            for (WordProcessorFilterBase processor : filters)
+            // feed word into filer
+            PipelineResult result = currentFilter.feedWord(text, node.isEditable());
+            if (result != null)
             {
-                // feed word into filer
-                PipelineResult result = processor.feedWord(text, node.isEditable());
-                if (result != null)
-                {
-                    // Forward result to callback
-                    this.callback.onPipelineResult(result);
-                    pipelineRunning = result.windowAction != PipelineWindowAction.CONTINUE_PIPELINE;
-
-                }
-                // abort all further processing with other processors
-                if(!pipelineRunning)
+                // Forward result to callback
+                this.callback.onPipelineResult(result);
+                pipelineRunning = result.windowAction != PipelineWindowAction.CONTINUE_PIPELINE;
+                if (!pipelineRunning)
                 {
                     return;
                 }
-                // process all children for current processor
-                int childCount = node.getChildCount();
-                for (int n = 0; n < childCount; n++)
-                {
-                    AccessibilityNodeInfo childNode = node.getChild(n);
-                    if (childNode != null && pipelineRunning)
-                    {
+            }
+            // abort all further processing with other processors
 
-                        processNode(childNode);
-                    }
-                }
-            } //End of processors
-            Log.d(LOG_TAG, "NODE_TEXT: " + node.getText() + " \n Editable: " + node.isEditable());
         }
-
+        // process all children for current processor
+        int childCount = node.getChildCount();
+        for (int n = 0; n < childCount; n++)
+        {
+            AccessibilityNodeInfo childNode = node.getChild(n);
+            if (childNode != null && pipelineRunning)
+            {
+                processNode(childNode, currentFilter);
+            }
+        }
     }
 }

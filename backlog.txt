@@ -1,6 +1,10 @@
 1. Businesslogic/CoreService
 
+1.1
+TestInTopic Test schlägt fehlt muss ich debuggen
+
 1.2 Mit PocketCasts rumspielen
+Es geht nicht ich muss es debuggen, was konkret passiert. Problem wenn die Root node kein Text hat werden auch die Kinde nich angschaut. Ich muss aber erreichen, dass ein Prozessor erst alles anschaut
 schauen ob Recent Searches correct erkannt wird
 Search
 - Suchhistorie in PocketCast Ignorieren
@@ -44,9 +48,12 @@ und besser machen
 
 3.1 Willkommens Bildschrirm
 
+3.1.1 kurze Readme erstellen
+
 3.2 Increae Package version
 =================================Unsortiertes Zeug/Sonstige Ideen======================================
 4.x Debug Funktionlitlt einbauen alle gefunden Schlüsselwörter farbig anmahlen z. B grüner Rahmen
 
 4.x JSON topics ggf. n topics in eine Datei
 
+4.x Suggest bei Apps machen bestimme System Filer/Regel einzubinden

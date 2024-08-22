@@ -30,11 +30,9 @@ public class ContentFilerService extends AccessibilityService implements IFilter
     private static ContentFilter contentFilter;
     private WindowManager windowManager;
     private View overlayView;
-    private String LOG_TAG = "ContentFiler";
     private TopicManager topicManager = new TopicManager();
     public PocketCastsSearchFilter pocketCastFilter = new PocketCastsSearchFilter(this, this.topicManager);
 
-    //    private Handler handler = new Handler();
 //    private boolean isRunning = false;
     @Override
     public void onServiceConnected()
@@ -215,7 +213,8 @@ public class ContentFilerService extends AccessibilityService implements IFilter
         }
         if (result.logging)
         {
-            Log.i(LOG_TAG, " pipeline result " + result);
+            String LOG_TAG = "ContentFiler";
+            Log.i(LOG_TAG, " pipeline result " + result.windowAction.toString());
         }
     }
 }

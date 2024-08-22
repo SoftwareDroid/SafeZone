@@ -48,12 +48,13 @@ public class TopicManager
 
     /**
      * only small letters a-z, numbers and underscore is allowd
+     *
      * @param topicID
      * @return if valid
      */
     public static boolean isValidTopicID(String topicID)
     {
-        if(topicID != null)
+        if (topicID != null)
         {
             return topicID.matches("^[a-z0-9_]+$");
         }
@@ -147,7 +148,8 @@ public class TopicManager
     }
 
     public static final String ALL_LANGUAGE_CODE = "*";
-    public boolean isStringInTopic(String text, String topicId, TopicMatchMode mode, boolean checkAgainstLowerCase,String language)
+
+    public boolean isStringInTopic(String text, String topicId, TopicMatchMode mode, boolean checkAgainstLowerCase, String language)
     {
         ArrayList<Topic> topicsInAllLanguages = topics.get(topicId);
         if (topicsInAllLanguages == null || language == null)
@@ -165,7 +167,7 @@ public class TopicManager
                 continue;
             }
             // only check for same language for if check for all is on
-            if(!language.equals(ALL_LANGUAGE_CODE) && !language.equals(topicInOneLang.getLanguage()))
+            if (!language.equals(ALL_LANGUAGE_CODE) && !language.equals(topicInOneLang.getLanguage()))
             {
                 continue;
             }
@@ -210,7 +212,7 @@ public class TopicManager
                     for (String childrenTopicIds : includedTopics)
                     {
                         // only check same language recursively. To prevent redundant checks
-                        if (this.isStringInTopic(text, childrenTopicIds, mode, checkAgainstLowerCase,topicInOneLang.getLanguage()))
+                        if (this.isStringInTopic(text, childrenTopicIds, mode, checkAgainstLowerCase, topicInOneLang.getLanguage()))
                         {
                             return true;
                         }
