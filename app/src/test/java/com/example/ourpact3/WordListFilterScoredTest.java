@@ -99,33 +99,31 @@ public class WordListFilterScoredTest {
     @Test
     public void testNestedTopic()
     {
-        Topic adultTopic = new Topic("porn", "en");
-        adultTopic.setWords(new ArrayList<String>(List.of("porn")));
-        adultTopic.setIncludedTopics(new ArrayList<String>(List.of("female","female2")));
+        Topic foodTopic = new Topic("food", "en");
+        foodTopic.setWords(new ArrayList<String>(List.of("food")));
+        foodTopic.setIncludedTopics(new ArrayList<String>(List.of("fruits","desserts")));
 
-        Topic adultChildTopic = new Topic("female", "en");
-        adultChildTopic.setWords(new ArrayList<String>(List.of("girl")));
+        Topic foodChildTopic = new Topic("fruits", "en");
+        foodChildTopic.setWords(new ArrayList<String>(List.of("apple")));
 
-        Topic adultChildTopic2 = new Topic("female2", "en");
-        adultChildTopic2.setWords(new ArrayList<String>(List.of("panty")));
-        topicManager.addTopic(adultTopic);
-        topicManager.addTopic(adultChildTopic2);
-        topicManager.addTopic(adultChildTopic);
-
+        Topic foodChildTopic2 = new Topic("desserts", "en");
+        foodChildTopic2.setWords(new ArrayList<String>(List.of("cake")));
+        topicManager.addTopic(foodTopic);
+        topicManager.addTopic(foodChildTopic2);
+        topicManager.addTopic(foodChildTopic);
 
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
-        topicScorings.add(new WordListFilterScored.TopicScoring("porn", 50, 50));
-        topicScorings.add(new WordListFilterScored.TopicScoring("female", 30, 30));
+        topicScorings.add(new WordListFilterScored.TopicScoring("food", 50, 50));
+        topicScorings.add(new WordListFilterScored.TopicScoring("fruits", 30, 30));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, result);
-        filter.feedWord("girl",true);
-        assertEquals(filter.getCurrentScore(),30);
+        filter.feedWord("apple",true);
+        assertEquals(filter.getCurrentScore(),30);//addiert 50+30 ist einfach falsch
         filter.reset();
-        filter.feedWord("porn",true);
+        filter.feedWord("food",true);
         assertEquals(filter.getCurrentScore(),50);
         filter.reset();
-        // Panty has no scoring so parent scoring is used
-        filter.feedWord("panty",true);
+// Cake has no scoring so parent scoring is used
+        filter.feedWord("cake",true);
         assertEquals(filter.getCurrentScore(),50);
-
     }
 }
