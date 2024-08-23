@@ -180,7 +180,7 @@ public class TopicManager
         ArrayList<Topic> topicsInAllLanguages = topics.get(topicId);
         if (topicsInAllLanguages == null || language == null)
         {
-            Log.d("TopicManager", "search error " + topicId);
+//            Log.d("TopicManager", "search error " + topicId);
             return false;
         }
 
@@ -189,7 +189,7 @@ public class TopicManager
             ArrayList<String> words = topicInOneLang.getWords();
             if (words == null || words.isEmpty())
             {
-                Log.d("TopicManager", " topic " + topicInOneLang.getTopicId() + " has no words");
+//                Log.d("TopicManager", " topic " + topicInOneLang.getTopicId() + " has no words");
                 continue;
             }
             // only check for same language for if check for all is on

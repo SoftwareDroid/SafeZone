@@ -74,7 +74,7 @@ public class TextInTopicTest {
     @Test
     public void testIsStringInTopic_NoMatchingTopic_ReturnsFalse() {
         // Arrange
-        String text = "test";
+        String text = "test2";
         String topicId = "topic1";
         TopicManager.TopicMatchMode mode = TopicManager.TopicMatchMode.EQUAL;
         boolean checkAgainstLowerCase = true;
