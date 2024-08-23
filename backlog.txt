@@ -1,8 +1,5 @@
 1. Businesslogic/CoreService
 
-1.2.1
-- App ID und Klasse generisch machen
-
 1.3 Für weitere Apps auslegen
 mit Telegram testen block local groups example
 

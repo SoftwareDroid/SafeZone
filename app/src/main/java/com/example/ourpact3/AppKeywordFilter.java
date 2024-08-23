@@ -20,34 +20,19 @@ import com.example.ourpact3.model.WordProcessorFilterBase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PocketCastsSearchFilter
+public class AppKeywordFilter
 {
-    PocketCastsSearchFilter(AccessibilityService service, TopicManager topicManager)
+    AppKeywordFilter(AccessibilityService service, TopicManager topicManager, ArrayList<WordProcessorFilterBase> filters, String packageName)
 
     {
         this.service = service;
         this.topicManager = topicManager;
-        filters = new ArrayList<WordProcessorFilterBase>();
-        {
-            PipelineResult resultIgnoreSearch = new PipelineResult();
-            resultIgnoreSearch.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
-            resultIgnoreSearch.logging = true;
-            // Add test Filter
-            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, resultIgnoreSearch);
-            filters.add(ignoreSearch);
-        }
-        {
-            PipelineResult pornResult = new PipelineResult();
-            pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
-            pornResult.logging = true;
-            TopicScoring sampleScoring = new TopicScoring("porn", 100, 100);
-            WordListFilterScored blockAdultStuff = new WordListFilterScored("block adult stuff", new ArrayList<>(List.of(sampleScoring)), false, topicManager, pornResult);
-            filters.add(blockAdultStuff);
-        }
+        this.filters = filters;
+        this.packageName = packageName;
     }
 
     public AccessibilityService service;
-    public String packageName = "au.com.shiftyjelly.pocketcasts";
+    private String packageName = "";
     private boolean pipelineRunning = false;
     private String LOG_TAG = "ContentFiler";
     private int SEARCH_DELAY_MS = 500;
@@ -57,6 +42,10 @@ public class PocketCastsSearchFilter
     private ArrayList<WordProcessorFilterBase> filters; //TODO: create and sort
     private IFilterResultCallback callback;
 
+    public String getPackageName()
+    {
+        return packageName;
+    }
     public void setCallback(IFilterResultCallback callback)
     {
         if (callback != null)
