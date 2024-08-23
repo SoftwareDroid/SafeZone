@@ -34,7 +34,7 @@ public class ExampleAppKeywordFilters
         topicManager.addTopic(adultChildTopic);
     }
 
-    public AppKeywordFilter getPocketCastsFilter()
+    private AppKeywordFilter getPocketCastsFilter()
     {
 
         String appName = "au.com.shiftyjelly.pocketcasts";
@@ -57,5 +57,28 @@ public class ExampleAppKeywordFilters
         }
         return new AppKeywordFilter(service, topicManager, filters, appName);
 
+    }
+    private AppKeywordFilter getTelegramFilter()
+    {
+        String appName = "org.telegram.messenger";
+        ArrayList<WordProcessorFilterBase> filters = new ArrayList<WordProcessorFilterBase>();
+        {
+            PipelineResult resultIgnoreSearch = new PipelineResult();
+            resultIgnoreSearch.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
+            resultIgnoreSearch.logging = true;
+            // Add test Filter
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("Block people nearby", new ArrayList<>(List.of("People Nearby", "Make Myself Visible")), false, resultIgnoreSearch);
+            filters.add(ignoreSearch);
+        }
+        return new AppKeywordFilter(service, topicManager, filters, appName);
+
+    }
+
+    public ArrayList<AppKeywordFilter> getAllExampleFilters()
+    {
+        ArrayList<AppKeywordFilter> list = new ArrayList<>();
+        list.add(getTelegramFilter());
+        list.add(getPocketCastsFilter());
+        return list;
     }
 }

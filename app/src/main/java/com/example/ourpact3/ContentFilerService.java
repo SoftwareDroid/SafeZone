@@ -42,10 +42,11 @@ public class ContentFilerService extends AccessibilityService implements IFilter
 
         ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this,this.topicManager);
         exampleFilters.addExampleTopics();
-
-        AppKeywordFilter filter1 = exampleFilters.getPocketCastsFilter();
-        filter1.setCallback(this);
-        keywordFilters.put(filter1.getPackageName(),filter1);
+        for(AppKeywordFilter filter : exampleFilters.getAllExampleFilters())
+        {
+            filter.setCallback(this);
+            keywordFilters.put(filter.getPackageName(),filter);
+        }
 
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
         info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
