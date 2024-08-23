@@ -25,3 +25,8 @@ PocketCast search und URL search abfangen
 
 TODO: Duckduckgo click
 Ich weiß nicht wie das abfangen soll
+
+
+### Documentation
+words in Topics are scored for their nearest topic (Deep).
+// Pick the topic with which is the directest e.g All contains porn and clothing. We want to count clothing with its own score

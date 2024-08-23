@@ -34,10 +34,10 @@ public class TextInTopicTest {
         String language = "en";
 
         // Act
-        boolean result = topicManager.isStringInTopic(text, "topic1", mode, checkAgainstLowerCase, language);
+        TopicManager.SearchResult result = topicManager.isStringInTopic(text, "topic1", mode, checkAgainstLowerCase, language,0);
 
         // Assert
-        assertTrue(result);
+        assertTrue(result.found);
     }
 
     @Test
@@ -49,10 +49,10 @@ public class TextInTopicTest {
         boolean checkAgainstLowerCase = true;
 
         // Act
-        boolean result = topicManager.isStringInTopic(text, "topic1", mode, checkAgainstLowerCase, "en");
+        TopicManager.SearchResult result = topicManager.isStringInTopic(text, "topic1", mode, checkAgainstLowerCase, "en",0);
 
         // Assert
-        assertTrue(result);
+        assertTrue(result.found);
     }
 
     @Test
@@ -65,10 +65,10 @@ public class TextInTopicTest {
         String language = "en";
 
         // Act
-        boolean result = topicManager.isStringInTopic(text, "topic1", mode, checkAgainstLowerCase, language);
+        TopicManager.SearchResult result = topicManager.isStringInTopic(text, "topic1", mode, checkAgainstLowerCase, language,0);
 
         // Assert
-        assertTrue(result);
+        assertTrue(result.found);
     }
 
     @Test
@@ -80,10 +80,10 @@ public class TextInTopicTest {
         boolean checkAgainstLowerCase = true;
 
         // Act
-        boolean result = topicManager.isStringInTopic(text, topicId, mode, checkAgainstLowerCase, "en");
+        TopicManager.SearchResult result = topicManager.isStringInTopic(text, topicId, mode, checkAgainstLowerCase, "en",0);
 
         // Assert
-        assertFalse(result);
+        assertFalse(result.found);
     }
 
     @Test
@@ -96,10 +96,10 @@ public class TextInTopicTest {
         String language = "en";
 
         // Act
-        boolean result = topicManager.isStringInTopic(text, topicId, mode, checkAgainstLowerCase, language);
+        TopicManager.SearchResult result = topicManager.isStringInTopic(text, topicId, mode, checkAgainstLowerCase, language,0);
 
         // Assert
-        assertFalse(result);
+        assertFalse(result.found);
     }
 
     @Test
@@ -112,10 +112,10 @@ public class TextInTopicTest {
         String language = null;
 
         // Act
-        boolean result = topicManager.isStringInTopic(text, topicId, mode, checkAgainstLowerCase, language);
+        TopicManager.SearchResult result = topicManager.isStringInTopic(text, topicId, mode, checkAgainstLowerCase, language,0);
 
         // Assert
-        assertFalse(result);
+        assertFalse(result.found);
     }
 
     @Test
@@ -137,9 +137,9 @@ public class TextInTopicTest {
         topicManager.addTopic(childTopic);
 
         // Act
-        boolean result = topicManager.isStringInTopic(text, topicId, mode, checkAgainstLowerCase, language);
+        TopicManager.SearchResult result = topicManager.isStringInTopic(text, topicId, mode, checkAgainstLowerCase, language,0);
 
         // Assert
-        assertTrue(result);
+        assertTrue(result.found);
     }
 }

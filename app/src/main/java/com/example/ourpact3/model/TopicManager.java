@@ -175,13 +175,23 @@ public class TopicManager
 
     public static final String ALL_LANGUAGE_CODE = "*";
 
-    public boolean isStringInTopic(String text, String topicId, TopicMatchMode mode, boolean checkAgainstLowerCase, String language)
+    public static class SearchResult
     {
+        public SearchResult(boolean found, int deep) {
+            this.found = found;
+            this.deep = deep;
+        }
+        public boolean found;
+        public int deep;
+    }
+
+    public SearchResult isStringInTopic(String text, String topicId, TopicMatchMode mode, boolean checkAgainstLowerCase, String language, int currentDeepness)
+    {
+        SearchResult searchResult = new SearchResult(false,currentDeepness);
         ArrayList<Topic> topicsInAllLanguages = topics.get(topicId);
         if (topicsInAllLanguages == null || language == null)
         {
-//            Log.d("TopicManager", "search error " + topicId);
-            return false;
+            return searchResult;
         }
 
         for (Topic topicInOneLang : topicsInAllLanguages)
@@ -189,7 +199,6 @@ public class TopicManager
             ArrayList<String> words = topicInOneLang.getWords();
             if (words == null || words.isEmpty())
             {
-//                Log.d("TopicManager", " topic " + topicInOneLang.getTopicId() + " has no words");
                 continue;
             }
             // only check for same language for if check for all is on
@@ -210,7 +219,8 @@ public class TopicManager
                     {
                         if (word.equals(text))
                         {
-                            return true;
+                            searchResult.found = true;
+                            return searchResult;
                         }
                         break;
                     }
@@ -218,7 +228,8 @@ public class TopicManager
                     {
                         if (text.contains(word))
                         {
-                            return true;
+                            searchResult.found = true;
+                            return searchResult;
                         }
                         break;
                     }
@@ -226,7 +237,8 @@ public class TopicManager
                     {
                         if (text.startsWith(word))
                         {
-                            return true;
+                            searchResult.found = true;
+                            return searchResult;
                         }
                         break;
                     }
@@ -238,16 +250,17 @@ public class TopicManager
                     for (String childrenTopicIds : includedTopics)
                     {
                         // only check same language recursively. To prevent redundant checks
-                        if (this.isStringInTopic(text, childrenTopicIds, mode, checkAgainstLowerCase, topicInOneLang.getLanguage()))
+                        SearchResult childResult = this.isStringInTopic(text, childrenTopicIds, mode, checkAgainstLowerCase, topicInOneLang.getLanguage(),currentDeepness + 1);
+                        if (childResult.found)
                         {
-                            return true;
+                            return childResult;
                         }
 
                     }
                 }
             }
         }
-        return false;
+        return searchResult;
     }
 
 }

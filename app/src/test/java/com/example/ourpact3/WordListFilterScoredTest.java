@@ -10,6 +10,7 @@ import com.example.ourpact3.model.TopicManager;
 import com.example.ourpact3.model.WordListFilterScored;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WordListFilterScoredTest {
 
@@ -93,5 +94,38 @@ public class WordListFilterScoredTest {
         topicScorings.add(new WordListFilterScored.TopicScoring("topic1", 10, 20));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, result);
         filter.reset();
+    }
+
+    @Test
+    public void testNestedTopic()
+    {
+        Topic adultTopic = new Topic("porn", "en");
+        adultTopic.setWords(new ArrayList<String>(List.of("porn")));
+        adultTopic.setIncludedTopics(new ArrayList<String>(List.of("female","female2")));
+
+        Topic adultChildTopic = new Topic("female", "en");
+        adultChildTopic.setWords(new ArrayList<String>(List.of("girl")));
+
+        Topic adultChildTopic2 = new Topic("female2", "en");
+        adultChildTopic2.setWords(new ArrayList<String>(List.of("panty")));
+        topicManager.addTopic(adultTopic);
+        topicManager.addTopic(adultChildTopic2);
+        topicManager.addTopic(adultChildTopic);
+
+
+        ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
+        topicScorings.add(new WordListFilterScored.TopicScoring("porn", 50, 50));
+        topicScorings.add(new WordListFilterScored.TopicScoring("female", 30, 30));
+        filter = new WordListFilterScored("test", topicScorings, true, topicManager, result);
+        filter.feedWord("girl",true);
+        assertEquals(filter.getCurrentScore(),30);
+        filter.reset();
+        filter.feedWord("porn",true);
+        assertEquals(filter.getCurrentScore(),50);
+        filter.reset();
+        // Panty has no scoring so parent scoring is used
+        filter.feedWord("panty",true);
+        assertEquals(filter.getCurrentScore(),50);
+
     }
 }

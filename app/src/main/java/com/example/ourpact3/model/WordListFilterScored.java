@@ -44,7 +44,8 @@ public class WordListFilterScored extends WordProcessorFilterBase
         {
             text = text.toLowerCase();
         }
-
+        TopicManager.SearchResult bestSearchResult = null;
+        int scoringChange = 0;
         for (TopicScoring scoring : this.topicScorings)
         {
             if ((editable && scoring.writeScore == 0) || (!editable && scoring.readScore == 0))
@@ -52,16 +53,25 @@ public class WordListFilterScored extends WordProcessorFilterBase
                 continue;
             }
 
-            if (topicManager.isStringInTopic(text, scoring.topicId, TopicManager.TopicMatchMode.TOPIC_WORD_IS_INFIX, ignoreCase, TopicManager.ALL_LANGUAGE_CODE))
+            TopicManager.SearchResult result = topicManager.isStringInTopic(text, scoring.topicId, TopicManager.TopicMatchMode.TOPIC_WORD_IS_INFIX, ignoreCase, TopicManager.ALL_LANGUAGE_CODE,0);
+            // Pick the topic with which is the directest e.g All contains porn and clothing. We want to count clothing with its own score
+            if(result.found && (bestSearchResult == null || result.deep < bestSearchResult.deep))
             {
-                currentScore += editable ? scoring.writeScore : scoring.readScore;
-                if (currentScore >= MAX_SCORE)
-                {
-                    result.triggerWord = text;
-                    return result;
-                }
+                bestSearchResult = result;
+                scoringChange = editable ? scoring.writeScore : scoring.readScore;
+
             }
         }
+        if(bestSearchResult != null)
+        {
+            currentScore += scoringChange;
+            if (currentScore >= MAX_SCORE)
+            {
+                result.triggerWord = text;
+                return result;
+            }
+        }
+
         return null;
     }
 
