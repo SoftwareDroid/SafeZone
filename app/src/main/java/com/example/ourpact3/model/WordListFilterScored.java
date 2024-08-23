@@ -27,11 +27,16 @@ public class WordListFilterScored extends WordProcessorFilterBase
         assert topicManager != null;
     }
 
-    private ArrayList<TopicScoring> topicScorings;
-    private TopicManager topicManager;
-    private boolean ignoreCase;
+    private final ArrayList<TopicScoring> topicScorings;
+    public TopicManager topicManager;
+    private final boolean ignoreCase;
     private int currentScore;
     private final int MAX_SCORE = 100;
+
+    public int getCurrentScore()
+    {
+        return currentScore;
+    }
 
     public PipelineResult feedWord(String text, boolean editable)
     {

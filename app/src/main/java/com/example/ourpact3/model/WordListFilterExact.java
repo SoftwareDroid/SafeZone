@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class WordListFilterExact extends WordProcessorFilterBase
 {
-    public WordListFilterExact(String name,ArrayList<String> listOfWords, boolean ignoreCase, PipelineResult result)
+    public WordListFilterExact(String name, ArrayList<String> listOfWords, boolean ignoreCase, PipelineResult result)
     {
         super(result, name);
         this.ignoreCase = ignoreCase;
@@ -54,16 +54,16 @@ public class WordListFilterExact extends WordProcessorFilterBase
     {
         for (Map.Entry<String, Integer> entry : wordToHits.entrySet())
         {
-            if (entry.getValue() != 1)
+            if (entry.getValue() == 0)
             {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public void reset()
     {
-        wordToHits.keySet().forEach(key -> wordToHits.put(key, 0));
+        wordToHits.replaceAll((k, v) -> 0);
     }
 }
