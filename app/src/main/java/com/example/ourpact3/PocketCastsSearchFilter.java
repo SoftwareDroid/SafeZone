@@ -137,7 +137,7 @@ public class PocketCastsSearchFilter
             {
                 // Forward result to callback
                 this.callback.onPipelineResult(result);
-                pipelineRunning = result.windowAction != PipelineWindowAction.CONTINUE_PIPELINE;
+                pipelineRunning = result.windowAction == PipelineWindowAction.CONTINUE_PIPELINE;
                 if (!pipelineRunning)
                 {
                     return;

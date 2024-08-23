@@ -1,20 +1,5 @@
 1. Businesslogic/CoreService
 
-1.1
-First Fix Test AddTopic to TopicManager Test
-
-1.1
-TestInTopic Test schlägt fehlt muss ich debuggen
-
-1.2 Mit PocketCasts rumspielen
-Es geht nicht ich muss es debuggen, was konkret passiert. Problem wenn die Root node kein Text hat werden auch die Kinde nich angschaut. Ich muss aber erreichen, dass ein Prozessor erst alles anschaut
-schauen ob Recent Searches correct erkannt wird
-Search
-- Suchhistorie in PocketCast Ignorieren
-Mit wenn "Recent searches" und "CLEAR ALL" ein Treffer hat
-Beachte Blatt Worliste now, stop_processing, priority, n actions, words
-fucntions: bool feedText -> isTriggering, reset(), getActions
-
 1.2.1
 - App ID und Klasse generisch machen
 
