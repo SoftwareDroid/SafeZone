@@ -1,5 +1,4 @@
 package com.example.ourpact3;
-import com.example.ourpact3.AppKeywordFilter;
 import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicManager;
 import com.example.ourpact3.model.WordListFilterScored.TopicScoring;
@@ -13,12 +12,12 @@ import java.util.List;
 
 public class ExampleAppKeywordFilters
 {
-    ExampleAppKeywordFilters(ContentFilerService service,TopicManager topicManager)
+    ExampleAppKeywordFilters(ContentFilterService service, TopicManager topicManager)
     {
         this.service = service;
         this.topicManager = topicManager;
     }
-    private final ContentFilerService service;
+    private final ContentFilterService service;
     private final TopicManager topicManager;
 
     public void addExampleTopics()

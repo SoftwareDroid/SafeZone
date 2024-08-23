@@ -1,6 +1,6 @@
 # For devs
 # grant permission
-adb shell settings put secure enabled_accessibility_services com.example.ourpact3/com.example.ourpact3.ContentFilerService
+adb shell settings put secure enabled_accessibility_services com.example.ourpact3/com.example.ourpact3.ContentFilterService
 
 use: app_dev.sh # needs icon under ubuntu for start menu
 

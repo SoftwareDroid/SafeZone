@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name="com.example.ourpact3.ContentFilerService"
+            android:name="com.example.ourpact3.ContentFilterService"
             android:exported="false"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>

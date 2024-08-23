@@ -18,16 +18,12 @@ import android.widget.TextView;
 import com.example.ourpact3.model.IFilterResultCallback;
 import com.example.ourpact3.model.PipelineResult;
 import com.example.ourpact3.model.PipelineWindowAction;
-import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicManager;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeMap;
-import com.example.ourpact3.ExampleAppKeywordFilters;
 
 // https://developer.android.com/guide/topics/ui/accessibility/service
-public class ContentFilerService extends AccessibilityService implements IFilterResultCallback
+public class ContentFilterService extends AccessibilityService implements IFilterResultCallback
 {
     private static ContentFilter contentFilter;
     private WindowManager windowManager;

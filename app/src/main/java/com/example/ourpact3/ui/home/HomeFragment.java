@@ -14,12 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.databinding.FragmentHomeBinding;
 
 import android.content.ComponentName;
 import android.text.TextUtils;
-
-import com.example.ourpact3.ContentFilerService;
 
 public class HomeFragment extends Fragment {
 
@@ -141,7 +140,7 @@ public class HomeFragment extends Fragment {
     }
 
     private boolean hasAccessibilityServicePermission(Context context) {
-        boolean var = isAccessibilityServiceEnabled(context, ContentFilerService.class);
+        boolean var = isAccessibilityServiceEnabled(context, ContentFilterService.class);
         return var;
         /*
         String permission = android.Manifest.permission.BIND_ACCESSIBILITY_SERVICE;

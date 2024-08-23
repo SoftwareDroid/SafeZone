@@ -1,0 +1,31 @@
+{
+  "lang": "de",
+  "id": "female_body_parts",
+  "description": "This is a sample topic",
+  "words": [
+    "brust",
+    "busen",
+    "möpse",
+    "titten",
+    "brüste",
+    "schamlippen",
+    "vulva",
+    "klitoris",
+    "kitzler",
+    "scheide",
+    "vagina",
+    "po",
+    "arsch",
+    "schambehaarung",
+    "venusberg",
+    "mons veneris",
+    "labia",
+    "labien",
+    "schamlippen"
+  ],
+  "includedTopics": [
+    "topic1",
+    "topic2",
+    "topic3"
+  ]
+}
