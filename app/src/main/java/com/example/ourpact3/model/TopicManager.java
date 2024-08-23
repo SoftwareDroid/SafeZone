@@ -46,6 +46,32 @@ public class TopicManager
         }
     }
 
+    public Topic getTopic(String topicId, String language)
+    {
+        ArrayList<Topic> siblingTopics = topics.get(topicId);
+        if (siblingTopics != null)
+        {
+            for (Topic topic : siblingTopics)
+            {
+                if (topic.getLanguage().equals(language))
+                {
+                    return topic;
+                }
+            }
+        }
+        return null;
+    }
+
+    public int getNumberOfTopics()
+    {
+        int count = 0;
+        for (ArrayList<Topic> siblingTopics : topics.values())
+        {
+            count += siblingTopics.size();
+        }
+        return count;
+    }
+
     /**
      * only small letters a-z, numbers and underscore is allowd
      *
@@ -64,7 +90,7 @@ public class TopicManager
     public void addTopic(Topic topic)
     {
         String topicId = topic.getTopicId();
-        if (topicId == null || TopicManager.isValidTopicID(topicId))
+        if (!TopicManager.isValidTopicID(topicId))
         {
             return;
         }
@@ -78,7 +104,7 @@ public class TopicManager
             {
                 if (existingTopic.getLanguage().equals(topic.getLanguage()))
                 {
-                    Log.i("TopicManager", " topic with same language already exists");
+//                   Log.i("TopicManager", " topic with same language already exists");
                     return; // topic with same id and language already exists, do nothing
                 }
             }
@@ -95,7 +121,7 @@ public class TopicManager
             {
                 if (hasIncludeCycle(includedTopicId, visited, recursionStack, topics))
                 {
-                    Log.i("TopicManger", "Cycle detected when adding topic: " + topic.getTopicId());
+//                    Log.i("TopicManger", "Cycle detected when adding topic: " + topic.getTopicId());
                     return; // Cycle detected, do not add the topic
                 }
             }

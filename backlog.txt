@@ -1,6 +1,9 @@
 1. Businesslogic/CoreService
 
 1.1
+First Fix Test AddTopic to TopicManager Test
+
+1.1
 TestInTopic Test schlägt fehlt muss ich debuggen
 
 1.2 Mit PocketCasts rumspielen
@@ -34,10 +37,11 @@ und besser machen
 1.7 Tests mit KI erstellen für die Klassen TopicManger und Rules Zeug
 1.8 Topic Manger oder Rules muss Singleton werden, für Komminkation mit UI
 ============================Part 2 UI=====================================================
+2.0 UI Desigin anschauen z. b IOS Parent Control min 5 verschiedene was gefällt mir und ist einfach zu bedienen
 
-2.0 In App anzeigen, welche Regeln aktiv sind und Infos dazu
+2.1 In App anzeigen, welche Regeln aktiv sind und Infos dazu
 
-2.1 Logs durch Callback oder throw Exceptions austauschen. Für Fehlermeldungen für User
+2.2 Logs durch Callback oder throw Exceptions austauschen. Für Fehlermeldungen für User
 
 2.5 Prevent Uninstall
 =================================Part 3 make nice for other Users=========================================
