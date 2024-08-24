@@ -22,16 +22,18 @@ import java.util.List;
 
 public class AppKeywordFilter
 {
-    AppKeywordFilter(AccessibilityService service, TopicManager topicManager, ArrayList<WordProcessorFilterBase> filters, String packageName)
+    AppKeywordFilter(ContentFilterService service, TopicManager topicManager, ArrayList<WordProcessorFilterBase> filters, String packageName)
 
     {
         this.service = service;
         this.topicManager = topicManager;
         this.filters = filters;
         this.packageName = packageName;
+        this.isMagnificationEnabled = service.isMagnificationEnabled();
     }
 
     public AccessibilityService service;
+    private boolean isMagnificationEnabled; //needed beacuse node isVisible behaves differnt
     private String packageName = "";
     private boolean pipelineRunning = false;
     private String LOG_TAG = "ContentFiler";
@@ -117,7 +119,9 @@ public class AppKeywordFilter
      */
     private void processNode(AccessibilityNodeInfo node, WordProcessorFilterBase currentFilter)
     {
-        if (node.getText() != null && node.getText().length() > 1)
+        // public boolean isVisibleToUser ()
+        //Between API 16 and API 29, this method may incorrectly return false when magnification is enabled. On other versions, a node is considered visible even if it is not on the screen because magnification is active.
+        if ((isMagnificationEnabled || node.isVisibleToUser()) && node.getText() != null && node.getText().length() > 1)
         {
             String text = node.getText().toString();
             // feed word into filer

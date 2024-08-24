@@ -4,7 +4,9 @@ import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -67,6 +69,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             keywordFilters.put(filter.getPackageName(), filter);
         }
 
+
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
         info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
@@ -74,6 +77,11 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         setServiceInfo(info);
     }
 
+    public boolean isMagnificationEnabled()
+    {
+        ContentResolver cr = getContentResolver();
+        return Settings.Secure.getInt(cr, "accessibility_display_magnification_enabled", 0) == 1;
+    }
 
     @SuppressLint("NewApi")
     @Override

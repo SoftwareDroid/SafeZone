@@ -1,12 +1,20 @@
 1. Businesslogic/CoreService
 
+1.3 Filter berchungs erbgenis als Text in GUI anzeigen
+Über die aktuell root mit einer einer gegeben Filter liste bestimmten
+und im Overlay Window anzeigen auf Explain button anzeigen oder immer im Debug modus
+1 x girl r: 10
+2 x porn r: 20
+Sum: 30
+
+1.4 Mit Firefox testen
+porn Filter für Firefox erstellen
+
 
 1.5 Rules für Apps erstellen (erstmal ohne GUI)
 diese müssen auch per JSON abspeicherbar sein.
 Aber hier nicht in assests
 
-1.4 Mit Firefox testen
-porn Filter für Firefox erstellen
 
 
 1.6 Exportieren und Impotieren aller Settings (Rules + own topics as maybe zip)
