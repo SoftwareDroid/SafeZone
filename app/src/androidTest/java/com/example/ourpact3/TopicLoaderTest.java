@@ -65,6 +65,33 @@ public class TopicLoaderTest
     }
 
     @Test
+    public void testIfAllSystemTopicAreLoadable()
+    {
+        // Context of the app under test.
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        TopicLoader topicLoader = new TopicLoader();
+        String[] usedLanguages = {"de","en"};
+        ArrayList<TopicLoader.TopicDescriptor> allAvailableTopics = topicLoader.getAllLoadableTopics(appContext, Set.of(usedLanguages));
+        // Check if there are available topics
+        assertNotNull(allAvailableTopics);
+
+        assertFalse(allAvailableTopics.isEmpty());
+        Topic sampleTopic = null;
+
+        // Check if all topics are not null
+        for (TopicLoader.TopicDescriptor descriptor : allAvailableTopics)
+        {
+            Topic topic = topicLoader.loadTopicFile(appContext, descriptor);
+            if (topic.getTopicId().equals("patrick_all_merged"))
+            {
+                sampleTopic = topic;
+            }
+            assertNotNull(topic);
+        }
+        assertNotNull(sampleTopic);
+    }
+
+    @Test
     public void loadSampleTopic()
     {
 
