@@ -1,0 +1,35 @@
+{
+  "lang": "en",
+  "id": "female_names",
+  "description": "This is a sample topic",
+  "words": [
+    "girl",
+    "lady",
+    "gf",
+    "girlfriend",
+    "wife",
+    "mother",
+    "sister",
+    "daughter",
+    "aunt",
+    "niece",
+    "grandmother",
+    "grandma",
+    "mom",
+    "mum",
+    "mommy",
+    "female",
+    "woman",
+    "princess",
+    "queen",
+    "bride",
+    "diva",
+    "madam",
+    "miss",
+    "missus"
+  ],
+  "includedTopics": [
+  ]
+}
+
+

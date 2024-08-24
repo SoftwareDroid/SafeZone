@@ -1,6 +1,6 @@
 {
   "lang": "en",
-  "id": "sex_toys",
+  "id": "adult_sex_toys",
   "description": "Blocks porn content",
   "words": [
     "dildo",
@@ -34,9 +34,7 @@
     "sex robot"
   ],
   "includedTopics": [
-    "topic1",
-    "topic2",
-    "topic3"
+
   ]
 }
 

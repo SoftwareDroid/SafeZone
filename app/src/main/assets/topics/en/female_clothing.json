@@ -1,7 +1,7 @@
 {
   "lang": "en",
   "id": "female_clothing",
-  "description": "Blocks porn content",
+  "description": "female clothing",
   "words": [
     "lingerie",
     "bikini",
@@ -25,16 +25,13 @@
     "lace",
     "miniskirt",
     "shorts",
-    "hot pants",
-    "booty shorts",
+    "pants",
+    "shorts",
     "cleavage-baring top",
     "push-up bra",
     "see-through top"
   ],
   "includedTopics": [
-    "topic1",
-    "topic2",
-    "topic3"
   ]
 }
 

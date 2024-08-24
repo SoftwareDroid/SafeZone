@@ -1,0 +1,20 @@
+{
+  "lang": "de",
+  "id": "adult_topic_nudity",
+  "description": "This is a sample topic",
+  "words": [
+    "oben-ohne",
+    "oben ohne",
+    "nackt",
+    "unbekleidet",
+    "nacktheit",
+    "nackt",
+    "entblößt",
+    "entkleidet",
+    "entblößt",
+    "unbedeckt",
+    "barbusig"
+  ],
+  "includedTopics": [
+  ]
+}

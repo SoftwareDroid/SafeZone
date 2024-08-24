@@ -1,6 +1,6 @@
 {
   "lang": "en",
-  "id": "porn_explicit",
+  "id": "adult_nudity",
   "description": "Blocks porn content",
   "words": [
     "topless",
@@ -44,8 +44,6 @@
     "bare-ass"
   ],
   "includedTopics": [
-    "topic1",
-    "topic2",
-    "topic3"
+
   ]
 }

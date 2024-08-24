@@ -17,6 +17,24 @@ porn Filter für Firefox erstellen
 
 1.7 Tests mit KI erstellen für die Klassen TopicManger und Rules Zeug
 1.8 Topic Manger oder Rules muss Singleton werden, für Komminkation mit UI
+
+1.9
+<ignored_apps>
+        <app>net.tandem</app>
+        <app>org.thoughtcrime.securesms</app>
+        <app>org.telegram.messenger</app>
+        <app>com.whatsapp</app>
+        <app>cz.mobilesoft.appblock</app>
+        <app>com.standardnotes</app>
+        <app>de.c24.bankapp</app>
+        <app>ws.xsoh.etar</app>
+        <app>com.android.settings</app>
+        <app>com.example.ourpact3</app>
+        <app>com.ichi2.anki</app>
+        <app>com.epson.epsonsmart</app>
+        <app>de.mm20.launcher2</app>
+        <app>de.reimardoeffinger.quickdic</app>
+    </ignored_apps>
 ============================Part 2 UI=====================================================
 2.0 UI Desigin anschauen z. b IOS Parent Control min 5 verschiedene was gefällt mir und ist einfach zu bedienen
 
