@@ -18,30 +18,53 @@ import android.widget.TextView;
 import com.example.ourpact3.model.IFilterResultCallback;
 import com.example.ourpact3.model.PipelineResult;
 import com.example.ourpact3.model.PipelineWindowAction;
+import com.example.ourpact3.model.Topic;
+import com.example.ourpact3.model.TopicLoader;
 import com.example.ourpact3.model.TopicManager;
 
+import java.util.ArrayList;
+import java.util.Set;
 import java.util.TreeMap;
 
 // https://developer.android.com/guide/topics/ui/accessibility/service
+
+/**
+ * NOTE: do not rename class then app_dev.sh doesn't work anymore
+ */
 public class ContentFilterService extends AccessibilityService implements IFilterResultCallback
 {
     private static ContentFilter contentFilter;
     private WindowManager windowManager;
     private View overlayView;
     private final TopicManager topicManager = new TopicManager();
-    private final TreeMap<String,AppKeywordFilter> keywordFilters = new TreeMap<>();
-//    private boolean isRunning = false;
+    private final TreeMap<String, AppKeywordFilter> keywordFilters = new TreeMap<>();
+
+    //    private boolean isRunning = false;
     @Override
     public void onServiceConnected()
     {
-        Log.i("FOO", "Starting service");
+        Log.i("FOO", "Stating service");
 
-        ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this,this.topicManager);
+        // Load all system topics
+        TopicLoader topicLoader = new TopicLoader();
+        String[] usedLanguages = {"de", "en"};
+        ArrayList<TopicLoader.TopicDescriptor> allAvailableTopics = topicLoader.getAllLoadableTopics(getApplicationContext(), Set.of(usedLanguages));
+        // Check if all topics are not null
+        for (TopicLoader.TopicDescriptor descriptor : allAvailableTopics)
+        {
+            Topic topic = topicLoader.loadTopicFile(getApplicationContext(), descriptor);
+            if (topic != null)
+            {
+                topicManager.addTopic(topic);
+            }
+        }
+        // load all example filters
+        ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager);
         exampleFilters.addExampleTopics();
-        for(AppKeywordFilter filter : exampleFilters.getAllExampleFilters())
+        for (AppKeywordFilter filter : exampleFilters.getAllExampleFilters())
         {
             filter.setCallback(this);
-            keywordFilters.put(filter.getPackageName(),filter);
+            keywordFilters.put(filter.getPackageName(), filter);
         }
 
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
@@ -57,12 +80,12 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
         // never process this for UI control reasons
-        if(event.getPackageName().equals(this.getPackageName()))
+        if (event == null || event.getPackageName() == null || event.getPackageName().equals(this.getPackageName()))
         {
-          return;
+            return;
         }
         AppKeywordFilter filter = this.keywordFilters.get(event.getPackageName());
-        if(filter != null)
+        if (filter != null)
         {
             filter.processEvent(event);
         }

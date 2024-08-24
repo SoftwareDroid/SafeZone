@@ -57,7 +57,48 @@ public class ExampleAppKeywordFilters
         return new AppKeywordFilter(service, topicManager, filters, appName);
 
     }
-    private AppKeywordFilter getTelegramFilter()
+    private AppKeywordFilter getFirefoxFilter()
+    {
+        String appName = "org.mozilla.firefox";
+        ArrayList<WordProcessorFilterBase> filters = new ArrayList<WordProcessorFilterBase>();
+        {
+            // ignore suggestion screen
+            PipelineResult resultIgnoreSearch = new PipelineResult();
+            resultIgnoreSearch.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
+            resultIgnoreSearch.logging = true;
+            // Add test Filter
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox Suggest")), false, resultIgnoreSearch);
+            filters.add(ignoreSearch);
+        }
+        {
+            // ignore history page
+            PipelineResult ignoreHistoryPage = new PipelineResult();
+            ignoreHistoryPage.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
+            ignoreHistoryPage.logging = true;
+            // Add test Filter
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("History","Recently closed tabs")), false, ignoreHistoryPage);
+            filters.add(ignoreSearch);
+        }
+        {
+            PipelineResult pornResult = new PipelineResult();
+            pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
+            pornResult.logging = true;
+            TopicScoring scoringPorn = new TopicScoring("porn_explicit", 33, 50);
+            TopicScoring scoringFemaleBodyParts = new TopicScoring("female_body_parts", 30, 45);
+            TopicScoring scoringAdultNudity = new TopicScoring("adult_nudity", 32, 45);
+            TopicScoring scoringSexToys = new TopicScoring("adult_sex_toys", 32, 32);
+            TopicScoring scoringFemaleNames = new TopicScoring("female_names", 20, 30);
+            TopicScoring scoringFemaleClothing = new TopicScoring("female_clothing", 24, 30);
+            TopicScoring myTerms = new TopicScoring("patrick_all_merged", 20, 70);
+
+            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
+            filters.add(blockAdultStuff);
+        }
+        return new AppKeywordFilter(service, topicManager, filters, appName);
+
+    }
+
+    private AppKeywordFilter getTelegramFilter2()
     {
         String appName = "org.telegram.messenger";
         ArrayList<WordProcessorFilterBase> filters = new ArrayList<WordProcessorFilterBase>();
@@ -70,14 +111,14 @@ public class ExampleAppKeywordFilters
             filters.add(ignoreSearch);
         }
         return new AppKeywordFilter(service, topicManager, filters, appName);
-
     }
 
     public ArrayList<AppKeywordFilter> getAllExampleFilters()
     {
         ArrayList<AppKeywordFilter> list = new ArrayList<>();
-        list.add(getTelegramFilter());
+        list.add(getFirefoxFilter());
         list.add(getPocketCastsFilter());
+        list.add(getTelegramFilter2());
         return list;
     }
 }
