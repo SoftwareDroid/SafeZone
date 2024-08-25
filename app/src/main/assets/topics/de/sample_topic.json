@@ -2,6 +2,7 @@
     "lang": "de",
     "id": "sample_topic",
     "description": "This is a sample topic",
+    "ignore_loading": true,
     "words": [
         "word1",
         "word2",

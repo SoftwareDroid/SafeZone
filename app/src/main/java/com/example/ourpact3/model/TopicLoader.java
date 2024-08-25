@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Set;
 
 public class TopicLoader
@@ -30,11 +31,11 @@ public class TopicLoader
         public String language;
     }
 
-    public ArrayList<TopicDescriptor> getAllLoadableTopics(Context context, Set<String> langCodes)
+    public ArrayList<TopicDescriptor> getAllLoadableTopics(Context context, Set<String> langCodes) throws TopicLoaderException
     {
         if (langCodes == null || langCodes.isEmpty())
         {
-            return null;
+            throw new TopicLoaderException("getAllLoadableTopics is called without a correct language set");
         }
 
         AssetManager assets = context.getAssets();
@@ -70,23 +71,27 @@ public class TopicLoader
             }
         } catch (IOException exp)
         {
-            return null;
+            throw new TopicLoaderException(exp.getMessage());
         }
         return result;
     }
 
-    public Topic loadTopicFile(Context context, TopicDescriptor descriptor)
+    public Topic loadTopicFile(Context context, TopicDescriptor descriptor) throws TopicLoaderException
     {
         AssetManager assets = context.getAssets();
         try
         {
             String fileContent = readAssetFile(assets, root + descriptor.language + "/" + descriptor.file_name);
             JSONObject jsonObject = new JSONObject(fileContent);
-            return Topic.fromJson(jsonObject);
+            Topic topic = Topic.fromJson(jsonObject);
+            if (!descriptor.file_name.contains(topic.getTopicId()) || !Objects.equals(topic.getLanguage(), descriptor.language))
+            {
+                throw new TopicLoaderException("topic descriptor " + descriptor.file_name + " in folder "+ descriptor.language + " mismatch with loaded topic " + topic.getTopicUID());
+            }
+            return topic;
         } catch (IOException | JSONException e)
         {
-            Log.d("TopicLoader", "exception at loading topic" + e);
-            return null;
+            throw new TopicLoaderException("could not load topic file " + descriptor.toString());
         }
     }
 
@@ -97,7 +102,8 @@ public class TopicLoader
         int bytesRead = inputStream.read(buffer);
         inputStream.close();
 
-        if (bytesRead != buffer.length) {
+        if (bytesRead != buffer.length)
+        {
             // handle the case where not all bytes were read
             // you can either retry reading, or throw an exception
             throw new IOException("Failed to read entire file");

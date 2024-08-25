@@ -26,7 +26,9 @@ import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicAlreadyExistsException;
 import com.example.ourpact3.model.TopicLoader;
 import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
+import com.example.ourpact3.model.TopicLoaderException;
 import com.example.ourpact3.model.TopicManager;
+import com.example.ourpact3.model.TopicMissingException;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -55,11 +57,25 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         // Load all system topics
         TopicLoader topicLoader = new TopicLoader();
         String[] usedLanguages = {"de", "en"};
-        ArrayList<TopicLoader.TopicDescriptor> allAvailableTopics = topicLoader.getAllLoadableTopics(getApplicationContext(), Set.of(usedLanguages));
+        ArrayList<TopicLoader.TopicDescriptor> allAvailableTopics = null;
+        try
+        {
+            allAvailableTopics = topicLoader.getAllLoadableTopics(getApplicationContext(), Set.of(usedLanguages));
+        } catch (TopicLoaderException e)
+        {
+            throw new RuntimeException(e);
+        }
         // Check if all topics are not null
         for (TopicLoader.TopicDescriptor descriptor : allAvailableTopics)
         {
-            Topic topic = topicLoader.loadTopicFile(getApplicationContext(), descriptor);
+            Topic topic = null;
+            try
+            {
+                topic = topicLoader.loadTopicFile(getApplicationContext(), descriptor);
+            } catch (TopicLoaderException e)
+            {
+                throw new RuntimeException(e);
+            }
             if (topic != null)
             {
                 try
@@ -71,6 +87,14 @@ public class ContentFilterService extends AccessibilityService implements IFilte
                     throw new RuntimeException(e);
                 }
             }
+        }
+        // check all topics
+        try
+        {
+            topicManager.checkAllTopics();
+        } catch (TopicLoaderCycleDetectedException | TopicMissingException e)
+        {
+            throw new RuntimeException(e);
         }
         // load all example filters
         ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager);

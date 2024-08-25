@@ -15,7 +15,9 @@ import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicAlreadyExistsException;
 import com.example.ourpact3.model.TopicLoader;
 import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
+import com.example.ourpact3.model.TopicLoaderException;
 import com.example.ourpact3.model.TopicManager;
+import com.example.ourpact3.model.TopicMissingException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,7 +72,7 @@ public class TopicLoaderTest
 
 
     @Test
-    public void testIfAllSystemTopicAreLoadable() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
+    public void testIfAllSystemTopicAreLoadable() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException, TopicLoaderException, TopicMissingException
     {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -87,6 +89,7 @@ public class TopicLoaderTest
         for (TopicLoader.TopicDescriptor descriptor : allAvailableTopics)
         {
             Topic topic = topicLoader.loadTopicFile(appContext, descriptor);
+            String uid = topic.getTopicUID();
             if (topic.getTopicId().equals("patrick_all_merged"))
             {
                 sampleTopic = topic;
@@ -95,12 +98,13 @@ public class TopicLoaderTest
             topicManager.addTopic(topic);
         }
         assertNotNull(sampleTopic);
+        topicManager.checkAllTopics();
     }
 
 
 
     @Test
-    public void loadSampleTopic()
+    public void loadSampleTopic() throws TopicLoaderException
     {
 
         // Context of the app under test.

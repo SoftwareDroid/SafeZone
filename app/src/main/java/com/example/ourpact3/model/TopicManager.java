@@ -3,6 +3,7 @@ package com.example.ourpact3.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 
 public class TopicManager
@@ -93,39 +94,54 @@ public class TopicManager
         {
             throw new InvalidTopicIDException(topicId);
         }
+        if (topic.isIgnoreLoading())
+        {
+            return;
+        }
+
         ArrayList<Topic> siblingTopics = topics.get(topicId);
         if (siblingTopics == null)
         {
             topics.put(topicId, new ArrayList<Topic>());
         } else
         {
-            for (Topic existingTopic : siblingTopics)
+            Topic search = this.getTopicInLang(topicId, topic.getLanguage());
+            if (search != null)
             {
-                if (existingTopic.getLanguage().equals(topic.getLanguage()))
-                {
-                    throw new TopicAlreadyExistsException(topicId);
-                }
-            }
-        }
-
-        if (topic.getIncludedTopics() != null)
-        {
-            // Check for cyles
-            HashSet<String> visited = new HashSet<>();
-            HashSet<String> recursionStack = new HashSet<>();
-
-            // Check for cycles in the new topic's included topics
-            for (String includedTopicId : topic.getIncludedTopics())
-            {
-                Topic inOneLang = getTopicInLang(includedTopicId,topic.getLanguage());
-                checkForCycles(inOneLang, visited, recursionStack, topics);
-
+                throw new TopicAlreadyExistsException(topicId);
             }
         }
         removeWordsAlreadyInOtherLanguage(topic, this.topics.get(topic.getTopicId()));
         topics.get(topicId).add(topic);
     }
 
+    public void checkAllTopics() throws TopicLoaderCycleDetectedException, TopicMissingException
+    {
+        for (Map.Entry<String, ArrayList<Topic>> entry : topics.entrySet())
+        {
+            for (Topic topic : entry.getValue())
+            {
+                if (topic.getIncludedTopics() != null)
+                {
+                    // Check for cyles
+                    HashSet<String> visited = new HashSet<>();
+                    HashSet<String> recursionStack = new HashSet<>();
+
+                    // Check for cycles in the new topic's included topics
+                    for (String includedTopicId : topic.getIncludedTopics())
+                    {
+                        Topic inOneLang = getTopicInLang(includedTopicId, topic.getLanguage());
+                        if(inOneLang == null)
+                        {
+                            throw new TopicMissingException("Topic " + includedTopicId + " included in "+ topic.getTopicUID() +" is missing in language " + topic.getLanguage());
+                        }
+                        checkForCycles(inOneLang, visited, recursionStack, topics);
+
+                    }
+                }
+            }
+        }
+    }
 
     public enum TopicMatchMode
     {

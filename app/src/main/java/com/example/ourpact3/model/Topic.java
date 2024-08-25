@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class Topic
 {
+    private boolean ignoreLoading;
     private final String lang;
     private final String id;
     private String description;
@@ -22,6 +23,12 @@ public class Topic
         this.words = new ArrayList<>();
         this.includedTopics = new ArrayList<>();
         this.description = "";
+        this.ignoreLoading = false;
+    }
+
+    public boolean isIgnoreLoading()
+    {
+        return this.ignoreLoading;
     }
 
     // Public getters for id and lang
@@ -109,7 +116,10 @@ public class Topic
         String lang = jsonObject.getString("lang");
         Topic topic = new Topic(id, lang);
         topic.description = jsonObject.getString("description");
-
+        if(jsonObject.has("ignore_loading"))
+        {
+            topic.ignoreLoading = jsonObject.getBoolean("ignore_loading");
+        }
         // Convert JSONArray to ArrayList
         JSONArray wordsArray = jsonObject.getJSONArray("words");
         for (int i = 0; i < wordsArray.length(); i++)
