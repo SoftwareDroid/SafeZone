@@ -44,6 +44,7 @@ public class AppKeywordFilter
     private ArrayList<WordProcessorFilterBase> filters; //TODO: create and sort
     private IFilterResultCallback callback;
 
+    public ArrayList<WordProcessorFilterBase> getAllFilters() {return filters;}
     public String getPackageName()
     {
         return packageName;

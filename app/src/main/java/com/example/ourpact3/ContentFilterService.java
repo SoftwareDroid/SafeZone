@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.graphics.PixelFormat;
 
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.TextView;
 
 import com.example.ourpact3.model.IFilterResultCallback;
@@ -46,7 +47,8 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     public void onServiceConnected()
     {
         Log.i("FOO", "Stating service");
-
+        // get WindowManager needed for creating overlay window
+        windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         // Load all system topics
         TopicLoader topicLoader = new TopicLoader();
         String[] usedLanguages = {"de", "en"};
@@ -83,6 +85,8 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         return Settings.Secure.getInt(cr, "accessibility_display_magnification_enabled", 0) == 1;
     }
 
+    private AppKeywordFilter currentAppFilter;
+
     @SuppressLint("NewApi")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
@@ -95,6 +99,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         AppKeywordFilter filter = this.keywordFilters.get(event.getPackageName());
         if (filter != null)
         {
+            currentAppFilter = filter;
             filter.processEvent(event);
         }
     }
@@ -113,7 +118,17 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             overlayView = inflater.inflate(R.layout.overlay_window, null);
 
             TextView overlayTextView = overlayView.findViewById(R.id.overlay_text);
-            overlayTextView.setText(text);
+
+            if (result2.logging)
+            {
+                AccessibilityNodeInfo rootNode = this.getRootInActiveWindow();
+                KeywordScoreWindowCalculator scoreExplainer = new KeywordScoreWindowCalculator();
+                String explaination = scoreExplainer.getDebugFilterState(rootNode, currentAppFilter,isMagnificationEnabled());
+                overlayTextView.setText(explaination);
+            } else
+            {
+                overlayTextView.setText(text);
+            }
             overlayView.findViewById(R.id.close_button).setOnClickListener(v ->
             {
                 if (result2.triggerApp != null && result2.windowAction == PipelineWindowAction.KILL_WINDOW)
@@ -165,8 +180,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         {
             case WARNING:
             case KILL_WINDOW:
-
-                this.showOverlayWindow("test " + result, result);
+                this.showOverlayWindow("test ", result);
                 break;
             case PERFORM_BACK_ACTION:
                 performGlobalAction(GLOBAL_ACTION_BACK);

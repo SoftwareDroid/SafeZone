@@ -81,7 +81,7 @@ public class ExampleAppKeywordFilters
         }
         {
             PipelineResult pornResult = new PipelineResult();
-            pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
+            pornResult.windowAction = PipelineWindowAction.WARNING;
             pornResult.logging = true;
             TopicScoring scoringPorn = new TopicScoring("porn_explicit", 33, 50);
             TopicScoring scoringFemaleBodyParts = new TopicScoring("female_body_parts", 30, 45);
