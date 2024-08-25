@@ -244,7 +244,7 @@ public class TopicManager
 
             for (String word : words)
             {
-                if (checkAgainstLowerCase)
+                if (!topicInOneLang.isLowerCaseTopic() && checkAgainstLowerCase)
                 {
                     word = word.toLowerCase();
                 }

@@ -90,6 +90,7 @@ public class TopicLoaderTest
         {
             Topic topic = topicLoader.loadTopicFile(appContext, descriptor);
             String uid = topic.getTopicUID();
+            boolean isLowerCaseTopic = topic.isLowerCaseTopic();
             if (topic.getTopicId().equals("patrick_all_merged"))
             {
                 sampleTopic = topic;

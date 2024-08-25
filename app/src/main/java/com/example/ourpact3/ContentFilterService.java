@@ -41,7 +41,6 @@ import java.util.TreeMap;
  */
 public class ContentFilterService extends AccessibilityService implements IFilterResultCallback
 {
-    private static ContentFilter contentFilter;
     private WindowManager windowManager;
     private View overlayView;
     private final TopicManager topicManager = new TopicManager();

@@ -14,6 +14,16 @@ public class Topic
     private String description;
     private ArrayList<String> words;
     private ArrayList<String> includedTopics;
+    private boolean allWordsInLowerCase;
+
+    public void setLowerCaseTopic(boolean allWordsLowerCase)
+    {
+        this.allWordsInLowerCase = allWordsLowerCase;
+    }
+    public boolean isLowerCaseTopic()
+    {
+        return allWordsInLowerCase;
+    }
 
     // Constructor with id and language
     public Topic(String id, String lang)
@@ -24,6 +34,7 @@ public class Topic
         this.includedTopics = new ArrayList<>();
         this.description = "";
         this.ignoreLoading = false;
+        this.allWordsInLowerCase = false;
     }
 
     public boolean isIgnoreLoading()
@@ -116,16 +127,23 @@ public class Topic
         String lang = jsonObject.getString("lang");
         Topic topic = new Topic(id, lang);
         topic.description = jsonObject.getString("description");
-        if(jsonObject.has("ignore_loading"))
+        if (jsonObject.has("ignore_loading"))
         {
             topic.ignoreLoading = jsonObject.getBoolean("ignore_loading");
         }
         // Convert JSONArray to ArrayList
         JSONArray wordsArray = jsonObject.getJSONArray("words");
+        boolean allLowerCase = true;
         for (int i = 0; i < wordsArray.length(); i++)
         {
+            String word = wordsArray.getString(i);
+            if (allLowerCase && !word.equals(word.toLowerCase()))
+            {
+                allLowerCase = false;
+            }
             topic.words.add(wordsArray.getString(i));
         }
+        topic.setLowerCaseTopic(allLowerCase);
 
         JSONArray includedTopicsArray = jsonObject.getJSONArray("includedTopics");
         for (int i = 0; i < includedTopicsArray.length(); i++)

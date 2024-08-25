@@ -4,9 +4,13 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import com.example.ourpact3.model.InvalidTopicIDException;
 import com.example.ourpact3.model.PipelineResult;
 import com.example.ourpact3.model.Topic;
+import com.example.ourpact3.model.TopicAlreadyExistsException;
+import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
 import com.example.ourpact3.model.TopicManager;
+import com.example.ourpact3.model.TopicMissingException;
 import com.example.ourpact3.model.WordListFilterScored;
 
 import java.util.ArrayList;
@@ -19,7 +23,8 @@ public class WordListFilterScoredTest {
     private PipelineResult result;
 
     @Before
-    public void setup() {
+    public void setup() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
+    {
         topicManager = new TopicManager(); // assume this is a mock or a test implementation
         Topic a = new Topic("a","de");
         a.addWord("apple");
@@ -34,7 +39,8 @@ public class WordListFilterScoredTest {
 
 
     @Test
-    public void testFeedWord_IgnoreCase() {
+    public void testFeedWord_IgnoreCase() throws TopicMissingException
+    {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 10, 100));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, result);
@@ -44,7 +50,8 @@ public class WordListFilterScoredTest {
     }
 
     @Test
-    public void testFeedWord_NoMatch() {
+    public void testFeedWord_NoMatch() throws TopicMissingException
+    {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 100, 100));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, result);
@@ -53,7 +60,8 @@ public class WordListFilterScoredTest {
     }
 
     @Test
-    public void testFeedWord_Match() {
+    public void testFeedWord_Match() throws TopicMissingException
+    {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 100, 100));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, result);
@@ -62,7 +70,8 @@ public class WordListFilterScoredTest {
     }
 
     @Test
-    public void testFeedWord_MultipleMatches() {
+    public void testFeedWord_MultipleMatches() throws TopicMissingException
+    {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 34, 34));
         topicScorings.add(new WordListFilterScored.TopicScoring("b", 30, 40));
@@ -77,7 +86,8 @@ public class WordListFilterScoredTest {
     }
 
     @Test
-    public void testFeedWord_MaxScoreReached() {
+    public void testFeedWord_MaxScoreReached() throws TopicMissingException
+    {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("b", 100, 200));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, result);
@@ -89,7 +99,8 @@ public class WordListFilterScoredTest {
     }
 
     @Test
-    public void testReset() {
+    public void testReset() throws TopicMissingException
+    {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("topic1", 10, 20));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, result);
@@ -97,7 +108,7 @@ public class WordListFilterScoredTest {
     }
 
     @Test
-    public void testNestedTopic()
+    public void testNestedTopic() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException, TopicMissingException
     {
         Topic foodTopic = new Topic("food", "en");
         foodTopic.setWords(new ArrayList<String>(List.of("food")));

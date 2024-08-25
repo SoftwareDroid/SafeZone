@@ -57,7 +57,7 @@ public class ExampleAppKeywordFilters
             PipelineResult pornResult = new PipelineResult();
             pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
             pornResult.logging = true;
-            TopicScoring sampleScoring = new TopicScoring("porn", 100, 100);
+            TopicScoring sampleScoring = new TopicScoring("porn_explicit", 33, 50);
             WordListFilterScored blockAdultStuff = new WordListFilterScored("block adult stuff", new ArrayList<>(List.of(sampleScoring)), false, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
