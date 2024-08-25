@@ -1,5 +1,8 @@
 package com.example.ourpact3;
+import com.example.ourpact3.model.InvalidTopicIDException;
 import com.example.ourpact3.model.Topic;
+import com.example.ourpact3.model.TopicAlreadyExistsException;
+import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
 import com.example.ourpact3.model.TopicManager;
 import com.example.ourpact3.model.WordListFilterScored.TopicScoring;
 import com.example.ourpact3.model.PipelineResult;
@@ -20,7 +23,7 @@ public class ExampleAppKeywordFilters
     private final ContentFilterService service;
     private final TopicManager topicManager;
 
-    public void addExampleTopics()
+    public void addExampleTopics() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
     {
         Topic adultTopic = new Topic("porn", "topics/en");
         adultTopic.setWords(new ArrayList<String>(List.of("porn", "femdom", "naked")));
@@ -89,9 +92,11 @@ public class ExampleAppKeywordFilters
             TopicScoring scoringSexToys = new TopicScoring("adult_sex_toys", 32, 32);
             TopicScoring scoringFemaleNames = new TopicScoring("female_names", 20, 30);
             TopicScoring scoringFemaleClothing = new TopicScoring("female_clothing", 24, 30);
-            TopicScoring myTerms = new TopicScoring("patrick_all_merged", 20, 70);
+            TopicScoring myTerms = new TopicScoring("patrick_all_merged", 100, 70);
+            boolean ignoreCase = true;  // important for porn filter
 
-            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
+//            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms)), ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
         return new AppKeywordFilter(service, topicManager, filters, appName);

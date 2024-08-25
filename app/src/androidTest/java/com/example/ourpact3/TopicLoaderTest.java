@@ -10,8 +10,12 @@ import android.content.Context;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.example.ourpact3.model.InvalidTopicIDException;
 import com.example.ourpact3.model.Topic;
+import com.example.ourpact3.model.TopicAlreadyExistsException;
 import com.example.ourpact3.model.TopicLoader;
+import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
+import com.example.ourpact3.model.TopicManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,8 +68,9 @@ public class TopicLoaderTest
         assertEquals(topicOld.getIncludedTopics(), topicNew.getIncludedTopics());
     }
 
+
     @Test
-    public void testIfAllSystemTopicAreLoadable()
+    public void testIfAllSystemTopicAreLoadable() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
     {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -77,7 +82,7 @@ public class TopicLoaderTest
 
         assertFalse(allAvailableTopics.isEmpty());
         Topic sampleTopic = null;
-
+        TopicManager topicManager = new TopicManager();
         // Check if all topics are not null
         for (TopicLoader.TopicDescriptor descriptor : allAvailableTopics)
         {
@@ -87,9 +92,12 @@ public class TopicLoaderTest
                 sampleTopic = topic;
             }
             assertNotNull(topic);
+            topicManager.addTopic(topic);
         }
         assertNotNull(sampleTopic);
     }
+
+
 
     @Test
     public void loadSampleTopic()

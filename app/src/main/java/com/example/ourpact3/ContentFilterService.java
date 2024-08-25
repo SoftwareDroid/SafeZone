@@ -19,10 +19,13 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.TextView;
 
 import com.example.ourpact3.model.IFilterResultCallback;
+import com.example.ourpact3.model.InvalidTopicIDException;
 import com.example.ourpact3.model.PipelineResult;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.model.Topic;
+import com.example.ourpact3.model.TopicAlreadyExistsException;
 import com.example.ourpact3.model.TopicLoader;
+import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
 import com.example.ourpact3.model.TopicManager;
 
 import java.util.ArrayList;
@@ -59,12 +62,26 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             Topic topic = topicLoader.loadTopicFile(getApplicationContext(), descriptor);
             if (topic != null)
             {
-                topicManager.addTopic(topic);
+                try
+                {
+                    topicManager.addTopic(topic);
+                } catch (TopicLoaderCycleDetectedException | InvalidTopicIDException |
+                         TopicAlreadyExistsException e)
+                {
+                    throw new RuntimeException(e);
+                }
             }
         }
         // load all example filters
         ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager);
-        exampleFilters.addExampleTopics();
+        try
+        {
+            exampleFilters.addExampleTopics();
+        } catch (TopicLoaderCycleDetectedException | TopicAlreadyExistsException |
+                 InvalidTopicIDException e)
+        {
+            throw new RuntimeException(e);
+        }
         for (AppKeywordFilter filter : exampleFilters.getAllExampleFilters())
         {
             filter.setCallback(this);

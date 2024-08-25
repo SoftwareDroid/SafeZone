@@ -4,7 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import com.example.ourpact3.model.InvalidTopicIDException;
 import com.example.ourpact3.model.Topic;
+import com.example.ourpact3.model.TopicAlreadyExistsException;
+import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
 import com.example.ourpact3.model.TopicManager;
 
 import java.util.ArrayList;
@@ -14,7 +17,8 @@ public class TextInTopicTest {
     private TopicManager topicManager;
 
     @Before
-    public void setup() {
+    public void setup() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
+    {
         topicManager = new TopicManager();
         String topicId = "topic1";
 
@@ -119,7 +123,8 @@ public class TextInTopicTest {
     }
 
     @Test
-    public void testIsStringInTopic_RecursiveCall_ReturnsTrue() {
+    public void testIsStringInTopic_RecursiveCall_ReturnsTrue() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
+    {
         // Arrange
         String text = "test";
         String topicId = "topic1";

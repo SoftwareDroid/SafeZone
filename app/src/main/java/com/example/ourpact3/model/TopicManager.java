@@ -1,10 +1,9 @@
 package com.example.ourpact3.model;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 
 public class TopicManager
 {
@@ -87,12 +86,12 @@ public class TopicManager
         return false;
     }
 
-    public void addTopic(Topic topic)
+    public void addTopic(Topic topic) throws TopicLoaderCycleDetectedException, InvalidTopicIDException, TopicAlreadyExistsException
     {
         String topicId = topic.getTopicId();
         if (!TopicManager.isValidTopicID(topicId))
         {
-            return;
+            throw new InvalidTopicIDException(topicId);
         }
         ArrayList<Topic> siblingTopics = topics.get(topicId);
         if (siblingTopics == null)
@@ -104,8 +103,7 @@ public class TopicManager
             {
                 if (existingTopic.getLanguage().equals(topic.getLanguage()))
                 {
-//                   Log.i("TopicManager", " topic with same language already exists");
-                    return; // topic with same id and language already exists, do nothing
+                    throw new TopicAlreadyExistsException(topicId);
                 }
             }
         }
@@ -119,11 +117,9 @@ public class TopicManager
             // Check for cycles in the new topic's included topics
             for (String includedTopicId : topic.getIncludedTopics())
             {
-                if (hasIncludeCycle(includedTopicId, visited, recursionStack, topics))
-                {
-//                    Log.i("TopicManger", "Cycle detected when adding topic: " + topic.getTopicId());
-                    return; // Cycle detected, do not add the topic
-                }
+                Topic inOneLang = getTopicInLang(includedTopicId,topic.getLanguage());
+                checkForCycles(inOneLang, visited, recursionStack, topics);
+
             }
         }
         removeWordsAlreadyInOtherLanguage(topic, this.topics.get(topic.getTopicId()));
@@ -138,56 +134,76 @@ public class TopicManager
         TOPIC_WORD_IS_PREFIX,
     }
 
+    public Topic getTopicInLang(String topicId, String language)
+    {
+        ArrayList<Topic> siblings = topics.get(topicId);
+        if (siblings != null && language != null)
+        {
+            for (Topic sibling : siblings)
+            {
+                if (sibling.getLanguage().equals(language))
+                {
+                    return sibling;
+                }
+
+            }
+        }
+        return null;
+    }
 
     // Function to check for cycles
-    private boolean hasIncludeCycle(String topicId, HashSet<String> visited, HashSet<String> recursionStack, HashMap<String, ArrayList<Topic>> topics)
+    private void checkForCycles(Topic topic, HashSet<String> visited, HashSet<String> recursionStack, HashMap<String, ArrayList<Topic>> topics) throws TopicLoaderCycleDetectedException
     {
-        // Mark the current node as visited and add to recursion stack
-        visited.add(topicId);
-        recursionStack.add(topicId);
-
-        // Get the included topics for the current topic
-        ArrayList<Topic> includedTopics = topics.get(topicId);
-        if (includedTopics != null)
+        if (topic == null)
         {
-            for (Topic includedTopic : includedTopics)
+            return;
+        }
+        // Mark the current node as visited and add to recursion stack
+        visited.add(topic.getTopicUID());
+        recursionStack.add(topic.getTopicUID());
+
+        ArrayList<String> includedTopics = topic.getIncludedTopics();
+        if (includedTopics != null && !includedTopics.isEmpty())
+        {
+            for (String includedTopicID : includedTopics)
             {
-                String includedTopicId = includedTopic.getTopicId();
-                // If the included topic is not visited, recurse on it
-                if (!visited.contains(includedTopicId))
+                Topic includedTopic = getTopicInLang(includedTopicID, topic.getLanguage());
+                if (includedTopic != null)
                 {
-                    if (hasIncludeCycle(includedTopicId, visited, recursionStack, topics))
+                    String uid = includedTopic.getTopicUID();
+                    if (!visited.contains(uid))
                     {
-                        return true;
+                        checkForCycles(includedTopic, visited, recursionStack, topics);
+                    } else if (recursionStack.contains(uid))
+                    {
+                        // If the included topic is in the recursion stack, we found a cycle
+                        throw new TopicLoaderCycleDetectedException("Cycle detected in Topic " + topic.getTopicUID() + " with topic: " + uid);
                     }
-                } else if (recursionStack.contains(includedTopicId))
-                {
-                    // If the included topic is in the recursion stack, we found a cycle
-                    return true;
+
                 }
             }
         }
-
-        // Remove the topic from recursion stack
-        recursionStack.remove(topicId);
-        return false;
+        recursionStack.remove(topic.getTopicUID());
     }
+
 
     public static final String ALL_LANGUAGE_CODE = "*";
 
     public static class SearchResult
     {
-        public SearchResult(boolean found, int deep) {
+        public SearchResult(boolean found, int deep)
+        {
             this.found = found;
             this.deep = deep;
         }
+
         public boolean found;
         public int deep;
     }
 
     public SearchResult isStringInTopic(String text, String topicId, TopicMatchMode mode, boolean checkAgainstLowerCase, String language, int currentDeepness)
     {
-        SearchResult searchResult = new SearchResult(false,currentDeepness);
+        SearchResult searchResult = new SearchResult(false, currentDeepness);
         ArrayList<Topic> topicsInAllLanguages = topics.get(topicId);
         if (topicsInAllLanguages == null || language == null)
         {
@@ -250,7 +266,7 @@ public class TopicManager
                     for (String childrenTopicIds : includedTopics)
                     {
                         // only check same language recursively. To prevent redundant checks
-                        SearchResult childResult = this.isStringInTopic(text, childrenTopicIds, mode, checkAgainstLowerCase, topicInOneLang.getLanguage(),currentDeepness + 1);
+                        SearchResult childResult = this.isStringInTopic(text, childrenTopicIds, mode, checkAgainstLowerCase, topicInOneLang.getLanguage(), currentDeepness + 1);
                         if (childResult.found)
                         {
                             return childResult;
