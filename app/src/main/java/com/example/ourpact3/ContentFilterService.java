@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.graphics.PixelFormat;
 
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.example.ourpact3.model.IFilterResultCallback;
@@ -90,6 +91,11 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         }
     }
 
+    public boolean isKeyboardOpen() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        return imm.isAcceptingText();
+    }
+
     public boolean isMagnificationEnabled()
     {
         ContentResolver cr = getContentResolver();
@@ -145,8 +151,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
                 hideOverlayWindow();
                 if(closeButtonIsBack)
                 {
-                    performGlobalAction(GLOBAL_ACTION_BACK);
-                    performGlobalAction(GLOBAL_ACTION_BACK);
+                    performBackAction();
                 }
                 /*if (result2.triggerApp != null && result2.windowAction == PipelineWindowAction.KILL_WINDOW)
                 {
@@ -204,18 +209,25 @@ public class ContentFilterService extends AccessibilityService implements IFilte
                 this.showOverlayWindow("test ", result,true);
                 break;
             case PERFORM_BACK_ACTION:
-                performGlobalAction(GLOBAL_ACTION_BACK);
-                performGlobalAction(GLOBAL_ACTION_BACK);
+                performBackAction();
                 break;
             case CONTINUE_PIPELINE:
                 break;
             case STOP_FURTHER_PROCESSING:
                 break;
         }
-        /*if (result.logging)
+        if (result.logging)
         {
             String LOG_TAG = "ContentFiler";
             Log.i(LOG_TAG, " pipeline result " + result.windowAction.toString());
-        }*/
+        }
+    }
+    public void performBackAction()
+    {
+//        if(isKeyboardOpen())
+        {
+            performGlobalAction(GLOBAL_ACTION_BACK);
+        }
+        performGlobalAction(GLOBAL_ACTION_BACK);
     }
 }

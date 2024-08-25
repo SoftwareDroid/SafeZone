@@ -29,15 +29,15 @@ public class ExampleAppKeywordFilters
 
     public void addExampleTopics() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
     {
-        Topic adultTopic = new Topic("porn", "topics/en");
-        adultTopic.setWords(new ArrayList<String>(List.of("porn", "femdom", "naked")));
-        adultTopic.setIncludedTopics(new ArrayList<String>(List.of("female")));
+//        Topic adultTopic = new Topic("porn", "topics/en");
+//        adultTopic.setWords(new ArrayList<String>(List.of("porn", "femdom", "naked")));
+//        adultTopic.setIncludedTopics(new ArrayList<String>(List.of("female")));
+//
+//        Topic adultChildTopic = new Topic("female", "topics/en");
+//        adultChildTopic.setWords(new ArrayList<String>(List.of("girl", "butt")));
 
-        Topic adultChildTopic = new Topic("female", "topics/en");
-        adultChildTopic.setWords(new ArrayList<String>(List.of("girl", "butt")));
-
-        topicManager.addTopic(adultTopic);
-        topicManager.addTopic(adultChildTopic);
+//        topicManager.addTopic(adultTopic);
+//        topicManager.addTopic(adultChildTopic);
     }
 
     private AppKeywordFilter getPocketCastsFilter() throws TopicMissingException
@@ -55,10 +55,20 @@ public class ExampleAppKeywordFilters
         }
         {
             PipelineResult pornResult = new PipelineResult();
-            pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
+            pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING;
             pornResult.logging = true;
-            TopicScoring sampleScoring = new TopicScoring("porn_explicit", 33, 50);
-            WordListFilterScored blockAdultStuff = new WordListFilterScored("block adult stuff", new ArrayList<>(List.of(sampleScoring)), false, topicManager, pornResult);
+            ArrayList<TopicScoring> allScorings = new ArrayList<>();
+            allScorings.add(new TopicScoring("porn_explicit", 33, 50));
+            allScorings.add(new TopicScoring("female_body_parts", 30, 45));
+//            allScorings.add(new TopicScoring("adult_nudity", 32, 45));
+            allScorings.add(new TopicScoring("adult_sex_toys", 32, 45));
+//            allScorings.add(new TopicScoring("female_names", 15, 30));
+            allScorings.add(new TopicScoring("female_clothing", 15, 30));
+            allScorings.add(new TopicScoring("patrick_all_merged", 49, 66));
+            boolean ignoreCase = true;  // important for porn filter
+
+//            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
         return new AppKeywordFilter(service, topicManager, filters, appName);
@@ -80,6 +90,15 @@ public class ExampleAppKeywordFilters
         }
         {
             // ignore history page
+            PipelineResult ignoreStartpage = new PipelineResult();
+            ignoreStartpage.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
+            ignoreStartpage.logging = true;
+            // Add test Filter
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox", "Jump back in")), false, ignoreStartpage);
+            filters.add(ignoreSearch);
+        }
+        {
+            // ignore start page
             PipelineResult ignoreHistoryPage = new PipelineResult();
             ignoreHistoryPage.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
             ignoreHistoryPage.logging = true;

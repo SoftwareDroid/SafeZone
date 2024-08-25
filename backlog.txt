@@ -1,11 +1,8 @@
 1. Businesslogic/CoreService
 
-1.3 Filter berchungs erbgenis als Text in GUI anzeigen
-Über die aktuell root mit einer einer gegeben Filter liste bestimmten
-und im Overlay Window anzeigen auf Explain button anzeigen oder immer im Debug modus
-1 x girl r: 10
-2 x porn r: 20
-Sum: 30
+1.3 Firefox problem 1
+wenn die erst seite böse e.g. girls
+kann ich firefox nicht richtig mehr bedienen, da es sofort beim öffnen geschlossen wird
 
 1.4 Mit Firefox testen
 porn Filter für Firefox erstellen
