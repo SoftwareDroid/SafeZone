@@ -45,7 +45,10 @@ public class TopicManager
             topic.setWords(filteredWords);
         }
     }
-
+    public boolean isTopicIdLoaded(String topicId)
+    {
+        return this.topics.get(topicId) != null;
+    }
     public Topic getTopic(String topicId, String language)
     {
         ArrayList<Topic> siblingTopics = topics.get(topicId);

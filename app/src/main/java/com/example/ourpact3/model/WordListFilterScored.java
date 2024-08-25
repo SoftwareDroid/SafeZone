@@ -18,13 +18,21 @@ public class WordListFilterScored extends WordProcessorFilterBase
         final int writeScore;
     }
 
-    public WordListFilterScored(String name, ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, PipelineResult result)
+    public WordListFilterScored(String name, ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, PipelineResult result) throws TopicMissingException
     {
         super(result, name);
         this.ignoreCase = ignoreCase;
         this.topicManager = topicManager;
         this.topicScorings = topicScorings;
         assert topicManager != null;
+        // catch typos in scorings ids
+        for(TopicScoring scoring : topicScorings)
+        {
+            if(!topicManager.isTopicIdLoaded(scoring.topicId))
+            {
+                throw new TopicMissingException("scoring "+ name + " need topic" + scoring.topicId + " but it is missing");
+            }
+        }
     }
 
     private final ArrayList<TopicScoring> topicScorings;

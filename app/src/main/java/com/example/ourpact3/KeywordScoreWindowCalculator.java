@@ -30,8 +30,6 @@ public class KeywordScoreWindowCalculator
             {
                 StringBuilder filterResultLines = new StringBuilder();
                 WordListFilterScored scoredFilter = (WordListFilterScored) filter;
-                //TODO: check if scoredList instance use getCurrentScore to calculate a change
-                // Calcualte N times, r , w and how often it was hit plus sum of change
 
                 for (Map.Entry<String, Integer> entry : wordToReadableCount.entrySet())
                 {

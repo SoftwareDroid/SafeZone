@@ -1,15 +1,18 @@
 package com.example.ourpact3;
+
 import com.example.ourpact3.model.InvalidTopicIDException;
 import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicAlreadyExistsException;
 import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
 import com.example.ourpact3.model.TopicManager;
+import com.example.ourpact3.model.TopicMissingException;
 import com.example.ourpact3.model.WordListFilterScored.TopicScoring;
 import com.example.ourpact3.model.PipelineResult;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.model.WordListFilterExact;
 import com.example.ourpact3.model.WordProcessorFilterBase;
 import com.example.ourpact3.model.WordListFilterScored;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +23,7 @@ public class ExampleAppKeywordFilters
         this.service = service;
         this.topicManager = topicManager;
     }
+
     private final ContentFilterService service;
     private final TopicManager topicManager;
 
@@ -36,7 +40,7 @@ public class ExampleAppKeywordFilters
         topicManager.addTopic(adultChildTopic);
     }
 
-    private AppKeywordFilter getPocketCastsFilter()
+    private AppKeywordFilter getPocketCastsFilter() throws TopicMissingException
     {
 
         String appName = "au.com.shiftyjelly.pocketcasts";
@@ -60,7 +64,8 @@ public class ExampleAppKeywordFilters
         return new AppKeywordFilter(service, topicManager, filters, appName);
 
     }
-    private AppKeywordFilter getFirefoxFilter()
+
+    private AppKeywordFilter getFirefoxFilter() throws TopicMissingException
     {
         String appName = "org.mozilla.firefox";
         ArrayList<WordProcessorFilterBase> filters = new ArrayList<WordProcessorFilterBase>();
@@ -79,24 +84,25 @@ public class ExampleAppKeywordFilters
             ignoreHistoryPage.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
             ignoreHistoryPage.logging = true;
             // Add test Filter
-            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("History","Recently closed tabs")), false, ignoreHistoryPage);
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage);
             filters.add(ignoreSearch);
         }
         {
             PipelineResult pornResult = new PipelineResult();
-            pornResult.windowAction = PipelineWindowAction.WARNING;
+            pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING;
             pornResult.logging = true;
-            TopicScoring scoringPorn = new TopicScoring("porn_explicit", 33, 50);
-            TopicScoring scoringFemaleBodyParts = new TopicScoring("female_body_parts", 30, 45);
-            TopicScoring scoringAdultNudity = new TopicScoring("adult_nudity", 32, 45);
-            TopicScoring scoringSexToys = new TopicScoring("adult_sex_toys", 32, 32);
-            TopicScoring scoringFemaleNames = new TopicScoring("female_names", 20, 30);
-            TopicScoring scoringFemaleClothing = new TopicScoring("female_clothing", 24, 30);
-            TopicScoring myTerms = new TopicScoring("patrick_all_merged", 100, 70);
+            ArrayList<TopicScoring> allScorings = new ArrayList<>();
+            allScorings.add(new TopicScoring("porn_explicit", 33, 50));
+            allScorings.add(new TopicScoring("female_body_parts", 30, 45));
+            allScorings.add(new TopicScoring("adult_nudity", 32, 45));
+            allScorings.add(new TopicScoring("adult_sex_toys", 32, 45));
+            allScorings.add(new TopicScoring("female_names", 15, 30));
+            allScorings.add(new TopicScoring("female_clothing", 15, 30));
+            allScorings.add(new TopicScoring("patrick_all_merged", 49, 66));
             boolean ignoreCase = true;  // important for porn filter
 
 //            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
-            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms)), ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
         return new AppKeywordFilter(service, topicManager, filters, appName);
@@ -118,7 +124,7 @@ public class ExampleAppKeywordFilters
         return new AppKeywordFilter(service, topicManager, filters, appName);
     }
 
-    public ArrayList<AppKeywordFilter> getAllExampleFilters()
+    public ArrayList<AppKeywordFilter> getAllExampleFilters() throws TopicMissingException
     {
         ArrayList<AppKeywordFilter> list = new ArrayList<>();
         list.add(getFirefoxFilter());

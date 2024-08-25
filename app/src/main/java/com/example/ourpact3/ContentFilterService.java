@@ -52,72 +52,43 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     public void onServiceConnected()
     {
         Log.i("FOO", "Stating service");
-        // get WindowManager needed for creating overlay window
+// get WindowManager needed for creating overlay window
         windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        // Load all system topics
+// Load all system topics
         TopicLoader topicLoader = new TopicLoader();
         String[] usedLanguages = {"de", "en"};
         ArrayList<TopicLoader.TopicDescriptor> allAvailableTopics = null;
         try
         {
             allAvailableTopics = topicLoader.getAllLoadableTopics(getApplicationContext(), Set.of(usedLanguages));
-        } catch (TopicLoaderException e)
-        {
-            throw new RuntimeException(e);
-        }
-        // Check if all topics are not null
-        for (TopicLoader.TopicDescriptor descriptor : allAvailableTopics)
-        {
-            Topic topic = null;
-            try
+            // Check if all topics are not null
+            for (TopicLoader.TopicDescriptor descriptor : allAvailableTopics)
             {
-                topic = topicLoader.loadTopicFile(getApplicationContext(), descriptor);
-            } catch (TopicLoaderException e)
-            {
-                throw new RuntimeException(e);
-            }
-            if (topic != null)
-            {
-                try
+                Topic topic = topicLoader.loadTopicFile(getApplicationContext(), descriptor);
+                if (topic != null)
                 {
                     topicManager.addTopic(topic);
-                } catch (TopicLoaderCycleDetectedException | InvalidTopicIDException |
-                         TopicAlreadyExistsException e)
-                {
-                    throw new RuntimeException(e);
                 }
             }
-        }
-        // check all topics
-        try
-        {
+            // check all topics
             topicManager.checkAllTopics();
-        } catch (TopicLoaderCycleDetectedException | TopicMissingException e)
-        {
-            throw new RuntimeException(e);
-        }
-        // load all example filters
-        ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager);
-        try
-        {
+            // load all example filters
+            ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager);
             exampleFilters.addExampleTopics();
-        } catch (TopicLoaderCycleDetectedException | TopicAlreadyExistsException |
-                 InvalidTopicIDException e)
+            for (AppKeywordFilter filter : exampleFilters.getAllExampleFilters())
+            {
+                filter.setCallback(this);
+                keywordFilters.put(filter.getPackageName(), filter);
+            }
+            AccessibilityServiceInfo info = new AccessibilityServiceInfo();
+            info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
+            info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
+            info.flags = AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;
+            setServiceInfo(info);
+        } catch (Exception e)
         {
             throw new RuntimeException(e);
         }
-        for (AppKeywordFilter filter : exampleFilters.getAllExampleFilters())
-        {
-            filter.setCallback(this);
-            keywordFilters.put(filter.getPackageName(), filter);
-        }
-
-
-        AccessibilityServiceInfo info = new AccessibilityServiceInfo();
-        info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
-        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
-        info.flags = AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;
-        setServiceInfo(info);
     }
 
     public boolean isMagnificationEnabled()
@@ -146,7 +117,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     }
 
 
-    private void showOverlayWindow(String text, PipelineResult result2)
+    private void showOverlayWindow(String text, PipelineResult result2,boolean closeButtonIsBack)
     {
         // we need the permission to show the overlay which blocks input
         /*if(!Settings.canDrawOverlays(getApplicationContext()))
@@ -164,7 +135,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             {
                 AccessibilityNodeInfo rootNode = this.getRootInActiveWindow();
                 KeywordScoreWindowCalculator scoreExplainer = new KeywordScoreWindowCalculator();
-                String explaination = scoreExplainer.getDebugFilterState(rootNode, currentAppFilter,isMagnificationEnabled());
+                String explaination = scoreExplainer.getDebugFilterState(rootNode, currentAppFilter, isMagnificationEnabled());
                 overlayTextView.setText(explaination);
             } else
             {
@@ -172,11 +143,16 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             }
             overlayView.findViewById(R.id.close_button).setOnClickListener(v ->
             {
-                if (result2.triggerApp != null && result2.windowAction == PipelineWindowAction.KILL_WINDOW)
+                hideOverlayWindow();
+                if(closeButtonIsBack)
+                {
+                    performGlobalAction(GLOBAL_ACTION_BACK);
+                    performGlobalAction(GLOBAL_ACTION_BACK);
+                }
+                /*if (result2.triggerApp != null && result2.windowAction == PipelineWindowAction.KILL_WINDOW)
                 {
                     closeOtherApp(result2.triggerApp);
-                }
-                hideOverlayWindow();
+                }*/
             });
 
             WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -205,6 +181,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     {
     }
 
+    /*
     private void closeOtherApp(String packageName)
     {
         ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -212,7 +189,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         {
             activityManager.killBackgroundProcesses(packageName);
         }
-    }
+    }*/
 
     @Override
     public void onPipelineResult(PipelineResult result)
@@ -221,7 +198,11 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         {
             case WARNING:
             case KILL_WINDOW:
-                this.showOverlayWindow("test ", result);
+                this.showOverlayWindow("test ", result,true);
+                break;
+            case PERFORM_BACK_ACTION_AND_WARNING:
+
+                this.showOverlayWindow("test ", result,true);
                 break;
             case PERFORM_BACK_ACTION:
                 performGlobalAction(GLOBAL_ACTION_BACK);
@@ -232,10 +213,10 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             case STOP_FURTHER_PROCESSING:
                 break;
         }
-        if (result.logging)
+        /*if (result.logging)
         {
             String LOG_TAG = "ContentFiler";
             Log.i(LOG_TAG, " pipeline result " + result.windowAction.toString());
-        }
+        }*/
     }
 }
