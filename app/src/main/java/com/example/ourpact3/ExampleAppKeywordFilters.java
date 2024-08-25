@@ -60,7 +60,7 @@ public class ExampleAppKeywordFilters
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("porn_explicit", 33, 50));
             allScorings.add(new TopicScoring("female_body_parts", 30, 45));
-//            allScorings.add(new TopicScoring("adult_nudity", 32, 45));
+            allScorings.add(new TopicScoring("adult_nudity", 20, 20));  //NOTE: This is not so dangerous as this is a podcast app
             allScorings.add(new TopicScoring("adult_sex_toys", 32, 45));
 //            allScorings.add(new TopicScoring("female_names", 15, 30));
             allScorings.add(new TopicScoring("female_clothing", 15, 30));

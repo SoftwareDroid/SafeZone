@@ -1,8 +1,5 @@
 1. Businesslogic/CoreService
 
-Trigger word aus topic in Debug Erebnissen anzeigen
-Ist es da?
-
 1.3 Firefox problem 1
 wenn die erst seite böse e.g. girls
 kann ich firefox nicht richtig mehr bedienen, da es sofort beim öffnen geschlossen wird

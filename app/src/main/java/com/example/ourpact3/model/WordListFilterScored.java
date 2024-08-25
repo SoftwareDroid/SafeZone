@@ -1,6 +1,7 @@
 package com.example.ourpact3.model;
 
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public class WordListFilterScored extends WordProcessorFilterBase
 {
@@ -26,11 +27,11 @@ public class WordListFilterScored extends WordProcessorFilterBase
         this.topicScorings = topicScorings;
         assert topicManager != null;
         // catch typos in scorings ids
-        for(TopicScoring scoring : topicScorings)
+        for (TopicScoring scoring : topicScorings)
         {
-            if(!topicManager.isTopicIdLoaded(scoring.topicId))
+            if (!topicManager.isTopicIdLoaded(scoring.topicId))
             {
-                throw new TopicMissingException("scoring "+ name + " need topic" + scoring.topicId + " but it is missing");
+                throw new TopicMissingException("scoring " + name + " need topic" + scoring.topicId + " but it is missing");
             }
         }
     }
@@ -40,7 +41,12 @@ public class WordListFilterScored extends WordProcessorFilterBase
     private final boolean ignoreCase;
     private int currentScore;
     private final int MAX_SCORE = 100;
-
+    private TreeSet<String> triggerWordsFromTopic = new TreeSet<>();
+    // Debug function
+    public  TreeSet<String> getTriggerWordsInTopic()
+    {
+        return triggerWordsFromTopic;
+    }
     public int getCurrentScore()
     {
         return currentScore;
@@ -61,18 +67,18 @@ public class WordListFilterScored extends WordProcessorFilterBase
                 continue;
             }
 
-            TopicManager.SearchResult result = topicManager.isStringInTopic(text, scoring.topicId, TopicManager.TopicMatchMode.TOPIC_WORD_IS_INFIX, ignoreCase, TopicManager.ALL_LANGUAGE_CODE,0);
+            TopicManager.SearchResult result = topicManager.isStringInTopic(text, scoring.topicId, TopicManager.TopicMatchMode.TOPIC_WORD_IS_INFIX, ignoreCase, TopicManager.ALL_LANGUAGE_CODE, 0);
             // Pick the topic with which is the directest e.g All contains porn and clothing. We want to count clothing with its own score
-            if(result.found && (bestSearchResult == null || result.deep < bestSearchResult.deep))
+            if (result.found && (bestSearchResult == null || result.deep < bestSearchResult.deep))
             {
                 bestSearchResult = result;
                 scoringChange = editable ? scoring.writeScore : scoring.readScore;
 
             }
         }
-        if(bestSearchResult != null)
+        if (bestSearchResult != null)
         {
-            result.topicTriggerWord = bestSearchResult.trigger;
+            triggerWordsFromTopic.add(bestSearchResult.trigger);
             currentScore += scoringChange;
             if (currentScore >= MAX_SCORE)
             {
@@ -87,5 +93,6 @@ public class WordListFilterScored extends WordProcessorFilterBase
     public void reset()
     {
         currentScore = 0;
+        triggerWordsFromTopic.clear();
     }
 }

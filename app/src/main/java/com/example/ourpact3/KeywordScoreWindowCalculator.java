@@ -2,14 +2,12 @@ package com.example.ourpact3;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.example.ourpact3.model.PipelineResult;
-import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.model.WordListFilterScored;
 import com.example.ourpact3.model.WordProcessorFilterBase;
 
-import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.Map;
+import java.util.TreeSet;
 
 public class KeywordScoreWindowCalculator
 {
@@ -34,36 +32,25 @@ public class KeywordScoreWindowCalculator
                 for (Map.Entry<String, Integer> entry : wordToReadableCount.entrySet())
                 {
                     scoredFilter.reset();
-                    PipelineResult result = null;
                     for (int i = 0; i < entry.getValue(); i++)
                     {
-                        result = scoredFilter.feedWord(entry.getKey(), false);
+                        scoredFilter.feedWord(entry.getKey(), false);
                     }
-//                    if(result != null)
-                    {
 
-                        filterResultLines.append(getResultLine(entry.getValue(), entry.getKey(), scoredFilter.getCurrentScore() / entry.getValue(), true,""));
-                        sumScore += scoredFilter.getCurrentScore();
-                        result = null;
-                    }
+                    filterResultLines.append(getResultLine(entry.getValue(), entry.getKey(), scoredFilter.getCurrentScore() / entry.getValue(), true, scoredFilter.getTriggerWordsInTopic()));
+                    sumScore += scoredFilter.getCurrentScore();
                 }
                 for (Map.Entry<String, Integer> entry : wordToWriteableCount.entrySet())
                 {
                     scoredFilter.reset();
-                    PipelineResult result = null;
 
                     for (int i = 0; i < entry.getValue(); i++)
                     {
-                      result =   filter.feedWord(entry.getKey(), true);
+                        filter.feedWord(entry.getKey(), true);
                     }
 
-//                    if(result != null)
-                    {
-                        filterResultLines.append(getResultLine(entry.getValue(), entry.getKey(), scoredFilter.getCurrentScore() / entry.getValue(), false,""));
-
-                        sumScore += scoredFilter.getCurrentScore();
-                        result = null;
-                    }
+                    filterResultLines.append(getResultLine(entry.getValue(), entry.getKey(), scoredFilter.getCurrentScore() / entry.getValue(), false, scoredFilter.getTriggerWordsInTopic()));
+                    sumScore += scoredFilter.getCurrentScore();
                 }
                 if (sumScore != 0)
                 {
@@ -78,15 +65,11 @@ public class KeywordScoreWindowCalculator
         return combinedDebugState.toString(); // added return statement
     }
 
-    private String getResultLine(int count, String word, int plusScore, boolean read, String topicTrigger)
+    private String getResultLine(int count, String word, int plusScore, boolean read, TreeSet<String> topicTriggers)
     {
         if (count > 0 && word != null && plusScore != 0)
         {
-            if (topicTrigger == null)
-            {
-                topicTrigger = "";
-            }
-            return String.valueOf(count) + " x " + word + " (" + (read ? "read" : "write") + ") \t +" + String.valueOf(plusScore) + " topic trigger: " + topicTrigger + "\n";
+            return String.valueOf(count) + " x " + word + " (" + (read ? "read" : "write") + ") \t +" + String.valueOf(plusScore) + " topic trigger: " + topicTriggers.toString() + "\n";
         }
         return "";
     }
