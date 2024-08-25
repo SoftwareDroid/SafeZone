@@ -218,6 +218,7 @@ public class TopicManager
 
         public boolean found;
         public int deep;
+        public String trigger;
     }
 
     public SearchResult isStringInTopic(String text, String topicId, TopicMatchMode mode, boolean checkAgainstLowerCase, String language, int currentDeepness)
@@ -248,6 +249,7 @@ public class TopicManager
                 {
                     word = word.toLowerCase();
                 }
+                searchResult.trigger = word;
                 switch (mode)
                 {
                     case EQUAL:
