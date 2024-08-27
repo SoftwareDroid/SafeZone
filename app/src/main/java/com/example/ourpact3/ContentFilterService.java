@@ -19,6 +19,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import com.example.ourpact3.model.CrashHandler;
 import com.example.ourpact3.model.IFilterResultCallback;
 import com.example.ourpact3.model.InvalidTopicIDException;
 import com.example.ourpact3.model.PipelineResult;
@@ -46,12 +47,15 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     private View overlayView;
     private final TopicManager topicManager = new TopicManager();
     private final TreeMap<String, AppKeywordFilter> keywordFilters = new TreeMap<>();
+    private CrashHandler crashHandler;
 
     //    private boolean isRunning = false;
     @Override
     public void onServiceConnected()
     {
         Log.i("FOO", "Stating service");
+        crashHandler = new CrashHandler(this);
+        Thread.setDefaultUncaughtExceptionHandler(crashHandler);
 // get WindowManager needed for creating overlay window
         windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 // Load all system topics

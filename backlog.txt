@@ -6,7 +6,8 @@ kann ich firefox nicht richtig mehr bedienen, da es sofort beim öffnen geschlos
 
 1.4 Mit Firefox testen
 porn Filter für Firefox erstellen
-
+Test queries term:
+- twerk
 
 1.5 Rules für Apps erstellen (erstmal ohne GUI)
 diese müssen auch per JSON abspeicherbar sein.
