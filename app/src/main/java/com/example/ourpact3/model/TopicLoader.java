@@ -82,7 +82,8 @@ public class TopicLoader
         try
         {
             String fileContent = readAssetFile(assets, root + descriptor.language + "/" + descriptor.file_name);
-            JSONObject jsonObject = new JSONObject(fileContent);
+            String fileWithoutComments = JSONCommentRemover.removeComments(fileContent);
+            JSONObject jsonObject = new JSONObject(fileWithoutComments);
             Topic topic = Topic.fromJson(jsonObject);
             if (!descriptor.file_name.contains(topic.getTopicId()) || !Objects.equals(topic.getLanguage(), descriptor.language))
             {
