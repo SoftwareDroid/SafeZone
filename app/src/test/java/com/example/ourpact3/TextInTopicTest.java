@@ -121,6 +121,35 @@ public class TextInTopicTest {
         // Assert
         assertFalse(result.found);
     }
+    @Test
+    public void testRegex() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
+    {
+        String topicId = "topic_req";
+        String text = "ass";
+        String language = "en";
+
+        Topic topic = new Topic(topicId, language);
+        topic.addWord("test");
+        topic.addRegExpWord ("\\bass\\b");
+        topicManager.addTopic(topic);
+        TopicManager.TopicMatchMode mode = TopicManager.TopicMatchMode.TOPIC_WORD_IS_INFIX;
+        boolean checkAgainstLowerCase = true;
+        TopicManager.SearchResult result = topicManager.isStringInTopic(text, topicId, mode, checkAgainstLowerCase, language,0);
+
+        assertTrue(result.found);
+
+        result = topicManager.isStringInTopic("dass", topicId, mode, checkAgainstLowerCase, language,0);
+
+        assertFalse(result.found);
+        result = topicManager.isStringInTopic("assi", topicId, mode, checkAgainstLowerCase, language,0);
+        assertFalse(result.found);
+
+        result = topicManager.isStringInTopic("my ass is so nice", topicId, mode, checkAgainstLowerCase, language,0);
+
+        // Assert
+        assertTrue(result.found);
+
+    }
 
     @Test
     public void testIsStringInTopic_RecursiveCall_ReturnsTrue() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException

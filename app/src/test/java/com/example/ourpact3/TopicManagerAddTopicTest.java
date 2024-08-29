@@ -4,7 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import com.example.ourpact3.model.InvalidTopicIDException;
 import com.example.ourpact3.model.Topic;
+import com.example.ourpact3.model.TopicAlreadyExistsException;
 import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
 import com.example.ourpact3.model.TopicManager;
 
@@ -22,7 +24,7 @@ public class TopicManagerAddTopicTest
     }
 
     @Test
-    public void testAddTopic_NullTopicId() throws TopicLoaderCycleDetectedException
+    public void testAddTopic_NullTopicId() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
     {
         Topic topic = new Topic(null, "en");
         topicManager.addTopic(topic);
@@ -30,7 +32,7 @@ public class TopicManagerAddTopicTest
     }
 
     @Test
-    public void testAddTopic_InvalidTopicId() throws TopicLoaderCycleDetectedException
+    public void testAddTopic_InvalidTopicId() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
     {
         Topic topic = new Topic(" invalid-id", "en");
         topicManager.addTopic(topic);
@@ -38,7 +40,7 @@ public class TopicManagerAddTopicTest
     }
 
     @Test
-    public void testAddTopic_DuplicateLanguage() throws TopicLoaderCycleDetectedException
+    public void testAddTopic_DuplicateLanguage() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
     {
         Topic topic1 = new Topic("id1", "en");
         topicManager.addTopic(topic1);
@@ -48,7 +50,7 @@ public class TopicManagerAddTopicTest
     }
 
     @Test
-    public void testAddTopic_NoCycle() throws TopicLoaderCycleDetectedException
+    public void testAddTopic_NoCycle() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
     {
         Topic topic1 = new Topic("id1", "en");
         topic1.setIncludedTopics(new ArrayList<>(Arrays.asList("id2")));
@@ -59,7 +61,7 @@ public class TopicManagerAddTopicTest
     }
 
     @Test
-    public void testAddTopic_Cycle() throws TopicLoaderCycleDetectedException
+    public void testAddTopic_Cycle() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
     {
         Topic topic1 = new Topic("id1", "en");
         topic1.setIncludedTopics(new ArrayList<>(Arrays.asList("id2")));

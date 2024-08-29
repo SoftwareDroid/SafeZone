@@ -26,8 +26,8 @@
     "asshole",
     "butthole",
     "sex",
-    "ass ",
-    " ass",
+    //"ass ", use regexp
+    //" ass",
     "penis",
     "erotic",
     "erotica",
@@ -110,6 +110,9 @@
     "climax",
     "ejaculation",
     "moan"
+  ],
+  "regExpWords" : [
+    "\\bass\\b"
   ],
   "includedTopics": [
   ]

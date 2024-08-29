@@ -1,4 +1,6 @@
 package com.example.ourpact3.model;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -278,6 +280,15 @@ public class TopicManager
                             return searchResult;
                         }
                         break;
+                    }
+                }
+                // Check against patterns
+                for(Map.Entry<String, Pattern> compiledPattern : topicInOneLang.getCompiledPatterns().entrySet())
+                {
+                    Matcher matcher = compiledPattern.getValue().matcher(text);
+                    if (matcher.find()) {
+                        searchResult.found = true;
+                        return  searchResult;
                     }
                 }
                 // Check child topic if existing
