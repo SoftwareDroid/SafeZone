@@ -13,11 +13,16 @@ public class KeywordScoreWindowCalculator
 {
     private final TreeMap<String, Integer> wordToReadableCount = new TreeMap<>();
     private final TreeMap<String, Integer> wordToWriteableCount = new TreeMap<>();
+    private StringBuilder filterResultLines = new StringBuilder();
+    private StringBuilder filterResultLines2 = new StringBuilder();
 
     public String getDebugFilterState(AccessibilityNodeInfo node, AppKeywordFilter appRule, boolean isMagnificationEnabled)
     {
         wordToReadableCount.clear();
         wordToWriteableCount.clear();
+        filterResultLines = new StringBuilder();
+        filterResultLines2 = new StringBuilder();
+
         // collect all words
         processNode(node, isMagnificationEnabled);
         StringBuilder combinedDebugState = new StringBuilder("Debug State\n");
@@ -26,7 +31,6 @@ public class KeywordScoreWindowCalculator
         {
             if (filter instanceof WordListFilterScored)
             {
-                StringBuilder filterResultLines = new StringBuilder();
                 WordListFilterScored scoredFilter = (WordListFilterScored) filter;
 
                 for (Map.Entry<String, Integer> entry : wordToReadableCount.entrySet())
@@ -36,8 +40,7 @@ public class KeywordScoreWindowCalculator
                     {
                         scoredFilter.feedWord(entry.getKey(), false);
                     }
-
-                    filterResultLines.append(getResultLine(entry.getValue(), entry.getKey(), scoredFilter.getCurrentScore() / entry.getValue(), true, scoredFilter.getTriggerWordsInTopic()));
+                    addResultLine(entry.getValue(), entry.getKey(), scoredFilter.getCurrentScore() / entry.getValue(), true, scoredFilter.getTriggerWordsInTopic());
                     sumScore += scoredFilter.getCurrentScore();
                 }
                 for (Map.Entry<String, Integer> entry : wordToWriteableCount.entrySet())
@@ -49,14 +52,17 @@ public class KeywordScoreWindowCalculator
                         filter.feedWord(entry.getKey(), true);
                     }
 
-                    filterResultLines.append(getResultLine(entry.getValue(), entry.getKey(), scoredFilter.getCurrentScore() / entry.getValue(), false, scoredFilter.getTriggerWordsInTopic()));
+                    addResultLine(entry.getValue(), entry.getKey(), scoredFilter.getCurrentScore() / entry.getValue(), false, scoredFilter.getTriggerWordsInTopic());
                     sumScore += scoredFilter.getCurrentScore();
                 }
                 if (sumScore != 0)
                 {
                     combinedDebugState.append("Filter: ").append(filter.name).append("\n");
                     combinedDebugState.append("Sum: ").append(sumScore).append("\n");
+                    combinedDebugState.append("Found matches: \n");
                     combinedDebugState.append(filterResultLines);
+                    combinedDebugState.append("\n\n=======Not matched======\n");
+                    combinedDebugState.append(filterResultLines2);
                     sumScore = 0;
                 }
             }
@@ -65,13 +71,22 @@ public class KeywordScoreWindowCalculator
         return combinedDebugState.toString(); // added return statement
     }
 
-    private String getResultLine(int count, String word, int plusScore, boolean read, TreeSet<String> topicTriggers)
+    private void addResultLine(int count, String word, int plusScore, boolean read, TreeSet<String> topicTriggers)
     {
-        if (count > 0 && word != null && plusScore != 0)
+        if (word != null)
         {
-            return String.valueOf(count) + " x " + word + " (" + (read ? "read" : "write") + ") \t +" + String.valueOf(plusScore) + " topic trigger: " + topicTriggers.toString() + "\n";
+            if(count > 0 && plusScore != 0)
+            {
+                String number = count == 1 ? "" : " x " + String.valueOf(count) + " ";
+                String text = number + "'" + topicTriggers.first() + "'" + " in " + word + " (" + (read ? "read" : "write") + ") \t => +" + String.valueOf(plusScore) +"\n";
+                this.filterResultLines.append(text);
+            }
+            else
+            {
+                String text =  word + " (" + (read ? "read" : "write") + ")\n" ;
+                this.filterResultLines2.append(text);
+            }
         }
-        return "";
     }
 
     private void processNode(AccessibilityNodeInfo node, boolean isMagnificationEnabled)

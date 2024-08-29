@@ -1,5 +1,8 @@
 1. Businesslogic/CoreService
 
+1.2 Support for Regulat expresiion
+ass, bra and enforce google and duckduckgo safe search
+
 1.35
 Safe search mit google erzwingen Regeln müssen komplexer
 werden if contains google. and editable and second field is found in this safe=true or so

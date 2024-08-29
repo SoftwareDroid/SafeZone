@@ -5,6 +5,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 public class Topic
 {
@@ -12,8 +15,9 @@ public class Topic
     private final String lang;
     private final String id;
     private String description;
+    private Map<String, Pattern> compiledPatterns = new HashMap<>();
     private ArrayList<String> words;
-    private ArrayList<String> includedTopics;
+    private ArrayList<String> includedTopics;   //List of topics ids
     private boolean allWordsInLowerCase;
 
     public void setLowerCaseTopic(boolean allWordsLowerCase)
@@ -32,6 +36,7 @@ public class Topic
         this.lang = lang;
         this.words = new ArrayList<>();
         this.includedTopics = new ArrayList<>();
+        this.compiledPatterns = new HashMap<>();
         this.description = "";
         this.ignoreLoading = false;
         this.allWordsInLowerCase = false;
@@ -114,6 +119,10 @@ public class Topic
         JSONArray wordsArray = new JSONArray(words);
         jsonObject.put("words", wordsArray);
 
+        ArrayList<String> regExpKeys = new ArrayList<>(this.compiledPatterns.keySet());
+        JSONArray wordsArray2 = new JSONArray(regExpKeys);
+        jsonObject.put("regExpWords", wordsArray2);
+
         JSONArray includedTopicsArray = new JSONArray(includedTopics);
         jsonObject.put("includedTopics", includedTopicsArray);
 
@@ -133,6 +142,7 @@ public class Topic
         }
         // Convert JSONArray to ArrayList
         JSONArray wordsArray = jsonObject.getJSONArray("words");
+
         boolean allLowerCase = true;
         for (int i = 0; i < wordsArray.length(); i++)
         {
@@ -144,7 +154,18 @@ public class Topic
             topic.words.add(wordsArray.getString(i));
         }
         topic.setLowerCaseTopic(allLowerCase);
+        //
+        JSONArray wordsArray2 = jsonObject.getJSONArray("regExpWords");
 
+        for (int i = 0; i < wordsArray2.length(); i++)
+        {
+            String regExp = wordsArray2.getString(i);
+            if (!topic.compiledPatterns.containsKey(regExp))
+            {
+                Pattern pattern = Pattern.compile(regExp);
+                topic.compiledPatterns.put(regExp, pattern);
+            }
+        }
         JSONArray includedTopicsArray = jsonObject.getJSONArray("includedTopics");
         for (int i = 0; i < includedTopicsArray.length(); i++)
         {

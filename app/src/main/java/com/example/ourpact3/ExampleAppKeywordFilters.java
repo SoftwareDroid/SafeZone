@@ -79,7 +79,7 @@ public class ExampleAppKeywordFilters
     {
         String appName = "org.mozilla.firefox";
         ArrayList<WordProcessorFilterBase> filters = new ArrayList<WordProcessorFilterBase>();
-        {
+/*        {
             // ignore suggestion screen
             PipelineResult resultIgnoreSearch = new PipelineResult();
             resultIgnoreSearch.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
@@ -87,7 +87,7 @@ public class ExampleAppKeywordFilters
             // Add test Filter
             WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox Suggest")), false, resultIgnoreSearch);
             filters.add(ignoreSearch);
-        }
+        }*/
         {
             // ignore history page
             PipelineResult ignoreStartpage = new PipelineResult();
@@ -95,8 +95,7 @@ public class ExampleAppKeywordFilters
             ignoreStartpage.logging = true;
             // Add test Filter
             WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox", "Jump back in")), false, ignoreStartpage);
-            filters.add(ignoreSearch);
-        }
+            filters.add(ignoreSearch);       }
         {
             // ignore start page
             PipelineResult ignoreHistoryPage = new PipelineResult();
@@ -104,8 +103,7 @@ public class ExampleAppKeywordFilters
             ignoreHistoryPage.logging = true;
             // Add test Filter
             WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage);
-            filters.add(ignoreSearch);
-        }
+            filters.add(ignoreSearch);        }
         {
             PipelineResult pornResult = new PipelineResult();
             pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING;

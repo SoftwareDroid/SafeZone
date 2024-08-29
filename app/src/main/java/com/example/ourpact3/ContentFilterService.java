@@ -230,7 +230,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     {
 //        if(isKeyboardOpen())
         {
-            performGlobalAction(GLOBAL_ACTION_BACK);
+//            performGlobalAction(GLOBAL_ACTION_BACK);
         }
         performGlobalAction(GLOBAL_ACTION_BACK);
     }
