@@ -1,4 +1,5 @@
 package com.example.ourpact3.model;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,10 +48,12 @@ public class TopicManager
             topic.setWords(filteredWords);
         }
     }
+
     public boolean isTopicIdLoaded(String topicId)
     {
         return this.topics.get(topicId) != null;
     }
+
     public Topic getTopic(String topicId, String language)
     {
         ArrayList<Topic> siblingTopics = topics.get(topicId);
@@ -136,9 +139,9 @@ public class TopicManager
                     for (String includedTopicId : topic.getIncludedTopics())
                     {
                         Topic inOneLang = getTopicInLang(includedTopicId, topic.getLanguage());
-                        if(inOneLang == null)
+                        if (inOneLang == null)
                         {
-                            throw new TopicMissingException("Topic " + includedTopicId + " included in "+ topic.getTopicUID() +" is missing in language " + topic.getLanguage());
+                            throw new TopicMissingException("Topic " + includedTopicId + " included in " + topic.getTopicUID() + " is missing in language " + topic.getLanguage());
                         }
                         checkForCycles(inOneLang, visited, recursionStack, topics);
 
@@ -234,81 +237,102 @@ public class TopicManager
 
         for (Topic topicInOneLang : topicsInAllLanguages)
         {
-            ArrayList<String> words = topicInOneLang.getWords();
-            if (words == null || words.isEmpty())
-            {
-                continue;
-            }
+
             // only check for same language for if check for all is on
             if (!language.equals(ALL_LANGUAGE_CODE) && !language.equals(topicInOneLang.getLanguage()))
             {
                 continue;
             }
-
-            for (String word : words)
+            ArrayList<String> words = topicInOneLang.getWords();
+            if (checkAgainstWords(text, searchResult, topicInOneLang, words, checkAgainstLowerCase, mode))
             {
-                if (!topicInOneLang.isLowerCaseTopic() && checkAgainstLowerCase)
-                {
-                    word = word.toLowerCase();
-                }
-                searchResult.trigger = word;
-                switch (mode)
-                {
-                    case EQUAL:
-                    {
-                        if (word.equals(text))
-                        {
-                            searchResult.found = true;
-                            return searchResult;
-                        }
-                        break;
-                    }
-                    case TOPIC_WORD_IS_INFIX:
-                    {
-                        if (text.contains(word))
-                        {
-                            searchResult.found = true;
-                            return searchResult;
-                        }
-                        break;
-                    }
-                    case TOPIC_WORD_IS_PREFIX:
-                    {
-                        if (text.startsWith(word))
-                        {
-                            searchResult.found = true;
-                            return searchResult;
-                        }
-                        break;
-                    }
-                }
-                // Check against patterns
-                for(Map.Entry<String, Pattern> compiledPattern : topicInOneLang.getCompiledPatterns().entrySet())
-                {
-                    Matcher matcher = compiledPattern.getValue().matcher(text);
-                    if (matcher.find()) {
-                        searchResult.found = true;
-                        return  searchResult;
-                    }
-                }
-                // Check child topic if existing
-                ArrayList<String> includedTopics = topicInOneLang.getIncludedTopics();
-                if (includedTopics != null)
-                {
-                    for (String childrenTopicIds : includedTopics)
-                    {
-                        // only check same language recursively. To prevent redundant checks
-                        SearchResult childResult = this.isStringInTopic(text, childrenTopicIds, mode, checkAgainstLowerCase, topicInOneLang.getLanguage(), currentDeepness + 1);
-                        if (childResult.found)
-                        {
-                            return childResult;
-                        }
+                return searchResult;
+            }
+            if (checkAgainstRegExp(text, searchResult, topicInOneLang))
+            {
+                return searchResult;
+            }
 
+            // Check child topic if existing
+            ArrayList<String> includedTopics = topicInOneLang.getIncludedTopics();
+            if (includedTopics != null)
+            {
+                for (String childrenTopicIds : includedTopics)
+                {
+                    // only check same language recursively. To prevent redundant checks
+                    SearchResult childResult = this.isStringInTopic(text, childrenTopicIds, mode, checkAgainstLowerCase, topicInOneLang.getLanguage(), currentDeepness + 1);
+                    if (childResult.found)
+                    {
+                        return childResult;
                     }
+
                 }
             }
+
         }
         return searchResult;
     }
 
+    private boolean checkAgainstRegExp(String text, SearchResult searchResult, Topic topicInOneLang)
+    {
+        // Check against patterns
+        for (Map.Entry<String, Pattern> compiledPattern : topicInOneLang.getCompiledPatterns().entrySet())
+        {
+            Matcher matcher = compiledPattern.getValue().matcher(text);
+            if (matcher.find())
+            {
+                searchResult.trigger = text;
+                searchResult.found = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkAgainstWords(String text, SearchResult searchResult, Topic topicInOneLang, ArrayList<String> words, boolean checkAgainstLowerCase, TopicMatchMode mode)
+    {
+        if (words == null || words.isEmpty())
+        {
+            return false;
+        }
+        for (String word : words)
+        {
+            if (!topicInOneLang.isLowerCaseTopic() && checkAgainstLowerCase)
+            {
+                word = word.toLowerCase();
+            }
+            searchResult.trigger = word;
+            switch (mode)
+            {
+                case EQUAL:
+                {
+                    if (word.equals(text))
+                    {
+                        searchResult.found = true;
+                        return true;
+                    }
+                    break;
+                }
+                case TOPIC_WORD_IS_INFIX:
+                {
+                    if (text.contains(word))
+                    {
+                        searchResult.found = true;
+                        return true;
+                    }
+                    break;
+                }
+                case TOPIC_WORD_IS_PREFIX:
+                {
+                    if (text.startsWith(word))
+                    {
+                        searchResult.found = true;
+                        return true;
+                    }
+                    break;
+                }
+            }
+        }
+        return false;
+    }
 }

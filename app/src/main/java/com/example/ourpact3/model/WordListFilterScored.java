@@ -78,7 +78,10 @@ public class WordListFilterScored extends WordProcessorFilterBase
         }
         if (bestSearchResult != null)
         {
-            triggerWordsFromTopic.add(bestSearchResult.trigger);
+            if(bestSearchResult.trigger != null)
+            {
+                triggerWordsFromTopic.add(bestSearchResult.trigger);
+            }
             currentScore += scoringChange;
             if (currentScore >= MAX_SCORE)
             {

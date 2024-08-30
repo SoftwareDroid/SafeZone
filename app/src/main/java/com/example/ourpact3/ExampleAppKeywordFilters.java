@@ -79,7 +79,20 @@ public class ExampleAppKeywordFilters
     {
         String appName = "org.mozilla.firefox";
         ArrayList<WordProcessorFilterBase> filters = new ArrayList<WordProcessorFilterBase>();
-/*        {
+        {
+            //block unsafe search
+            PipelineResult blockUnsafesearch = new PipelineResult();
+            blockUnsafesearch.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING;
+            blockUnsafesearch.logging = true;
+            ArrayList<TopicScoring> allScorings = new ArrayList<>();
+            allScorings.add(new TopicScoring("enforce_safe_search", 100, 0));
+            boolean ignoreCase = false;  // important for porn filter
+
+            WordListFilterScored blockAdultStuff = new WordListFilterScored("Enforce safe search", allScorings, ignoreCase, topicManager, blockUnsafesearch);
+            filters.add(blockAdultStuff);
+        }
+
+        {
             // ignore suggestion screen
             PipelineResult resultIgnoreSearch = new PipelineResult();
             resultIgnoreSearch.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
@@ -87,7 +100,7 @@ public class ExampleAppKeywordFilters
             // Add test Filter
             WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox Suggest")), false, resultIgnoreSearch);
             filters.add(ignoreSearch);
-        }*/
+        }
         {
             // ignore history page
             PipelineResult ignoreStartpage = new PipelineResult();
