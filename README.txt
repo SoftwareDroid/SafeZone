@@ -8,6 +8,10 @@ Create to and from json method with AI
 
 CHange app verion: build.gradle.kts
 
+# For Users:
+Use as Search Engine in e.g. Firefox: safe.duckduckgo.com/?q=%s
+most others are blocked by the safe search rule
+
 TODO
 FIX Search
 In Recent searches tiggert nicht die Abort Pipeplie zu erst
