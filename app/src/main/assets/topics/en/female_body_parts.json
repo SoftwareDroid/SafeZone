@@ -13,11 +13,8 @@
     "boobs",
     "boob ",
     " boob",
-    "bra ",
-    "butt",
     "buttocks",
     "booty",
-    "bum",
     "bottom",
     "glutes",
     "bootie",
@@ -62,6 +59,11 @@
     "nether region",
     "rosebud"
   ],
+  "regExpWords" : [
+    "\\bbutt\\b",
+    "\\bbum\\b",
+    "\\bbra\\b"
+    ],
   "includedTopics": [
   ]
 }

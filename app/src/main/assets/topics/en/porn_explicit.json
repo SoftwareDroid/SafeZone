@@ -5,7 +5,6 @@
   "words": [
     "porn",
     "pornography",
-    "cum ",
     "cumshot",
     "penetrate",
     "penetration",
@@ -35,7 +34,6 @@
     " anal ",
     "facesitting",
     "face sitting",
-    "cbt ",
     "pegging",
     "femdom",
     "bbw",
@@ -112,7 +110,10 @@
     "moan"
   ],
   "regExpWords" : [
-    "\\bass\\b"
+    "\\bass\\b",
+    "\\bcum\\b",
+    "\\bcbt\\b",
+    "\\bbutt\\b"
   ],
   "includedTopics": [
   ]

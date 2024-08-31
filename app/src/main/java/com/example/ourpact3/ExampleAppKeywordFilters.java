@@ -52,7 +52,9 @@ public class ExampleAppKeywordFilters
             // Add test Filter
             WordProcessorFilterBase accessibilityOverview = new WordListFilterExact("prevent turning of", new ArrayList<>(List.of("Use OurPact3")), false, preventDisabelingAccessabilty);
             WordProcessorFilterBase accessibilityDialog = new WordListFilterExact("prevent turning of", new ArrayList<>(List.of("Stop OurPact3?")), false, preventDisabelingAccessabilty);
+            WordProcessorFilterBase preventUninstall = new WordListFilterExact("prevent uninstall", new ArrayList<>(List.of("OurPact3","UNINSTALL")), false, preventDisabelingAccessabilty);
             filters.add(accessibilityOverview);
+            filters.add(preventUninstall);
             filters.add(accessibilityDialog);
         }
         return new AppKeywordFilter(service, topicManager, filters, appName);
