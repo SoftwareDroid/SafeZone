@@ -80,19 +80,17 @@ public class ExampleAppKeywordFilters
         String appName = "org.mozilla.firefox";
         ArrayList<WordProcessorFilterBase> filters = new ArrayList<WordProcessorFilterBase>();
         {
-            //block unsafe search
-            PipelineResult blockUnsafesearch = new PipelineResult();
-            blockUnsafesearch.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING;
-            blockUnsafesearch.logging = true;
-            ArrayList<TopicScoring> allScorings = new ArrayList<>();
-            allScorings.add(new TopicScoring("enforce_safe_search", 100, 0));
-            boolean ignoreCase = false;  // important for porn filter
-
-            WordListFilterScored blockAdultStuff = new WordListFilterScored("Enforce safe search", allScorings, ignoreCase, topicManager, blockUnsafesearch);
-            filters.add(blockAdultStuff);
+            // ignore start page
+            PipelineResult ignoreHistoryPage = new PipelineResult();
+            ignoreHistoryPage.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
+            ignoreHistoryPage.logging = true;
+            // Add test Filter
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage);
+            filters.add(ignoreSearch);
         }
 
         {
+            // note have to run before block search engines as suggestion to bad engies are blocked
             // ignore suggestion screen
             PipelineResult resultIgnoreSearch = new PipelineResult();
             resultIgnoreSearch.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
@@ -108,15 +106,23 @@ public class ExampleAppKeywordFilters
             ignoreStartpage.logging = true;
             // Add test Filter
             WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox", "Jump back in")), false, ignoreStartpage);
-            filters.add(ignoreSearch);       }
+            filters.add(ignoreSearch);
+        }
+        // Block stuff
         {
-            // ignore start page
-            PipelineResult ignoreHistoryPage = new PipelineResult();
-            ignoreHistoryPage.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
-            ignoreHistoryPage.logging = true;
-            // Add test Filter
-            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage);
-            filters.add(ignoreSearch);        }
+            //block unsafe search
+            PipelineResult blockUnsafesearch = new PipelineResult();
+            blockUnsafesearch.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING;
+            blockUnsafesearch.logging = true;
+            ArrayList<TopicScoring> allScorings = new ArrayList<>();
+            allScorings.add(new TopicScoring("enforce_safe_search", 100, 0));
+            boolean ignoreCase = false;  // important for porn filter
+
+            WordListFilterScored blockAdultStuff = new WordListFilterScored("Enforce safe search", allScorings, ignoreCase, topicManager, blockUnsafesearch);
+            filters.add(blockAdultStuff);
+        }
+
+
         {
             PipelineResult pornResult = new PipelineResult();
             pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING;

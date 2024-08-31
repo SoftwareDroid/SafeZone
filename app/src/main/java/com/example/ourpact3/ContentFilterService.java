@@ -3,7 +3,6 @@ package com.example.ourpact3;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.provider.Settings;
@@ -19,18 +18,13 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.model.CrashHandler;
 import com.example.ourpact3.model.IFilterResultCallback;
-import com.example.ourpact3.model.InvalidTopicIDException;
 import com.example.ourpact3.model.PipelineResult;
-import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.model.Topic;
-import com.example.ourpact3.model.TopicAlreadyExistsException;
 import com.example.ourpact3.model.TopicLoader;
-import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
-import com.example.ourpact3.model.TopicLoaderException;
 import com.example.ourpact3.model.TopicManager;
-import com.example.ourpact3.model.TopicMissingException;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -48,13 +42,14 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     private final TopicManager topicManager = new TopicManager();
     private final TreeMap<String, AppKeywordFilter> keywordFilters = new TreeMap<>();
     private CrashHandler crashHandler;
-
+    private CheatKeyManager cheatKeyManager;
     //    private boolean isRunning = false;
     @Override
     public void onServiceConnected()
     {
         Log.i("FOO", "Stating service");
         crashHandler = new CrashHandler(this);
+        cheatKeyManager = new CheatKeyManager(this,45);
         Thread.setDefaultUncaughtExceptionHandler(crashHandler);
 // get WindowManager needed for creating overlay window
         windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
@@ -112,6 +107,11 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
+        // the a cheat key is used then don't filter
+        if(cheatKeyManager.isServiceIsDisabled())
+        {
+            return;
+        }
         // never process this for UI control reasons
         if (event == null || event.getPackageName() == null || event.getPackageName().equals(this.getPackageName()))
         {
