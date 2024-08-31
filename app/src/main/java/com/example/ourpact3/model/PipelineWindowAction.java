@@ -2,7 +2,7 @@ package com.example.ourpact3.model;
 
 public enum PipelineWindowAction
 {
-    KILL_WINDOW,
+    PERFORM_HOME_BUTTON_AND_WARNING,
     WARNING,
     CONTINUE_PIPELINE, // Only this action doesn't abort the pipeline
     PERFORM_BACK_ACTION,

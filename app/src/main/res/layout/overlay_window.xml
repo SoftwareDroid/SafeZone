@@ -11,6 +11,13 @@
         android:background="#FFFFFF"
         android:orientation="vertical"
         android:padding="16dp">
+        <TextView
+            android:id="@+id/overlay_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF3737"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <ScrollView
             android:layout_width="250dp"
@@ -24,12 +31,25 @@
                 android:textSize="18sp" />
         </ScrollView>
 
-        <Button
-            android:id="@+id/close_button"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:text="Close" />
+            android:layout_gravity="end">
+
+            <Button
+                android:id="@+id/explain_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Explain" />
+
+            <Button
+                android:id="@+id/close_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="Close" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

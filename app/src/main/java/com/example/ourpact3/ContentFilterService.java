@@ -16,12 +16,13 @@ import android.graphics.PixelFormat;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.model.CrashHandler;
 import com.example.ourpact3.model.IFilterResultCallback;
-import com.example.ourpact3.model.PipelineResult;
+import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicLoader;
 import com.example.ourpact3.model.TopicManager;
@@ -40,7 +41,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     private WindowManager windowManager;
     private View overlayView;
     private final TopicManager topicManager = new TopicManager();
-    private final TreeMap<String, AppKeywordFilter> keywordFilters = new TreeMap<>();
+    private final TreeMap<String, AppFilter> keywordFilters = new TreeMap<>();
     private CrashHandler crashHandler;
     private CheatKeyManager cheatKeyManager;
     //    private boolean isRunning = false;
@@ -74,7 +75,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             // load all example filters
             ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager);
             exampleFilters.addExampleTopics();
-            for (AppKeywordFilter filter : exampleFilters.getAllExampleFilters())
+            for (AppFilter filter : exampleFilters.getAllExampleFilters())
             {
                 filter.setCallback(this);
                 keywordFilters.put(filter.getPackageName(), filter);
@@ -101,7 +102,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         return Settings.Secure.getInt(cr, "accessibility_display_magnification_enabled", 0) == 1;
     }
 
-    private AppKeywordFilter currentAppFilter;
+    private AppFilter currentAppFilter;
 
     @SuppressLint("NewApi")
     @Override
@@ -117,7 +118,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         {
             return;
         }
-        AppKeywordFilter filter = this.keywordFilters.get(event.getPackageName());
+        AppFilter filter = this.keywordFilters.get(event.getPackageName());
         if (filter != null)
         {
             currentAppFilter = filter;
@@ -126,41 +127,36 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     }
 
 
-    private void showOverlayWindow(String text, PipelineResult result2,boolean closeButtonIsBack)
+    private void showOverlayWindow(PipelineResultBase result2, int globalAction)
     {
-        // we need the permission to show the overlay which blocks input
-        /*if(!Settings.canDrawOverlays(getApplicationContext()))
-        {
-            return;
-        }*/
         if (overlayView == null && windowManager != null)
         {
             LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
             overlayView = inflater.inflate(R.layout.overlay_window, null);
 
             TextView overlayTextView = overlayView.findViewById(R.id.overlay_text);
+            overlayTextView.setText(result2.getDialogText());
+            TextView overlayTitle = overlayView.findViewById(R.id.overlay_title);
+            overlayTitle.setText(result2.getDialogTitle());
+            Button explainButton = (Button) overlayView.findViewById(R.id.explain_button);
+            explainButton.setVisibility(result2.hasExplainableButton ? View.VISIBLE : View.GONE);
 
-            if (result2.logging)
+            overlayView.findViewById(R.id.close_button).setOnClickListener(v ->
             {
+                hideOverlayWindow();
+                if(globalAction != -1)
+                {
+                    performGlobalAction(globalAction);
+                }
+            });
+
+            overlayView.findViewById(R.id.explain_button).setOnClickListener(v ->
+            {
+                overlayTitle.setText("Explaination:");
                 AccessibilityNodeInfo rootNode = this.getRootInActiveWindow();
                 KeywordScoreWindowCalculator scoreExplainer = new KeywordScoreWindowCalculator();
                 String explaination = scoreExplainer.getDebugFilterState(rootNode, currentAppFilter, isMagnificationEnabled());
                 overlayTextView.setText(explaination);
-            } else
-            {
-                overlayTextView.setText(text);
-            }
-            overlayView.findViewById(R.id.close_button).setOnClickListener(v ->
-            {
-                hideOverlayWindow();
-                if(closeButtonIsBack)
-                {
-                    performBackAction();
-                }
-                /*if (result2.triggerApp != null && result2.windowAction == PipelineWindowAction.KILL_WINDOW)
-                {
-                    closeOtherApp(result2.triggerApp);
-                }*/
             });
 
             WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -189,28 +185,17 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     {
     }
 
-    /*
-    private void closeOtherApp(String packageName)
-    {
-        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        if (activityManager != null)
-        {
-            activityManager.killBackgroundProcesses(packageName);
-        }
-    }*/
-
     @Override
-    public void onPipelineResult(PipelineResult result)
+    public void onPipelineResult(PipelineResultBase result)
     {
         switch (result.windowAction)
         {
             case WARNING:
-            case KILL_WINDOW:
-                this.showOverlayWindow("test ", result,true);
+            case PERFORM_HOME_BUTTON_AND_WARNING:
+                this.showOverlayWindow( result,GLOBAL_ACTION_HOME);
                 break;
             case PERFORM_BACK_ACTION_AND_WARNING:
-
-                this.showOverlayWindow("test ", result,true);
+                this.showOverlayWindow( result,GLOBAL_ACTION_BACK);
                 break;
             case PERFORM_BACK_ACTION:
                 performBackAction();
@@ -220,18 +205,19 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             case STOP_FURTHER_PROCESSING:
                 break;
         }
-        if (result.logging)
+        if (result.hasExplainableButton)
         {
             String LOG_TAG = "ContentFiler";
             Log.i(LOG_TAG, " pipeline result " + result.windowAction.toString());
         }
     }
-    public void performBackAction()
+/*    private void performHomeButton()
     {
-//        if(isKeyboardOpen())
-        {
-//            performGlobalAction(GLOBAL_ACTION_BACK);
-        }
-        performGlobalAction(GLOBAL_ACTION_BACK);
+        performGlobalAction(GLOBAL_ACTION_HOME);
     }
+
+    private void performBackAction()
+    {
+        performGlobalAction(GLOBAL_ACTION_BACK);
+    }*/
 }

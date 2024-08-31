@@ -19,7 +19,7 @@ public class WordListFilterScored extends WordProcessorFilterBase
         final int writeScore;
     }
 
-    public WordListFilterScored(String name, ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, PipelineResult result) throws TopicMissingException
+    public WordListFilterScored(String name, ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, PipelineResultKeywordFilter result) throws TopicMissingException
     {
         super(result, name);
         this.ignoreCase = ignoreCase;
@@ -52,7 +52,7 @@ public class WordListFilterScored extends WordProcessorFilterBase
         return currentScore;
     }
 
-    public PipelineResult feedWord(String text, boolean editable)
+    public PipelineResultBase feedWord(String text, boolean editable)
     {
         if (ignoreCase)
         {

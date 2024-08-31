@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class WordListFilterExact extends WordProcessorFilterBase
 {
-    public WordListFilterExact(String name, ArrayList<String> listOfWords, boolean ignoreCase, PipelineResult result)
+    public WordListFilterExact(String name, ArrayList<String> listOfWords, boolean ignoreCase, PipelineResultKeywordFilter result)
     {
         super(result, name);
         this.ignoreCase = ignoreCase;
@@ -24,7 +24,7 @@ public class WordListFilterExact extends WordProcessorFilterBase
     private final boolean ignoreCase;
     private final HashMap<String, Integer> wordToHits = new HashMap<>();
 
-    public PipelineResult feedWord(String text, boolean editable)
+    public PipelineResultBase feedWord(String text, boolean editable)
     {
         //Only process readonly fields
         if (editable)

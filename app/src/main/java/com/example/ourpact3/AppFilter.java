@@ -1,10 +1,8 @@
 package com.example.ourpact3;
 
+import com.example.ourpact3.model.AppGenericEventFilterBase;
 import com.example.ourpact3.model.IFilterResultCallback;
-import com.example.ourpact3.model.PipelineResult;
-import com.example.ourpact3.model.WordListFilterExact;
-import com.example.ourpact3.model.WordListFilterScored;
-import com.example.ourpact3.model.WordListFilterScored.TopicScoring;
+import com.example.ourpact3.model.PipelineResultBase;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
@@ -18,19 +16,21 @@ import com.example.ourpact3.model.TopicManager;
 import com.example.ourpact3.model.WordProcessorFilterBase;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class AppKeywordFilter
+public class AppFilter
 {
-    AppKeywordFilter(ContentFilterService service, TopicManager topicManager, ArrayList<WordProcessorFilterBase> filters, String packageName)
+    AppFilter(ContentFilterService service, TopicManager topicManager, ArrayList<WordProcessorFilterBase> filters, String packageName)
 
     {
         this.service = service;
         this.topicManager = topicManager;
-        this.filters = filters;
+        this.keywordFilters = filters;
         this.packageName = packageName;
         this.isMagnificationEnabled = service.isMagnificationEnabled();
+        this.genericEventFilters = new ArrayList<>();
     }
+
+
 
     public AccessibilityService service;
     private boolean isMagnificationEnabled; //needed beacuse node isVisible behaves differnt
@@ -41,10 +41,11 @@ public class AppKeywordFilter
     private TopicManager topicManager;
     private final int MAX_DELAYED_CALLS = 3;
     private int delayCount = 0;
-    private ArrayList<WordProcessorFilterBase> filters; //TODO: create and sort
+    private ArrayList<WordProcessorFilterBase> keywordFilters; //TODO: create and sort
+    private ArrayList<AppGenericEventFilterBase> genericEventFilters;
     private IFilterResultCallback callback;
 
-    public ArrayList<WordProcessorFilterBase> getAllFilters() {return filters;}
+    public ArrayList<WordProcessorFilterBase> getAllFilters() {return keywordFilters;}
     public String getPackageName()
     {
         return packageName;
@@ -55,6 +56,11 @@ public class AppKeywordFilter
         {
             this.callback = callback;
         }
+    }
+
+    public void addGenericEventFilters(AppGenericEventFilterBase genericEventFilter)
+    {
+        this.genericEventFilters.add(genericEventFilter);
     }
 
     private final Handler handler = new Handler();
@@ -70,7 +76,7 @@ public class AppKeywordFilter
             if (rootNode != null)
             {
 
-                for (WordProcessorFilterBase processor : filters)
+                for (WordProcessorFilterBase processor : keywordFilters)
                 {
                     processor.reset();
                     processNode(rootNode, processor);
@@ -86,17 +92,33 @@ public class AppKeywordFilter
     @SuppressLint("NewApi")
     public void processEvent(AccessibilityEvent event)
     {
-        if (event.getPackageName() == null || !event.getPackageName().toString().equals(packageName)  || handler.hasCallbacks(searchRunnable))
+        if (event.getPackageName() == null || !event.getPackageName().toString().equals(packageName))
         {
             return;
         }
+
 
         switch (event.getEventType())
         {
             case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
             case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
             case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
+                // First process generic filters but with viewer events
+                for(AppGenericEventFilterBase genericFilter : this.genericEventFilters)
+                {
+                    PipelineResultBase result = genericFilter.OnAccessibilityEvent(event);
+                    if(result != null)
+                    {
+                        result.triggerApp = event.getPackageName().toString();
+                        this.callback.onPipelineResult(result);
+                        return;
+                    }
+                }
             case AccessibilityEvent.TYPE_VIEW_CLICKED:
+                if(handler.hasCallbacks(searchRunnable))
+                {
+                    return;
+                }
                 // We delay an wait for more evens and postpone it at nax maxNumDelays times
                 if (delayCount < MAX_DELAYED_CALLS)
                 {
@@ -126,11 +148,22 @@ public class AppKeywordFilter
         {
             String text = node.getText().toString();
             // feed word into filer
-            PipelineResult result = currentFilter.feedWord(text, node.isEditable());
+            PipelineResultBase result = currentFilter.feedWord(text, node.isEditable());
             if (result != null)
             {
                 // Forward result to callback
                 this.callback.onPipelineResult(result);
+                // Feed result to generic event filers
+                for(AppGenericEventFilterBase genericFilter : this.genericEventFilters)
+                {
+                    PipelineResultBase genericResult = genericFilter.OnPipelineResult(result);
+                    if(genericResult != null)
+                    {
+                        pipelineRunning = genericResult.windowAction == PipelineWindowAction.CONTINUE_PIPELINE;
+                        break;
+                    }
+                }
+
                 pipelineRunning = result.windowAction == PipelineWindowAction.CONTINUE_PIPELINE;
                 if (!pipelineRunning)
                 {

@@ -16,7 +16,7 @@ public class KeywordScoreWindowCalculator
     private StringBuilder filterResultLines = new StringBuilder();
     private StringBuilder filterResultLines2 = new StringBuilder();
 
-    public String getDebugFilterState(AccessibilityNodeInfo node, AppKeywordFilter appRule, boolean isMagnificationEnabled)
+    public String getDebugFilterState(AccessibilityNodeInfo node, AppFilter appRule, boolean isMagnificationEnabled)
     {
         wordToReadableCount.clear();
         wordToWriteableCount.clear();

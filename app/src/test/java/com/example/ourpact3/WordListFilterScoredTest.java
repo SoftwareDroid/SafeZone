@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.example.ourpact3.model.InvalidTopicIDException;
-import com.example.ourpact3.model.PipelineResult;
+import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicAlreadyExistsException;
 import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
@@ -20,7 +20,7 @@ public class WordListFilterScoredTest {
 
     private WordListFilterScored filter;
     private TopicManager topicManager;
-    private PipelineResult result;
+    private PipelineResultBase result;
 
     @Before
     public void setup() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
@@ -34,7 +34,7 @@ public class WordListFilterScoredTest {
         b.addWord("bear");
         topicManager.addTopic(a);
         topicManager.addTopic(b);
-        result = new PipelineResult(); // assume this is a mock or a test implementation
+        result = new PipelineResultBase(); // assume this is a mock or a test implementation
     }
 
 
@@ -45,7 +45,7 @@ public class WordListFilterScoredTest {
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 10, 100));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, result);
         String text = "Apple";
-        PipelineResult result = filter.feedWord(text, true);
+        PipelineResultBase result = filter.feedWord(text, true);
         assertNotNull(result);
     }
 
@@ -65,7 +65,7 @@ public class WordListFilterScoredTest {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 100, 100));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, result);
-        PipelineResult result = filter.feedWord("apple", true);
+        PipelineResultBase result = filter.feedWord("apple", true);
         assertNotNull(result);
     }
 
@@ -77,7 +77,7 @@ public class WordListFilterScoredTest {
         topicScorings.add(new WordListFilterScored.TopicScoring("b", 30, 40));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, result);
         String text = "apple";
-        PipelineResult result = filter.feedWord(text, true);
+        PipelineResultBase result = filter.feedWord(text, true);
         assertNull(result);
         result = filter.feedWord(text, true);
         assertNull(result);
@@ -92,7 +92,7 @@ public class WordListFilterScoredTest {
         topicScorings.add(new WordListFilterScored.TopicScoring("b", 100, 200));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, result);
         String text = "bear";
-        PipelineResult result = filter.feedWord(text, true);
+        PipelineResultBase result = filter.feedWord(text, true);
         assertNotNull(result);
         result = filter.feedWord(text, true);
         assertNotNull(result);

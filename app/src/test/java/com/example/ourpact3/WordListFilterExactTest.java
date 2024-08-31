@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import com.example.ourpact3.model.PipelineResult;
+import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.model.WordListFilterExact;
 
 import java.util.ArrayList;
@@ -12,11 +12,11 @@ import java.util.ArrayList;
 public class WordListFilterExactTest {
 
     private WordListFilterExact filter;
-    private PipelineResult result;
+    private PipelineResultBase result;
 
     @Before
     public void setup() {
-        result = new PipelineResult(); // assume this is a mock or a test implementation
+        result = new PipelineResultBase(); // assume this is a mock or a test implementation
     }
 
 
@@ -45,7 +45,7 @@ public class WordListFilterExactTest {
         listOfWords.add("word1");
         filter = new WordListFilterExact("test", listOfWords, true, result);
         String text = "word1";
-        PipelineResult result = filter.feedWord(text, false);
+        PipelineResultBase result = filter.feedWord(text, false);
         assertNotNull(result);
     }
 
@@ -58,7 +58,7 @@ public class WordListFilterExactTest {
         String text = "word1";
         filter.feedWord(text, false);
         text = "word2";
-        PipelineResult result = filter.feedWord(text, false);
+        PipelineResultBase result = filter.feedWord(text, false);
         assertNotNull(result);
     }
 
