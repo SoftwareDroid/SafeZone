@@ -40,6 +40,24 @@ public class ExampleAppKeywordFilters
 //        topicManager.addTopic(adultChildTopic);
     }
 
+    private AppKeywordFilter getSettings()
+    {
+        String appName = "com.android.settings";
+        ArrayList<WordProcessorFilterBase> filters = new ArrayList<WordProcessorFilterBase>();
+        // prevent user for disabling the accessabilty service (only works in english)
+        {
+            PipelineResult preventDisabelingAccessabilty = new PipelineResult();
+            preventDisabelingAccessabilty.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
+            preventDisabelingAccessabilty.logging = true;
+            // Add test Filter
+            WordProcessorFilterBase accessibilityOverview = new WordListFilterExact("prevent turning of", new ArrayList<>(List.of("Use OurPact3")), false, preventDisabelingAccessabilty);
+            WordProcessorFilterBase accessibilityDialog = new WordListFilterExact("prevent turning of", new ArrayList<>(List.of("Stop OurPact3?")), false, preventDisabelingAccessabilty);
+            filters.add(accessibilityOverview);
+            filters.add(accessibilityDialog);
+        }
+        return new AppKeywordFilter(service, topicManager, filters, appName);
+    }
+
     private AppKeywordFilter getPocketCastsFilter() throws TopicMissingException
     {
 
@@ -166,6 +184,7 @@ public class ExampleAppKeywordFilters
         list.add(getFirefoxFilter());
         list.add(getPocketCastsFilter());
         list.add(getTelegramFilter2());
+        list.add(getSettings());
         return list;
     }
 }
