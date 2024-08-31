@@ -51,9 +51,9 @@ public class ExampleAppKeywordFilters
             preventDisabelingAccessabilty.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
             preventDisabelingAccessabilty.hasExplainableButton = true;
             // Add test Filter
-            WordProcessorFilterBase accessibilityOverview = new WordListFilterExact("prevent turning of", new ArrayList<>(List.of("Use OurPact3")), false, preventDisabelingAccessabilty);
-            WordProcessorFilterBase accessibilityDialog = new WordListFilterExact("prevent turning of", new ArrayList<>(List.of("Stop OurPact3?")), false, preventDisabelingAccessabilty);
-            WordProcessorFilterBase preventUninstall = new WordListFilterExact("prevent uninstall", new ArrayList<>(List.of("OurPact3","UNINSTALL")), false, preventDisabelingAccessabilty);
+            WordProcessorFilterBase accessibilityOverview = new WordListFilterExact("prevent turning of", new ArrayList<>(List.of("Use OurPact3")), false, preventDisabelingAccessabilty,false);
+            WordProcessorFilterBase accessibilityDialog = new WordListFilterExact("prevent turning of", new ArrayList<>(List.of("Stop OurPact3?")), false, preventDisabelingAccessabilty,false);
+            WordProcessorFilterBase preventUninstall = new WordListFilterExact("prevent uninstall", new ArrayList<>(List.of("OurPact3","UNINSTALL")), false, preventDisabelingAccessabilty,false);
             filters.add(accessibilityOverview);
             filters.add(preventUninstall);
             filters.add(accessibilityDialog);
@@ -71,7 +71,7 @@ public class ExampleAppKeywordFilters
             resultIgnoreSearch.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
             resultIgnoreSearch.hasExplainableButton = true;
             // Add test Filter
-            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, resultIgnoreSearch);
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, resultIgnoreSearch,false);
             filters.add(ignoreSearch);
         }
         {
@@ -106,7 +106,7 @@ public class ExampleAppKeywordFilters
             ignoreHistoryPage.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
             ignoreHistoryPage.hasExplainableButton = true;
             // Add test Filter
-            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage);
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage,false);
             filters.add(ignoreSearch);
         }
 
@@ -117,7 +117,7 @@ public class ExampleAppKeywordFilters
             resultIgnoreSearch.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
             resultIgnoreSearch.hasExplainableButton = true;
             // Add test Filter
-            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox Suggest")), false, resultIgnoreSearch);
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox Suggest")), false, resultIgnoreSearch,false);
             filters.add(ignoreSearch);
         }
         {
@@ -126,7 +126,7 @@ public class ExampleAppKeywordFilters
             ignoreStartpage.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
             ignoreStartpage.hasExplainableButton = true;
             // Add test Filter
-            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox", "Jump back in")), false, ignoreStartpage);
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox", "Jump back in")), false, ignoreStartpage,false);
             filters.add(ignoreSearch);
         }
         // Block stuff
@@ -177,7 +177,7 @@ public class ExampleAppKeywordFilters
             resultIgnoreSearch.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
             resultIgnoreSearch.hasExplainableButton = true;
             // Add test Filter
-            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("Block people nearby", new ArrayList<>(List.of("People Nearby", "Make Myself Visible")), false, resultIgnoreSearch);
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("Block people nearby", new ArrayList<>(List.of("People Nearby", "Make Myself Visible")), false, resultIgnoreSearch,false);
             filters.add(ignoreSearch);
         }
         return new AppFilter(service, topicManager, filters, appName);
@@ -195,9 +195,18 @@ public class ExampleAppKeywordFilters
             ignoreSettings.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
             ignoreSettings.hasExplainableButton = true;
             // Add test Filter
-            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Settings", "Content")), false, ignoreSettings);
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Settings", "Content")), false, ignoreSettings,false);
             filters.add(ignoreSearch);
         }
+        {
+        // ignore history page
+        PipelineResultKeywordFilter ignoreSettings = new PipelineResultKeywordFilter();
+        ignoreSettings.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
+        ignoreSettings.hasExplainableButton = true;
+        // Add test Filter
+        WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Search")), false, ignoreSettings,true);
+        filters.add(ignoreSearch);
+    }
 
 
         {

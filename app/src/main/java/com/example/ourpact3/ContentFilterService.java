@@ -5,6 +5,12 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -27,6 +33,8 @@ import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicLoader;
 import com.example.ourpact3.model.TopicManager;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeMap;
@@ -130,7 +138,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     }
 
 
-    private void showOverlayWindow(PipelineResultBase result2, int globalAction)
+    private void showOverlayWindow(PipelineResultBase result2, int[] globalAction)
     {
         if (overlayView == null && windowManager != null)
         {
@@ -147,11 +155,10 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             overlayView.findViewById(R.id.close_button).setOnClickListener(v ->
             {
                 hideOverlayWindow();
-                pauseEventProcessingFor(500);
-
-                if (globalAction != -1)
+                pauseEventProcessingFor(100);
+                for (int a : globalAction)
                 {
-                    performGlobalAction(globalAction);
+                    performGlobalAction(a);
                 }
             });
 
@@ -198,10 +205,10 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         {
             case WARNING:
             case PERFORM_HOME_BUTTON_AND_WARNING:
-                this.showOverlayWindow(result, GLOBAL_ACTION_HOME);
+                this.showOverlayWindow(result, new int[] {GLOBAL_ACTION_BACK, GLOBAL_ACTION_HOME});
                 break;
             case PERFORM_BACK_ACTION_AND_WARNING:
-                this.showOverlayWindow(result, GLOBAL_ACTION_BACK);
+                this.showOverlayWindow(result, new int[] {GLOBAL_ACTION_BACK});
                 break;
             case PERFORM_BACK_ACTION:
                 performGlobalAction(GLOBAL_ACTION_BACK);
@@ -211,7 +218,35 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             case STOP_FURTHER_PROCESSING:
                 break;
         }
+        if(result.interruptSound)
+        {
+            playSoundAndOverwriteMedia(this,"sounds/silence.mp3");
+        }
 
+    }
+
+    public void playSoundAndOverwriteMedia(Context context, String soundFileName) {
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        int result = audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE);
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            try {
+                AssetFileDescriptor afd = context.getAssets().openFd(soundFileName);
+                mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        audioManager.abandonAudioFocus(null);
+                        mp.release();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void pauseEventProcessingFor(long timeInMs)

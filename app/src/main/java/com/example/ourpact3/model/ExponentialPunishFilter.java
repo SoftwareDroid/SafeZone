@@ -15,6 +15,7 @@ public class ExponentialPunishFilter extends AppGenericEventFilterBase {
 
     public ExponentialPunishFilter(String name, int minBlockInSec,int violationExpiringInMin) {
         super(new PipelineResultExpFilter(), name);
+        this.result.interruptSound = true;
         this.violationExpiringInMin = violationExpiringInMin;
     }
 
