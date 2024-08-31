@@ -163,7 +163,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.addGenericEventFilters(new ExponentialPunishFilter("test",10));
+        appFilter.addGenericEventFilters(new ExponentialPunishFilter("test",10,3));
         return appFilter;
 
     }

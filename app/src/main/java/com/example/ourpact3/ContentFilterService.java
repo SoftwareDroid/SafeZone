@@ -44,13 +44,14 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     private final TreeMap<String, AppFilter> keywordFilters = new TreeMap<>();
     private CrashHandler crashHandler;
     private CheatKeyManager cheatKeyManager;
+    private long stopEventProcessingUntil;
     //    private boolean isRunning = false;
     @Override
     public void onServiceConnected()
     {
         Log.i("FOO", "Stating service");
         crashHandler = new CrashHandler(this);
-        cheatKeyManager = new CheatKeyManager(this,45);
+        cheatKeyManager = new CheatKeyManager(this, 45);
         Thread.setDefaultUncaughtExceptionHandler(crashHandler);
 // get WindowManager needed for creating overlay window
         windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
@@ -91,7 +92,8 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         }
     }
 
-    public boolean isKeyboardOpen() {
+    public boolean isKeyboardOpen()
+    {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         return imm.isAcceptingText();
     }
@@ -109,12 +111,13 @@ public class ContentFilterService extends AccessibilityService implements IFilte
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
         // the a cheat key is used then don't filter
-        if(cheatKeyManager.isServiceIsDisabled())
+        if (cheatKeyManager.isServiceIsDisabled())
         {
             return;
         }
+        long currentTime = System.currentTimeMillis();
         // never process this for UI control reasons
-        if (event == null || event.getPackageName() == null || event.getPackageName().equals(this.getPackageName()))
+        if (currentTime < this.stopEventProcessingUntil || event == null || event.getPackageName() == null || event.getPackageName().equals(this.getPackageName()))
         {
             return;
         }
@@ -144,7 +147,9 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             overlayView.findViewById(R.id.close_button).setOnClickListener(v ->
             {
                 hideOverlayWindow();
-                if(globalAction != -1)
+                pauseEventProcessingFor(500);
+
+                if (globalAction != -1)
                 {
                     performGlobalAction(globalAction);
                 }
@@ -193,10 +198,10 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         {
             case WARNING:
             case PERFORM_HOME_BUTTON_AND_WARNING:
-                this.showOverlayWindow( result,GLOBAL_ACTION_HOME);
+                this.showOverlayWindow(result, GLOBAL_ACTION_HOME);
                 break;
             case PERFORM_BACK_ACTION_AND_WARNING:
-                this.showOverlayWindow( result,GLOBAL_ACTION_BACK);
+                this.showOverlayWindow(result, GLOBAL_ACTION_BACK);
                 break;
             case PERFORM_BACK_ACTION:
                 performGlobalAction(GLOBAL_ACTION_BACK);
@@ -209,4 +214,8 @@ public class ContentFilterService extends AccessibilityService implements IFilte
 
     }
 
+    private void pauseEventProcessingFor(long timeInMs)
+    {
+        this.stopEventProcessingUntil = System.currentTimeMillis() + timeInMs;
+    }
 }

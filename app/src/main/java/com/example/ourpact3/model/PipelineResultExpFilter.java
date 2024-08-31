@@ -9,6 +9,7 @@ public class PipelineResultExpFilter extends PipelineResultBase
         this.windowAction = PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING;
     }
     public long blockedTil;
+    public long violationCounter;
     @Override
     public String getDialogTitle(Context ctx)
     {
@@ -31,6 +32,6 @@ public class PipelineResultExpFilter extends PipelineResultBase
         } else {
             timeDiffString = String.format("%d seconds", seconds);
         }
-        return "This app is still blocked for " + timeDiffString;
+        return "This app is still blocked for " + timeDiffString + "\n Violation Counter: " + String.valueOf(violationCounter);
     }
 }

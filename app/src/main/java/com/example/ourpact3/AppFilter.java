@@ -152,8 +152,6 @@ public class AppFilter
             if (result != null)
             {
                 result.triggerPackage = this.packageName;
-                // Forward result to callback
-                this.callback.onPipelineResult(result);
                 // Feed result to generic event filers
                 for(AppGenericEventFilterBase genericFilter : this.genericEventFilters)
                 {
@@ -161,9 +159,12 @@ public class AppFilter
                     if(genericResult != null)
                     {
                         pipelineRunning = genericResult.windowAction == PipelineWindowAction.CONTINUE_PIPELINE;
-                        break;
+                        return;
                     }
                 }
+                // Forward result to callback
+                this.callback.onPipelineResult(result);
+
 
                 pipelineRunning = result.windowAction == PipelineWindowAction.CONTINUE_PIPELINE;
                 if (!pipelineRunning)
