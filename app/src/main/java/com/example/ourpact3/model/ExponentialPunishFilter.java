@@ -59,7 +59,7 @@ public class ExponentialPunishFilter extends AppGenericEventFilterBase {
                 }
 
                 // Update blocking state
-                if (violationList.size() > 1) {
+                if (violationList.size() > 2) {
                     isBlocking = true;
                     int totalViolations = violationList.size();
                     blockTil = currentTime + TimeUnit.SECONDS.toMillis(violationExpiringInMin) + (long) Math.pow(3, totalViolations) * 1000;
