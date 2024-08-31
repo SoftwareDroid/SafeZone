@@ -29,8 +29,14 @@ public class ExponentialPunishFilter extends AppGenericEventFilterBase
                 long currentTime = System.currentTimeMillis();
                 if (currentTime < blockTil)
                 {
-                    ((PipelineResultExpFilter) result).blockedTil = blockTil;
-                    return result;
+                    if (lastEventTime + minTimeBetweenIncreasingViolationCounterInMS < currentTime)
+                    {
+                        ((PipelineResultExpFilter) result).blockedTil = blockTil;
+                        return result;
+                    } else
+                    {
+                        return null;
+                    }
                 } else
                 {
                     reset();

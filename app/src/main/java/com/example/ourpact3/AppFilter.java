@@ -109,7 +109,7 @@ public class AppFilter
                     PipelineResultBase result = genericFilter.OnAccessibilityEvent(event);
                     if(result != null)
                     {
-                        result.triggerApp = event.getPackageName().toString();
+                        result.triggerPackage = event.getPackageName().toString();
                         this.callback.onPipelineResult(result);
                         return;
                     }
@@ -151,6 +151,7 @@ public class AppFilter
             PipelineResultBase result = currentFilter.feedWord(text, node.isEditable());
             if (result != null)
             {
+                result.triggerPackage = this.packageName;
                 // Forward result to callback
                 this.callback.onPipelineResult(result);
                 // Feed result to generic event filers

@@ -135,9 +135,9 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             overlayView = inflater.inflate(R.layout.overlay_window, null);
 
             TextView overlayTextView = overlayView.findViewById(R.id.overlay_text);
-            overlayTextView.setText(result2.getDialogText());
+            overlayTextView.setText(result2.getDialogText(this));
             TextView overlayTitle = overlayView.findViewById(R.id.overlay_title);
-            overlayTitle.setText(result2.getDialogTitle());
+            overlayTitle.setText(result2.getDialogTitle(this));
             Button explainButton = (Button) overlayView.findViewById(R.id.explain_button);
             explainButton.setVisibility(result2.hasExplainableButton ? View.VISIBLE : View.GONE);
 
@@ -157,6 +157,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
                 KeywordScoreWindowCalculator scoreExplainer = new KeywordScoreWindowCalculator();
                 String explaination = scoreExplainer.getDebugFilterState(rootNode, currentAppFilter, isMagnificationEnabled());
                 overlayTextView.setText(explaination);
+                overlayView.findViewById(R.id.explain_button).setEnabled(false);
             });
 
             WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -198,26 +199,14 @@ public class ContentFilterService extends AccessibilityService implements IFilte
                 this.showOverlayWindow( result,GLOBAL_ACTION_BACK);
                 break;
             case PERFORM_BACK_ACTION:
-                performBackAction();
+                performGlobalAction(GLOBAL_ACTION_BACK);
                 break;
             case CONTINUE_PIPELINE:
                 break;
             case STOP_FURTHER_PROCESSING:
                 break;
         }
-        if (result.hasExplainableButton)
-        {
-            String LOG_TAG = "ContentFiler";
-            Log.i(LOG_TAG, " pipeline result " + result.windowAction.toString());
-        }
-    }
-/*    private void performHomeButton()
-    {
-        performGlobalAction(GLOBAL_ACTION_HOME);
+
     }
 
-    private void performBackAction()
-    {
-        performGlobalAction(GLOBAL_ACTION_BACK);
-    }*/
 }

@@ -1,5 +1,7 @@
 package com.example.ourpact3.model;
 
+import android.content.Context;
+
 public class PipelineResultExpFilter extends PipelineResultBase
 {
     PipelineResultExpFilter()
@@ -8,16 +10,16 @@ public class PipelineResultExpFilter extends PipelineResultBase
     }
     public long blockedTil;
     @Override
-    public String getDialogTitle()
+    public String getDialogTitle(Context ctx)
     {
-        return "Blocked " + this.triggerApp;
+        return "Blocked " + getAppName(ctx);
     }
 
     @Override
-    public String getDialogText()
+    public String getDialogText(Context ctx)
     {
         long currentTime = System.currentTimeMillis();
-        long timeDiff = currentTime -blockedTil;
+        long timeDiff = blockedTil - currentTime;
         long seconds = timeDiff / 1000;
         long minutes = seconds / 60;
         long hours = minutes / 60;
