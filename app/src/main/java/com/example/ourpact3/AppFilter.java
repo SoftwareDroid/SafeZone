@@ -160,6 +160,7 @@ public class AppFilter
                             return;
                         }
                     }
+                    result.screen = screen;
                     // Forward result to callback
                     this.callback.onPipelineResult(result);
 

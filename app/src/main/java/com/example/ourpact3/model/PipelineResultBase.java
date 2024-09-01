@@ -10,6 +10,7 @@ public abstract class PipelineResultBase
     public PipelineWindowAction windowAction;
     public String triggerPackage;
     public String triggerFilter;
+    public ScreenTextExtractor.Screen screen;
     public boolean interruptSound = false;
 //    public String topicTriggerWord; // which word in the topic caused the match
     public boolean hasExplainableButton;

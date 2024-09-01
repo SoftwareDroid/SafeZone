@@ -167,7 +167,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
                 overlayTitle.setText("Explaination:");
                 AccessibilityNodeInfo rootNode = this.getRootInActiveWindow();
                 KeywordScoreWindowCalculator scoreExplainer = new KeywordScoreWindowCalculator();
-                String explaination = scoreExplainer.getDebugFilterState(rootNode, currentAppFilter, isMagnificationEnabled());
+                String explaination = scoreExplainer.getDebugFilterState(result2.screen, currentAppFilter);
                 overlayTextView.setText(explaination);
                 overlayView.findViewById(R.id.explain_button).setEnabled(false);
             });
