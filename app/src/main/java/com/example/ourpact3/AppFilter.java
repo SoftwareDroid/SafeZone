@@ -12,6 +12,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.example.ourpact3.model.PipelineWindowAction;
+import com.example.ourpact3.model.ScreenTextExtractor;
 import com.example.ourpact3.model.TopicManager;
 import com.example.ourpact3.model.WordProcessorFilterBase;
 
@@ -33,16 +34,13 @@ public class AppFilter
 
 
     public AccessibilityService service;
-    private boolean isMagnificationEnabled; //needed beacuse node isVisible behaves differnt
+    private final boolean isMagnificationEnabled; //needed beacuse node isVisible behaves differnt
     private String packageName = "";
     private boolean pipelineRunning = false;
-    private String LOG_TAG = "ContentFiler";
-    private int SEARCH_DELAY_MS = 500;
     private TopicManager topicManager;
-    private final int MAX_DELAYED_CALLS = 3;
     private int delayCount = 0;
-    private ArrayList<WordProcessorFilterBase> keywordFilters; //TODO: create and sort
-    private ArrayList<AppGenericEventFilterBase> genericEventFilters;
+    private final ArrayList<WordProcessorFilterBase> keywordFilters; //TODO: create and sort
+    private final ArrayList<AppGenericEventFilterBase> genericEventFilters;
     private IFilterResultCallback callback;
 
     public ArrayList<WordProcessorFilterBase> getAllFilters() {return keywordFilters;}
@@ -72,18 +70,16 @@ public class AppFilter
             pipelineRunning = true;
             delayCount = 0;
             AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
+            ScreenTextExtractor.Screen screen = ScreenTextExtractor.extractTextElements(rootNode,isMagnificationEnabled);
+            String LOG_TAG = "ContentFiler";
             Log.d(LOG_TAG, "Start Search");
-            if (rootNode != null)
+            for (WordProcessorFilterBase processor : keywordFilters)
             {
-
-                for (WordProcessorFilterBase processor : keywordFilters)
+                processor.reset();
+                processScreen(screen, processor);
+                if (!pipelineRunning)
                 {
-                    processor.reset();
-                    processNode(rootNode, processor);
-                    if (!pipelineRunning)
-                    {
-                        return;
-                    }
+                    return;
                 }
             }
         }
@@ -98,6 +94,7 @@ public class AppFilter
         }
 
 
+        int MAX_DELAYED_CALLS = 3;
         switch (event.getEventType())
         {
             case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
@@ -123,6 +120,7 @@ public class AppFilter
                 if (delayCount < MAX_DELAYED_CALLS)
                 {
                     handler.removeCallbacks(searchRunnable);
+                    int SEARCH_DELAY_MS = 500;
                     handler.postDelayed(searchRunnable, SEARCH_DELAY_MS);
                     delayCount++;
 
@@ -136,53 +134,42 @@ public class AppFilter
     }
 
     /**
-     * @param node
+     * @param
      * @param currentFilter
      * @return
      */
-    private void processNode(AccessibilityNodeInfo node, WordProcessorFilterBase currentFilter)
+    private void processScreen(ScreenTextExtractor.Screen screen, WordProcessorFilterBase currentFilter)
     {
-        // public boolean isVisibleToUser ()
-        //Between API 16 and API 29, this method may incorrectly return false when magnification is enabled. On other versions, a node is considered visible even if it is not on the screen because magnification is active.
-        if ((isMagnificationEnabled || node.isVisibleToUser()) && node.getText() != null && node.getText().length() > 1)
+        for (ScreenTextExtractor.Screen.Node node : screen.nodes)
         {
-            String text = node.getText().toString();
-            // feed word into filer
-            PipelineResultBase result = currentFilter.feedWord(text, node.isEditable());
-            if (result != null)
+            if (node.visible || !currentFilter.checkOnlyVisibleNodes)
             {
-                result.triggerPackage = this.packageName;
-                // Feed result to generic event filers
-                for(AppGenericEventFilterBase genericFilter : this.genericEventFilters)
+                String text = node.text;
+                // feed word into filter
+                PipelineResultBase result = currentFilter.feedWord(node);
+                if (result != null)
                 {
-                    PipelineResultBase genericResult = genericFilter.OnPipelineResult(result);
-                    if(genericResult != null)
+                    result.triggerPackage = this.packageName;
+                    // Feed result to generic event filters
+                    for (AppGenericEventFilterBase genericFilter : this.genericEventFilters)
                     {
-                        pipelineRunning = genericResult.windowAction == PipelineWindowAction.CONTINUE_PIPELINE;
+                        PipelineResultBase genericResult = genericFilter.OnPipelineResult(result);
+                        if (genericResult != null)
+                        {
+                            pipelineRunning = genericResult.windowAction == PipelineWindowAction.CONTINUE_PIPELINE;
+                            return;
+                        }
+                    }
+                    // Forward result to callback
+                    this.callback.onPipelineResult(result);
+
+                    pipelineRunning = result.windowAction == PipelineWindowAction.CONTINUE_PIPELINE;
+                    if (!pipelineRunning)
+                    {
                         return;
                     }
                 }
-                // Forward result to callback
-                this.callback.onPipelineResult(result);
-
-
-                pipelineRunning = result.windowAction == PipelineWindowAction.CONTINUE_PIPELINE;
-                if (!pipelineRunning)
-                {
-                    return;
-                }
-            }
-            // abort all further processing with other processors
-
-        }
-        // process all children for current processor
-        int childCount = node.getChildCount();
-        for (int n = 0; n < childCount; n++)
-        {
-            AccessibilityNodeInfo childNode = node.getChild(n);
-            if (childNode != null && pipelineRunning)
-            {
-                processNode(childNode, currentFilter);
+                // abort all further processing with other processors
             }
         }
     }

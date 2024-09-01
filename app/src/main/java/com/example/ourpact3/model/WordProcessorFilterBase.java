@@ -9,8 +9,7 @@ public abstract class WordProcessorFilterBase {
     }
     protected PipelineResultKeywordFilter result;
     public final String name;
-    private int priority;
-    public int getPriority(){return priority;}
-    public abstract PipelineResultBase feedWord(String text, boolean editable);
+    public boolean checkOnlyVisibleNodes = true;
+    public abstract PipelineResultBase feedWord(ScreenTextExtractor.Screen.Node node);
     public abstract void reset();
 }
