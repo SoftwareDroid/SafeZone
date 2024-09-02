@@ -22,6 +22,7 @@ public abstract class PipelineResultBase
         try
         {
             PackageManager packageManager= ctx.getPackageManager();
+            packageManager.getApplicationInfo(triggerPackage,0);
             return (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(triggerPackage, PackageManager.GET_META_DATA));
         } catch (Exception e)
         {

@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
@@ -133,7 +135,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         AppFilter filter = this.keywordFilters.get(event.getPackageName());
         if (filter != null)
         {
-//            ScreenTextExtractor.Screen screen =  ScreenTextExtractor.extractTextElements(getRootInActiveWindow(),false);
+         //            ScreenTextExtractor.Screen screen =  ScreenTextExtractor.extractTextElements(getRootInActiveWindow(),false);
 //            String screenText = screen.toString();
             currentAppFilter = filter;
             filter.processEvent(event);
