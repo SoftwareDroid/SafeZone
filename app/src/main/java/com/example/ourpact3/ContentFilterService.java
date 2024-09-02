@@ -29,6 +29,7 @@ import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.model.CrashHandler;
 import com.example.ourpact3.model.IFilterResultCallback;
 import com.example.ourpact3.model.PipelineResultBase;
+import com.example.ourpact3.model.ScreenTextExtractor;
 import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicLoader;
 import com.example.ourpact3.model.TopicManager;
@@ -132,6 +133,8 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         AppFilter filter = this.keywordFilters.get(event.getPackageName());
         if (filter != null)
         {
+//            ScreenTextExtractor.Screen screen =  ScreenTextExtractor.extractTextElements(getRootInActiveWindow(),false);
+//            String screenText = screen.toString();
             currentAppFilter = filter;
             filter.processEvent(event);
         }

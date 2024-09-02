@@ -25,27 +25,43 @@ public class ScreenTextExtractor
         }
 
         public ArrayList<Node> nodes = new ArrayList<>();
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Screen [");
+            for (Node node : nodes) {
+                sb.append("\n  Node [visible=").append(node.visible)
+                        .append(", editable=").append(node.editable)
+                        .append(", text='").append(node.text)
+                        .append("', textInLowerCase='").append(node.textInLowerCase)
+                        .append("']");
+            }
+            sb.append("\n]");
+            return sb.toString();
+        }
     }
 
     public static Screen extractTextElements(AccessibilityNodeInfo node, boolean isMagnificationEnabled)
     {
         Screen screen = new Screen();
-
-        if (node.getText() != null && node.getText().length() > 1)
+        if(node != null)
         {
-            String text = node.getText().toString();
-            Screen.Node n = new Screen.Node(isMagnificationEnabled || node.isVisibleToUser(), node.isEditable(), text);
-            screen.nodes.add(n);
-        }
-
-        int childCount = node.getChildCount();
-        for (int i = 0; i < childCount; i++)
-        {
-            AccessibilityNodeInfo childNode = node.getChild(i);
-            if (childNode != null)
+            if (node.getText() != null && node.getText().length() > 1)
             {
-                Screen tempScreen = extractTextElements(childNode, isMagnificationEnabled);
-                screen.nodes.addAll(tempScreen.nodes);
+                String text = node.getText().toString();
+                Screen.Node n = new Screen.Node(isMagnificationEnabled || node.isVisibleToUser(), node.isEditable(), text);
+                screen.nodes.add(n);
+            }
+
+            int childCount = node.getChildCount();
+            for (int i = 0; i < childCount; i++)
+            {
+                AccessibilityNodeInfo childNode = node.getChild(i);
+                if (childNode != null)
+                {
+                    Screen tempScreen = extractTextElements(childNode, isMagnificationEnabled);
+                    screen.nodes.addAll(tempScreen.nodes);
+                }
             }
         }
         return screen;

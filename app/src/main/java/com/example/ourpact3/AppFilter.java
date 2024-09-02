@@ -98,6 +98,7 @@ public class AppFilter
         switch (event.getEventType())
         {
             case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
+            case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
             case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
             case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
                 // First process generic filters but with viewer events
