@@ -8,6 +8,14 @@ Create to and from json method with AI
 
 CHange app verion: build.gradle.kts
 
+Wenn emulator 1x lief AndroidStudio neustarten macht sonst ziemlich Probele
+
+KIll foreground apps not possible
+KILL background not possible
+Control media not possible
+
+import android.Manifest; // needed to check permissions
+
 # For Users:
 Use as Search Engine in e.g. Firefox: safe.duckduckgo.com/?q=%s
 most others are blocked by the safe search rule

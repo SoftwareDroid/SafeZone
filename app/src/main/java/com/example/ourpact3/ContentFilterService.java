@@ -5,14 +5,9 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -27,16 +22,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.ourpact3.model.AppKiller;
 import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.model.CrashHandler;
 import com.example.ourpact3.model.IFilterResultCallback;
 import com.example.ourpact3.model.PipelineResultBase;
-import com.example.ourpact3.model.ScreenTextExtractor;
 import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicLoader;
 import com.example.ourpact3.model.TopicManager;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
@@ -49,6 +43,12 @@ import java.util.TreeMap;
  */
 public class ContentFilterService extends AccessibilityService implements IFilterResultCallback
 {
+    public enum Mode
+    {
+        NORMAL_MODE,
+        APP_KILL_MODE_1,
+    }
+    private Mode mode = Mode.NORMAL_MODE;
     private WindowManager windowManager;
     private View overlayView;
     private final TopicManager topicManager = new TopicManager();
@@ -97,6 +97,10 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
             info.flags = AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;
             setServiceInfo(info);
+
+            //
+
+
         } catch (Exception e)
         {
             throw new RuntimeException(e);
@@ -126,6 +130,7 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         {
             return;
         }
+        AppKiller.openAppSettingsForPackage(getApplicationContext(),"au.com.shiftyjelly.pocketcasts");
         long currentTime = System.currentTimeMillis();
         // never process this for UI control reasons
         if (currentTime < this.stopEventProcessingUntil || event == null || event.getPackageName() == null || event.getPackageName().equals(this.getPackageName()))
