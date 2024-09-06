@@ -1,13 +1,5 @@
 1. Businesslogic/CoreService
 
-1.2 Support for Regulat expresiion
-ass, bra and enforce google and duckduckgo safe search
-
-1.35
-Safe search mit google erzwingen Regeln müssen komplexer
-werden if contains google. and editable and second field is found in this safe=true or so
-plus for safe.Duckduck go
-
 1.3 Firefox problem 1
 wenn die erst seite böse e.g. girls
 kann ich firefox nicht richtig mehr bedienen, da es sofort beim öffnen geschlossen wird
@@ -47,6 +39,9 @@ Aber hier nicht in assests
         <app>de.mm20.launcher2</app>
         <app>de.reimardoeffinger.quickdic</app>
     </ignored_apps>
+    
+2.10
+enforce google
 ============================Part 2 UI=====================================================
 2.0 UI Desigin anschauen z. b IOS Parent Control min 5 verschiedene was gefällt mir und ist einfach zu bedienen
 
