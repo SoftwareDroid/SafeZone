@@ -20,6 +20,8 @@ import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicLoader;
 import com.example.ourpact3.model.TopicManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -53,6 +55,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
 // Load all system topics
         TopicLoader topicLoader = new TopicLoader();
         String[] usedLanguages = {"de", "en"};
+        this.activateAppKillMode("au.com.shiftyjelly.pocketcasts");
         ArrayList<TopicLoader.TopicDescriptor> allAvailableTopics = null;
         try
         {
@@ -113,7 +116,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
         {
             return;
         }
-//        AppKiller.openAppSettingsForPackage(getApplicationContext(),"au.com.shiftyjelly.pocketcasts");
+//        AppKiller.openAppSettingsForPackage(getApplicationContext(),");
         long currentTime = System.currentTimeMillis();
         // never process this for UI control reasons
         if (event == null || event.getPackageName() == null || event.getPackageName().equals(this.getPackageName()))
@@ -165,8 +168,16 @@ public class ContentFilterService extends AccessibilityService implements IConte
     }*/
 
     @Override
-    public void setMode(Mode m)
+    public void activateAppKillMode(@NotNull String packageId)
     {
-        this.mode = m;
+        this.mode = Mode.APP_KILL_MODE_1;
+        this.appKillerService.setApp(packageId);
+    }
+
+    @Override
+    public void finishAppKilling()
+    {
+        // Perhaps show warning or notification after killing
+        this.mode = Mode.NORMAL_MODE;
     }
 }

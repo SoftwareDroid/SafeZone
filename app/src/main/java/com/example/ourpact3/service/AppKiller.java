@@ -8,95 +8,169 @@ import android.provider.Settings;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-public class AppKiller implements IServiceEventHandler{
+public class AppKiller implements IServiceEventHandler
+{
     private AccessibilityService service;
     private IContentFilterService iContentFilterService;
-    public AppKiller(AccessibilityService service,IContentFilterService iContentFilterService)
+
+    enum Mode
+    {
+        WAIT_FOR_SETTINGS_MENU,
+        WAIT_FOR_KILLING
+    }
+
+    private Mode mode;
+    private String app;
+    private final String SETTINGS_PACKAGE = "com.android.settings";
+
+    // Number of attempts to reopen settings if closed
+    private final int MAX_ATTEMPTS = 5;
+    private int attemptCount = 0;
+
+    public AppKiller(AccessibilityService service, IContentFilterService iContentFilterService)
     {
         this.service = service;
         this.iContentFilterService = iContentFilterService;
+        this.mode = Mode.WAIT_FOR_SETTINGS_MENU;
     }
-    public final String SETTINGS_PACKAGE = "com.android.settings";
+
+    public void setApp(String app)
+    {
+        this.app = app;
+        this.attemptCount = 0;
+        openAppSettingsForPackage(service.getApplicationContext(), this.app);
+    }
 
     @Override
     public void start()
     {
-
+        // Start logic if needed
     }
 
     @Override
     public void stop()
     {
-
+        // Stop logic if needed
     }
 
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
-        if(event.getPackageName() == SETTINGS_PACKAGE)
+        if (mode != Mode.WAIT_FOR_SETTINGS_MENU)
         {
-            //TODO: press button FORCE_STOP and then OK
+            return;
+        }
+        if (app != null && event.getPackageName().toString().equals(this.SETTINGS_PACKAGE))
+        {
             performForceStop();
+        } else if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
+        {
+            // If settings are closed, try to reopen them
+            attemptReopenSettings();
         }
     }
-    public static void openAppSettingsForPackage(Context context, String packageName) {
+
+    public static void openAppSettingsForPackage(Context context, String packageName)
+    {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", packageName, null);
         intent.setData(uri);
-
-        // Add the FLAG_ACTIVITY_NEW_TASK flag
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
         context.startActivity(intent);
     }
-    private void performForceStop() {
-        // Get the root node of the current window
-        AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
-        if (rootNode != null) {
-            // Find the "FORCE_STOP" button
-            AccessibilityNodeInfo forceStopButton = findNodeByText(rootNode, "FORCE_STOP");
-            if (forceStopButton != null) {
-                forceStopButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
-                // Wait for the second popup to appear
-                waitForOkButton();
+    private void performForceStop()
+    {
+        AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
+        if (rootNode != null)
+        {
+            AccessibilityNodeInfo forceStopButton = findNodeByText(rootNode, "FORCE STOP");
+            if (forceStopButton != null)
+            {
+                if (forceStopButton.isEnabled())
+                {
+                    forceStopButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    this.mode = AppKiller.Mode.WAIT_FOR_KILLING;
+                    waitForOkButton();
+                } else
+                {
+                    finishKilling();
+                }
             }
         }
     }
 
-    private void waitForOkButton() {
-        // Use a new thread to wait for the "OK" button to appear
-        new Thread(() -> {
-            try {
+    private void waitForOkButton()
+    {
+        try
+        {
+            // Continuously check for the "OK" button
+            int MAX_NUMBER_OK_TRIES = 8;
+            for (int i = 0; i < MAX_NUMBER_OK_TRIES; i++)
+            { // Check for a maximum of 10 attempts
                 // Wait for a short period to allow the second popup to appear
-                Thread.sleep(1000); // Adjust the delay as needed
-
-                // Check for the "OK" button in a loop
-                for (int i = 0; i < 5; i++) { // Check for 5 attempts
-                    AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
-                    if (rootNode != null) {
-                        AccessibilityNodeInfo okButton = findNodeByText(rootNode, "OK");
-                        if (okButton != null) {
-                            okButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                            break; // Exit the loop if the button is clicked
-                        }
+                AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
+                if (rootNode != null)
+                {
+                    AccessibilityNodeInfo okButton = findNodeByText(rootNode, "OK");
+                    if (okButton != null)
+                    {
+                        okButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        finishKilling();
+                        return; // Exit the loop if the button is clicked
                     }
-                    Thread.sleep(500); // Wait before checking again
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                // Short sleep to avoid overwhelming the system
+                Thread.sleep(50); // Sleep for 50 milliseconds
             }
-        }).start();
+            finishKilling();    // go back without killing
+        } catch (InterruptedException e)
+        {
+            finishKilling();
+            e.printStackTrace();
+        }
     }
 
-    private AccessibilityNodeInfo findNodeByText(AccessibilityNodeInfo node, String text) {
-        // Recursively search for a node with the specified text
-        if (node.getText() != null && node.getText().toString().equals(text)) {
+    private void finishKilling()
+    {
+        try
+        {
+            Thread.sleep(50); // Sleep for 50 milliseconds
+        } catch (InterruptedException e)
+        {
+
+        }
+            // Close settings agaih
+        this.service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
+        // Callback process completed
+        this.iContentFilterService.finishAppKilling();
+
+    }
+
+    private void attemptReopenSettings()
+    {
+        if (attemptCount < MAX_ATTEMPTS)
+        {
+            attemptCount++;
+            openAppSettingsForPackage(service.getApplicationContext(), this.app);
+        } else
+        {
+            // Reset attempt count if max attempts reached
+            finishKilling();
+        }
+    }
+
+    private AccessibilityNodeInfo findNodeByText(AccessibilityNodeInfo node, String text)
+    {
+        if (node.getText() != null && node.getText().toString().equals(text))
+        {
             return node;
         }
-        for (int i = 0; i < node.getChildCount(); i++) {
+        for (int i = 0; i < node.getChildCount(); i++)
+        {
             AccessibilityNodeInfo child = node.getChild(i);
             AccessibilityNodeInfo result = findNodeByText(child, text);
-            if (result != null) {
+            if (result != null)
+            {
                 return result;
             }
         }

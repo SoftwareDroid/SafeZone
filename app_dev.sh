@@ -6,5 +6,5 @@ sleep 1
 # Start other app for testing
 #adb shell am start -n au.com.shiftyjelly.pocketcasts/.ui.MainActivity
 # Go to home screen
-adb shell input keyevent 3
+#adb shell input keyevent 3
 sleep 5
