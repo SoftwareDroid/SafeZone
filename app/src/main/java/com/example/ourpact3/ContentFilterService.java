@@ -34,12 +34,10 @@ public class ContentFilterService extends AccessibilityService implements IConte
     private AppKiller appKillerService;
 
 
-
     private Mode mode = Mode.NORMAL_MODE;
     private final TopicManager topicManager = new TopicManager();
     private CrashHandler crashHandler;
     private CheatKeyManager cheatKeyManager;
-    private long stopEventProcessingUntil;
 
     //    private boolean isRunning = false;
     @Override
@@ -47,8 +45,8 @@ public class ContentFilterService extends AccessibilityService implements IConte
     {
         Log.i("FOO", "Stating service");
         crashHandler = new CrashHandler(this);
-        filterServiceManager = new TextFilterService(this,this);
-        appKillerService = new AppKiller(this,this);
+        filterServiceManager = new TextFilterService(this, this);
+        appKillerService = new AppKiller(this, this);
         cheatKeyManager = new CheatKeyManager(this, 45);
         Thread.setDefaultUncaughtExceptionHandler(crashHandler);
 // get WindowManager needed for creating overlay window
@@ -118,7 +116,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
 //        AppKiller.openAppSettingsForPackage(getApplicationContext(),"au.com.shiftyjelly.pocketcasts");
         long currentTime = System.currentTimeMillis();
         // never process this for UI control reasons
-        if (currentTime < this.stopEventProcessingUntil || event == null || event.getPackageName() == null || event.getPackageName().equals(this.getPackageName()))
+        if (event == null || event.getPackageName() == null || event.getPackageName().equals(this.getPackageName()))
         {
             return;
         }
@@ -165,11 +163,6 @@ public class ContentFilterService extends AccessibilityService implements IConte
             }
         }
     }*/
-
-    private void pauseEventProcessingFor(long timeInMs)
-    {
-        this.stopEventProcessingUntil = System.currentTimeMillis() + timeInMs;
-    }
 
     @Override
     public void setMode(Mode m)
