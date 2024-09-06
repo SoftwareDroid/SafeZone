@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
+import com.example.ourpact3.AppFilter;
+
 public abstract class PipelineResultBase
 {
 
@@ -11,6 +13,8 @@ public abstract class PipelineResultBase
     public String triggerPackage;
     public String triggerFilter;
     public ScreenTextExtractor.Screen screen;
+    public AppFilter currentAppFilter;
+
     public boolean interruptSound = false;
 //    public String topicTriggerWord; // which word in the topic caused the match
     public boolean hasExplainableButton;

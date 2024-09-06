@@ -1,7 +1,7 @@
 package com.example.ourpact3;
 
 import com.example.ourpact3.model.AppGenericEventFilterBase;
-import com.example.ourpact3.model.IFilterResultCallback;
+import com.example.ourpact3.service.IFilterResultCallback;
 import com.example.ourpact3.model.PipelineResultBase;
 
 import android.accessibilityservice.AccessibilityService;
@@ -107,6 +107,7 @@ public class AppFilter
                     PipelineResultBase result = genericFilter.OnAccessibilityEvent(event);
                     if(result != null)
                     {
+                        result.currentAppFilter = this;
                         result.triggerPackage = event.getPackageName().toString();
                         this.callback.onPipelineResult(result);
                         return;
@@ -162,6 +163,7 @@ public class AppFilter
                         }
                     }
                     result.screen = screen;
+                    result.currentAppFilter = this;
                     // Forward result to callback
                     this.callback.onPipelineResult(result);
 

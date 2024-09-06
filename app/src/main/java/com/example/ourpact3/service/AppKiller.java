@@ -1,26 +1,35 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.service;
 
-import android.app.ActivityManager;
+import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.media.AudioManager;
-import android.media.session.MediaController;
-import android.media.session.MediaSession;
-import android.media.session.MediaSessionManager;
-import android.media.session.PlaybackState;
 import android.net.Uri;
-import android.os.Process;
 import android.provider.Settings;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-
-public class AppKiller {
+public class AppKiller implements IServiceEventHandler{
+    private AccessibilityService service;
+    private IContentFilterService iContentFilterService;
+    public AppKiller(AccessibilityService service,IContentFilterService iContentFilterService)
+    {
+        this.service = service;
+        this.iContentFilterService = iContentFilterService;
+    }
     public final String SETTINGS_PACKAGE = "com.android.settings";
+
+    @Override
+    public void start()
+    {
+
+    }
+
+    @Override
+    public void stop()
+    {
+
+    }
+
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
         if(event.getPackageName() == SETTINGS_PACKAGE)
@@ -41,7 +50,7 @@ public class AppKiller {
     }
     private void performForceStop() {
         // Get the root node of the current window
-        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+        AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
         if (rootNode != null) {
             // Find the "FORCE_STOP" button
             AccessibilityNodeInfo forceStopButton = findNodeByText(rootNode, "FORCE_STOP");
@@ -63,7 +72,7 @@ public class AppKiller {
 
                 // Check for the "OK" button in a loop
                 for (int i = 0; i < 5; i++) { // Check for 5 attempts
-                    AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+                    AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
                     if (rootNode != null) {
                         AccessibilityNodeInfo okButton = findNodeByText(rootNode, "OK");
                         if (okButton != null) {

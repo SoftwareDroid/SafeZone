@@ -5,67 +5,53 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
-import android.graphics.PixelFormat;
-
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.TextView;
 
-import com.example.ourpact3.model.AppKiller;
 import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.model.CrashHandler;
-import com.example.ourpact3.model.IFilterResultCallback;
-import com.example.ourpact3.model.PipelineResultBase;
+import com.example.ourpact3.service.AppKiller;
+import com.example.ourpact3.service.IContentFilterService;
+import com.example.ourpact3.service.TextFilterService;
 import com.example.ourpact3.model.Topic;
 import com.example.ourpact3.model.TopicLoader;
 import com.example.ourpact3.model.TopicManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.TreeMap;
 
 // https://developer.android.com/guide/topics/ui/accessibility/service
 
 /**
  * NOTE: do not rename class then app_dev.sh doesn't work anymore
  */
-public class ContentFilterService extends AccessibilityService implements IFilterResultCallback
+public class ContentFilterService extends AccessibilityService implements IContentFilterService
 {
-    public enum Mode
-    {
-        NORMAL_MODE,
-        APP_KILL_MODE_1,
-    }
+    private TextFilterService filterServiceManager;
+    private AppKiller appKillerService;
+
+
+
     private Mode mode = Mode.NORMAL_MODE;
-    private WindowManager windowManager;
-    private View overlayView;
     private final TopicManager topicManager = new TopicManager();
-    private final TreeMap<String, AppFilter> keywordFilters = new TreeMap<>();
     private CrashHandler crashHandler;
     private CheatKeyManager cheatKeyManager;
     private long stopEventProcessingUntil;
+
     //    private boolean isRunning = false;
     @Override
     public void onServiceConnected()
     {
         Log.i("FOO", "Stating service");
         crashHandler = new CrashHandler(this);
+        filterServiceManager = new TextFilterService(this,this);
+        appKillerService = new AppKiller(this,this);
         cheatKeyManager = new CheatKeyManager(this, 45);
         Thread.setDefaultUncaughtExceptionHandler(crashHandler);
 // get WindowManager needed for creating overlay window
-        windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 // Load all system topics
         TopicLoader topicLoader = new TopicLoader();
         String[] usedLanguages = {"de", "en"};
@@ -89,8 +75,8 @@ public class ContentFilterService extends AccessibilityService implements IFilte
             exampleFilters.addExampleTopics();
             for (AppFilter filter : exampleFilters.getAllExampleFilters())
             {
-                filter.setCallback(this);
-                keywordFilters.put(filter.getPackageName(), filter);
+                filter.setCallback(filterServiceManager);
+                filterServiceManager.keywordFilters.put(filter.getPackageName(), filter);
             }
             AccessibilityServiceInfo info = new AccessibilityServiceInfo();
             info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
@@ -119,7 +105,6 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         return Settings.Secure.getInt(cr, "accessibility_display_magnification_enabled", 0) == 1;
     }
 
-    private AppFilter currentAppFilter;
 
     @SuppressLint("NewApi")
     @Override
@@ -130,111 +115,33 @@ public class ContentFilterService extends AccessibilityService implements IFilte
         {
             return;
         }
-        AppKiller.openAppSettingsForPackage(getApplicationContext(),"au.com.shiftyjelly.pocketcasts");
+//        AppKiller.openAppSettingsForPackage(getApplicationContext(),"au.com.shiftyjelly.pocketcasts");
         long currentTime = System.currentTimeMillis();
         // never process this for UI control reasons
         if (currentTime < this.stopEventProcessingUntil || event == null || event.getPackageName() == null || event.getPackageName().equals(this.getPackageName()))
         {
             return;
         }
-        AppFilter filter = this.keywordFilters.get(event.getPackageName());
-        if (filter != null)
+        switch (mode)
         {
-         //            ScreenTextExtractor.Screen screen =  ScreenTextExtractor.extractTextElements(getRootInActiveWindow(),false);
-//            String screenText = screen.toString();
-            currentAppFilter = filter;
-            filter.processEvent(event);
+            case NORMAL_MODE:
+                this.filterServiceManager.onAccessibilityEvent(event);
+                break;
+            case APP_KILL_MODE_1:
+                this.appKillerService.onAccessibilityEvent(event);
+                break;
         }
+
     }
 
-
-    private void showOverlayWindow(PipelineResultBase result2, int[] globalAction)
-    {
-        if (overlayView == null && windowManager != null)
-        {
-            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            overlayView = inflater.inflate(R.layout.overlay_window, null);
-
-            TextView overlayTextView = overlayView.findViewById(R.id.overlay_text);
-            overlayTextView.setText(result2.getDialogText(this));
-            TextView overlayTitle = overlayView.findViewById(R.id.overlay_title);
-            overlayTitle.setText(result2.getDialogTitle(this));
-            Button explainButton = (Button) overlayView.findViewById(R.id.explain_button);
-            explainButton.setVisibility(result2.hasExplainableButton ? View.VISIBLE : View.GONE);
-
-            overlayView.findViewById(R.id.close_button).setOnClickListener(v ->
-            {
-                hideOverlayWindow();
-                pauseEventProcessingFor(100);
-                for (int a : globalAction)
-                {
-                    performGlobalAction(a);
-                }
-            });
-
-            overlayView.findViewById(R.id.explain_button).setOnClickListener(v ->
-            {
-                overlayTitle.setText("Explaination:");
-                AccessibilityNodeInfo rootNode = this.getRootInActiveWindow();
-                KeywordScoreWindowCalculator scoreExplainer = new KeywordScoreWindowCalculator();
-                String explaination = scoreExplainer.getDebugFilterState(result2.screen, currentAppFilter);
-                overlayTextView.setText(explaination);
-                overlayView.findViewById(R.id.explain_button).setEnabled(false);
-            });
-
-            WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.MATCH_PARENT,
-//                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                    WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                            | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                    PixelFormat.OPAQUE);
-            windowManager.addView(overlayView, params);
-        }
-    }
-
-    private void hideOverlayWindow()
-    {
-        if (overlayView != null)
-        {
-            windowManager.removeView(overlayView);
-            overlayView = null;
-        }
-    }
 
     @Override
     public void onInterrupt()
     {
     }
 
-    @Override
-    public void onPipelineResult(PipelineResultBase result)
-    {
-        switch (result.windowAction)
-        {
-            case WARNING:
-            case PERFORM_HOME_BUTTON_AND_WARNING:
-                this.showOverlayWindow(result, new int[] {GLOBAL_ACTION_BACK, GLOBAL_ACTION_HOME});
-                break;
-            case PERFORM_BACK_ACTION_AND_WARNING:
-                this.showOverlayWindow(result, new int[] {GLOBAL_ACTION_BACK});
-                break;
-            case PERFORM_BACK_ACTION:
-                performGlobalAction(GLOBAL_ACTION_BACK);
-                break;
-            case CONTINUE_PIPELINE:
-                break;
-            case STOP_FURTHER_PROCESSING:
-                break;
-        }
-        if(result.interruptSound)
-        {
-            playSoundAndOverwriteMedia(this,"sounds/silence.mp3");
-        }
 
-    }
-
+/*
     public void playSoundAndOverwriteMedia(Context context, String soundFileName) {
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         int result = audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE);
@@ -257,10 +164,16 @@ public class ContentFilterService extends AccessibilityService implements IFilte
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     private void pauseEventProcessingFor(long timeInMs)
     {
         this.stopEventProcessingUntil = System.currentTimeMillis() + timeInMs;
+    }
+
+    @Override
+    public void setMode(Mode m)
+    {
+        this.mode = m;
     }
 }
