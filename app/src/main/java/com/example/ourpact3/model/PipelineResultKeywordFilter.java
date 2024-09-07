@@ -1,7 +1,7 @@
 package com.example.ourpact3.model;
 
 import android.content.Context;
-
+import com.example.ourpact3.R; // Adjust the package name as necessary
 import androidx.annotation.NonNull;
 
 public class PipelineResultKeywordFilter extends PipelineResultBase
@@ -34,6 +34,7 @@ public class PipelineResultKeywordFilter extends PipelineResultBase
 
     @Override
     public String getDialogTitle(Context ctx)
+
     {
         return "Keyword Block: " + getAppName(ctx);
     }
@@ -41,6 +42,10 @@ public class PipelineResultKeywordFilter extends PipelineResultBase
     @Override
     public String getDialogText(Context ctx)
     {
-        return "This app was blocked due to a keyword filter.";
+
+        if (this.getKillState() == KillState.KILLED) {
+            return ctx.getString(R.string.app_killed);
+        }
+        return ctx.getString(R.string.app_blocked);
     }
 }

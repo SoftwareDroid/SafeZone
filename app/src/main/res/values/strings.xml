@@ -3,4 +3,8 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="app_blocked">The app has been terminated due to a rule</string>
+    <string name="app_killed">This app has been blocked due to a rule.</string>
+    <string name="force_kill_button">FORCE STOP</string>
+    <string name="force_kill_ok_button">OK</string>
 </resources>

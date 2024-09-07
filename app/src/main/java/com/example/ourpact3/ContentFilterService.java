@@ -127,14 +127,17 @@ public class ContentFilterService extends AccessibilityService implements IConte
         switch (mode)
         {
             case NORMAL_MODE:
+                Log.d("KILLER","NORMAL MODE");
                 this.contentFilter.onAccessibilityEvent(event);
                 break;
             case APP_KILL_MODE_1:
                 try
                 {
+                    Log.d("KILLER","APP killMode");
                     this.appKillerService.onAccessibilityEvent(event);
                 } catch (InterruptedException ignored)
                 {
+                    Log.d("KILLER","APP killMode interrupt");
 
                 }
                 break;

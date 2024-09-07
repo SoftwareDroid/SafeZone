@@ -1,4 +1,5 @@
 package com.example.ourpact3.service;
+import com.example.ourpact3.R; // Adjust the package name as necessary
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
@@ -25,17 +26,18 @@ public class AppKiller implements IServiceEventHandler
         WAIT_FOR_KILLING,
         FINISHED,
     }
-
+    private Context ctx;
     private Mode mode;
     private PipelineResultBase pipelineResult;
     private final String SETTINGS_PACKAGE = "com.android.settings";
     private boolean isSettingsOpen = false; // Track if settings dialog is open
     // Number of attempts to reopen settings if closed
-    private final int MAX_ATTEMPTS = 5;
+    private final int MAX_ATTEMPTS = 3;
     private int attemptCount = 0;
 
     public AppKiller(AccessibilityService service, IContentFilterService iContentFilterService)
     {
+        this.ctx = service.getApplicationContext();
         this.isSettingsOpen = false;
         this.service = service;
         this.iContentFilterService = iContentFilterService;
@@ -108,7 +110,7 @@ public class AppKiller implements IServiceEventHandler
 
     private void performForceStop() throws InterruptedException
     {
-        int MAX_NUMBER_OK_TRIES = 15;
+        int MAX_NUMBER_OK_TRIES = 3;
         for (int i = 0; i < MAX_NUMBER_OK_TRIES; i++)
         {
             Log.d("KILLER", "PERFORM STOP " + String.valueOf(i));
@@ -116,8 +118,8 @@ public class AppKiller implements IServiceEventHandler
             AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
             if (rootNode != null)
             {
-                AccessibilityNodeInfo forceStopButton = findNodeByText(rootNode, "FORCE STOP");
-                AccessibilityNodeInfo okButton = findNodeByText(rootNode, "OK");
+                AccessibilityNodeInfo forceStopButton = findNodeByText(rootNode, ctx.getString(R.string.force_kill_button));
+                AccessibilityNodeInfo okButton = findNodeByText(rootNode,  ctx.getString(R.string.force_kill_ok_button));
                 if (okButton != null)
                 {
                     Log.d("KILLER", "CLICK B");
