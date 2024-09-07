@@ -1,5 +1,15 @@
 1. Businesslogic/CoreService
 
+TODO 1: App Killing im richtigen Betrieb Testen
+
+TODO 1 (opt): Sicherstellen das die Settings max 1 einem Zeitpunkt gefönnet sind
+
+Next 2: Test in visibiliy Nodes für Firefox Homesceen
+Firefox Startpage wird nicht richtig erkannt. Wenn ich zu viele böse Begriffe gesucht habe. Check mit invisible option
+
+Next 3: Global ignored Apps  einführwn. Needed für apply rule to other apps
+
+
 1.3 Firefox problem 1
 wenn die erst seite böse e.g. girls
 kann ich firefox nicht richtig mehr bedienen, da es sofort beim öffnen geschlossen wird

@@ -11,20 +11,26 @@ import java.util.TreeMap;
 public class TextFilterService implements IServiceEventHandler, IFilterResultCallback
 {
     private IContentFilterService iContentFilterService;
-    private OverlayWindowManager overlayWindowManager;
+    private final OverlayWindowManager overlayWindowManager;
     public TreeMap<String, AppFilter> keywordFilters = new TreeMap<>();
 
-    private AccessibilityService service;
+    private final AccessibilityService service;
     public TextFilterService(AccessibilityService service, IContentFilterService iContentFilterService)
     {
-        this.iContentFilterService = iContentFilterService;
         this.service = service;
         this.overlayWindowManager = new OverlayWindowManager(service);
+        this.iContentFilterService = iContentFilterService;
     }
 
     @Override
     public void onPipelineResult(PipelineResultBase result)
     {
+        if(result.killState == PipelineResultBase.KillState.KILL_BEFORE_WINDOW)
+        {
+            // Kill app first we get the result a second time via callback wit state == KILLED
+            this.iContentFilterService.activateAppKillMode(result);
+            return;
+        }
         switch (result.windowAction)
         {
             case WARNING:
@@ -42,10 +48,7 @@ public class TextFilterService implements IServiceEventHandler, IFilterResultCal
             case STOP_FURTHER_PROCESSING:
                 break;
         }
-        if(result.interruptSound)
-        {
-//            playSoundAndOverwriteMedia(this,"sounds/silence.mp3");
-        }
+
 
     }
 

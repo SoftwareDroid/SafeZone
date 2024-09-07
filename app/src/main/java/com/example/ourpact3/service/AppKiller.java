@@ -8,6 +8,10 @@ import android.provider.Settings;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.example.ourpact3.model.PipelineResultBase;
+
+import java.util.Objects;
+
 public class AppKiller implements IServiceEventHandler
 {
     private AccessibilityService service;
@@ -15,30 +19,38 @@ public class AppKiller implements IServiceEventHandler
 
     enum Mode
     {
-        WAIT_FOR_SETTINGS_MENU,
-        WAIT_FOR_KILLING
+        WAIT_FOR_KILLING,
+        FINISHED,
     }
 
     private Mode mode;
-    private String app;
+    private PipelineResultBase piplineResult;
     private final String SETTINGS_PACKAGE = "com.android.settings";
-
+    private boolean isSettingsOpen = false; // Track if settings dialog is open
     // Number of attempts to reopen settings if closed
     private final int MAX_ATTEMPTS = 5;
     private int attemptCount = 0;
 
     public AppKiller(AccessibilityService service, IContentFilterService iContentFilterService)
     {
+        this.isSettingsOpen = false;
         this.service = service;
         this.iContentFilterService = iContentFilterService;
-        this.mode = Mode.WAIT_FOR_SETTINGS_MENU;
+        this.mode = Mode.FINISHED; // wait til setApp
     }
 
-    public void setApp(String app)
+    public void setApp(PipelineResultBase result)
     {
-        this.app = app;
-        this.attemptCount = 0;
-        openAppSettingsForPackage(service.getApplicationContext(), this.app);
+        if (result.triggerPackage != null && !Objects.equals(result.triggerPackage, this.service.getPackageName()))
+        {
+            this.piplineResult = result;
+            this.attemptCount = 0;
+            this.mode = Mode.WAIT_FOR_KILLING;
+            openAppSettingsForPackage(service.getApplicationContext(), this.piplineResult.triggerPackage);
+        } else
+        {
+            finishKilling();
+        }
     }
 
     @Override
@@ -55,17 +67,22 @@ public class AppKiller implements IServiceEventHandler
 
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
-        if (mode != Mode.WAIT_FOR_SETTINGS_MENU)
+        if (mode == Mode.FINISHED)
         {
             return;
         }
-        if (app != null && event.getPackageName().toString().equals(this.SETTINGS_PACKAGE))
+        if (piplineResult.triggerPackage != null && event.getPackageName().toString().equals(this.SETTINGS_PACKAGE))
         {
             performForceStop();
+            isSettingsOpen = true;
         } else if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
         {
-            // If settings are closed, try to reopen them
-            attemptReopenSettings();
+            // If the current window is not the settings package, it means the user closed it
+            if (!event.getPackageName().toString().equals(this.SETTINGS_PACKAGE))
+            {
+                isSettingsOpen = false; // Reset the state if settings are closed
+                attemptReopenSettings(); // Reopen settings dialog
+            }
         }
     }
 
@@ -132,26 +149,29 @@ public class AppKiller implements IServiceEventHandler
 
     private void finishKilling()
     {
+        this.mode = Mode.FINISHED;
+        isSettingsOpen = false;
         try
         {
             Thread.sleep(50); // Sleep for 50 milliseconds
-        } catch (InterruptedException e)
+        } catch (InterruptedException ignored)
         {
 
         }
-            // Close settings agaih
-        this.service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
-        // Callback process completed
-        this.iContentFilterService.finishAppKilling();
+        // Close settings agaih
+        this.service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+        // Callback process completed and change to killed
+        this.piplineResult.killState = PipelineResultBase.KillState.KILLED;
+        this.iContentFilterService.finishAppKilling(this.piplineResult);
 
     }
 
     private void attemptReopenSettings()
     {
-        if (attemptCount < MAX_ATTEMPTS)
+        if (attemptCount < MAX_ATTEMPTS && !isSettingsOpen)
         {
             attemptCount++;
-            openAppSettingsForPackage(service.getApplicationContext(), this.app);
+            openAppSettingsForPackage(service.getApplicationContext(), this.piplineResult.triggerPackage);
         } else
         {
             // Reset attempt count if max attempts reached

@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.model.CrashHandler;
+import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.service.AppKiller;
 import com.example.ourpact3.service.IContentFilterService;
 import com.example.ourpact3.service.TextFilterService;
@@ -32,7 +33,7 @@ import java.util.Set;
  */
 public class ContentFilterService extends AccessibilityService implements IContentFilterService
 {
-    private TextFilterService filterServiceManager;
+    private TextFilterService contentFilter;;
     private AppKiller appKillerService;
 
 
@@ -47,15 +48,15 @@ public class ContentFilterService extends AccessibilityService implements IConte
     {
         Log.i("FOO", "Stating service");
         crashHandler = new CrashHandler(this);
-        filterServiceManager = new TextFilterService(this, this);
+        contentFilter = new TextFilterService(this, this);
         appKillerService = new AppKiller(this, this);
-        cheatKeyManager = new CheatKeyManager(this, 45);
+        cheatKeyManager = new CheatKeyManager(this, 45); //TODO: constant
         Thread.setDefaultUncaughtExceptionHandler(crashHandler);
 // get WindowManager needed for creating overlay window
 // Load all system topics
         TopicLoader topicLoader = new TopicLoader();
         String[] usedLanguages = {"de", "en"};
-        this.activateAppKillMode("au.com.shiftyjelly.pocketcasts");
+//        this.activateAppKillMode("au.com.shiftyjelly.pocketcasts");
         ArrayList<TopicLoader.TopicDescriptor> allAvailableTopics = null;
         try
         {
@@ -76,17 +77,14 @@ public class ContentFilterService extends AccessibilityService implements IConte
             exampleFilters.addExampleTopics();
             for (AppFilter filter : exampleFilters.getAllExampleFilters())
             {
-                filter.setCallback(filterServiceManager);
-                filterServiceManager.keywordFilters.put(filter.getPackageName(), filter);
+                filter.setCallback(contentFilter);
+                contentFilter.keywordFilters.put(filter.getPackageName(), filter);
             }
             AccessibilityServiceInfo info = new AccessibilityServiceInfo();
             info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
             info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
             info.flags = AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;
             setServiceInfo(info);
-
-            //
-
 
         } catch (Exception e)
         {
@@ -126,7 +124,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
         switch (mode)
         {
             case NORMAL_MODE:
-                this.filterServiceManager.onAccessibilityEvent(event);
+                this.contentFilter.onAccessibilityEvent(event);
                 break;
             case APP_KILL_MODE_1:
                 this.appKillerService.onAccessibilityEvent(event);
@@ -168,16 +166,17 @@ public class ContentFilterService extends AccessibilityService implements IConte
     }*/
 
     @Override
-    public void activateAppKillMode(@NotNull String packageId)
+    public void activateAppKillMode(@NotNull PipelineResultBase resultBase)
     {
         this.mode = Mode.APP_KILL_MODE_1;
-        this.appKillerService.setApp(packageId);
+        this.appKillerService.setApp(resultBase);
     }
 
     @Override
-    public void finishAppKilling()
+    public void finishAppKilling(PipelineResultBase lastResult)
     {
         // Perhaps show warning or notification after killing
         this.mode = Mode.NORMAL_MODE;
+        this.contentFilter.onPipelineResult(lastResult);
     }
 }
