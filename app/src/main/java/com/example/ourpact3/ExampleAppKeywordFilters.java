@@ -165,7 +165,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.addGenericEventFilters(new ExponentialPunishFilter("test",10,3));
+        appFilter.addGenericEventFilters(new ExponentialPunishFilter("test",10,3,5));
         return appFilter;
 
     }
@@ -215,6 +215,7 @@ public class ExampleAppKeywordFilters
             PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
             pornResult.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
             pornResult.setHasExplainableButton(true);
+            pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("porn_explicit", 33, 50));
             allScorings.add(new TopicScoring("female_body_parts", 30, 45));
@@ -229,7 +230,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.addGenericEventFilters(new ExponentialPunishFilter("test",10,10));
+        appFilter.addGenericEventFilters(new ExponentialPunishFilter("test",2,10,15));
         return appFilter;
 
 

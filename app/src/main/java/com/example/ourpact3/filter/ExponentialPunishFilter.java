@@ -14,14 +14,17 @@ public class ExponentialPunishFilter extends AppGenericEventFilterBase
     private long blockTil;
     private long lastEventTime;
     private int minTimeBetweenIncreasingViolationCounterInMS = 1000;
-    private int violationExpiringInMin;
+    private final int violationExpiringInMin; // Time in Minutes violations are remembed
     private ArrayList<Violation> violationList = new ArrayList<>();
     private boolean isBlocking = false;
-
-    public ExponentialPunishFilter(String name, int minBlockInSec, int violationExpiringInMin)
+    private final int MIN_NEEDED_VIOLATATIONS;
+    private final int MIN_TIME_OF_BLOCKING_IN_SECONDS;
+    public ExponentialPunishFilter(String name, int MIN_NEEDED_VIOLATATIONS, int violationExpiringInMin, int MIN_TIME_OF_BLOCKING_IN_SECONDS)
     {
         super(new PipelineResultExpFilter(""), name);
         this.violationExpiringInMin = violationExpiringInMin;
+        this.MIN_NEEDED_VIOLATATIONS = MIN_NEEDED_VIOLATATIONS;
+        this.MIN_TIME_OF_BLOCKING_IN_SECONDS = MIN_TIME_OF_BLOCKING_IN_SECONDS;
     }
 
     private boolean hasOneKillingViolation()
@@ -91,11 +94,11 @@ public class ExponentialPunishFilter extends AppGenericEventFilterBase
                 }
 
                 // Update blocking state
-                if (violationList.size() > 2)
+                if (violationList.size() > MIN_NEEDED_VIOLATATIONS)
                 {
                     isBlocking = true;
                     int totalViolations = violationList.size();
-                    blockTil = currentTime + TimeUnit.SECONDS.toMillis(violationExpiringInMin) + (long) Math.pow(3, totalViolations) * 1000;
+                    blockTil = currentTime + TimeUnit.SECONDS.toMillis(MIN_TIME_OF_BLOCKING_IN_SECONDS) + (long) Math.pow(3, totalViolations) * 1000;
                 }
             }
         }
