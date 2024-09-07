@@ -1,4 +1,4 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.topics;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 
 public class TopicManager
 {

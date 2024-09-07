@@ -1,7 +1,8 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.util;
 
+import android.app.NotificationManager;
 import android.content.Context;
-import android.os.Environment;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,12 +10,21 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import android.app.NotificationChannel;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.os.Build;
+
+import androidx.core.app.NotificationCompat;
+
+import com.example.ourpact3.MainActivity;
 
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
     private static final String CRASH_REPORT_FOLDER = "crashes";
     private static final String CRASH_REPORT_EXTENSION = ".txt";
-
+    private static final String CHANNEL_ID = "crash_notification_channel";
+    private static final int NOTIFICATION_ID = 1;
     private Context context;
 
     public CrashHandler(Context context) {
@@ -92,5 +102,36 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         PrintWriter printWriter = new PrintWriter(stringWriter);
         throwable.printStackTrace(printWriter);
         return stringWriter.toString();
+    }
+
+    private void showCrashNotification() {
+        // Create a notification manager
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Create a notification channel for Android O and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Crash Notifications",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        // Create an intent to open the app when the notification is clicked
+        Intent intent = new Intent(context, MainActivity.class); // Replace with your main activity
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Build the notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(android.R.drawable.ic_dialog_alert) // Set your own icon
+                .setContentTitle("Application Crash")
+                .setContentText("The application has crashed. Tap to reopen.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        // Show the notification
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 }

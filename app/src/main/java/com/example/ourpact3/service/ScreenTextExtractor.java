@@ -1,4 +1,4 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.service;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 

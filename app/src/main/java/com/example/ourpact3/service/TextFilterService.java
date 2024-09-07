@@ -25,13 +25,13 @@ public class TextFilterService implements IServiceEventHandler, IFilterResultCal
     @Override
     public void onPipelineResult(PipelineResultBase result)
     {
-        if(result.killState == PipelineResultBase.KillState.KILL_BEFORE_WINDOW)
+        if(result.getKillState() == PipelineResultBase.KillState.KILL_BEFORE_WINDOW)
         {
             // Kill app first we get the result a second time via callback wit state == KILLED
             this.iContentFilterService.activateAppKillMode(result);
             return;
         }
-        switch (result.windowAction)
+        switch (result.getWindowAction())
         {
             case WARNING:
             case PERFORM_HOME_BUTTON_AND_WARNING:

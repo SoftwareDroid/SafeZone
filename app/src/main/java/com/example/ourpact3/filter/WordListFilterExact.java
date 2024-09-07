@@ -1,4 +1,10 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.filter;
+
+import androidx.annotation.NonNull;
+
+import com.example.ourpact3.model.PipelineResultBase;
+import com.example.ourpact3.model.PipelineResultKeywordFilter;
+import com.example.ourpact3.service.ScreenTextExtractor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +12,7 @@ import java.util.Map;
 
 public class WordListFilterExact extends WordProcessorFilterBase
 {
-    public WordListFilterExact(String name, ArrayList<String> listOfWords, boolean ignoreCase, PipelineResultKeywordFilter result, boolean searchForEditable)
+    public WordListFilterExact(String name, ArrayList<String> listOfWords, boolean ignoreCase, PipelineResultKeywordFilter result, boolean searchForEditable) throws CloneNotSupportedException
     {
         super(result, name);
         this.editable = searchForEditable;
@@ -22,6 +28,14 @@ public class WordListFilterExact extends WordProcessorFilterBase
         }
     }
 
+    @NonNull
+    @Override
+    public WordListFilterExact clone() {
+            WordListFilterExact clone = (WordListFilterExact) super.clone();
+            // Deep copy the mutable HashMap
+            clone.wordToHits.putAll(new HashMap<>(this.wordToHits));
+            return clone;
+    }
     private final boolean editable;
     private final boolean ignoreCase;
     private final HashMap<String, Integer> wordToHits = new HashMap<>();
@@ -40,7 +54,8 @@ public class WordListFilterExact extends WordProcessorFilterBase
         {
             // Update
             wordToHits.put(text, hits + 1);
-            return this.isFinished() ? this.result : null;
+            PipelineResultKeywordFilter copy = (PipelineResultKeywordFilter) constResult.clone();
+            return this.isFinished() ? copy : null;
 
         }
 

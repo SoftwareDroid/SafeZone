@@ -40,7 +40,7 @@ public class OverlayWindowManager
             TextView overlayTitle = overlayView.findViewById(R.id.overlay_title);
             overlayTitle.setText(result2.getDialogTitle(service));
             Button explainButton = (Button) overlayView.findViewById(R.id.explain_button);
-            explainButton.setVisibility(result2.hasExplainableButton ? View.VISIBLE : View.GONE);
+            explainButton.setVisibility(result2.isHasExplainableButton() ? View.VISIBLE : View.GONE);
 
             overlayView.findViewById(R.id.close_button).setOnClickListener(v ->
             {
@@ -56,7 +56,7 @@ public class OverlayWindowManager
             {
                 overlayTitle.setText("Explaination:");
                 KeywordScoreWindowCalculator scoreExplainer = new KeywordScoreWindowCalculator();
-                String explaination = scoreExplainer.getDebugFilterState(result2.screen, result2.currentAppFilter);
+                String explaination = scoreExplainer.getDebugFilterState(result2.getScreen(), result2.getCurrentAppFilter());
                 overlayTextView.setText(explaination);
                 overlayView.findViewById(R.id.explain_button).setEnabled(false);
             });

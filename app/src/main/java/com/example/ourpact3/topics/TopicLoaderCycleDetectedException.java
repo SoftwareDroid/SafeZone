@@ -1,4 +1,4 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.topics;
 
 public class TopicLoaderCycleDetectedException extends Exception {
     public TopicLoaderCycleDetectedException(String message) {

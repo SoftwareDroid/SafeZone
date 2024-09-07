@@ -1,4 +1,4 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.topics;
 
 import org.json.JSONArray;
 import org.json.JSONException;

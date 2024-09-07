@@ -1,13 +1,9 @@
 package com.example.ourpact3;
 
-import android.view.accessibility.AccessibilityNodeInfo;
+import com.example.ourpact3.service.ScreenTextExtractor;
+import com.example.ourpact3.filter.WordListFilterScored;
+import com.example.ourpact3.filter.WordProcessorFilterBase;
 
-import com.example.ourpact3.model.ScreenTextExtractor;
-import com.example.ourpact3.model.WordListFilterScored;
-import com.example.ourpact3.model.WordProcessorFilterBase;
-
-import java.util.TreeMap;
-import java.util.Map;
 import java.util.TreeSet;
 
 public class KeywordScoreWindowCalculator

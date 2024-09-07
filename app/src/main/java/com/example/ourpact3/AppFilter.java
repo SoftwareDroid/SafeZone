@@ -1,6 +1,6 @@
 package com.example.ourpact3;
 
-import com.example.ourpact3.model.AppGenericEventFilterBase;
+import com.example.ourpact3.filter.AppGenericEventFilterBase;
 import com.example.ourpact3.service.IFilterResultCallback;
 import com.example.ourpact3.model.PipelineResultBase;
 
@@ -12,9 +12,9 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.example.ourpact3.model.PipelineWindowAction;
-import com.example.ourpact3.model.ScreenTextExtractor;
-import com.example.ourpact3.model.TopicManager;
-import com.example.ourpact3.model.WordProcessorFilterBase;
+import com.example.ourpact3.service.ScreenTextExtractor;
+import com.example.ourpact3.topics.TopicManager;
+import com.example.ourpact3.filter.WordProcessorFilterBase;
 
 import java.util.ArrayList;
 
@@ -107,9 +107,10 @@ public class AppFilter
                     PipelineResultBase result = genericFilter.OnAccessibilityEvent(event);
                     if(result != null)
                     {
-                        result.currentAppFilter = this;
-                        result.triggerPackage = event.getPackageName().toString();
-                        this.callback.onPipelineResult(result);
+                        PipelineResultBase resultCopy = result.clone();
+                        resultCopy.setCurrentAppFilter(this);
+                        resultCopy.setTriggerPackage(event.getPackageName().toString());
+                        this.callback.onPipelineResult(resultCopy);
                         return;
                     }
                 }
@@ -151,23 +152,24 @@ public class AppFilter
                 PipelineResultBase result = currentFilter.feedWord(node);
                 if (result != null)
                 {
-                    result.triggerPackage = this.packageName;
+                    result.setTriggerPackage(this.packageName);
                     // Feed result to generic event filters
                     for (AppGenericEventFilterBase genericFilter : this.genericEventFilters)
                     {
                         PipelineResultBase genericResult = genericFilter.OnPipelineResult(result);
                         if (genericResult != null)
                         {
-                            pipelineRunning = genericResult.windowAction == PipelineWindowAction.CONTINUE_PIPELINE;
+                            pipelineRunning = genericResult.getWindowAction() == PipelineWindowAction.CONTINUE_PIPELINE;
                             return;
                         }
                     }
-                    result.screen = screen;
-                    result.currentAppFilter = this;
+                    PipelineResultBase resultCopy = result.clone();
+                    result.setScreen(screen);
+                    result.setCurrentAppFilter(this);
                     // Forward result to callback
-                    this.callback.onPipelineResult(result);
+                    this.callback.onPipelineResult(resultCopy);
 
-                    pipelineRunning = result.windowAction == PipelineWindowAction.CONTINUE_PIPELINE;
+                    pipelineRunning = result.getWindowAction() == PipelineWindowAction.CONTINUE_PIPELINE;
                     if (!pipelineRunning)
                     {
                         return;

@@ -1,18 +1,18 @@
 package com.example.ourpact3;
 
-import com.example.ourpact3.model.ExponentialPunishFilter;
-import com.example.ourpact3.model.InvalidTopicIDException;
+import com.example.ourpact3.filter.ExponentialPunishFilter;
+import com.example.ourpact3.topics.InvalidTopicIDException;
 import com.example.ourpact3.model.PipelineResultKeywordFilter;
-import com.example.ourpact3.model.TopicAlreadyExistsException;
-import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
-import com.example.ourpact3.model.TopicManager;
-import com.example.ourpact3.model.TopicMissingException;
-import com.example.ourpact3.model.WordListFilterScored.TopicScoring;
+import com.example.ourpact3.topics.TopicAlreadyExistsException;
+import com.example.ourpact3.topics.TopicLoaderCycleDetectedException;
+import com.example.ourpact3.topics.TopicManager;
+import com.example.ourpact3.topics.TopicMissingException;
+import com.example.ourpact3.filter.WordListFilterScored.TopicScoring;
 import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.model.PipelineWindowAction;
-import com.example.ourpact3.model.WordListFilterExact;
-import com.example.ourpact3.model.WordProcessorFilterBase;
-import com.example.ourpact3.model.WordListFilterScored;
+import com.example.ourpact3.filter.WordListFilterExact;
+import com.example.ourpact3.filter.WordProcessorFilterBase;
+import com.example.ourpact3.filter.WordListFilterScored;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +41,15 @@ public class ExampleAppKeywordFilters
 //        topicManager.addTopic(adultChildTopic);
     }
 
-    private AppFilter getSettings()
+    private AppFilter getSettings() throws CloneNotSupportedException
     {
         String appName = "com.android.settings";
         ArrayList<WordProcessorFilterBase> filters = new ArrayList<WordProcessorFilterBase>();
         // prevent user for disabling the accessabilty service (only works in english)
         {
-            PipelineResultKeywordFilter preventDisabelingAccessabilty = new PipelineResultKeywordFilter();
-            preventDisabelingAccessabilty.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
-            preventDisabelingAccessabilty.hasExplainableButton = true;
+            PipelineResultKeywordFilter preventDisabelingAccessabilty = new PipelineResultKeywordFilter("");
+            preventDisabelingAccessabilty.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
+            preventDisabelingAccessabilty.setHasExplainableButton(true);
             // Add test Filter
             WordProcessorFilterBase accessibilityOverview = new WordListFilterExact("prevent turning of", new ArrayList<>(List.of("Use OurPact3")), false, preventDisabelingAccessabilty,false);
             WordProcessorFilterBase accessibilityDialog = new WordListFilterExact("prevent turning of", new ArrayList<>(List.of("Stop OurPact3?")), false, preventDisabelingAccessabilty,false);
@@ -61,24 +61,24 @@ public class ExampleAppKeywordFilters
         return new AppFilter(service, topicManager, filters, appName);
     }
 
-    private AppFilter getPocketCastsFilter() throws TopicMissingException
+    private AppFilter getPocketCastsFilter() throws TopicMissingException, CloneNotSupportedException
     {
 
         String appName = "au.com.shiftyjelly.pocketcasts";
         ArrayList<WordProcessorFilterBase> filters = new ArrayList<WordProcessorFilterBase>();
         {
-            PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter();
-            resultIgnoreSearch.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
-            resultIgnoreSearch.hasExplainableButton = true;
+            PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
+            resultIgnoreSearch.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            resultIgnoreSearch.setHasExplainableButton(true);
             // Add test Filter
             WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, resultIgnoreSearch,false);
             filters.add(ignoreSearch);
         }
         {
-            PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter();
-            pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING;
-            pornResult.hasExplainableButton = true;
-            pornResult.killState = PipelineResultBase.KillState.KILL_BEFORE_WINDOW;
+            PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
+            pornResult.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            pornResult.setHasExplainableButton(true);
+            pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("porn_explicit", 33, 50));
             allScorings.add(new TopicScoring("female_body_parts", 30, 45));
@@ -97,15 +97,15 @@ public class ExampleAppKeywordFilters
 
     }
 
-    private AppFilter getFirefoxFilter() throws TopicMissingException
+    private AppFilter getFirefoxFilter() throws TopicMissingException, CloneNotSupportedException
     {
         String appName = "org.mozilla.firefox";
         ArrayList<WordProcessorFilterBase> filters = new ArrayList<WordProcessorFilterBase>();
         {
             // ignore start page
-            PipelineResultKeywordFilter ignoreHistoryPage = new PipelineResultKeywordFilter();
-            ignoreHistoryPage.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
-            ignoreHistoryPage.hasExplainableButton = true;
+            PipelineResultKeywordFilter ignoreHistoryPage = new PipelineResultKeywordFilter("");
+            ignoreHistoryPage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            ignoreHistoryPage.setHasExplainableButton(true);
             // Add test Filter
             WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage,false);
             filters.add(ignoreSearch);
@@ -114,18 +114,18 @@ public class ExampleAppKeywordFilters
         {
             // note have to run before block search engines as suggestion to bad engies are blocked
             // ignore suggestion screen
-            PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter();
-            resultIgnoreSearch.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
-            resultIgnoreSearch.hasExplainableButton = true;
+            PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
+            resultIgnoreSearch.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            resultIgnoreSearch.setHasExplainableButton(true);
             // Add test Filter
             WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox Suggest")), false, resultIgnoreSearch,false);
             filters.add(ignoreSearch);
         }
         {
             // ignore history page
-            PipelineResultKeywordFilter ignoreStartpage = new PipelineResultKeywordFilter();
-            ignoreStartpage.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
-            ignoreStartpage.hasExplainableButton = true;
+            PipelineResultKeywordFilter ignoreStartpage = new PipelineResultKeywordFilter("");
+            ignoreStartpage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            ignoreStartpage.setHasExplainableButton(true);
             // Add test Filter
             WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox", "Jump back in")), false, ignoreStartpage,false);
             filters.add(ignoreSearch);
@@ -133,9 +133,9 @@ public class ExampleAppKeywordFilters
         // Block stuff
         {
             //block unsafe search
-            PipelineResultKeywordFilter blockUnsafesearch = new PipelineResultKeywordFilter();
-            blockUnsafesearch.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING;
-            blockUnsafesearch.hasExplainableButton = true;
+            PipelineResultKeywordFilter blockUnsafesearch = new PipelineResultKeywordFilter("");
+            blockUnsafesearch.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            blockUnsafesearch.setHasExplainableButton(true);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("enforce_safe_search", 100, 0));
             boolean ignoreCase = false;  // important for porn filter
@@ -146,10 +146,10 @@ public class ExampleAppKeywordFilters
 
 
         {
-            PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter();
-            pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING;
-            pornResult.hasExplainableButton = true;
-            pornResult.killState = PipelineResultBase.KillState.KILL_BEFORE_WINDOW;
+            PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
+            pornResult.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            pornResult.setHasExplainableButton(true);
+            pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("porn_explicit", 33, 50));
             allScorings.add(new TopicScoring("female_body_parts", 30, 45));
@@ -170,14 +170,14 @@ public class ExampleAppKeywordFilters
 
     }
 
-    private AppFilter getTelegramFilter2()
+    private AppFilter getTelegramFilter2() throws CloneNotSupportedException
     {
         String appName = "org.telegram.messenger";
         ArrayList<WordProcessorFilterBase> filters = new ArrayList<WordProcessorFilterBase>();
         {
-            PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter();
-            resultIgnoreSearch.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION;
-            resultIgnoreSearch.hasExplainableButton = true;
+            PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
+            resultIgnoreSearch.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
+            resultIgnoreSearch.setHasExplainableButton(true);
             // Add test Filter
             WordProcessorFilterBase ignoreSearch = new WordListFilterExact("Block people nearby", new ArrayList<>(List.of("People Nearby", "Make Myself Visible")), false, resultIgnoreSearch,false);
             filters.add(ignoreSearch);
@@ -185,7 +185,7 @@ public class ExampleAppKeywordFilters
         return new AppFilter(service, topicManager, filters, appName);
     }
 
-    private AppFilter getYoutubeFilter() throws TopicMissingException
+    private AppFilter getYoutubeFilter() throws TopicMissingException, CloneNotSupportedException
     {
         String appName = "org.schabi.newpipe";
         ArrayList<WordProcessorFilterBase> filters = new ArrayList<WordProcessorFilterBase>();
@@ -193,18 +193,18 @@ public class ExampleAppKeywordFilters
 
         {
             // ignore history page
-            PipelineResultKeywordFilter ignoreSettings = new PipelineResultKeywordFilter();
-            ignoreSettings.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
-            ignoreSettings.hasExplainableButton = true;
+            PipelineResultKeywordFilter ignoreSettings = new PipelineResultKeywordFilter("");
+            ignoreSettings.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            ignoreSettings.setHasExplainableButton(true);
             // Add test Filter
             WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Settings", "Content")), false, ignoreSettings,false);
             filters.add(ignoreSearch);
         }
         {
         // ignore history page
-        PipelineResultKeywordFilter ignoreSettings = new PipelineResultKeywordFilter();
-        ignoreSettings.windowAction = PipelineWindowAction.STOP_FURTHER_PROCESSING;
-        ignoreSettings.hasExplainableButton = true;
+        PipelineResultKeywordFilter ignoreSettings = new PipelineResultKeywordFilter("");
+        ignoreSettings.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+        ignoreSettings.setHasExplainableButton(true);
         // Add test Filter
         WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Search")), false, ignoreSettings,true);
         filters.add(ignoreSearch);
@@ -212,9 +212,9 @@ public class ExampleAppKeywordFilters
 
 
         {
-            PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter();
-            pornResult.windowAction = PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING;
-            pornResult.hasExplainableButton = true;
+            PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
+            pornResult.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            pornResult.setHasExplainableButton(true);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("porn_explicit", 33, 50));
             allScorings.add(new TopicScoring("female_body_parts", 30, 45));
@@ -235,7 +235,7 @@ public class ExampleAppKeywordFilters
 
     }
 
-    public ArrayList<AppFilter> getAllExampleFilters() throws TopicMissingException
+    public ArrayList<AppFilter> getAllExampleFilters() throws TopicMissingException, CloneNotSupportedException
     {
         ArrayList<AppFilter> list = new ArrayList<>();
         list.add(getFirefoxFilter());

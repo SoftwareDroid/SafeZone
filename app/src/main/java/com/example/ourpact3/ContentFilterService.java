@@ -12,14 +12,14 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.inputmethod.InputMethodManager;
 
 import com.example.ourpact3.model.CheatKeyManager;
-import com.example.ourpact3.model.CrashHandler;
+import com.example.ourpact3.util.CrashHandler;
 import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.service.AppKiller;
 import com.example.ourpact3.service.IContentFilterService;
 import com.example.ourpact3.service.TextFilterService;
-import com.example.ourpact3.model.Topic;
-import com.example.ourpact3.model.TopicLoader;
-import com.example.ourpact3.model.TopicManager;
+import com.example.ourpact3.topics.Topic;
+import com.example.ourpact3.topics.TopicLoader;
+import com.example.ourpact3.topics.TopicManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -114,8 +114,6 @@ public class ContentFilterService extends AccessibilityService implements IConte
         {
             return;
         }
-//        AppKiller.openAppSettingsForPackage(getApplicationContext(),");
-        long currentTime = System.currentTimeMillis();
         // never process this for UI control reasons
         if (event == null || event.getPackageName() == null || event.getPackageName().equals(this.getPackageName()))
         {
@@ -127,7 +125,13 @@ public class ContentFilterService extends AccessibilityService implements IConte
                 this.contentFilter.onAccessibilityEvent(event);
                 break;
             case APP_KILL_MODE_1:
-                this.appKillerService.onAccessibilityEvent(event);
+                try
+                {
+                    this.appKillerService.onAccessibilityEvent(event);
+                } catch (InterruptedException ignored)
+                {
+
+                }
                 break;
         }
 

@@ -4,16 +4,16 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import com.example.ourpact3.model.InvalidTopicIDException;
+import com.example.ourpact3.topics.InvalidTopicIDException;
 import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.model.PipelineResultKeywordFilter;
-import com.example.ourpact3.model.ScreenTextExtractor;
-import com.example.ourpact3.model.Topic;
-import com.example.ourpact3.model.TopicAlreadyExistsException;
-import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
-import com.example.ourpact3.model.TopicManager;
-import com.example.ourpact3.model.TopicMissingException;
-import com.example.ourpact3.model.WordListFilterScored;
+import com.example.ourpact3.service.ScreenTextExtractor;
+import com.example.ourpact3.topics.Topic;
+import com.example.ourpact3.topics.TopicAlreadyExistsException;
+import com.example.ourpact3.topics.TopicLoaderCycleDetectedException;
+import com.example.ourpact3.topics.TopicManager;
+import com.example.ourpact3.topics.TopicMissingException;
+import com.example.ourpact3.filter.WordListFilterScored;
 
 import java.util.ArrayList;
 import java.util.List;

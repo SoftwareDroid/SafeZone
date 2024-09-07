@@ -6,5 +6,5 @@ public interface IServiceEventHandler
 {
     void start();
     void stop();
-    void onAccessibilityEvent(AccessibilityEvent event);
+    void onAccessibilityEvent(AccessibilityEvent event) throws InterruptedException;
 }

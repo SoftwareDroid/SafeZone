@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.example.ourpact3.model.PipelineResultBase;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -24,7 +27,7 @@ public class AppKiller implements IServiceEventHandler
     }
 
     private Mode mode;
-    private PipelineResultBase piplineResult;
+    private PipelineResultBase pipelineResult;
     private final String SETTINGS_PACKAGE = "com.android.settings";
     private boolean isSettingsOpen = false; // Track if settings dialog is open
     // Number of attempts to reopen settings if closed
@@ -41,12 +44,12 @@ public class AppKiller implements IServiceEventHandler
 
     public void setApp(PipelineResultBase result)
     {
-        if (result.triggerPackage != null && !Objects.equals(result.triggerPackage, this.service.getPackageName()))
+        if (result.getTriggerPackage() != null && !Objects.equals(result.getTriggerPackage(), this.service.getPackageName()))
         {
-            this.piplineResult = result;
+            this.pipelineResult = result;
             this.attemptCount = 0;
             this.mode = Mode.WAIT_FOR_KILLING;
-            openAppSettingsForPackage(service.getApplicationContext(), this.piplineResult.triggerPackage);
+            openAppSettingsForPackage(service.getApplicationContext(), this.pipelineResult.getTriggerPackage());
         } else
         {
             finishKilling();
@@ -65,21 +68,27 @@ public class AppKiller implements IServiceEventHandler
         // Stop logic if needed
     }
 
-    public void onAccessibilityEvent(AccessibilityEvent event)
+    public void onAccessibilityEvent(AccessibilityEvent event) throws InterruptedException
     {
         if (mode == Mode.FINISHED)
         {
+            Log.d("KILLER", "I AM FINISHED");
             return;
         }
-        if (piplineResult.triggerPackage != null && event.getPackageName().toString().equals(this.SETTINGS_PACKAGE))
+        if (pipelineResult.getTriggerPackage() != null && event.getPackageName().toString().equals(this.SETTINGS_PACKAGE))
         {
+            Log.d("KILLER", "branch 1");
+
             performForceStop();
             isSettingsOpen = true;
         } else if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
         {
+            Log.d("KILLER", "branch 2");
+
             // If the current window is not the settings package, it means the user closed it
             if (!event.getPackageName().toString().equals(this.SETTINGS_PACKAGE))
             {
+                Log.d("KILLER", "branch 2a");
                 isSettingsOpen = false; // Reset the state if settings are closed
                 attemptReopenSettings(); // Reopen settings dialog
             }
@@ -88,6 +97,8 @@ public class AppKiller implements IServiceEventHandler
 
     public static void openAppSettingsForPackage(Context context, String packageName)
     {
+        Log.d("KILLER", "OPEN SETIINGS FOR APP");
+
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", packageName, null);
         intent.setData(uri);
@@ -95,60 +106,47 @@ public class AppKiller implements IServiceEventHandler
         context.startActivity(intent);
     }
 
-    private void performForceStop()
+    private void performForceStop() throws InterruptedException
     {
-        AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
-        if (rootNode != null)
+        int MAX_NUMBER_OK_TRIES = 15;
+        for (int i = 0; i < MAX_NUMBER_OK_TRIES; i++)
         {
-            AccessibilityNodeInfo forceStopButton = findNodeByText(rootNode, "FORCE STOP");
-            if (forceStopButton != null)
-            {
-                if (forceStopButton.isEnabled())
-                {
-                    forceStopButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    this.mode = AppKiller.Mode.WAIT_FOR_KILLING;
-                    waitForOkButton();
-                } else
-                {
-                    finishKilling();
-                }
-            }
-        }
-    }
+            Log.d("KILLER", "PERFORM STOP " + String.valueOf(i));
 
-    private void waitForOkButton()
-    {
-        try
-        {
-            // Continuously check for the "OK" button
-            int MAX_NUMBER_OK_TRIES = 8;
-            for (int i = 0; i < MAX_NUMBER_OK_TRIES; i++)
-            { // Check for a maximum of 10 attempts
-                // Wait for a short period to allow the second popup to appear
-                AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
-                if (rootNode != null)
+            AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
+            if (rootNode != null)
+            {
+                AccessibilityNodeInfo forceStopButton = findNodeByText(rootNode, "FORCE STOP");
+                AccessibilityNodeInfo okButton = findNodeByText(rootNode, "OK");
+                if (okButton != null)
                 {
-                    AccessibilityNodeInfo okButton = findNodeByText(rootNode, "OK");
-                    if (okButton != null)
+                    Log.d("KILLER", "CLICK B");
+
+                    okButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    finishKilling();
+                    return; // Exit the loop if the button is clicked
+                } else if (forceStopButton != null)
+                {
+                    if (forceStopButton.isEnabled())
                     {
-                        okButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        Log.d("KILLER", "CLICK A");
+
+                        forceStopButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        this.mode = AppKiller.Mode.WAIT_FOR_KILLING;
+                    } else
+                    {
                         finishKilling();
-                        return; // Exit the loop if the button is clicked
                     }
                 }
-                // Short sleep to avoid overwhelming the system
-                Thread.sleep(50); // Sleep for 50 milliseconds
+                Thread.sleep(200);
             }
-            finishKilling();    // go back without killing
-        } catch (InterruptedException e)
-        {
-            finishKilling();
-            e.printStackTrace();
         }
     }
 
     private void finishKilling()
     {
+        Log.d("KILLER", "FINISH KILLING 0");
+
         this.mode = Mode.FINISHED;
         isSettingsOpen = false;
         try
@@ -161,26 +159,34 @@ public class AppKiller implements IServiceEventHandler
         // Close settings agaih
         this.service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
         // Callback process completed and change to killed
-        this.piplineResult.killState = PipelineResultBase.KillState.KILLED;
-        this.iContentFilterService.finishAppKilling(this.piplineResult);
+        Log.d("Killer", "set to killed");
+        this.pipelineResult.setKillState(PipelineResultBase.KillState.KILLED);
+        this.iContentFilterService.finishAppKilling(this.pipelineResult);
 
     }
 
     private void attemptReopenSettings()
     {
+        Log.d("KILLER", "reopen settings");
         if (attemptCount < MAX_ATTEMPTS && !isSettingsOpen)
         {
             attemptCount++;
-            openAppSettingsForPackage(service.getApplicationContext(), this.piplineResult.triggerPackage);
+            openAppSettingsForPackage(service.getApplicationContext(), this.pipelineResult.getTriggerPackage());
         } else
         {
+            Log.d("KILLER", "FINISH KILLING 1");
             // Reset attempt count if max attempts reached
             finishKilling();
         }
     }
 
-    private AccessibilityNodeInfo findNodeByText(AccessibilityNodeInfo node, String text)
+    private AccessibilityNodeInfo findNodeByText(AccessibilityNodeInfo node, @NotNull String text)
     {
+        if (node == null)
+        {
+            Log.d("KILLER","findNodeByText null");
+            return null;
+        }
         if (node.getText() != null && node.getText().toString().equals(text))
         {
             return node;

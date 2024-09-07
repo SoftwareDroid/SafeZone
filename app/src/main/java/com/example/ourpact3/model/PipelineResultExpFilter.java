@@ -4,9 +4,10 @@ import android.content.Context;
 
 public class PipelineResultExpFilter extends PipelineResultBase
 {
-    PipelineResultExpFilter()
+    public PipelineResultExpFilter(String app)
     {
-        this.windowAction = PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING;
+        super(app);
+        this.setWindowAction(PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING);
     }
     public long blockedTil;
     public long violationCounter;

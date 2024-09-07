@@ -1,6 +1,10 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.filter;
 
 import android.view.accessibility.AccessibilityEvent;
+
+import com.example.ourpact3.model.PipelineResultBase;
+import com.example.ourpact3.model.PipelineResultExpFilter;
+import com.example.ourpact3.model.PipelineWindowAction;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +20,7 @@ public class ExponentialPunishFilter extends AppGenericEventFilterBase
 
     public ExponentialPunishFilter(String name, int minBlockInSec, int violationExpiringInMin)
     {
-        super(new PipelineResultExpFilter(), name);
+        super(new PipelineResultExpFilter(""), name);
         this.violationExpiringInMin = violationExpiringInMin;
     }
 
@@ -43,10 +47,11 @@ public class ExponentialPunishFilter extends AppGenericEventFilterBase
                 long currentTime = System.currentTimeMillis();
                 if (isBlocking && currentTime < blockTil)
                 {
+                    PipelineResultExpFilter copy = (PipelineResultExpFilter) result.clone();
                     // if one violation could have killed then we show same behavior here
-                    result.killState = hasOneKillingViolation() ? PipelineResultBase.KillState.KILL_BEFORE_WINDOW : PipelineResultBase.KillState.DO_NOT_KILL;
-                    ((PipelineResultExpFilter) result).blockedTil = blockTil;
-                    ((PipelineResultExpFilter) result).violationCounter = this.violationList.size();
+                    copy.setKillState(hasOneKillingViolation() ? PipelineResultBase.KillState.KILL_BEFORE_WINDOW : PipelineResultBase.KillState.DO_NOT_KILL);
+                    copy.blockedTil = blockTil;
+                    copy.violationCounter = this.violationList.size();
                     return result;
                 } else if (isBlocking && currentTime >= blockTil)
                 {
@@ -63,14 +68,15 @@ public class ExponentialPunishFilter extends AppGenericEventFilterBase
     public PipelineResultBase OnPipelineResult(PipelineResultBase result)
     {
         long currentTime = System.currentTimeMillis();
-        if (result.windowAction == PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING)
+        if (result.getWindowAction() == PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING)
         {
             if (currentTime - this.lastEventTime > this.minTimeBetweenIncreasingViolationCounterInMS)
             {
                 this.lastEventTime = currentTime;
 
                 // Add new violation to list
-                boolean haveToKill = result.killState == PipelineResultBase.KillState.KILL_BEFORE_WINDOW;
+                this.result.setTriggerPackage(result.getTriggerPackage()); // last event defines the trigger package
+                boolean haveToKill = result.getKillState() == PipelineResultBase.KillState.KILL_BEFORE_WINDOW;
                 violationList.add(new Violation(currentTime, haveToKill));
 
                 // Remove expired violations from list

@@ -1,4 +1,4 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 public class JSONCommentRemover

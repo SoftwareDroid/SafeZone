@@ -1,4 +1,10 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.filter;
+
+import com.example.ourpact3.model.PipelineResultBase;
+import com.example.ourpact3.model.PipelineResultKeywordFilter;
+import com.example.ourpact3.service.ScreenTextExtractor;
+import com.example.ourpact3.topics.TopicManager;
+import com.example.ourpact3.topics.TopicMissingException;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -19,7 +25,7 @@ public class WordListFilterScored extends WordProcessorFilterBase
         final int writeScore;
     }
 
-    public WordListFilterScored(String name, ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, PipelineResultKeywordFilter result) throws TopicMissingException
+    public WordListFilterScored(String name, ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, PipelineResultKeywordFilter result) throws TopicMissingException, CloneNotSupportedException
     {
         super(result, name);
         this.ignoreCase = ignoreCase;
@@ -83,8 +89,8 @@ public class WordListFilterScored extends WordProcessorFilterBase
             currentScore += scoringChange;
             if (currentScore >= MAX_SCORE)
             {
-                result.inputTriggerWord = text;
-                return result;
+                constResult.inputTriggerWord = text;
+                return constResult;
             }
         }
 

@@ -10,7 +10,12 @@
     See https://developer.android.com/training/package-visibility -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
+<!--    E.g send crash reports to server to get configs from internet-->
+    <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Required for Android 13 and above -->
+    <!-- E.g in case of crash-->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"

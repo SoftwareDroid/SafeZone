@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.example.ourpact3.model.PipelineResultBase;
-import com.example.ourpact3.model.WordListFilterExact;
+import com.example.ourpact3.filter.WordListFilterExact;
 
 import java.util.ArrayList;
 
@@ -16,7 +16,7 @@ public class WordListFilterExactTest {
 
     @Before
     public void setup() {
-        result = new PipelineResultBase(); // assume this is a mock or a test implementation
+//        result = new PipelineResultBase(); // assume this is a mock or a test implementation
     }
 
 
@@ -31,7 +31,8 @@ public class WordListFilterExactTest {
     }
 
     @Test
-    public void testFeedWord_NoMatch() {
+    public void testFeedWord_NoMatch() throws CloneNotSupportedException
+    {
         ArrayList<String> listOfWords = new ArrayList<>();
         listOfWords.add("word1");
         filter = new WordListFilterExact("test", listOfWords, true, result);
@@ -40,7 +41,8 @@ public class WordListFilterExactTest {
     }
 
     @Test
-    public void testFeedWord_Match() {
+    public void testFeedWord_Match() throws CloneNotSupportedException
+    {
         ArrayList<String> listOfWords = new ArrayList<>();
         listOfWords.add("word1");
         filter = new WordListFilterExact("test", listOfWords, true, result);

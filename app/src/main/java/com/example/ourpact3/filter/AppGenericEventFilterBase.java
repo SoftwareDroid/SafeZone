@@ -1,13 +1,15 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.filter;
 
 import android.view.accessibility.AccessibilityEvent;
+
+import com.example.ourpact3.model.PipelineResultBase;
 
 public abstract class AppGenericEventFilterBase
 {
     AppGenericEventFilterBase(PipelineResultBase result, String name)
     {
         this.result = result;
-        this.result.triggerFilter = name;
+        this.result.setTriggerFilter(name);
         this.name = name;
     }
     protected PipelineResultBase result;

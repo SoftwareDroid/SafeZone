@@ -10,14 +10,14 @@ import android.content.Context;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.example.ourpact3.model.InvalidTopicIDException;
-import com.example.ourpact3.model.Topic;
-import com.example.ourpact3.model.TopicAlreadyExistsException;
-import com.example.ourpact3.model.TopicLoader;
-import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
-import com.example.ourpact3.model.TopicLoaderException;
-import com.example.ourpact3.model.TopicManager;
-import com.example.ourpact3.model.TopicMissingException;
+import com.example.ourpact3.topics.InvalidTopicIDException;
+import com.example.ourpact3.topics.Topic;
+import com.example.ourpact3.topics.TopicAlreadyExistsException;
+import com.example.ourpact3.topics.TopicLoader;
+import com.example.ourpact3.topics.TopicLoaderCycleDetectedException;
+import com.example.ourpact3.topics.TopicLoaderException;
+import com.example.ourpact3.topics.TopicManager;
+import com.example.ourpact3.topics.TopicMissingException;
 
 import org.json.JSONException;
 import org.json.JSONObject;

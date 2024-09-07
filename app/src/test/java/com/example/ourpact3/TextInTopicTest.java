@@ -4,13 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import com.example.ourpact3.model.InvalidTopicIDException;
-import com.example.ourpact3.model.Topic;
-import com.example.ourpact3.model.TopicAlreadyExistsException;
-import com.example.ourpact3.model.TopicLoaderCycleDetectedException;
-import com.example.ourpact3.model.TopicManager;
-
-import java.util.ArrayList;
+import com.example.ourpact3.topics.InvalidTopicIDException;
+import com.example.ourpact3.topics.Topic;
+import com.example.ourpact3.topics.TopicAlreadyExistsException;
+import com.example.ourpact3.topics.TopicLoaderCycleDetectedException;
+import com.example.ourpact3.topics.TopicManager;
 
 public class TextInTopicTest {
 

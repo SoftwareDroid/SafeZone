@@ -1,8 +1,9 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.topics;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.util.Log;
+
+import com.example.ourpact3.util.JSONCommentRemover;
 
 import org.json.JSONException;
 import org.json.JSONObject;
