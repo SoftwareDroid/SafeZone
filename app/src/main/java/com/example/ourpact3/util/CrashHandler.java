@@ -34,8 +34,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
         writeCrashReport(throwable);
-        // You can also call the default exception handler here if you want
-        // Thread.getDefaultUncaughtExceptionHandler().uncaughtException(thread, throwable);
+        showCrashNotification();
     }
 
     private String getCrashReportFolder() {
@@ -120,13 +119,14 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
         // Create an intent to open the app when the notification is clicked
         Intent intent = new Intent(context, MainActivity.class); // Replace with your main activity
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear the task stack
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // Build the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_dialog_alert) // Set your own icon
                 .setContentTitle("Application Crash")
-                .setContentText("The application has crashed. Tap to reopen.")
+                .setContentText("The application has crashed. A bug report was created.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);

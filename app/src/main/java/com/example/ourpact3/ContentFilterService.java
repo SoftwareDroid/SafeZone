@@ -46,12 +46,17 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void onServiceConnected()
     {
-        Log.i("FOO", "Stating service");
+        // setup crash handler
         crashHandler = new CrashHandler(this);
+        Thread.setDefaultUncaughtExceptionHandler(crashHandler);
+        //
+        Log.i("FOO", "Stating service");
+
         contentFilter = new TextFilterService(this, this);
+
         appKillerService = new AppKiller(this, this);
         cheatKeyManager = new CheatKeyManager(this, 45); //TODO: constant
-        Thread.setDefaultUncaughtExceptionHandler(crashHandler);
+
 // get WindowManager needed for creating overlay window
 // Load all system topics
         TopicLoader topicLoader = new TopicLoader();
