@@ -48,7 +48,8 @@ public class ExampleAppKeywordFilters
         // prevent user for disabling the accessabilty service (only works in english)
         {
             PipelineResultKeywordFilter preventDisabelingAccessabilty = new PipelineResultKeywordFilter("");
-            preventDisabelingAccessabilty.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
+            preventDisabelingAccessabilty.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            preventDisabelingAccessabilty.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             preventDisabelingAccessabilty.setHasExplainableButton(true);
             // Add test Filter
             WordProcessorFilterBase accessibilityOverview = new WordListFilterExact("prevent turning of", new ArrayList<>(List.of("Use OurPact3")), false, preventDisabelingAccessabilty,false);
@@ -58,7 +59,10 @@ public class ExampleAppKeywordFilters
             filters.add(preventUninstall);
             filters.add(accessibilityDialog);
         }
-        return new AppFilter(service, topicManager, filters, appName);
+
+        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
+        appFilter.addGenericEventFilters(new ExponentialPunishFilter("test",1,30,120));
+        return appFilter;
     }
 
     private AppFilter getPocketCastsFilter() throws TopicMissingException, CloneNotSupportedException
@@ -242,8 +246,9 @@ public class ExampleAppKeywordFilters
         list.add(getFirefoxFilter());
         list.add(getPocketCastsFilter());
         list.add(getTelegramFilter2());
-        list.add(getSettings());
         list.add(getYoutubeFilter());
+        list.add(getSettings());
+
         return list;
     }
 }

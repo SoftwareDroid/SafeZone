@@ -8,7 +8,10 @@ import com.example.ourpact3.model.PipelineWindowAction;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+/*
+Only works with PERFORM_BACK_ACTION_AND_WARNING
 
+ */
 public class ExponentialPunishFilter extends AppGenericEventFilterBase
 {
     private long blockTil;
@@ -71,7 +74,7 @@ public class ExponentialPunishFilter extends AppGenericEventFilterBase
     public PipelineResultBase OnPipelineResult(PipelineResultBase result)
     {
         long currentTime = System.currentTimeMillis();
-        if (result.getWindowAction() == PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING)
+        if (result.getWindowAction() == PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING || result.getWindowAction() == PipelineWindowAction.PERFORM_BACK_ACTION)
         {
             if (currentTime - this.lastEventTime > this.minTimeBetweenIncreasingViolationCounterInMS)
             {

@@ -3,6 +3,7 @@ package com.example.ourpact3;
 import com.example.ourpact3.service.ScreenTextExtractor;
 import com.example.ourpact3.filter.WordListFilterScored;
 import com.example.ourpact3.filter.WordProcessorFilterBase;
+import com.example.ourpact3.util.SubstringFinder;
 
 import java.util.TreeSet;
 
@@ -13,6 +14,10 @@ public class KeywordScoreWindowCalculator
 
     public String getDebugFilterState(ScreenTextExtractor.Screen screen, AppFilter appRule)
     {
+        if(appRule == null)
+        {
+            return "No Info AppRule is Missing";
+        }
         filterResultLines = new StringBuilder();
         filterResultLines2 = new StringBuilder();
 
@@ -52,10 +57,15 @@ public class KeywordScoreWindowCalculator
     {
         if (word != null)
         {
+            String shortendString = word;
+            if(!topicTriggers.isEmpty())
+            {
+                shortendString = SubstringFinder.findSubstringWithContext(word,topicTriggers.first(),5);
+            }
             if(count > 0 && plusScore != 0)
             {
                 String number = count == 1 ? "" : " x " + String.valueOf(count) + " ";
-                String text = number + "'" + topicTriggers.first() + "'" + " in " + word + " (" + (read ? "read" : "write") + ") \t => +" + String.valueOf(plusScore) +"\n";
+                String text = number + "'" + topicTriggers.first() + "'" + " in '" + shortendString + "' (" + (read ? "read" : "write") + ") \t => +" + String.valueOf(plusScore) +"\n";
                 this.filterResultLines.append(text);
             }
             else

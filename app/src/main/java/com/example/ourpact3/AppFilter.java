@@ -164,12 +164,12 @@ public class AppFilter
                         }
                     }
                     PipelineResultBase resultCopy = result.clone();
-                    result.setScreen(screen);
-                    result.setCurrentAppFilter(this);
+                    resultCopy.setScreen(screen);
+                    resultCopy.setCurrentAppFilter(this);
                     // Forward result to callback
                     this.callback.onPipelineResult(resultCopy);
 
-                    pipelineRunning = result.getWindowAction() == PipelineWindowAction.CONTINUE_PIPELINE;
+                    pipelineRunning = resultCopy.getWindowAction() == PipelineWindowAction.CONTINUE_PIPELINE;
                     if (!pipelineRunning)
                     {
                         return;
