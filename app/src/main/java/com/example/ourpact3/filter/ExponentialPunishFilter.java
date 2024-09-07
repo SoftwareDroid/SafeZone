@@ -52,7 +52,7 @@ public class ExponentialPunishFilter extends AppGenericEventFilterBase
                     copy.setKillState(hasOneKillingViolation() ? PipelineResultBase.KillState.KILL_BEFORE_WINDOW : PipelineResultBase.KillState.DO_NOT_KILL);
                     copy.blockedTil = blockTil;
                     copy.violationCounter = this.violationList.size();
-                    return result;
+                    return copy;
                 } else if (isBlocking && currentTime >= blockTil)
                 {
                     isBlocking = false;
