@@ -145,7 +145,7 @@ public class AppFilter
     {
         for (ScreenTextExtractor.Screen.Node node : screen.nodes)
         {
-            if (node.visible || !currentFilter.checkOnlyVisibleNodes)
+            if (node.visible || !currentFilter.isCheckOnlyVisibleNodes())
             {
                 String text = node.text;
                 // feed word into filter

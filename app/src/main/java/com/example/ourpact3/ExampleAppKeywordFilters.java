@@ -132,6 +132,7 @@ public class ExampleAppKeywordFilters
             ignoreStartpage.setHasExplainableButton(true);
             // Add test Filter
             WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox", "Jump back in")), false, ignoreStartpage,false);
+            ignoreSearch.setCheckOnlyVisibleNodes(false);
             filters.add(ignoreSearch);
         }
         // Block stuff
@@ -169,7 +170,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.addGenericEventFilters(new ExponentialPunishFilter("test",10,3,5));
+        appFilter.addGenericEventFilters(new ExponentialPunishFilter("test",10,30,5));
         return appFilter;
 
     }

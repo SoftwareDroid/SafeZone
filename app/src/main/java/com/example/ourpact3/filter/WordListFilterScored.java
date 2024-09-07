@@ -89,8 +89,8 @@ public class WordListFilterScored extends WordProcessorFilterBase
             currentScore += scoringChange;
             if (currentScore >= MAX_SCORE)
             {
-                constResult.inputTriggerWord = text;
-                return constResult;
+                PipelineResultBase copy = this.getConstResult();
+                return copy;
             }
         }
 

@@ -54,7 +54,7 @@ public class WordListFilterExact extends WordProcessorFilterBase
         {
             // Update
             wordToHits.put(text, hits + 1);
-            PipelineResultKeywordFilter copy = (PipelineResultKeywordFilter) constResult.clone();
+            PipelineResultKeywordFilter copy = (PipelineResultKeywordFilter) getConstResult().clone();
             return this.isFinished() ? copy : null;
 
         }

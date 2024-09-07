@@ -6,13 +6,17 @@ import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.model.PipelineResultKeywordFilter;
 import com.example.ourpact3.service.ScreenTextExtractor;
 
-public abstract class WordProcessorFilterBase implements Cloneable{
-    WordProcessorFilterBase(PipelineResultKeywordFilter constResult, String name) throws CloneNotSupportedException
-    {
+public abstract class WordProcessorFilterBase implements Cloneable {
+    private PipelineResultKeywordFilter constResult; // Made private
+    public final String name; // Kept as final and public
+    private boolean checkOnlyVisibleNodes = true; // Made private
+
+    WordProcessorFilterBase(PipelineResultKeywordFilter constResult, String name) throws CloneNotSupportedException {
         this.constResult = (PipelineResultKeywordFilter) constResult.clone();
         constResult.setTriggerFilter(name);
         this.name = name;
     }
+
     @NonNull
     @Override
     public WordProcessorFilterBase clone() {
@@ -28,9 +32,26 @@ public abstract class WordProcessorFilterBase implements Cloneable{
         }
     }
 
-    protected PipelineResultKeywordFilter constResult;
-    public final String name;
-    public boolean checkOnlyVisibleNodes = true;
+    // Getter for constResult
+    public PipelineResultKeywordFilter getConstResult() {
+        return constResult;
+    }
+
+    // Setter for constResult
+    public void setConstResult(PipelineResultKeywordFilter constResult) throws CloneNotSupportedException {
+        this.constResult = (PipelineResultKeywordFilter) constResult.clone();
+    }
+
+    // Getter for checkOnlyVisibleNodes
+    public boolean isCheckOnlyVisibleNodes() {
+        return checkOnlyVisibleNodes;
+    }
+
+    // Setter for checkOnlyVisibleNodes
+    public void setCheckOnlyVisibleNodes(boolean checkOnlyVisibleNodes) {
+        this.checkOnlyVisibleNodes = checkOnlyVisibleNodes;
+    }
+
     public abstract PipelineResultBase feedWord(ScreenTextExtractor.Screen.Node node);
     public abstract void reset();
 }

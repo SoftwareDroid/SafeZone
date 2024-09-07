@@ -1,5 +1,15 @@
 1. Businesslogic/CoreService
 
+TODO: SmartFilter Serialiserbar machen
+Exmaple:
+// ignore start page
+            PipelineResultKeywordFilter ignoreHistoryPage = new PipelineResultKeywordFilter("");
+            ignoreHistoryPage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            ignoreHistoryPage.setHasExplainableButton(true);
+            // Add test Filter
+            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage,false);
+            filters.add(ignoreSearch);
+
 Next 2: Test in visibiliy Nodes für Firefox Homesceen
 Firefox Startpage wird nicht richtig erkannt. Wenn ich zu viele böse Begriffe gesucht habe. Check mit invisible option
 
