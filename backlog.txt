@@ -9,6 +9,7 @@ Exmaple:
             // Add test Filter
             WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage,false);
             filters.add(ignoreSearch);
+Interface SerialzieableJSON toJSON, fromJSON
 
 Next 2: Test in visibiliy Nodes für Firefox Homesceen
 Firefox Startpage wird nicht richtig erkannt. Wenn ich zu viele böse Begriffe gesucht habe. Check mit invisible option

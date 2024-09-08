@@ -52,6 +52,6 @@ public abstract class WordProcessorFilterBase implements Cloneable {
         this.checkOnlyVisibleNodes = checkOnlyVisibleNodes;
     }
 
-    public abstract PipelineResultBase feedWord(ScreenTextExtractor.Screen.Node node);
+    public abstract PipelineResultBase feedWord(ScreenTextExtractor.Screen.TextNode textNode);
     public abstract void reset();
 }

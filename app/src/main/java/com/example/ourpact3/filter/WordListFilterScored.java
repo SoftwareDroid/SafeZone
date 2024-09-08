@@ -58,15 +58,15 @@ public class WordListFilterScored extends WordProcessorFilterBase
         return currentScore;
     }
 
-    public PipelineResultBase feedWord(ScreenTextExtractor.Screen.Node node)
+    public PipelineResultBase feedWord(ScreenTextExtractor.Screen.TextNode textNode)
     {
-        String text = ignoreCase ? node.textInLowerCase : node.text;
+        String text = ignoreCase ? textNode.textInLowerCase : textNode.text;
 
         TopicManager.SearchResult bestSearchResult = null;
         int scoringChange = 0;
         for (TopicScoring scoring : this.topicScorings)
         {
-            if ((node.editable && scoring.writeScore == 0) || (!node.editable && scoring.readScore == 0))
+            if ((textNode.editable && scoring.writeScore == 0) || (!textNode.editable && scoring.readScore == 0))
             {
                 continue;
             }
@@ -76,7 +76,7 @@ public class WordListFilterScored extends WordProcessorFilterBase
             if (result.found && (bestSearchResult == null || result.deep < bestSearchResult.deep))
             {
                 bestSearchResult = result;
-                scoringChange = node.editable ? scoring.writeScore : scoring.readScore;
+                scoringChange = textNode.editable ? scoring.writeScore : scoring.readScore;
 
             }
         }

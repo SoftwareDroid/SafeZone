@@ -29,7 +29,7 @@ public class KeywordScoreWindowCalculator
             if (filter instanceof WordListFilterScored)
             {
                 WordListFilterScored scoredFilter = (WordListFilterScored) filter;
-                for(ScreenTextExtractor.Screen.Node n : screen.nodes)
+                for(ScreenTextExtractor.Screen.TextNode n : screen.getTextNodes())
                 {
                     scoredFilter.reset();
                     scoredFilter.feedWord(n);

@@ -143,13 +143,13 @@ public class AppFilter
      */
     private void processScreen(ScreenTextExtractor.Screen screen, WordProcessorFilterBase currentFilter)
     {
-        for (ScreenTextExtractor.Screen.Node node : screen.nodes)
+        for (ScreenTextExtractor.Screen.TextNode textNode : screen.getTextNodes())
         {
-            if (node.visible || !currentFilter.isCheckOnlyVisibleNodes())
+            if (textNode.visible || !currentFilter.isCheckOnlyVisibleNodes())
             {
-                String text = node.text;
+                String text = textNode.text;
                 // feed word into filter
-                PipelineResultBase result = currentFilter.feedWord(node);
+                PipelineResultBase result = currentFilter.feedWord(textNode);
                 if (result != null)
                 {
                     result.setTriggerPackage(this.packageName);

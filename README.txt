@@ -29,3 +29,7 @@ FIXEN PocketCasts muss bedienbar bleiben auch bei 100 scoring
 ### Documentation
 words in Topics are scored for their nearest topic (Deep).
 // Pick the topic with which is the directest e.g All contains porn and clothing. We want to count clothing with its own score
+
+
+SmartFilter; Trigger + Action
+Smart Bundling for Lang x for App y makes senses (sharing)

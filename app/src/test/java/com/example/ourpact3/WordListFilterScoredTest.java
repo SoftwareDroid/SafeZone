@@ -24,9 +24,9 @@ public class WordListFilterScoredTest {
     private TopicManager topicManager;
     private PipelineResultBase result;
 
-    ScreenTextExtractor.Screen.Node createSimpleScreen(String text,boolean edit)
+    ScreenTextExtractor.Screen.TextNode createSimpleScreen(String text, boolean edit)
     {
-        ScreenTextExtractor.Screen.Node n = new ScreenTextExtractor.Screen.Node(true,edit,text);
+        ScreenTextExtractor.Screen.TextNode n = new ScreenTextExtractor.Screen.TextNode(true,edit,text);
         return n;
     }
 
@@ -63,7 +63,7 @@ public class WordListFilterScoredTest {
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 100, 100));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
         String text = "Hello";
-        assertNull(filter.feedWord(new ScreenTextExtractor.Screen.Node(true,true,text)));
+        assertNull(filter.feedWord(new ScreenTextExtractor.Screen.TextNode(true,true,text)));
     }
 
     @Test
@@ -72,7 +72,7 @@ public class WordListFilterScoredTest {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 100, 100));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
-        PipelineResultBase result = filter.feedWord(new ScreenTextExtractor.Screen.Node(true,true,"apple"));
+        PipelineResultBase result = filter.feedWord(new ScreenTextExtractor.Screen.TextNode(true,true,"apple"));
         assertNotNull(result);
     }
 
@@ -84,11 +84,11 @@ public class WordListFilterScoredTest {
         topicScorings.add(new WordListFilterScored.TopicScoring("b", 30, 40));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
         String text = "apple";
-        PipelineResultBase result = filter.feedWord(new ScreenTextExtractor.Screen.Node(true,true,text));
+        PipelineResultBase result = filter.feedWord(new ScreenTextExtractor.Screen.TextNode(true,true,text));
         assertNull(result);
-        result = filter.feedWord(new ScreenTextExtractor.Screen.Node(true,true,text));
+        result = filter.feedWord(new ScreenTextExtractor.Screen.TextNode(true,true,text));
         assertNull(result);
-        result = filter.feedWord(new ScreenTextExtractor.Screen.Node(true,true,text));
+        result = filter.feedWord(new ScreenTextExtractor.Screen.TextNode(true,true,text));
         assertNotNull(result);
     }
 
@@ -99,9 +99,9 @@ public class WordListFilterScoredTest {
         topicScorings.add(new WordListFilterScored.TopicScoring("b", 100, 200));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
         String text = "bear";
-        PipelineResultBase result = filter.feedWord(new ScreenTextExtractor.Screen.Node(true,true,text));
+        PipelineResultBase result = filter.feedWord(new ScreenTextExtractor.Screen.TextNode(true,true,text));
         assertNotNull(result);
-        result = filter.feedWord(new ScreenTextExtractor.Screen.Node(true,true,text));
+        result = filter.feedWord(new ScreenTextExtractor.Screen.TextNode(true,true,text));
         assertNotNull(result);
     }
 
@@ -134,14 +134,14 @@ public class WordListFilterScoredTest {
         topicScorings.add(new WordListFilterScored.TopicScoring("food", 50, 50));
         topicScorings.add(new WordListFilterScored.TopicScoring("fruits", 30, 30));
         filter = new WordListFilterScored("test", topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
-        filter.feedWord(new ScreenTextExtractor.Screen.Node(true,true,"apple"));
+        filter.feedWord(new ScreenTextExtractor.Screen.TextNode(true,true,"apple"));
         assertEquals(filter.getCurrentScore(),30);//addiert 50+30 ist einfach falsch
         filter.reset();
-        filter.feedWord(new ScreenTextExtractor.Screen.Node(true,true,"food"));
+        filter.feedWord(new ScreenTextExtractor.Screen.TextNode(true,true,"food"));
         assertEquals(filter.getCurrentScore(),50);
         filter.reset();
 // Cake has no scoring so parent scoring is used
-        filter.feedWord(new ScreenTextExtractor.Screen.Node(true,true,"cake"));
+        filter.feedWord(new ScreenTextExtractor.Screen.TextNode(true,true,"cake"));
         assertEquals(filter.getCurrentScore(),50);
     }
 }

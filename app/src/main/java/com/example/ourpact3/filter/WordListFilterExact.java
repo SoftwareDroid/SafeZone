@@ -40,14 +40,14 @@ public class WordListFilterExact extends WordProcessorFilterBase
     private final boolean ignoreCase;
     private final HashMap<String, Integer> wordToHits = new HashMap<>();
 
-    public PipelineResultBase feedWord(ScreenTextExtractor.Screen.Node node)
+    public PipelineResultBase feedWord(ScreenTextExtractor.Screen.TextNode textNode)
     {
         //Only process readonly fields
-        if (node.editable != this.editable)
+        if (textNode.editable != this.editable)
         {
             return null;
         }
-        String text = ignoreCase ? node.textInLowerCase : node.text;
+        String text = ignoreCase ? textNode.textInLowerCase : textNode.text;
 
         Integer hits = this.wordToHits.get(text);
         if (hits != null)
