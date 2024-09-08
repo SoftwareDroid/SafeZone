@@ -1,4 +1,4 @@
-package com.example.ourpact3.learn_mode;
+/*package com.example.ourpact3.learn_mode;
 import android.os.IBinder;
 import android.app.Service;
 import android.content.Intent;
@@ -23,6 +23,34 @@ public class OverlayService extends Service {
         super.onCreate();
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         createOverlay();
+    }
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            String action = intent.getAction();
+            if ("START_OVERLAY".equals(action)) {
+                createOverlay();
+            } else if ("STOP_OVERLAY".equals(action)) {
+                stopOverlay();
+            }
+        }
+        return START_STICKY;
+    }
+
+
+    private void stopOverlay() {
+        if (overlayView != null) {
+            windowManager.removeView(overlayView);
+            overlayView = null;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopOverlay();
     }
 
     private void createOverlay() {
@@ -70,14 +98,9 @@ public class OverlayService extends Service {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (overlayView != null) windowManager.removeView(overlayView);
-    }
-
-    @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 }
 
+*/

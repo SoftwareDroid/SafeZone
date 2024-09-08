@@ -1,6 +1,7 @@
 package com.example.ourpact3.service;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.example.ourpact3.AppFilter;
@@ -15,6 +16,7 @@ public class TextFilterService implements IServiceEventHandler, IFilterResultCal
     public TreeMap<String, AppFilter> keywordFilters = new TreeMap<>();
 
     private final AccessibilityService service;
+
     public TextFilterService(AccessibilityService service, IContentFilterService iContentFilterService)
     {
         this.service = service;
@@ -22,10 +24,11 @@ public class TextFilterService implements IServiceEventHandler, IFilterResultCal
         this.iContentFilterService = iContentFilterService;
     }
 
+
     @Override
     public void onPipelineResult(PipelineResultBase result)
     {
-        if(result.getKillState() == PipelineResultBase.KillState.KILL_BEFORE_WINDOW)
+        if (result.getKillState() == PipelineResultBase.KillState.KILL_BEFORE_WINDOW)
         {
             // Kill app first we get the result a second time via callback wit state == KILLED
             this.iContentFilterService.activateAppKillMode(result);
@@ -35,10 +38,10 @@ public class TextFilterService implements IServiceEventHandler, IFilterResultCal
         {
             case WARNING:
             case PERFORM_HOME_BUTTON_AND_WARNING:
-                overlayWindowManager.showOverlayWindow(result, new int[] {AccessibilityService.GLOBAL_ACTION_BACK, AccessibilityService.GLOBAL_ACTION_HOME});
+                overlayWindowManager.showOverlayWindow(result, new int[]{AccessibilityService.GLOBAL_ACTION_BACK, AccessibilityService.GLOBAL_ACTION_HOME});
                 break;
             case PERFORM_BACK_ACTION_AND_WARNING:
-                overlayWindowManager.showOverlayWindow(result, new int[] {AccessibilityService.GLOBAL_ACTION_BACK});
+                overlayWindowManager.showOverlayWindow(result, new int[]{AccessibilityService.GLOBAL_ACTION_BACK});
                 break;
             case PERFORM_BACK_ACTION:
                 service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);

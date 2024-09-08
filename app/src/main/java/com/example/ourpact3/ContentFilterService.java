@@ -5,12 +5,14 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 import android.view.inputmethod.InputMethodManager;
 
+import com.example.ourpact3.learn_mode.LearnButtonsOverlayManager;
 import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.util.CrashHandler;
 import com.example.ourpact3.model.PipelineResultBase;
@@ -35,7 +37,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
 {
     private TextFilterService contentFilter;;
     private AppKiller appKillerService;
-
+    private LearnButtonsOverlayManager learnButtonsOverlayManager;
 
     private Mode mode = Mode.NORMAL_MODE;
     private final TopicManager topicManager = new TopicManager();
@@ -50,6 +52,8 @@ public class ContentFilterService extends AccessibilityService implements IConte
         crashHandler = new CrashHandler(this);
         Thread.setDefaultUncaughtExceptionHandler(crashHandler);
         //
+        learnButtonsOverlayManager = new LearnButtonsOverlayManager(this,this);
+        this.setNewMode(Mode.LEARN_OVERLAY_MODE);
         Log.i("FOO", "Stating service");
 
         contentFilter = new TextFilterService(this, this);
@@ -61,7 +65,6 @@ public class ContentFilterService extends AccessibilityService implements IConte
 // Load all system topics
         TopicLoader topicLoader = new TopicLoader();
         String[] usedLanguages = {"de", "en"};
-//        this.activateAppKillMode("au.com.shiftyjelly.pocketcasts");
         ArrayList<TopicLoader.TopicDescriptor> allAvailableTopics = null;
         try
         {
@@ -141,6 +144,8 @@ public class ContentFilterService extends AccessibilityService implements IConte
 
                 }
                 break;
+            case LEARN_OVERLAY_MODE:
+                this.learnButtonsOverlayManager.onAccessibilityEvent(event,getRootInActiveWindow());
         }
 
     }
@@ -180,8 +185,36 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void activateAppKillMode(@NotNull PipelineResultBase resultBase)
     {
-        this.mode = Mode.APP_KILL_MODE_1;
+        setNewMode(Mode.APP_KILL_MODE_1);
         this.appKillerService.setApp(resultBase);
+    }
+
+    @Override
+    public void activateLearnMode()
+    {
+        setNewMode(Mode.LEARN_OVERLAY_MODE);
+    }
+
+    @Override
+    public void stopLearnMode()
+    {
+        setNewMode(Mode.NORMAL_MODE);
+    }
+
+    public void setNewMode(Mode mode)
+    {
+        this.mode = mode;
+        switch (mode){
+            case NORMAL_MODE:
+                this.learnButtonsOverlayManager.stopOverlay();
+                break;
+            case APP_KILL_MODE_1:
+                this.learnButtonsOverlayManager.stopOverlay();
+                break;
+            case LEARN_OVERLAY_MODE:
+                this.learnButtonsOverlayManager.createOverlay();
+                break;
+        }
     }
 
     @Override
@@ -190,5 +223,11 @@ public class ContentFilterService extends AccessibilityService implements IConte
         // Perhaps show warning or notification after killing
         this.mode = Mode.NORMAL_MODE;
         this.contentFilter.onPipelineResult(lastResult);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        return START_STICKY;
     }
 }

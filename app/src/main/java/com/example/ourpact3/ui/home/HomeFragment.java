@@ -21,18 +21,19 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentHomeBinding;
-import com.example.ourpact3.learn_mode.OverlayService;
 
 import android.content.ComponentName;
 import android.text.TextUtils;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment
+{
     private ActivityResultLauncher<Intent> overlayPermissionLauncher;
     private FragmentHomeBinding binding;
     private Button buttonRequestOverlayPermission;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+                             ViewGroup container, Bundle savedInstanceState)
+    {
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
@@ -40,7 +41,8 @@ public class HomeFragment extends Fragment {
         overlayPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (Settings.canDrawOverlays(requireActivity())) {
+                    if (Settings.canDrawOverlays(requireActivity()))
+                    {
                         startOverlayService(); // Start the service if permission is granted
                         buttonRequestOverlayPermission.setVisibility(View.GONE); // Hide the button
                     }
@@ -54,16 +56,19 @@ public class HomeFragment extends Fragment {
 
         buttonRequestOverlayPermission = binding.button; // Assuming this is your button
         buttonRequestOverlayPermission.setOnClickListener(v -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(requireActivity())) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(requireActivity()))
+            {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
                 overlayPermissionLauncher.launch(intent); // Use the launcher to request permission
-            } else {
+            } else
+            {
                 startOverlayService();
             }
         });
 
         // Check if overlay permission is already granted and hide the button if it is
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(requireActivity())) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(requireActivity()))
+        {
             startOverlayService(); // Start the service if permission is granted
             buttonRequestOverlayPermission.setVisibility(View.GONE); // Hide the button if permission is granted
         }
@@ -74,28 +79,36 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private void startOverlayService() {
-        Intent serviceIntent = new Intent(requireActivity(), OverlayService.class);
-        requireActivity().startService(serviceIntent); // Call startService on the Activity
+    private void startOverlayService()
+    {
+        // Service is part of other servie
+        //        Intent serviceIntent = new Intent(requireActivity(), OverlayService.class);
+//        requireActivity().startService(serviceIntent); // Call startService on the Activity
     }
 
-    private void RequestAccessibilityServiceButton(Context context) {
-        if (!hasAccessibilityServicePermission(context)) {
+    private void RequestAccessibilityServiceButton(Context context)
+    {
+        if (!hasAccessibilityServicePermission(context))
+        {
             Button button = new Button(context);
-            button.setOnClickListener(new View.OnClickListener() {
+            button.setOnClickListener(new View.OnClickListener()
+            {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v)
+                {
                     openAccessibilitySettings();
                 }
             });
             button.setText("Request Accessibility Service");
             binding.accessibilityButtonContainer.addView(button);
-        } else {
+        } else
+        {
             binding.accessibilityButtonContainer.setVisibility(View.GONE);
         }
     }
 
-    private void openAccessibilitySettings() {
+    private void openAccessibilitySettings()
+    {
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
         startActivityForResult(intent, REQUEST_CODE_ACCESSIBILITY_SETTINGS);
     }
@@ -104,20 +117,25 @@ public class HomeFragment extends Fragment {
     private static final int REQUEST_CODE_OVERLAY_PERMISSION = 11;
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_ACCESSIBILITY_SETTINGS) {
+        if (requestCode == REQUEST_CODE_ACCESSIBILITY_SETTINGS)
+        {
             // Check if the user has granted the accessibility service permission
-            if (hasAccessibilityServicePermission(requireContext())) {
+            if (hasAccessibilityServicePermission(requireContext()))
+            {
                 binding.accessibilityButtonContainer.setVisibility(View.GONE);
-            } else {
+            } else
+            {
                 // The user has not granted the permission, keep the button visible
                 binding.accessibilityButtonContainer.setVisibility(View.VISIBLE);
             }
         }
     }
 
-    public static boolean isAccessibilityServiceEnabled(Context context, Class<?> accessibilityService) {
+    public static boolean isAccessibilityServiceEnabled(Context context, Class<?> accessibilityService)
+    {
         ComponentName expectedComponentName = new ComponentName(context, accessibilityService);
 
         String enabledServicesSetting = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
@@ -127,7 +145,8 @@ public class HomeFragment extends Fragment {
         TextUtils.SimpleStringSplitter colonSplitter = new TextUtils.SimpleStringSplitter(':');
         colonSplitter.setString(enabledServicesSetting);
 
-        while (colonSplitter.hasNext()) {
+        while (colonSplitter.hasNext())
+        {
             String componentNameString = colonSplitter.next();
             ComponentName enabledService = ComponentName.unflattenFromString(componentNameString);
 
@@ -138,7 +157,8 @@ public class HomeFragment extends Fragment {
         return false;
     }
 
-    private boolean hasAccessibilityServicePermission(Context context) {
+    private boolean hasAccessibilityServicePermission(Context context)
+    {
         return isAccessibilityServiceEnabled(context, ContentFilterService.class);
     }
 }
