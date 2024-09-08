@@ -1,5 +1,6 @@
 package com.example.ourpact3.service;
 
+import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
@@ -95,14 +96,10 @@ public class ScreenTextExtractor
         {
             // Extract ID_Node information
             String viewId = node.getViewIdResourceName();
-            if(viewId == null)
-            {
-                viewId = AccessibilityNodeInfoUniquePath.getUniquePath(node);
-            }
             String className = node.getClassName() != null ? node.getClassName().toString() : "Unknown";
             boolean isVisible = node.isVisibleToUser();
 
-            if (viewId != null) {
+            if (viewId != null && !viewId.isEmpty()) {
                 Screen.ID_Node idNode = new Screen.ID_Node(className, viewId, isVisible);
                 idNodes.add(idNode);
             }

@@ -55,16 +55,12 @@ public class KeywordScoreWindowCalculator
     }
     private void addResultLine(int count, String word, int plusScore, boolean read, TreeSet<String> topicTriggers)
     {
-        if (word != null)
+        if (word != null && !topicTriggers.isEmpty())
         {
-            String shortendString = word;
-            if(!topicTriggers.isEmpty())
-            {
-                shortendString = SubstringFinder.findSubstringWithContext(word,topicTriggers.first(),5);
-            }
+            String shortendString =  SubstringFinder.findSubstringWithContext(word,topicTriggers.first(),5);;
             if(count > 0 && plusScore != 0)
             {
-                String number = count == 1 ? "" : " x " + String.valueOf(count) + " ";
+                String number = count == 1 ? "" : " x " + count + " ";
                 String text = number + "'" + topicTriggers.first() + "'" + " in '" + shortendString + "' (" + (read ? "read" : "write") + ") \t => +" + String.valueOf(plusScore) +"\n";
                 this.filterResultLines.append(text);
             }

@@ -17,7 +17,6 @@ import android.widget.Button;
 import com.example.ourpact3.R;
 import com.example.ourpact3.service.IContentFilterService;
 import com.example.ourpact3.service.ScreenTextExtractor;
-import com.example.ourpact3.service.TextFilterService;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -65,8 +64,8 @@ public class LearnButtonsOverlayManager
         windowManager.addView(overlayView, params);
 
         // Set up button click listeners
-        Button buttonShield = overlayView.findViewById(R.id.button_shield);
-        Button buttonSword = overlayView.findViewById(R.id.button_sword);
+        Button buttonShield = overlayView.findViewById(R.id.thumb_up);
+        Button buttonSword = overlayView.findViewById(R.id.thumb_down);
         Button buttonSettings = overlayView.findViewById(R.id.button_settings);
 
         buttonShield.setOnClickListener(v -> {
@@ -109,7 +108,7 @@ public class LearnButtonsOverlayManager
                 String app = (String) event.getPackageName();
 
                 ScreenTextExtractor.Screen screen = ScreenTextExtractor.extractTextElements(root,false);
-                Log.d("LEARN",screen.toString());
+                Log.d("LEARN",screen.getIdNodes().toString());
                 break;
             }
         }
