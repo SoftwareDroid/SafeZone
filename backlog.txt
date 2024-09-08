@@ -1,5 +1,9 @@
 1. Businesslogic/CoreService
 
+TODO: Learn Mode
+3 Buttons an Seite (Shield,BAd, Options)
+ermittelte automatisch welche Ingore FIlter ich brauche.
+
 TODO: SmartFilter Serialiserbar machen
 Exmaple:
 // ignore start page
