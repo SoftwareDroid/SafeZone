@@ -3,6 +3,7 @@ package com.example.ourpact3.learn_mode;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,6 +31,10 @@ public class LearnButtonsOverlayManager
 
     public LearnButtonsOverlayManager(@NotNull Context context, @NotNull IContentFilterService iContentFilterService)
     {
+        if(!Settings.canDrawOverlays(context))
+        {
+            throw new RuntimeException("Need draw overlay Permission");
+        }
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         this.context = context;
         this.iContentFilterService = iContentFilterService;
