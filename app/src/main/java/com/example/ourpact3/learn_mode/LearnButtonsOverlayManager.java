@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class LearnButtonsOverlayManager
 {
-
+    private boolean drawAtLeftEdge = true;
     private WindowManager windowManager;
     private View overlayView;
     private Context context;
@@ -56,9 +56,10 @@ public class LearnButtonsOverlayManager
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
-        params.gravity = Gravity.END | Gravity.TOP; // Position the overlay
+//        params.gravity = Gravity.END | Gravity.TOP; // Position the overlay
+        params.gravity = (drawAtLeftEdge ? Gravity.START : Gravity.END) | Gravity.CLIP_VERTICAL; // Position the overlay
         params.x = 0;
-        params.y = 100; // Adjust as needed
+        params.y = 0; // No need to adjust y, as it's centered vertically
 
         // Add the view to the window
         windowManager.addView(overlayView, params);

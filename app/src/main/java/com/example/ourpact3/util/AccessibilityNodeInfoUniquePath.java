@@ -17,7 +17,7 @@ public class AccessibilityNodeInfoUniquePath {
 
     private static void buildPath(AccessibilityNodeInfo node, StringBuilder pathBuilder) {
         // Add the current node's class name and text (if available)
-        String className = node.getClassName().toString();
+        String className = node.getClassName() != null ? "": node.getClassName().toString();
         String text = node.getText() != null ? node.getText().toString() : "";
         String contentDescription = node.getContentDescription() != null ? node.getContentDescription().toString() : "";
 
