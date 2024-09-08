@@ -16,6 +16,8 @@
     <!-- Required for Android 13 and above -->
     <!-- E.g in case of crash-->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+<!--    Learn Mode Buttons-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:allowBackup="true"
@@ -48,6 +50,7 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
         </service>
+        <service android:name=".learn_mode.OverlayService" />
         <meta-data
             android:name="android.security SELinux"
             android:value="permissive" />

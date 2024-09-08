@@ -1,5 +1,6 @@
 package com.example.ourpact3.ui.home;
 
+import android.os.Build;
 import android.provider.Settings;
 import android.content.Intent;
 import android.content.Context;
@@ -10,18 +11,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ourpact3.ContentFilterService;
+import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentHomeBinding;
+import com.example.ourpact3.learn_mode.OverlayService;
 
 import android.content.ComponentName;
 import android.text.TextUtils;
 
 public class HomeFragment extends Fragment {
-
+    private ActivityResultLauncher<Intent> overlayPermissionLauncher;
     private FragmentHomeBinding binding;
     private Button buttonRequestOverlayPermission;
 
@@ -30,20 +36,37 @@ public class HomeFragment extends Fragment {
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
+        // Initialize the ActivityResultLauncher
+        overlayPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (Settings.canDrawOverlays(requireActivity())) {
+                        startOverlayService(); // Start the service if permission is granted
+                        buttonRequestOverlayPermission.setVisibility(View.GONE); // Hide the button
+                    }
+                });
+
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
-        // Add a button to the layout
-        buttonRequestOverlayPermission = binding.button;
-        buttonRequestOverlayPermission.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle button click
+        buttonRequestOverlayPermission = binding.button; // Assuming this is your button
+        buttonRequestOverlayPermission.setOnClickListener(v -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(requireActivity())) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                overlayPermissionLauncher.launch(intent); // Use the launcher to request permission
+            } else {
+                startOverlayService();
             }
         });
+
+        // Check if overlay permission is already granted and hide the button if it is
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(requireActivity())) {
+            startOverlayService(); // Start the service if permission is granted
+            buttonRequestOverlayPermission.setVisibility(View.GONE); // Hide the button if permission is granted
+        }
 
         // Add the RequestAccessibilityServiceButton
         RequestAccessibilityServiceButton(getContext());
@@ -51,21 +74,9 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    /*public void RequestOverlayPermission(Context context) {
-        if (!Settings.canDrawOverlays(context)) {
-            // Request the permission
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:" + context.getPackageName()));
-            startActivityForResult(intent, REQUEST_CODE_OVERLAY_PERMISSION);
-        } else {
-            buttonRequestOverlayPermission.setVisibility(View.GONE);
-        }
-    }*/
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    private void startOverlayService() {
+        Intent serviceIntent = new Intent(requireActivity(), OverlayService.class);
+        requireActivity().startService(serviceIntent); // Call startService on the Activity
     }
 
     private void RequestAccessibilityServiceButton(Context context) {
@@ -104,20 +115,8 @@ public class HomeFragment extends Fragment {
                 binding.accessibilityButtonContainer.setVisibility(View.VISIBLE);
             }
         }
-       /* if (requestCode == REQUEST_CODE_OVERLAY_PERMISSION) {
-            if (Settings.canDrawOverlays(getContext())) {
-                buttonRequestOverlayPermission.setVisibility(View.GONE);
-            }
-        }*/
     }
 
-    //TODO: https://stackoverflow.com/questions/5081145/android-how-do-you-check-if-a-particular-accessibilityservice-is-enabled
-
-    /**
-     * Based on {@link com.android.settingslib.accessibility.AccessibilityUtils#getEnabledServicesFromSettings(Context, int)}
-     *
-     * @see <a href="https://github.com/android/platform_frameworks_base/blob/d48e0d44f6676de6fd54fd8a017332edd6a9f096/packages/SettingsLib/src/com/android/settingslib/accessibility/AccessibilityUtils.java#L55">AccessibilityUtils</a>
-     */
     public static boolean isAccessibilityServiceEnabled(Context context, Class<?> accessibilityService) {
         ComponentName expectedComponentName = new ComponentName(context, accessibilityService);
 
@@ -140,16 +139,6 @@ public class HomeFragment extends Fragment {
     }
 
     private boolean hasAccessibilityServicePermission(Context context) {
-        boolean var = isAccessibilityServiceEnabled(context, ContentFilterService.class);
-        return var;
-        /*
-        String permission = android.Manifest.permission.BIND_ACCESSIBILITY_SERVICE;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int result = context.checkCallingOrSelfPermission(permission);
-            return result == PackageManager.PERMISSION_GRANTED;
-        }
-        return true;*/
+        return isAccessibilityServiceEnabled(context, ContentFilterService.class);
     }
 }
-
-
