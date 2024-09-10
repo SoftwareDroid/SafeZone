@@ -46,7 +46,7 @@ public class WordListFilterScoredTest {
 
 
     @Test
-    public void testFeedWord_IgnoreCase() throws TopicMissingException
+    public void testFeedWord_IgnoreCase() throws TopicMissingException, CloneNotSupportedException
     {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 10, 100));
@@ -57,7 +57,7 @@ public class WordListFilterScoredTest {
     }
 
     @Test
-    public void testFeedWord_NoMatch() throws TopicMissingException
+    public void testFeedWord_NoMatch() throws TopicMissingException, CloneNotSupportedException
     {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 100, 100));
@@ -67,7 +67,7 @@ public class WordListFilterScoredTest {
     }
 
     @Test
-    public void testFeedWord_Match() throws TopicMissingException
+    public void testFeedWord_Match() throws TopicMissingException, CloneNotSupportedException
     {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 100, 100));
@@ -77,7 +77,7 @@ public class WordListFilterScoredTest {
     }
 
     @Test
-    public void testFeedWord_MultipleMatches() throws TopicMissingException
+    public void testFeedWord_MultipleMatches() throws TopicMissingException, CloneNotSupportedException
     {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 34, 34));
@@ -93,7 +93,7 @@ public class WordListFilterScoredTest {
     }
 
     @Test
-    public void testFeedWord_MaxScoreReached() throws TopicMissingException
+    public void testFeedWord_MaxScoreReached() throws TopicMissingException, CloneNotSupportedException
     {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("b", 100, 200));
@@ -106,7 +106,7 @@ public class WordListFilterScoredTest {
     }
 
     @Test
-    public void testReset() throws TopicMissingException
+    public void testReset() throws TopicMissingException, CloneNotSupportedException
     {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("topic1", 10, 20));
@@ -115,7 +115,7 @@ public class WordListFilterScoredTest {
     }
 
     @Test
-    public void testNestedTopic() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException, TopicMissingException
+    public void testNestedTopic() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException, TopicMissingException, CloneNotSupportedException
     {
         Topic foodTopic = new Topic("food", "en");
         foodTopic.setWords(new ArrayList<String>(List.of("food")));
