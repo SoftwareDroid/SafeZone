@@ -4,9 +4,25 @@ import java.util.*;
 
 public class DisjointSets {
 
-
-
-    public static Set<Integer>[] myCalculateDisjointSets(List<Set<Integer>> A, List<Set<Integer>> B) {
+    /**
+     * Do not add double elements as set this results on errors
+     * Calculates the disjoint sets from two lists of sets of integers.
+     *  with n integer approximately O(NlogN) in the worst case, and the space complexity is O(N).
+     * This method takes two lists of sets, counts the frequency of each integer in both lists,
+     * removes elements from the copies of the sets that are present in the other list, and collects
+     * the removed elements into separate result sets for each input list.
+     *
+     * <p>
+     * Note: Do not add duplicate elements to the sets, as this may lead to unexpected behavior
+     * and errors during the calculation.
+     * </p>
+     *
+     * @param A a list of sets of integers from which elements will be removed
+     * @param B a list of sets of integers from which elements will be removed
+     * @return an array of two sets, where the first set contains the elements removed from list A,
+     *         and the second set contains the elements removed from list B
+     */
+    public static Set<Integer>[] calculateDisjointAggregatedFrequencySets(List<Set<Integer>> A, List<Set<Integer>> B) {
         Map<Integer, Integer> frequencyMapA = calculateFrequencies(A);
         Map<Integer, Integer> frequencyMapB = calculateFrequencies(B);
 
@@ -20,6 +36,14 @@ public class DisjointSets {
         Set<Integer> resultB = removeAndCollect(B, frequencyMapB);
 
         return new Set[]{resultA, resultB};
+    }
+
+    private static void checkForDuplicates(List<Set<Integer>> sets) {
+        for (Set<Integer> set : sets) {
+            if (set.size() != new HashSet<>(set).size()) {
+                throw new IllegalArgumentException("Duplicate elements found in set: " + set);
+            }
+        }
     }
 
     private static Map<Integer, Integer> calculateFrequencies(List<Set<Integer>> sets) {
