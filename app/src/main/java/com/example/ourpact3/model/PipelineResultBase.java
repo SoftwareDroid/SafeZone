@@ -7,7 +7,7 @@ import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 
 import com.example.ourpact3.AppFilter;
-import com.example.ourpact3.service.ScreenTextExtractor;
+import com.example.ourpact3.service.ScreenInfoExtractor;
 
 public abstract class PipelineResultBase implements Cloneable
 {
@@ -50,7 +50,7 @@ public abstract class PipelineResultBase implements Cloneable
     private PipelineWindowAction windowAction; // Changed to private
     private String triggerPackage; // Changed to private
     private String triggerFilter; // Changed to private
-    private ScreenTextExtractor.Screen screen; // Changed to private
+    private ScreenInfoExtractor.Screen screen; // Changed to private
     private AppFilter currentAppFilter; // Changed to private
     private KillState killState = KillState.DO_NOT_KILL; // Changed to private
     private boolean hasExplainableButton; // Changed to private
@@ -91,12 +91,12 @@ public abstract class PipelineResultBase implements Cloneable
         this.triggerFilter = triggerFilter;
     }
 
-    public ScreenTextExtractor.Screen getScreen()
+    public ScreenInfoExtractor.Screen getScreen()
     {
         return screen;
     }
 
-    public void setScreen(ScreenTextExtractor.Screen screen)
+    public void setScreen(ScreenInfoExtractor.Screen screen)
     {
         this.screen = screen;
     }

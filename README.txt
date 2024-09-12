@@ -20,6 +20,9 @@ import android.Manifest; // needed to check permissions
 Use as Search Engine in e.g. Firefox: safe.duckduckgo.com/?q=%s
 most others are blocked by the safe search rule
 
+
+USEs UI anomation to kill an app only way i found without having System or root permission to stop media (adult content) in an e.g browser
+
 TODO
 FIX Search
 In Recent searches tiggert nicht die Abort Pipeplie zu erst

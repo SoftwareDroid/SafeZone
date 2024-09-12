@@ -12,7 +12,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.example.ourpact3.model.PipelineWindowAction;
-import com.example.ourpact3.service.ScreenTextExtractor;
+import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.topics.TopicManager;
 import com.example.ourpact3.filter.WordProcessorFilterBase;
 
@@ -70,7 +70,7 @@ public class AppFilter
             pipelineRunning = true;
             delayCount = 0;
             AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
-            ScreenTextExtractor.Screen screen = ScreenTextExtractor.extractTextElements(rootNode,isMagnificationEnabled);
+            ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(rootNode,isMagnificationEnabled);
             String LOG_TAG = "ContentFiler";
             Log.d(LOG_TAG, "Start Search");
             for (WordProcessorFilterBase processor : keywordFilters)
@@ -141,9 +141,9 @@ public class AppFilter
      * @param currentFilter
      * @return
      */
-    private void processScreen(ScreenTextExtractor.Screen screen, WordProcessorFilterBase currentFilter)
+    private void processScreen(ScreenInfoExtractor.Screen screen, WordProcessorFilterBase currentFilter)
     {
-        for (ScreenTextExtractor.Screen.TextNode textNode : screen.getTextNodes())
+        for (ScreenInfoExtractor.Screen.TextNode textNode : screen.getTextNodes())
         {
             if (textNode.visible || !currentFilter.isCheckOnlyVisibleNodes())
             {

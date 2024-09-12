@@ -1,23 +1,25 @@
 package com.example.ourpact3.service;
 
-import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
 
-import com.example.ourpact3.util.AccessibilityNodeInfoUniquePath;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class ScreenTextExtractor
+public class ScreenInfoExtractor
 {
     public static class Screen
     {
         // Constructor for Screen
-        public Screen(ArrayList<ID_Node> idNodes, ArrayList<TextNode> textNodes) {
-            this.idNodes = idNodes != null ? idNodes : new ArrayList<>();
+        public Screen(Set<ID_Node> idNodes, ArrayList<TextNode> textNodes)
+        {
+            this.idNodes = idNodes != null ? idNodes : new HashSet<>();
             this.textNodes = textNodes != null ? textNodes : new ArrayList<>();
         }
 
@@ -30,16 +32,19 @@ public class ScreenTextExtractor
                 this.text = text;
                 this.textInLowerCase = text.toLowerCase();
             }
+
             public final boolean visible;
             public final boolean editable;
             public final String text;
             public final String textInLowerCase;
         }
+
         public static class ID_Node
         {
             public final String className;
             public final String id;
             public final boolean visible;
+
             public ID_Node(String className, String id, boolean visible)
             {
                 this.className = className;
@@ -49,29 +54,47 @@ public class ScreenTextExtractor
 
             @NonNull
             @Override
-            public String toString() {
+            public String toString()
+            {
                 return "ID_Node [className='" + className + "', id='" + id + "', visible=" + visible + "]";
             }
         }
-        private final ArrayList<ID_Node> idNodes;
+
+        private final Set<ID_Node> idNodes;
         private final ArrayList<TextNode> textNodes;
 
 
         // Public method to get an immutable list of ID_Nodes
-        public List<ID_Node> getIdNodes() {
-            return Collections.unmodifiableList(idNodes);
+        public Set<ID_Node> getIdNodes()
+        {
+            return Collections.unmodifiableSet(idNodes);
+        }
+
+        public boolean isScreenPartOfClass(Set<String> minimizedClassExpression)
+        {
+            for (ID_Node node : idNodes)
+            {
+                if (minimizedClassExpression.contains(node.id))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         // Public method to get an immutable list of TextNodes
-        public List<TextNode> getTextNodes() {
+        public List<TextNode> getTextNodes()
+        {
             return Collections.unmodifiableList(textNodes);
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             StringBuilder sb = new StringBuilder();
             sb.append("Screen [");
-            for (TextNode textNode : textNodes) {
+            for (TextNode textNode : textNodes)
+            {
                 sb.append("\n  Node [visible=").append(textNode.visible)
                         .append(", editable=").append(textNode.editable)
                         .append(", text='").append(textNode.text)
@@ -79,7 +102,8 @@ public class ScreenTextExtractor
                         .append("']");
             }
             // Append ID_Nodes
-            for (ID_Node idNode : idNodes) {
+            for (ID_Node idNode : idNodes)
+            {
                 sb.append("\n  ").append(idNode.toString());
             }
             sb.append("\n]");
@@ -89,7 +113,7 @@ public class ScreenTextExtractor
 
     public static Screen extractTextElements(AccessibilityNodeInfo node, boolean isMagnificationEnabled)
     {
-        ArrayList<Screen.ID_Node> idNodes = new ArrayList<>();
+        HashSet<Screen.ID_Node> idNodes = new HashSet<>();
         ArrayList<Screen.TextNode> textNodes = new ArrayList<>();
 
         if (node != null)
@@ -99,7 +123,8 @@ public class ScreenTextExtractor
             String className = node.getClassName() != null ? node.getClassName().toString() : "Unknown";
             boolean isVisible = node.isVisibleToUser();
 
-            if (viewId != null && !viewId.isEmpty()) {
+            if (viewId != null && !viewId.isEmpty())
+            {
                 Screen.ID_Node idNode = new Screen.ID_Node(className, viewId, isVisible);
                 idNodes.add(idNode);
             }

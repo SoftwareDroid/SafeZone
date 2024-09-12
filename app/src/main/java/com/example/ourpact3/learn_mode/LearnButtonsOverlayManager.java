@@ -16,7 +16,7 @@ import android.widget.Button;
 
 import com.example.ourpact3.R;
 import com.example.ourpact3.service.IContentFilterService;
-import com.example.ourpact3.service.ScreenTextExtractor;
+import com.example.ourpact3.service.ScreenInfoExtractor;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -107,7 +107,7 @@ public class LearnButtonsOverlayManager
             {
                 String app = (String) event.getPackageName();
 
-                ScreenTextExtractor.Screen screen = ScreenTextExtractor.extractTextElements(root,false);
+                ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(root,false);
                 Log.d("LEARN",screen.getIdNodes().toString());
                 break;
             }

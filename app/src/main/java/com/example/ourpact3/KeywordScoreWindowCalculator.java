@@ -1,6 +1,6 @@
 package com.example.ourpact3;
 
-import com.example.ourpact3.service.ScreenTextExtractor;
+import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.filter.WordListFilterScored;
 import com.example.ourpact3.filter.WordProcessorFilterBase;
 import com.example.ourpact3.util.SubstringFinder;
@@ -12,7 +12,7 @@ public class KeywordScoreWindowCalculator
     private StringBuilder filterResultLines = new StringBuilder();
     private StringBuilder filterResultLines2 = new StringBuilder();
 
-    public String getDebugFilterState(ScreenTextExtractor.Screen screen, AppFilter appRule)
+    public String getDebugFilterState(ScreenInfoExtractor.Screen screen, AppFilter appRule)
     {
         if(appRule == null)
         {
@@ -29,7 +29,7 @@ public class KeywordScoreWindowCalculator
             if (filter instanceof WordListFilterScored)
             {
                 WordListFilterScored scoredFilter = (WordListFilterScored) filter;
-                for(ScreenTextExtractor.Screen.TextNode n : screen.getTextNodes())
+                for(ScreenInfoExtractor.Screen.TextNode n : screen.getTextNodes())
                 {
                     scoredFilter.reset();
                     scoredFilter.feedWord(n);

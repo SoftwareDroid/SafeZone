@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.model.PipelineResultKeywordFilter;
-import com.example.ourpact3.service.ScreenTextExtractor;
+import com.example.ourpact3.service.ScreenInfoExtractor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public class WordListFilterExact extends WordProcessorFilterBase
     private final boolean ignoreCase;
     private final HashMap<String, Integer> wordToHits = new HashMap<>();
 
-    public PipelineResultBase feedWord(ScreenTextExtractor.Screen.TextNode textNode)
+    public PipelineResultBase feedWord(ScreenInfoExtractor.Screen.TextNode textNode)
     {
         //Only process readonly fields
         if (textNode.editable != this.editable)

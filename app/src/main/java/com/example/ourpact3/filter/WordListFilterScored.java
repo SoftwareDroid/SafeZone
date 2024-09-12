@@ -2,7 +2,7 @@ package com.example.ourpact3.filter;
 
 import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.model.PipelineResultKeywordFilter;
-import com.example.ourpact3.service.ScreenTextExtractor;
+import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.topics.TopicManager;
 import com.example.ourpact3.topics.TopicMissingException;
 
@@ -58,7 +58,7 @@ public class WordListFilterScored extends WordProcessorFilterBase
         return currentScore;
     }
 
-    public PipelineResultBase feedWord(ScreenTextExtractor.Screen.TextNode textNode)
+    public PipelineResultBase feedWord(ScreenInfoExtractor.Screen.TextNode textNode)
     {
         String text = ignoreCase ? textNode.textInLowerCase : textNode.text;
 

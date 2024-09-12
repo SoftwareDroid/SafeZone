@@ -15,6 +15,7 @@ import com.example.ourpact3.filter.WordProcessorFilterBase;
 import com.example.ourpact3.filter.WordListFilterScored;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class ExampleAppKeywordFilters
@@ -27,6 +28,27 @@ public class ExampleAppKeywordFilters
 
     private final ContentFilterService service;
     private final TopicManager topicManager;
+
+    public HashSet<String> getIgnoredListPackagesForLearning()
+    {
+        HashSet<String> ignoredApps = new HashSet<String>();
+        // Add the apps to the HashSet
+        ignoredApps.add("net.tandem");
+        ignoredApps.add("org.thoughtcrime.securesms");
+//        ignoredApps.add("org.telegram.messenger");
+        ignoredApps.add("com.whatsapp");
+        ignoredApps.add("cz.mobilesoft.appblock");
+        ignoredApps.add("com.standardnotes");
+        ignoredApps.add("de.c24.bankapp");
+        ignoredApps.add("ws.xsoh.etar");
+//        ignoredApps.add("com.android.settings");
+        ignoredApps.add("com.example.ourpact3");
+        ignoredApps.add("com.ichi2.anki");
+        ignoredApps.add("com.epson.epsonsmart");
+        ignoredApps.add("de.mm20.launcher2");
+        ignoredApps.add("de.reimardoeffinger.quickdic");
+        return ignoredApps;
+    }
 
     public void addExampleTopics() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
     {

@@ -26,6 +26,7 @@ import com.example.ourpact3.topics.TopicManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 // https://developer.android.com/guide/topics/ui/accessibility/service
@@ -43,7 +44,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     private final TopicManager topicManager = new TopicManager();
     private CrashHandler crashHandler;
     private CheatKeyManager cheatKeyManager;
-
+    private HashSet<String> ignoredPackagesForLearning;
     //    private boolean isRunning = false;
     @Override
     public void onServiceConnected()
@@ -82,6 +83,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
             topicManager.checkAllTopics();
             // load all example filters
             ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager);
+            this.ignoredPackagesForLearning = exampleFilters.getIgnoredListPackagesForLearning();
             exampleFilters.addExampleTopics();
             for (AppFilter filter : exampleFilters.getAllExampleFilters())
             {
@@ -223,6 +225,12 @@ public class ContentFilterService extends AccessibilityService implements IConte
         // Perhaps show warning or notification after killing
         this.mode = Mode.NORMAL_MODE;
         this.contentFilter.onPipelineResult(lastResult);
+    }
+
+    @Override
+    public boolean isPackagedIgnoredForLearning(String id)
+    {
+        return this.ignoredPackagesForLearning.contains(id);
     }
 
     @Override

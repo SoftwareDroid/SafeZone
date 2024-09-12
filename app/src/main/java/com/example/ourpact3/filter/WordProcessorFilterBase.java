@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.model.PipelineResultKeywordFilter;
-import com.example.ourpact3.service.ScreenTextExtractor;
+import com.example.ourpact3.service.ScreenInfoExtractor;
 
 public abstract class WordProcessorFilterBase implements Cloneable {
     private PipelineResultKeywordFilter constResult; // Made private
@@ -52,6 +52,6 @@ public abstract class WordProcessorFilterBase implements Cloneable {
         this.checkOnlyVisibleNodes = checkOnlyVisibleNodes;
     }
 
-    public abstract PipelineResultBase feedWord(ScreenTextExtractor.Screen.TextNode textNode);
+    public abstract PipelineResultBase feedWord(ScreenInfoExtractor.Screen.TextNode textNode);
     public abstract void reset();
 }
