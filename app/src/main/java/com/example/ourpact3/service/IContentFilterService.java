@@ -20,4 +20,5 @@ public interface IContentFilterService
     void finishAppKilling(PipelineResultBase lastResult);
     boolean isPackagedIgnoredForLearning(String id);
     void destroyGUI();
+    void onAppChange(String oldApp,String newApp);
 }

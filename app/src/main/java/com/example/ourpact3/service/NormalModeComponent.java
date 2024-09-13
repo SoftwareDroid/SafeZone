@@ -73,7 +73,7 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
     {
 
     }
-
+    private String lastUsedApp = "";
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
@@ -81,6 +81,15 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
         if (filter != null)
         {
             filter.processEvent(event);
+        }
+        if(event.getEventType() == AccessibilityEvent.TYPE_WINDOWS_CHANGED)
+        {
+            String app = event.getPackageName().toString();
+            if(app != null && app != lastUsedApp)
+            {
+                lastUsedApp = app;
+                this.iContentFilterService.onAppChange(lastUsedApp,app);
+            }
         }
     }
 

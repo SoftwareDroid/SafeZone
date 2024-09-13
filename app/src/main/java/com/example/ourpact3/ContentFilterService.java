@@ -259,6 +259,12 @@ public class ContentFilterService extends AccessibilityService implements IConte
     }
 
     @Override
+    public void onAppChange(String oldApp, String newApp)
+    {
+        this.learnModeComponent.onAppChange(oldApp,newApp);
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         return START_STICKY;

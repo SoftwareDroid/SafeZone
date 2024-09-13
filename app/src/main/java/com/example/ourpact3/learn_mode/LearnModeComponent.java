@@ -74,18 +74,18 @@ public class LearnModeComponent
         currentStatus = overlayButtons.findViewById(R.id.current_status);
 
         buttonThumpUp.setOnClickListener(v -> {
-            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.GOOD,false);
+            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.GOOD, false);
         });
         buttonThumpUp.setOnLongClickListener(v -> {
-            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.GOOD,true);
+            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.GOOD, true);
             return true;
         });
 
         buttonThumpDown.setOnClickListener(v -> {
-            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.BAD,false);
+            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.BAD, false);
         });
         buttonThumpDown.setOnLongClickListener(v -> {
-            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.BAD,true);
+            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.BAD, true);
             return true;
         });
 
@@ -105,6 +105,24 @@ public class LearnModeComponent
     }
 
     private PipelineResultBase lastResult;
+
+    public void onAppChange(String oldApp, String newApp)
+    {
+        Button buttonThumpUp = overlayButtons.findViewById(R.id.thumb_up);
+        Button buttonThumpDown = overlayButtons.findViewById(R.id.thumb_down);
+        assert buttonThumpDown != null;
+        assert buttonThumpUp != null;
+        if (this.iContentFilterService.isPackagedIgnoredForLearning(newApp))
+        {
+            buttonThumpUp.setVisibility(View.INVISIBLE);
+            buttonThumpDown.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            buttonThumpUp.setVisibility(View.VISIBLE);
+            buttonThumpDown.setVisibility(View.VISIBLE);
+        }
+    }
 
     public void onPipelineResult(@NotNull PipelineResultBase result)
     {
@@ -167,7 +185,7 @@ public class LearnModeComponent
         }
     }
 
-    private void labelCurrentScreen(AppLearnProgress.ScreenLabel label,boolean force)
+    private void labelCurrentScreen(AppLearnProgress.ScreenLabel label, boolean force)
     {
         if (this.lastResult != null)
         {
@@ -184,26 +202,24 @@ public class LearnModeComponent
                 assert learnProgress != null;
                 AppLearnProgress.LabeledScreen labeledScreen = learnProgress.getLabeledScreen(screen);
                 AppLearnProgress.ScreenLabel newCurrentScreenlabel = label;
-                if(!force)
+                if (!force)
                 {
                     if (labeledScreen != null)
                     {
                         learnProgress.removeScreen(lastResult.getScreen());
                         newCurrentScreenlabel = AppLearnProgress.ScreenLabel.NOT_LABELED; // go e.g from Up -> NOT_LABELED and with next click to
-                    }
-                    else
+                    } else
                     {
                         learnProgress.addScreen(lastResult.getScreen(), label);
                     }
-                }
-                else
+                } else
                 {
                     learnProgress.removeScreen(lastResult.getScreen());
                     learnProgress.addScreen(lastResult.getScreen(), label);
                 }
                 learnProgress.recalculateExpressions();
                 // Wait for the next pipeline Update
-                this.updateUIBasedOnCurrentLabel(newCurrentScreenlabel,app);
+                this.updateUIBasedOnCurrentLabel(newCurrentScreenlabel, app);
             }
         }
     }
