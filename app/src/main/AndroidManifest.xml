@@ -39,6 +39,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".learn_mode.HelpDialogLearnMode" />
         <service
             android:name="com.example.ourpact3.ContentFilterService"
             android:exported="false"

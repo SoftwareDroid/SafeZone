@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/reset"
+        android:title="@string/reset_progress" />
+    <item
+        android:id="@+id/save"
+        android:title="@string/save" />
+    <item
+        android:id="@+id/swap_sides"
+        android:title="@string/swap_side" />
+    <item
+        android:id="@+id/help"
+        android:title="@string/help" />
+    <item
+        android:id="@+id/close"
+        android:title="@string/close" />
+</menu>

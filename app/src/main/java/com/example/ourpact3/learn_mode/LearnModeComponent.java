@@ -2,7 +2,10 @@ package com.example.ourpact3.learn_mode;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.view.MenuItem;
+import android.widget.PopupMenu;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,6 +15,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.example.ourpact3.R;
 import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.service.IContentFilterService;
@@ -20,9 +25,10 @@ import com.example.ourpact3.service.ScreenInfoExtractor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
-public class LearnModeComponent
+public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedListener
 {
     private final Map<String, AppLearnProgress> appIdToLearnProgress = new TreeMap<>();
     private boolean drawAtLeftEdge = true;
@@ -71,6 +77,8 @@ public class LearnModeComponent
         Button buttonThumpUp = overlayButtons.findViewById(R.id.thumb_up);
         Button buttonThumpDown = overlayButtons.findViewById(R.id.thumb_down);
         Button buttonSettings = overlayButtons.findViewById(R.id.button_settings);
+        buttonSettings.setOnClickListener(this::showSettingsContextMenu);
+
         currentStatus = overlayButtons.findViewById(R.id.current_status);
 
         buttonThumpUp.setOnClickListener(v -> {
@@ -89,10 +97,6 @@ public class LearnModeComponent
             return true;
         });
 
-        buttonSettings.setOnClickListener(v -> {
-            // Handle settings button click
-            iContentFilterService.stopLearnMode();
-        });
 
         // Handle touch events to allow interaction with the underlying app
         overlayButtons.setOnTouchListener((v, event) -> {
@@ -115,8 +119,7 @@ public class LearnModeComponent
         if (this.iContentFilterService.isPackagedIgnoredForLearning(newApp))
         {
             overlayButtons.setVisibility(View.GONE);
-        }
-        else
+        } else
         {
             overlayButtons.setVisibility(View.VISIBLE);
         }
@@ -142,13 +145,13 @@ public class LearnModeComponent
                     {
                         currentStatus.setText(convertLabelTOResultToInfoTest(screenLabel));
                         overwritten = true;
-                        updateUIBasedOnCurrentLabel(screenLabel, result.getTriggerPackage(),overwritten);
+                        updateUIBasedOnCurrentLabel(screenLabel, result.getTriggerPackage(), overwritten);
                     }
                 }
                 if (!overwritten)
                 {
                     currentStatus.setText(convertPiplineResultToInfoText(lastResult));
-                    updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel.NOT_LABELED, result.getTriggerPackage(),overwritten);
+                    updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel.NOT_LABELED, result.getTriggerPackage(), overwritten);
                 }
             }
         }
@@ -184,6 +187,39 @@ public class LearnModeComponent
                 break;
         }
     }
+
+    private void showSettingsContextMenu(View view)
+    {
+        // Create a PopupMenu
+        PopupMenu popupMenu = new PopupMenu(this.context, view);
+        // Inflate the menu resource
+        popupMenu.getMenuInflater().inflate(R.menu.learn_mode_context_menu, popupMenu.getMenu());
+
+        // Set a click listener for menu items
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+        {
+            @Override
+            public boolean onMenuItemClick(MenuItem item)
+            {
+                if (item.getItemId() == R.id.close)
+                {
+                    stopOverlay();
+                    iContentFilterService.stopLearnMode();
+                    return true;
+                } else if (item.getItemId() == R.id.help)
+                {
+                    showHelpDialog();
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        // Show the menu
+        popupMenu.show();
+    }
+
 
     private void labelCurrentScreen(AppLearnProgress.ScreenLabel label, boolean force)
     {
@@ -268,5 +304,33 @@ public class LearnModeComponent
             windowManager.removeView(overlayButtons);
             overlayButtons = null;
         }
+    }
+
+    private void showHelpDialog()
+    {
+        // First Stop overlay
+        this.stopOverlay();
+
+        // Start the DialogActivity
+        // We need an static callback. Its a little bit difficlut as we are an background service
+        HelpDialogLearnMode.setOnDialogClosedListener(new HelpDialogLearnMode.OnDialogClosedListener()
+                                                      {
+                                                          @Override
+                                                          public void onHelpDialogClosed()
+                                                          {
+                                                              createOverlay();
+                                                          }
+                                                      }
+        );
+        Intent dialogIntent = new Intent(this.context, HelpDialogLearnMode.class);
+        dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Required for starting activity from service
+        this.context.startActivity(dialogIntent);
+
+    }
+
+    @Override
+    public void onHelpDialogClosed()
+    {
+        createOverlay();
     }
 }

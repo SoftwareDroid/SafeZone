@@ -7,4 +7,12 @@
     <string name="app_killed">This app has been blocked due to a rule.</string>
     <string name="force_kill_button">FORCE STOP</string>
     <string name="force_kill_ok_button">OK</string>
+
+    <string name="reset_progress">Reset Progress</string>
+    <string name="save">Save</string>
+    <string name="swap_side">Swap Side</string>
+    <string name="help">Help</string>
+    <string name="close">Close</string>
+    <string name="help_learn_mode_title">Help (Learn Mode)</string>
+    <string name="help_learn_mode_body">The Learn Mode identifies different screens, such as History, Settings, and Main Screen, based on their design. You can use the thumbs-up button to mark a screen as "good" and the thumbs-down button to mark it as "bad." To remove a screen from a category, simply click the corresponding button again. If you press and hold a button, the screen will be immediately added to your desired category. The settings button provides additional options for customization. The current filter results are displayed above the buttons, and a blue background indicates that the screen has been learned but not yet saved.</string>
 </resources>
