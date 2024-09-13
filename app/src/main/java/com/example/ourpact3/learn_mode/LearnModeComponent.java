@@ -19,17 +19,22 @@ import com.example.ourpact3.service.ScreenInfoExtractor;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 public class LearnModeComponent
 {
+    private Map<String, AppLearnProgress> appIdToLearnProgres = new TreeMap<>();
     private boolean drawAtLeftEdge = true;
     private WindowManager windowManager;
     private View overlayButtons;
     private Context context;
     private IContentFilterService iContentFilterService;
     private TextView currentStatus;
+
     public LearnModeComponent(@NotNull Context context, @NotNull IContentFilterService iContentFilterService)
     {
-        if(!Settings.canDrawOverlays(context))
+        if (!Settings.canDrawOverlays(context))
         {
             throw new RuntimeException("Need draw overlay Permission");
         }
@@ -69,11 +74,11 @@ public class LearnModeComponent
         currentStatus = overlayButtons.findViewById(R.id.current_status);
 
         buttonThumpUp.setOnClickListener(v -> {
-            // Handle shield button click
+            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.GOOD);
         });
 
         buttonThumpDown.setOnClickListener(v -> {
-            // Handle sword button click
+            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.BAD);
         });
 
         buttonSettings.setOnClickListener(v -> {
@@ -90,22 +95,104 @@ public class LearnModeComponent
             return false; // Allow touch events to pass through
         });
     }
+
     private PipelineResultBase lastResult;
+
     public void onPipelineResult(@NotNull PipelineResultBase result)
     {
+        // update GUI
         lastResult = result;
         ScreenInfoExtractor.Screen screen = lastResult.getScreen();
-        if(screen != null)
+        if (screen != null)
         {
-            if(currentStatus != null)
+            if (currentStatus != null)
             {
-                currentStatus.setText(convertPiplineResultToInfoText(lastResult));
+                boolean overwritten = false;
+                // first check if result is in expression the overwrite the
+                if (appIdToLearnProgres.containsKey(result.getTriggerPackage()))
+                {
+                    AppLearnProgress learnProgress = this.appIdToLearnProgres.get(result.getTriggerPackage());
+                    assert learnProgress != null;
+                    AppLearnProgress.LabeledScreen labeledScreen = learnProgress.getLabeledScreen(screen);
+                    if (labeledScreen != null)
+                    {
+                        currentStatus.setText(convertLabelTOResultToInfoTest(labeledScreen.label));
+                        overwritten = true;
+                        updateUIBasedOnCurrentLabel(labeledScreen.label, result.getTriggerPackage());
+                    }
+                }
+                if (!overwritten)
+                {
+                    currentStatus.setText(convertPiplineResultToInfoText(lastResult));
+                    updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel.NOT_LABELED, result.getTriggerPackage());
+                }
             }
         }
     }
 
+    private void updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel label, String packageID)
+    {
+        Button buttonThumpUp = overlayButtons.findViewById(R.id.thumb_up);
+        Button buttonThumpDown = overlayButtons.findViewById(R.id.thumb_down);
+        assert buttonThumpDown != null;
+        assert buttonThumpUp != null;
+        if (this.iContentFilterService.isPackagedIgnoredForLearning(packageID))
+        {
+            buttonThumpUp.setVisibility(View.INVISIBLE);
+            buttonThumpDown.setVisibility(View.INVISIBLE);
+            return;
+        }
+        switch (label)
+        {
+            case GOOD:
+                buttonThumpUp.setVisibility(View.INVISIBLE);
+                buttonThumpDown.setVisibility(View.VISIBLE);
+                break;
+            case BAD:
+                buttonThumpUp.setVisibility(View.VISIBLE);
+                buttonThumpDown.setVisibility(View.INVISIBLE);
+                break;
+            case NOT_LABELED:
+                buttonThumpUp.setVisibility(View.VISIBLE);
+                buttonThumpDown.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+    private void labelCurrentScreen(AppLearnProgress.ScreenLabel label)
+    {
+        if (this.lastResult != null)
+        {
+            String app = this.lastResult.getTriggerPackage();
+            if (app != null)
+            {
+                if (!this.appIdToLearnProgres.containsKey(app))
+                {
+                    appIdToLearnProgres.put(app, new AppLearnProgress());
+                }
+                AppLearnProgress learnProgress = this.appIdToLearnProgres.get(app);
+                // if a screen already there we remove it. so that it is not in any class and we can relabel it.
+                ScreenInfoExtractor.Screen screen =
+                {
+                    learnProgress.removeScreen(lastResult.getScreen());
+                }
+                else
+                {
+                    learnProgress.addScreen(lastResult.getScreen(), label);
+                }
+                learnProgress.recalculateExpressions();
+            }
+        }
+    }
+
+    public String convertLabelTOResultToInfoTest(AppLearnProgress.ScreenLabel label)
+    {
+        return label == AppLearnProgress.ScreenLabel.GOOD ? "GOOD" : "BAD";
+    }
+
     public String convertPiplineResultToInfoText(PipelineResultBase result)
     {
+        // TODO: UTF chars nehmen ggf. Totenkopf falls KILL_ACTION
         String status = "";
         switch (result.getWindowAction())
         {
@@ -130,31 +217,9 @@ public class LearnModeComponent
                 status = "OMIT";
                 break;
         }
-        return String.format("[%s]",status);
+        return String.format("[%s]", status);
     }
-    /*
-    public void onAccessibilityEvent(AccessibilityEvent event, AccessibilityNodeInfo root)
-    {
-        if(root == null || event.getPackageName() == null)
-        {
-            return;
-        }
 
-        switch (event.getEventType())
-        {
-            case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
-            case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-            case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
-            case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
-            {
-                String app = (String) event.getPackageName();
-
-                ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(root,false);
-                Log.d("LEARN",screen.getIdNodes().toString());
-                break;
-            }
-        }
-    }*/
 
     public void stopOverlay()
     {
