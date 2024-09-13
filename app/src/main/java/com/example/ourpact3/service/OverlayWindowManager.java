@@ -81,7 +81,7 @@ public class OverlayWindowManager
         }
     }
 
-    private void hideOverlayWindow()
+    public void hideOverlayWindow()
     {
         if (overlayView != null)
         {

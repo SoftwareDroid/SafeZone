@@ -19,4 +19,5 @@ public interface IContentFilterService
     void stopLearnMode();
     void finishAppKilling(PipelineResultBase lastResult);
     boolean isPackagedIgnoredForLearning(String id);
+    void destroyGUI();
 }

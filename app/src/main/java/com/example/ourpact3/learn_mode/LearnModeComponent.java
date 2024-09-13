@@ -10,10 +10,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.ourpact3.R;
 import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.service.IContentFilterService;
+import com.example.ourpact3.service.ScreenInfoExtractor;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,10 +23,10 @@ public class LearnModeComponent
 {
     private boolean drawAtLeftEdge = true;
     private WindowManager windowManager;
-    private View overlayView;
+    private View overlayButtons;
     private Context context;
     private IContentFilterService iContentFilterService;
-
+    private TextView currentStatus;
     public LearnModeComponent(@NotNull Context context, @NotNull IContentFilterService iContentFilterService)
     {
         if(!Settings.canDrawOverlays(context))
@@ -38,11 +40,11 @@ public class LearnModeComponent
 
     public void createOverlay()
     {
-        if (overlayView != null)
+        if (overlayButtons != null)
         {
             return;
         }
-        overlayView = LayoutInflater.from(context).inflate(R.layout.learn_mode, null);
+        overlayButtons = LayoutInflater.from(context).inflate(R.layout.learn_mode, null);
 
         // Set the layout parameters for the overlay
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -58,18 +60,19 @@ public class LearnModeComponent
         params.y = 0; // No need to adjust y, as it's centered vertically
 
         // Add the view to the window
-        windowManager.addView(overlayView, params);
+        windowManager.addView(overlayButtons, params);
 
         // Set up button click listeners
-        Button buttonShield = overlayView.findViewById(R.id.thumb_up);
-        Button buttonSword = overlayView.findViewById(R.id.thumb_down);
-        Button buttonSettings = overlayView.findViewById(R.id.button_settings);
+        Button buttonThumpUp = overlayButtons.findViewById(R.id.thumb_up);
+        Button buttonThumpDown = overlayButtons.findViewById(R.id.thumb_down);
+        Button buttonSettings = overlayButtons.findViewById(R.id.button_settings);
+        currentStatus = overlayButtons.findViewById(R.id.current_status);
 
-        buttonShield.setOnClickListener(v -> {
+        buttonThumpUp.setOnClickListener(v -> {
             // Handle shield button click
         });
 
-        buttonSword.setOnClickListener(v -> {
+        buttonThumpDown.setOnClickListener(v -> {
             // Handle sword button click
         });
 
@@ -79,7 +82,7 @@ public class LearnModeComponent
         });
 
         // Handle touch events to allow interaction with the underlying app
-        overlayView.setOnTouchListener((v, event) -> {
+        overlayButtons.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_OUTSIDE)
             {
                 stopOverlay(); // Stop the overlay if touched outside
@@ -87,10 +90,47 @@ public class LearnModeComponent
             return false; // Allow touch events to pass through
         });
     }
-
-    public void onPipelineResult(PipelineResultBase result)
+    private PipelineResultBase lastResult;
+    public void onPipelineResult(@NotNull PipelineResultBase result)
     {
-        assert true;
+        lastResult = result;
+        ScreenInfoExtractor.Screen screen = lastResult.getScreen();
+        if(screen != null)
+        {
+            if(currentStatus != null)
+            {
+                currentStatus.setText(convertPiplineResultToInfoText(lastResult));
+            }
+        }
+    }
+
+    public String convertPiplineResultToInfoText(PipelineResultBase result)
+    {
+        String status = "";
+        switch (result.getWindowAction())
+        {
+            case PERFORM_HOME_BUTTON_AND_WARNING:
+                status = "HOME";
+                break;
+            case WARNING:
+                status = "WARN";
+                break;
+            case CONTINUE_PIPELINE:
+                break;
+            case PERFORM_BACK_ACTION:
+                status = "BACK";
+                break;
+            case STOP_FURTHER_PROCESSING:
+                status = "STOP";
+                break;
+            case PERFORM_BACK_ACTION_AND_WARNING:
+                status = "WARN2";
+                break;
+            case END_OF_PIPE_LINE:
+                status = "OMIT";
+                break;
+        }
+        return String.format("[%s]",status);
     }
     /*
     public void onAccessibilityEvent(AccessibilityEvent event, AccessibilityNodeInfo root)
@@ -118,10 +158,10 @@ public class LearnModeComponent
 
     public void stopOverlay()
     {
-        if (overlayView != null)
+        if (overlayButtons != null)
         {
-            windowManager.removeView(overlayView);
-            overlayView = null;
+            windowManager.removeView(overlayButtons);
+            overlayButtons = null;
         }
     }
 }

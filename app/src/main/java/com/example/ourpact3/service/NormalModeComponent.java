@@ -17,7 +17,10 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
     private ConcurrentLinkedDeque<PipelineResultBase> pipelineResults = new ConcurrentLinkedDeque<PipelineResultBase>();
 
     private final AccessibilityService service;
-
+    public void destroyGUI()
+    {
+        this.overlayWindowManager.hideOverlayWindow();
+    }
     public NormalModeComponent(AccessibilityService service, IContentFilterService iContentFilterService)
     {
         this.service = service;

@@ -49,7 +49,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     public void onServiceConnected()
     {
         // setup crash handler
-        crashHandler = new CrashHandler(this);
+        crashHandler = new CrashHandler(this,this);
         Thread.setDefaultUncaughtExceptionHandler(crashHandler);
         //
         learnModeComponent = new LearnModeComponent(this,this);
@@ -244,6 +244,18 @@ public class ContentFilterService extends AccessibilityService implements IConte
     public boolean isPackagedIgnoredForLearning(String id)
     {
         return this.ignoredPackagesForLearning.contains(id);
+    }
+
+    @Override
+    public void destroyGUI()
+    {
+        if(this.learnModeComponent != null)
+        {
+            this.learnModeComponent.stopOverlay();
+        }
+        if(this.normalModeProcessor != null)
+        {
+            this.normalModeProcessor.destroyGUI();        }
     }
 
     @Override

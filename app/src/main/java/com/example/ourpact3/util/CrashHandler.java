@@ -18,6 +18,7 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
 import com.example.ourpact3.MainActivity;
+import com.example.ourpact3.service.IContentFilterService;
 
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
@@ -25,14 +26,16 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private static final String CRASH_REPORT_EXTENSION = ".txt";
     private static final String CHANNEL_ID = "crash_notification_channel";
     private static final int NOTIFICATION_ID = 1;
-    private Context context;
-
-    public CrashHandler(Context context) {
+    private final Context context;
+private final IContentFilterService iContentFilterService;
+    public CrashHandler(Context context, IContentFilterService  iContentFilterService) {
         this.context = context;
+        this.iContentFilterService = iContentFilterService;
     }
 
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
+        iContentFilterService.destroyGUI();
         writeCrashReport(throwable);
         showCrashNotification();
     }
@@ -67,20 +70,6 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             // Handle the exception
         }
     }
-/*
-    private String getCrashReportFolder() {
-        File externalStorage = Environment.getExternalStorageDirectory();
-        if (externalStorage == null) {
-            return null;
-        }
-
-        File crashReportFolder = new File(externalStorage, CRASH_REPORT_FOLDER);
-        if (!crashReportFolder.exists()) {
-            crashReportFolder.mkdirs();
-        }
-
-        return crashReportFolder.getAbsolutePath();
-    }*/
 
     private String getCrashReportFileName() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
