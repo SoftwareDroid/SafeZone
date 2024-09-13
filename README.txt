@@ -1,4 +1,6 @@
 # For devs
+Backlog exestiert nur aus Papier in 2 boxen 
+
 # grant permission
 adb shell settings put secure enabled_accessibility_services com.example.ourpact3/com.example.ourpact3.ContentFilterService
 

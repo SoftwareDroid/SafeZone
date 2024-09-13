@@ -1,36 +1,5 @@
 1. Businesslogic/CoreService
 
-TODO: Learn Mode
-3 Buttons an Seite (Shield,BAd, Options)
-ermittelte automatisch welche Ingore FIlter ich brauche.
-
-TODO: SmartFilter Serialiserbar machen
-Exmaple:
-// ignore start page
-            PipelineResultKeywordFilter ignoreHistoryPage = new PipelineResultKeywordFilter("");
-            ignoreHistoryPage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-            ignoreHistoryPage.setHasExplainableButton(true);
-            // Add test Filter
-            WordProcessorFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage,false);
-            filters.add(ignoreSearch);
-Interface SerialzieableJSON toJSON, fromJSON
-
-Next 2: Test in visibiliy Nodes für Firefox Homesceen
-Firefox Startpage wird nicht richtig erkannt. Wenn ich zu viele böse Begriffe gesucht habe. Check mit invisible option
-
-Next 3: Global ignored Apps  einführwn. Needed für apply rule to other apps
-
-
-1.3 Firefox problem 1
-wenn die erst seite böse e.g. girls
-kann ich firefox nicht richtig mehr bedienen, da es sofort beim öffnen geschlossen wird
-
-
-
-1.4 Mit Firefox testen
-porn Filter für Firefox erstellen
-Test queries term:
-- twerk
 
 1.5 Rules für Apps erstellen (erstmal ohne GUI)
 diese müssen auch per JSON abspeicherbar sein.
@@ -41,47 +10,31 @@ Aber hier nicht in assests
 1.6 Exportieren und Impotieren aller Settings (Rules + own topics as maybe zip)
 
 1.7 Tests mit KI erstellen für die Klassen TopicManger und Rules Zeug
-1.8 Topic Manger oder Rules muss Singleton werden, für Komminkation mit UI
 
-1.9
-<ignored_apps>
-        <app>net.tandem</app>
-        <app>org.thoughtcrime.securesms</app>
-        <app>org.telegram.messenger</app>
-        <app>com.whatsapp</app>
-        <app>cz.mobilesoft.appblock</app>
-        <app>com.standardnotes</app>
-        <app>de.c24.bankapp</app>
-        <app>ws.xsoh.etar</app>
-        <app>com.android.settings</app>
-        <app>com.example.ourpact3</app>
-        <app>com.ichi2.anki</app>
-        <app>com.epson.epsonsmart</app>
-        <app>de.mm20.launcher2</app>
-        <app>de.reimardoeffinger.quickdic</app>
-    </ignored_apps>
+
     
-2.10
-enforce google
 ============================Part 2 UI=====================================================
 2.0 UI Desigin anschauen z. b IOS Parent Control min 5 verschiedene was gefällt mir und ist einfach zu bedienen
 
-2.1 In App anzeigen, welche Regeln aktiv sind und Infos dazu
 
-2.2 Logs durch Callback oder throw Exceptions austauschen. Für Fehlermeldungen für User
 
-2.5 Prevent Uninstall
-=================================Part 3 make nice for other Users=========================================
+Part 3 Before Publish=========================================
 
 3.0 Lizenz festlegen
 
 3.0.1 Rename App
+
+3.0.2 App icon
 
 3.0.x remove patricks_merge_lists
 
 3.1 Willkommens Bildschrirm
 
 3.1.1 kurze Readme erstellen
+
+3.1.2 Donation Link
+
+3.1.3 Developer E-Mail erstellen und anbieten Crashreports dort hinzusenden
 
 3.2 Increae Package version
 =================================Unsortiertes Zeug/Sonstige Ideen======================================
