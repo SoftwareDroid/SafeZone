@@ -4,23 +4,20 @@ package com.example.ourpact3.learn_mode;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Button;
 
 import com.example.ourpact3.R;
+import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.service.IContentFilterService;
-import com.example.ourpact3.service.ScreenInfoExtractor;
 
 import org.jetbrains.annotations.NotNull;
 
-public class LearnButtonsOverlayManager
+public class LearnModeComponent
 {
     private boolean drawAtLeftEdge = true;
     private WindowManager windowManager;
@@ -28,7 +25,7 @@ public class LearnButtonsOverlayManager
     private Context context;
     private IContentFilterService iContentFilterService;
 
-    public LearnButtonsOverlayManager(@NotNull Context context, @NotNull IContentFilterService iContentFilterService)
+    public LearnModeComponent(@NotNull Context context, @NotNull IContentFilterService iContentFilterService)
     {
         if(!Settings.canDrawOverlays(context))
         {
@@ -91,6 +88,11 @@ public class LearnButtonsOverlayManager
         });
     }
 
+    public void onPipelineResult(PipelineResultBase result)
+    {
+        assert true;
+    }
+    /*
     public void onAccessibilityEvent(AccessibilityEvent event, AccessibilityNodeInfo root)
     {
         if(root == null || event.getPackageName() == null)
@@ -112,7 +114,7 @@ public class LearnButtonsOverlayManager
                 break;
             }
         }
-    }
+    }*/
 
     public void stopOverlay()
     {

@@ -12,6 +12,8 @@ public interface IContentFilterService
         APP_KILL_MODE_1,
         LEARN_OVERLAY_MODE,
     }
+    void forwardPipelineResultToLearner(PipelineResultBase result);
+    Mode getMode();
     void activateAppKillMode(@NotNull PipelineResultBase lastResult);
     void activateLearnMode();
     void stopLearnMode();

@@ -1,6 +1,7 @@
 package com.example.ourpact3;
 
 import com.example.ourpact3.filter.AppGenericEventFilterBase;
+import com.example.ourpact3.model.PipelineResultKeywordFilter;
 import com.example.ourpact3.service.IFilterResultCallback;
 import com.example.ourpact3.model.PipelineResultBase;
 
@@ -82,6 +83,9 @@ public class AppFilter
                     return;
                 }
             }
+            // Send end of pipeline
+            endOfPipelineReached();
+
         }
     };
 
@@ -110,7 +114,7 @@ public class AppFilter
                         PipelineResultBase resultCopy = result.clone();
                         resultCopy.setCurrentAppFilter(this);
                         resultCopy.setTriggerPackage(event.getPackageName().toString());
-                        this.callback.onPipelineResult(resultCopy);
+                        this.callback.onPipelineResultBackground(resultCopy);
                         return;
                     }
                 }
@@ -134,6 +138,13 @@ public class AppFilter
                 break;
             default:
         }
+    }
+
+    private void endOfPipelineReached()
+    {
+        PipelineResultBase endToken = new PipelineResultKeywordFilter(this.packageName);
+        endToken.setWindowAction(PipelineWindowAction.END_OF_PIPE_LINE);
+        this.callback.onPipelineResultBackground(endToken);
     }
 
     /**
@@ -167,7 +178,7 @@ public class AppFilter
                     resultCopy.setScreen(screen);
                     resultCopy.setCurrentAppFilter(this);
                     // Forward result to callback
-                    this.callback.onPipelineResult(resultCopy);
+                    this.callback.onPipelineResultBackground(resultCopy);
 
                     pipelineRunning = resultCopy.getWindowAction() == PipelineWindowAction.CONTINUE_PIPELINE;
                     if (!pipelineRunning)

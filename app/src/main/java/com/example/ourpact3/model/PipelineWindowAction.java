@@ -8,4 +8,5 @@ public enum PipelineWindowAction
     PERFORM_BACK_ACTION,
     STOP_FURTHER_PROCESSING,
     PERFORM_BACK_ACTION_AND_WARNING, // goes back and shoes an warning
+    END_OF_PIPE_LINE,
 }

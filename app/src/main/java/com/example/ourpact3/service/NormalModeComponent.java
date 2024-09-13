@@ -1,23 +1,24 @@
 package com.example.ourpact3.service;
 
 import android.accessibilityservice.AccessibilityService;
-import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.example.ourpact3.AppFilter;
 import com.example.ourpact3.model.PipelineResultBase;
 
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
-public class TextFilterService implements IServiceEventHandler, IFilterResultCallback
+public class NormalModeComponent implements IServiceEventHandler, IFilterResultCallback
 {
     private IContentFilterService iContentFilterService;
     private final OverlayWindowManager overlayWindowManager;
     public TreeMap<String, AppFilter> keywordFilters = new TreeMap<>();
+    private ConcurrentLinkedDeque<PipelineResultBase> pipelineResults = new ConcurrentLinkedDeque<PipelineResultBase>();
 
     private final AccessibilityService service;
 
-    public TextFilterService(AccessibilityService service, IContentFilterService iContentFilterService)
+    public NormalModeComponent(AccessibilityService service, IContentFilterService iContentFilterService)
     {
         this.service = service;
         this.overlayWindowManager = new OverlayWindowManager(service);
@@ -25,9 +26,14 @@ public class TextFilterService implements IServiceEventHandler, IFilterResultCal
     }
 
 
-    @Override
-    public void onPipelineResult(PipelineResultBase result)
+    public void onPipelineResultForeground(PipelineResultBase result)
     {
+        if(this.iContentFilterService.getMode() == IContentFilterService.Mode.LEARN_OVERLAY_MODE)
+        {
+            iContentFilterService.forwardPipelineResultToLearner(result);
+            return;
+        }
+
         if (result.getKillState() == PipelineResultBase.KillState.KILL_BEFORE_WINDOW)
         {
             // Kill app first we get the result a second time via callback wit state == KILLED
@@ -51,8 +57,6 @@ public class TextFilterService implements IServiceEventHandler, IFilterResultCal
             case STOP_FURTHER_PROCESSING:
                 break;
         }
-
-
     }
 
     @Override
@@ -75,5 +79,21 @@ public class TextFilterService implements IServiceEventHandler, IFilterResultCal
         {
             filter.processEvent(event);
         }
+    }
+
+    public void processPipelineResults()
+    {
+        while(!this.pipelineResults.isEmpty())
+        {
+            PipelineResultBase result = pipelineResults.poll();
+            this.onPipelineResultForeground(result);
+        }
+    }
+
+
+    @Override
+    public void onPipelineResultBackground(PipelineResultBase result)
+    {
+        pipelineResults.push(result);
     }
 }

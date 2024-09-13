@@ -4,5 +4,6 @@ import com.example.ourpact3.model.PipelineResultBase;
 
 public interface IFilterResultCallback
 {
-    void onPipelineResult(PipelineResultBase result);
+//    void onPipelineResult(PipelineResultBase result);
+    void onPipelineResultBackground(PipelineResultBase result);
 }

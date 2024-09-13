@@ -30,8 +30,7 @@ public class DisjointSets {
         List<Set<Integer>> copyOfB = deepCopySets(B);
 
         removeElements(copyOfA, frequencyMapB);
-        removeElements(copyOfB, frequencyMapA);sc
-
+        removeElements(copyOfB, frequencyMapA);
         Set<Integer> resultA = removeAndCollect(A, frequencyMapA);
         Set<Integer> resultB = removeAndCollect(B, frequencyMapB);
 
