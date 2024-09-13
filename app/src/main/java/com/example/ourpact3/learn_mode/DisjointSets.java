@@ -2,13 +2,11 @@ package com.example.ourpact3.learn_mode;
 
 import java.util.*;
 
-public class DisjointSets {
+public class DisjointSets<T> {
 
     /**
-     * Do not add double elements as set this results on errors
-     * Calculates the disjoint sets from two lists of sets of integers.
-     *  with n integer approximately O(NlogN) in the worst case, and the space complexity is O(N).
-     * This method takes two lists of sets, counts the frequency of each integer in both lists,
+     * Calculates the disjoint sets from two lists of sets of type T.
+     * This method takes two lists of sets, counts the frequency of each element in both lists,
      * removes elements from the copies of the sets that are present in the other list, and collects
      * the removed elements into separate result sets for each input list.
      *
@@ -17,71 +15,68 @@ public class DisjointSets {
      * and errors during the calculation.
      * </p>
      *
-     * @param A a list of sets of integers from which elements will be removed
-     * @param B a list of sets of integers from which elements will be removed
+     * @param A a list of sets of type T from which elements will be removed
+     * @param B a list of sets of type T from which elements will be removed
      * @return an array of two sets, where the first set contains the elements removed from list A,
      *         and the second set contains the elements removed from list B
      */
-    public static Set<Integer>[] calculateDisjointAggregatedFrequencySets(List<Set<Integer>> A, List<Set<Integer>> B) {
-        Map<Integer, Integer> frequencyMapA = calculateFrequencies(A);
-        Map<Integer, Integer> frequencyMapB = calculateFrequencies(B);
+    public Set<T>[] calculateDisjointAggregatedFrequencySets(List<Set<T>> A, List<Set<T>> B) {
+        Map<T, Integer> frequencyMapA = calculateFrequencies(A);
+        Map<T, Integer> frequencyMapB = calculateFrequencies(B);
 
-        List<Set<Integer>> copyOfA = deepCopySets(A);
-        List<Set<Integer>> copyOfB = deepCopySets(B);
+        List<Set<T>> copyOfA = deepCopySets(A);
+        List<Set<T>> copyOfB = deepCopySets(B);
 
         removeElements(copyOfA, frequencyMapB);
         removeElements(copyOfB, frequencyMapA);
-        Set<Integer> resultA = removeAndCollect(A, frequencyMapA);
-        Set<Integer> resultB = removeAndCollect(B, frequencyMapB);
+        Set<T> resultA = removeAndCollect(A, frequencyMapA);
+        Set<T> resultB = removeAndCollect(B, frequencyMapB);
 
         return new Set[]{resultA, resultB};
     }
 
-    private static void checkForDuplicates(List<Set<Integer>> sets) {
-        for (Set<Integer> set : sets) {
+    private void checkForDuplicates(List<Set<T>> sets) {
+        for (Set<T> set : sets) {
             if (set.size() != new HashSet<>(set).size()) {
                 throw new IllegalArgumentException("Duplicate elements found in set: " + set);
             }
         }
     }
 
-    private static Map<Integer, Integer> calculateFrequencies(List<Set<Integer>> sets) {
-        Map<Integer, Integer> frequencyMap = new HashMap<>();
-        for (Set<Integer> set : sets) {
-            for (Integer num : set) {
-                frequencyMap.put(num, frequencyMap.getOrDefault(num, 0) + 1);
+    private Map<T, Integer> calculateFrequencies(List<Set<T>> sets) {
+        Map<T, Integer> frequencyMap = new HashMap<>();
+        for (Set<T> set : sets) {
+            for (T element : set) {
+                frequencyMap.put(element, frequencyMap.getOrDefault(element, 0) + 1);
             }
         }
         return frequencyMap;
     }
 
-    private static List<Set<Integer>> deepCopySets(List<Set<Integer>> original) {
-        List<Set<Integer>> copy = new ArrayList<>();
-        for (Set<Integer> set : original) {
+    private List<Set<T>> deepCopySets(List<Set<T>> original) {
+        List<Set<T>> copy = new ArrayList<>();
+        for (Set<T> set : original) {
             copy.add(new HashSet<>(set)); // Deep copy of each set
         }
         return copy;
     }
 
-    private static void removeElements(List<Set<Integer>> sets, Map<Integer, Integer> frequencyMap) {
-        for (Set<Integer> set : sets) {
+    private void removeElements(List<Set<T>> sets, Map<T, Integer> frequencyMap) {
+        for (Set<T> set : sets) {
             set.removeIf(frequencyMap::containsKey); // Remove elements present in frequencyMap
         }
     }
 
-    private static Set<Integer> removeAndCollect(List<Set<Integer>> sets, Map<Integer, Integer> frequencyMap) {
-        Set<Integer> result = new HashSet<>();
-        List<Map.Entry<Integer, Integer>> sortedEntries = new ArrayList<>(frequencyMap.entrySet());
+    private Set<T> removeAndCollect(List<Set<T>> sets, Map<T, Integer> frequencyMap) {
+        Set<T> result = new HashSet<>();
+        List<Map.Entry<T, Integer>> sortedEntries = new ArrayList<>(frequencyMap.entrySet());
         sortedEntries.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
 
-        for (Map.Entry<Integer, Integer> entry : sortedEntries) {
+        for (Map.Entry<T, Integer> entry : sortedEntries) {
             if (sets.removeIf(set -> set.contains(entry.getKey()))) {
                 result.add(entry.getKey());
             }
         }
         return result;
     }
-
-
-
 }

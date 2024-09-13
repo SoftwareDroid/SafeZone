@@ -84,7 +84,7 @@ public class AppFilter
                 }
             }
             // Send end of pipeline
-            endOfPipelineReached();
+            endOfPipelineReached(screen);
 
         }
     };
@@ -140,10 +140,11 @@ public class AppFilter
         }
     }
 
-    private void endOfPipelineReached()
+    private void endOfPipelineReached(ScreenInfoExtractor.Screen screen)
     {
         PipelineResultBase endToken = new PipelineResultKeywordFilter(this.packageName);
         endToken.setWindowAction(PipelineWindowAction.END_OF_PIPE_LINE);
+        endToken.setScreen(screen);
         this.callback.onPipelineResultBackground(endToken);
     }
 

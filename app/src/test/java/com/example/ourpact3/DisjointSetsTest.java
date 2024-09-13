@@ -26,8 +26,8 @@ public class DisjointSetsTest
         B.add(new HashSet<>(Arrays.asList(11, 9, 8, 3))); // Set 1
         B.add(new HashSet<>(Arrays.asList(1, 0, 4 ,2)));     // Set 2
         B.add(new HashSet<>(Arrays.asList(2, 10,11)));        // Set 3
-
-        Set<Integer>[] result = DisjointSets.calculateDisjointAggregatedFrequencySets(A, B);
+        DisjointSets<Integer> disjointSets = new DisjointSets<>();
+        Set<Integer>[] result = disjointSets.calculateDisjointAggregatedFrequencySets(A, B);
         assertTrue(result[0].contains(1));
         assertTrue(result[0].contains(3) || result[0].contains(5)  );
         assertTrue(result[1].contains(11));
