@@ -114,13 +114,11 @@ public class LearnModeComponent
         assert buttonThumpUp != null;
         if (this.iContentFilterService.isPackagedIgnoredForLearning(newApp))
         {
-            buttonThumpUp.setVisibility(View.INVISIBLE);
-            buttonThumpDown.setVisibility(View.INVISIBLE);
+            overlayButtons.setVisibility(View.GONE);
         }
         else
         {
-            buttonThumpUp.setVisibility(View.VISIBLE);
-            buttonThumpDown.setVisibility(View.VISIBLE);
+            overlayButtons.setVisibility(View.VISIBLE);
         }
     }
 

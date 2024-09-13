@@ -47,6 +47,8 @@ public class ExampleAppKeywordFilters
         ignoredApps.add("com.epson.epsonsmart");
         ignoredApps.add("de.mm20.launcher2");
         ignoredApps.add("de.reimardoeffinger.quickdic");
+        ignoredApps.add("de.mm20.launcher2.release");
+
         return ignoredApps;
     }
 

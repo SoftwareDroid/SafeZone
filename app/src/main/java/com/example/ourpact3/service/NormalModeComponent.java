@@ -82,15 +82,19 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
         {
             filter.processEvent(event);
         }
-        if(event.getEventType() == AccessibilityEvent.TYPE_WINDOWS_CHANGED)
+        switch (event.getEventType())
         {
-            String app = event.getPackageName().toString();
-            if(app != null && app != lastUsedApp)
-            {
-                lastUsedApp = app;
-                this.iContentFilterService.onAppChange(lastUsedApp,app);
-            }
+            case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
+                if(event.getPackageName() != null && !event.getPackageName().toString().equals(lastUsedApp))
+                {
+                    String app = event.getPackageName().toString();
+                    lastUsedApp = app;
+                    this.iContentFilterService.onAppChange(lastUsedApp,app);
+                }
+                break;
         }
+
+
     }
 
     public void processPipelineResults()
