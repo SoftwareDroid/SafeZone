@@ -24,12 +24,12 @@ import java.util.TreeMap;
 
 public class LearnModeComponent
 {
-    private Map<String, AppLearnProgress> appIdToLearnProgres = new TreeMap<>();
+    private final Map<String, AppLearnProgress> appIdToLearnProgress = new TreeMap<>();
     private boolean drawAtLeftEdge = true;
-    private WindowManager windowManager;
+    private final WindowManager windowManager;
     private View overlayButtons;
-    private Context context;
-    private IContentFilterService iContentFilterService;
+    private final Context context;
+    private final IContentFilterService iContentFilterService;
     private TextView currentStatus;
 
     public LearnModeComponent(@NotNull Context context, @NotNull IContentFilterService iContentFilterService)
@@ -135,29 +135,31 @@ public class LearnModeComponent
             {
                 boolean overwritten = false;
                 // first check if result is in expression the overwrite the
-                if (appIdToLearnProgres.containsKey(result.getTriggerPackage()))
+                if (appIdToLearnProgress.containsKey(result.getTriggerPackage()))
                 {
-                    AppLearnProgress learnProgress = this.appIdToLearnProgres.get(result.getTriggerPackage());
+                    AppLearnProgress learnProgress = this.appIdToLearnProgress.get(result.getTriggerPackage());
                     assert learnProgress != null;
-                    AppLearnProgress.LabeledScreen labeledScreen = learnProgress.getLabeledScreen(screen);
-                    if (labeledScreen != null)
+                    AppLearnProgress.ScreenLabel screenLabel = learnProgress.getLabelFromCalculatedExpression(screen);
+                    if (screenLabel != AppLearnProgress.ScreenLabel.NOT_LABELED)
                     {
-                        currentStatus.setText(convertLabelTOResultToInfoTest(labeledScreen.label));
+                        currentStatus.setText(convertLabelTOResultToInfoTest(screenLabel));
                         overwritten = true;
-                        updateUIBasedOnCurrentLabel(labeledScreen.label, result.getTriggerPackage());
+                        updateUIBasedOnCurrentLabel(screenLabel, result.getTriggerPackage(),overwritten);
                     }
                 }
                 if (!overwritten)
                 {
                     currentStatus.setText(convertPiplineResultToInfoText(lastResult));
-                    updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel.NOT_LABELED, result.getTriggerPackage());
+                    updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel.NOT_LABELED, result.getTriggerPackage(),overwritten);
                 }
             }
         }
     }
 
-    private void updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel label, String packageID)
+    private void updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel label, String packageID, boolean overwritten)
     {
+        assert currentStatus != null;
+        currentStatus.setBackgroundColor(overwritten ? context.getColor(R.color.learner_screen_learned) : context.getColor(R.color.learner_screen_not_learned));
         Button buttonThumpUp = overlayButtons.findViewById(R.id.thumb_up);
         Button buttonThumpDown = overlayButtons.findViewById(R.id.thumb_down);
         assert buttonThumpDown != null;
@@ -192,14 +194,15 @@ public class LearnModeComponent
             String app = this.lastResult.getTriggerPackage();
             if (app != null)
             {
-                if (!this.appIdToLearnProgres.containsKey(app))
+                if (!this.appIdToLearnProgress.containsKey(app))
                 {
-                    appIdToLearnProgres.put(app, new AppLearnProgress());
+                    appIdToLearnProgress.put(app, new AppLearnProgress());
                 }
-                AppLearnProgress learnProgress = this.appIdToLearnProgres.get(app);
+                AppLearnProgress learnProgress = this.appIdToLearnProgress.get(app);
                 // if a screen already there we remove it. so that it is not in any class and we can relabel it.
                 ScreenInfoExtractor.Screen screen = lastResult.getScreen();
                 assert learnProgress != null;
+                // Check if we already the same screen
                 AppLearnProgress.LabeledScreen labeledScreen = learnProgress.getLabeledScreen(screen);
                 AppLearnProgress.ScreenLabel newCurrentScreenlabel = label;
                 if (!force)
@@ -219,7 +222,7 @@ public class LearnModeComponent
                 }
                 learnProgress.recalculateExpressions();
                 // Wait for the next pipeline Update
-                this.updateUIBasedOnCurrentLabel(newCurrentScreenlabel, app);
+                this.updateUIBasedOnCurrentLabel(newCurrentScreenlabel, app, newCurrentScreenlabel != AppLearnProgress.ScreenLabel.NOT_LABELED);
             }
         }
     }

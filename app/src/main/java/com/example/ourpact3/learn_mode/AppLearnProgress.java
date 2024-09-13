@@ -110,6 +110,26 @@ public class AppLearnProgress
         return null; // Return null if no match is found
     }
 
+    public ScreenLabel getLabelFromCalculatedExpression(@NotNull ScreenInfoExtractor.Screen screen)
+    {
+        Set<String> simplifiedNodes = simplifyIdNodes(screen.getIdNodes());
+        for(String goodId: this.expressionGoodIds)
+        {
+            if(simplifiedNodes.contains(goodId))
+            {
+                return ScreenLabel.GOOD;
+            }
+        }
+        for(String badId: this.expressionBadIds)
+        {
+            if(simplifiedNodes.contains(badId))
+            {
+                return ScreenLabel.BAD;
+            }
+        }
+        return ScreenLabel.NOT_LABELED;
+    }
+
     public void clear()
     {
         this.labeledScreens.clear();
