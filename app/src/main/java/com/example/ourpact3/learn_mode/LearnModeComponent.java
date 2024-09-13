@@ -74,11 +74,19 @@ public class LearnModeComponent
         currentStatus = overlayButtons.findViewById(R.id.current_status);
 
         buttonThumpUp.setOnClickListener(v -> {
-            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.GOOD);
+            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.GOOD,false);
+        });
+        buttonThumpUp.setOnLongClickListener(v -> {
+            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.GOOD,true);
+            return true;
         });
 
         buttonThumpDown.setOnClickListener(v -> {
-            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.BAD);
+            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.BAD,false);
+        });
+        buttonThumpDown.setOnLongClickListener(v -> {
+            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.BAD,true);
+            return true;
         });
 
         buttonSettings.setOnClickListener(v -> {
@@ -159,7 +167,7 @@ public class LearnModeComponent
         }
     }
 
-    private void labelCurrentScreen(AppLearnProgress.ScreenLabel label)
+    private void labelCurrentScreen(AppLearnProgress.ScreenLabel label,boolean force)
     {
         if (this.lastResult != null)
         {
@@ -172,15 +180,30 @@ public class LearnModeComponent
                 }
                 AppLearnProgress learnProgress = this.appIdToLearnProgres.get(app);
                 // if a screen already there we remove it. so that it is not in any class and we can relabel it.
-                ScreenInfoExtractor.Screen screen =
+                ScreenInfoExtractor.Screen screen = lastResult.getScreen();
+                assert learnProgress != null;
+                AppLearnProgress.LabeledScreen labeledScreen = learnProgress.getLabeledScreen(screen);
+                AppLearnProgress.ScreenLabel newCurrentScreenlabel = label;
+                if(!force)
                 {
-                    learnProgress.removeScreen(lastResult.getScreen());
+                    if (labeledScreen != null)
+                    {
+                        learnProgress.removeScreen(lastResult.getScreen());
+                        newCurrentScreenlabel = AppLearnProgress.ScreenLabel.NOT_LABELED; // go e.g from Up -> NOT_LABELED and with next click to
+                    }
+                    else
+                    {
+                        learnProgress.addScreen(lastResult.getScreen(), label);
+                    }
                 }
                 else
                 {
+                    learnProgress.removeScreen(lastResult.getScreen());
                     learnProgress.addScreen(lastResult.getScreen(), label);
                 }
                 learnProgress.recalculateExpressions();
+                // Wait for the next pipeline Update
+                this.updateUIBasedOnCurrentLabel(newCurrentScreenlabel,app);
             }
         }
     }
