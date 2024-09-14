@@ -151,7 +151,7 @@ public class AppLearnProgress
         DisjointSets<String> disjointSets = new DisjointSets<>();
         Set<String>[] result = disjointSets.calculateDisjointAggregatedFrequencySets(classGood, classBad);
         this.expressionGoodIds = result[0];
-        this.expressionBadIds = result[0];
+        this.expressionBadIds = result[1];
     }
 
     public Set<String> getExpressionGoodIds()

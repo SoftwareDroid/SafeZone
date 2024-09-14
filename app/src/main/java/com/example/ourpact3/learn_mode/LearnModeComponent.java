@@ -136,7 +136,9 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
             if(entry.getValue().isDirty())
             {
                 LearnProgressSaver.save(this.context,appId,entry.getValue());
+                entry.getValue().saveToDisk();  // Undirty
             }
+
         }
     }
 
@@ -243,7 +245,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     return true;
                 } else if (item.getItemId() == R.id.save)
                 {
-                    saveLearnedToDisk();    //TODO Perhaps remove
+                    saveLearnedToDisk();    //TODO Perhaps
                     saveLearned();
                     return true;
                 } else if(item.getItemId() == R.id.clear)
