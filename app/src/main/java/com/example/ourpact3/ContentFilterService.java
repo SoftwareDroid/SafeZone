@@ -4,16 +4,14 @@ import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
-import android.view.inputmethod.InputMethodManager;
-
 import com.example.ourpact3.learn_mode.LearnModeComponent;
 import com.example.ourpact3.model.CheatKeyManager;
+import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.util.CrashHandler;
 import com.example.ourpact3.model.PipelineResultBase;
@@ -27,8 +25,8 @@ import com.example.ourpact3.topics.TopicManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeMap;
 
 // https://developer.android.com/guide/topics/ui/accessibility/service
 
@@ -44,7 +42,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     private final TopicManager topicManager = new TopicManager();
     private CrashHandler crashHandler;
     private CheatKeyManager cheatKeyManager;
-    private HashSet<String> ignoredPackagesForLearning;
+    private TreeMap<String, AppPermission> usedAppPermissions;
     //    private boolean isRunning = false;
     @Override
     public void onServiceConnected()
@@ -83,7 +81,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
             topicManager.checkAllTopics();
             // load all example filters
             ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager);
-            this.ignoredPackagesForLearning = exampleFilters.getIgnoredListPackagesForLearning();
+            this.usedAppPermissions = exampleFilters.getAppPermissions();
             exampleFilters.addExampleTopics();
             for (AppFilter filter : exampleFilters.getAllExampleFilters())
             {
@@ -244,7 +242,12 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public boolean isPackagedIgnoredForLearning(String id)
     {
-        return this.ignoredPackagesForLearning.contains(id);
+        AppPermission permission = this.usedAppPermissions.get(id);
+        if(permission != null)
+        {
+            return permission != AppPermission.USER_RW;
+        }
+        return false;
     }
 
     @Override

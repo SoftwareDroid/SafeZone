@@ -1,5 +1,6 @@
 package com.example.ourpact3;
 
+import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.topics.InvalidTopicIDException;
@@ -16,8 +17,8 @@ import com.example.ourpact3.smart_filter.WordProcessorFilterBase;
 import com.example.ourpact3.smart_filter.WordListFilterScored;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.TreeMap;
 
 public class ExampleAppKeywordFilters
 {
@@ -30,27 +31,28 @@ public class ExampleAppKeywordFilters
     private final ContentFilterService service;
     private final TopicManager topicManager;
 
-    public HashSet<String> getIgnoredListPackagesForLearning()
+    public TreeMap<String,AppPermission> getAppPermissions()
     {
-        HashSet<String> ignoredApps = new HashSet<String>();
+        TreeMap<String, AppPermission> appPermissions = new TreeMap<>();
         // Add the apps to the HashSet
-        ignoredApps.add("net.tandem");
-        ignoredApps.add("org.thoughtcrime.securesms");
+        appPermissions.put(this.service.getApplicationContext().getPackageName(),AppPermission.USER_RO);
+        appPermissions.put("com.android.settings",AppPermission.USER_RO);
+        appPermissions.put("net.tandem",AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("org.thoughtcrime.securesms",AppPermission.USER_IGNORE_LIST);
 //        ignoredApps.add("org.telegram.messenger");
-        ignoredApps.add("com.whatsapp");
-        ignoredApps.add("cz.mobilesoft.appblock");
-        ignoredApps.add("com.standardnotes");
-        ignoredApps.add("de.c24.bankapp");
-        ignoredApps.add("ws.xsoh.etar");
-//        ignoredApps.add("com.android.settings");
-        ignoredApps.add("com.example.ourpact3");
-        ignoredApps.add("com.ichi2.anki");
-        ignoredApps.add("com.epson.epsonsmart");
-        ignoredApps.add("de.mm20.launcher2");
-        ignoredApps.add("de.reimardoeffinger.quickdic");
-        ignoredApps.add("de.mm20.launcher2.release");
+        appPermissions.put("com.whatsapp",AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("cz.mobilesoft.appblock",AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("com.standardnotes",AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("de.c24.bankapp",AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("ws.xsoh.etar",AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("com.example.ourpact3",AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("com.ichi2.anki",AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("com.epson.epsonsmart",AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("de.mm20.launcher2",AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("de.reimardoeffinger.quickdic",AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("de.mm20.launcher2.release",AppPermission.USER_IGNORE_LIST);
 
-        return ignoredApps;
+        return appPermissions;
     }
 
     public void addExampleTopics() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
