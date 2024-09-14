@@ -112,6 +112,11 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
     private PipelineResultBase lastResult;
 
+    public void loadLearnProgressFromDisk(String app)
+    {
+
+    }
+
     public void onAppChange(String oldApp, String newApp)
     {
         Button buttonThumpUp = overlayButtons.findViewById(R.id.thumb_up);

@@ -5,6 +5,9 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import androidx.annotation.NonNull;
 
 import org.jetbrains.annotations.Unmodifiable;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +24,61 @@ public class ScreenInfoExtractor
         {
             this.idNodes = idNodes != null ? idNodes : new HashSet<>();
             this.textNodes = textNodes != null ? textNodes : new ArrayList<>();
+        }
+
+        // Method to convert Screen object to JSON
+        public JSONObject toJson() throws JSONException
+        {
+            JSONObject jsonObject = new JSONObject();
+
+            // Convert ID_Nodes to JSONArray
+            JSONArray idNodesArray = new JSONArray();
+            for (ID_Node idNode : idNodes) {
+                JSONObject idNodeJson = new JSONObject();
+                idNodeJson.put("className", idNode.className);
+                idNodeJson.put("id", idNode.id);
+                idNodeJson.put("visible", idNode.visible);
+                idNodesArray.put(idNodeJson);
+            }
+            jsonObject.put("idNodes", idNodesArray);
+
+            // Convert TextNodes to JSONArray
+            JSONArray textNodesArray = new JSONArray();
+            for (TextNode textNode : textNodes) {
+                JSONObject textNodeJson = new JSONObject();
+                textNodeJson.put("visible", textNode.visible);
+                textNodeJson.put("editable", textNode.editable);
+                textNodeJson.put("text", textNode.text);
+                textNodeJson.put("textInLowerCase", textNode.textInLowerCase);
+                textNodesArray.put(textNodeJson);
+            }
+            jsonObject.put("textNodes", textNodesArray);
+
+            return jsonObject;
+        }
+
+        public static Screen fromJson(JSONObject jsonObject) throws JSONException {
+            JSONArray idNodesArray = jsonObject.getJSONArray("idNodes");
+            Set<ID_Node> idNodes = new HashSet<>();
+            for (int i = 0; i < idNodesArray.length(); i++) {
+                JSONObject idNodeJson = idNodesArray.getJSONObject(i);
+                String className = idNodeJson.getString("className");
+                String id = idNodeJson.getString("id");
+                boolean visible = idNodeJson.getBoolean("visible");
+                idNodes.add(new ID_Node(className, id, visible));
+            }
+
+            JSONArray textNodesArray = jsonObject.getJSONArray("textNodes");
+            ArrayList<TextNode> textNodes = new ArrayList<>();
+            for (int i = 0; i < textNodesArray.length(); i++) {
+                JSONObject textNodeJson = textNodesArray.getJSONObject(i);
+                boolean visible = textNodeJson.getBoolean("visible");
+                boolean editable = textNodeJson.getBoolean("editable");
+                String text = textNodeJson.getString("text");
+                textNodes.add(new TextNode(visible, editable, text));
+            }
+
+            return new Screen(idNodes, textNodes);
         }
 
         public static class TextNode

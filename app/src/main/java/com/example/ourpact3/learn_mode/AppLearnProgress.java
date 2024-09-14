@@ -3,6 +3,9 @@ package com.example.ourpact3.learn_mode;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +46,64 @@ public class AppLearnProgress
     private ArrayList<LabeledScreen> labeledScreens = new ArrayList<>();
     private Set<String> expressionGoodIds = new TreeSet<>();
     private Set<String> expressionBadIds = new TreeSet<>();
+
+    // Method to convert AppLearnProgress object to JSON
+    public JSONObject toJson() throws JSONException
+    {
+        JSONObject jsonObject = new JSONObject();
+
+        // Convert labeledScreens to JSONArray
+        JSONArray labeledScreensArray = new JSONArray();
+        for (LabeledScreen labeledScreen : labeledScreens) {
+            JSONObject labeledScreenJson = new JSONObject();
+            labeledScreenJson.put("label", labeledScreen.label.name());
+            JSONArray idsArray = new JSONArray(labeledScreen.ids);
+            labeledScreenJson.put("ids", idsArray);
+            labeledScreensArray.put(labeledScreenJson);
+        }
+        jsonObject.put("labeledScreens", labeledScreensArray);
+
+        // Convert expressionGoodIds to JSONArray
+        JSONArray goodIdsArray = new JSONArray(expressionGoodIds);
+        jsonObject.put("expressionGoodIds", goodIdsArray);
+
+        // Convert expressionBadIds to JSONArray
+        JSONArray badIdsArray = new JSONArray(expressionBadIds);
+        jsonObject.put("expressionBadIds", badIdsArray);
+
+        return jsonObject;
+    }
+
+    public static AppLearnProgress fromJson(JSONObject jsonObject) throws JSONException {
+        AppLearnProgress appLearnProgress = new AppLearnProgress();
+
+        // Deserialize labeledScreens
+        JSONArray labeledScreensArray = jsonObject.getJSONArray("labeledScreens");
+        for (int i = 0; i < labeledScreensArray.length(); i++) {
+            JSONObject labeledScreenJson = labeledScreensArray.getJSONObject(i);
+            ScreenLabel label = ScreenLabel.valueOf(labeledScreenJson.getString("label"));
+            JSONArray idsArray = labeledScreenJson.getJSONArray("ids");
+            Set<String> ids = new TreeSet<>();
+            for (int j = 0; j < idsArray.length(); j++) {
+                ids.add(idsArray.getString(j));
+            }
+            appLearnProgress.labeledScreens.add(new LabeledScreen(ids, label));
+        }
+
+        // Deserialize expressionGoodIds
+        JSONArray goodIdsArray = jsonObject.getJSONArray("expressionGoodIds");
+        for (int i = 0; i < goodIdsArray.length(); i++) {
+            appLearnProgress.expressionGoodIds.add(goodIdsArray.getString(i));
+        }
+
+        // Deserialize expressionBadIds
+        JSONArray badIdsArray = jsonObject.getJSONArray("expressionBadIds");
+        for (int i = 0; i < badIdsArray.length(); i++) {
+            appLearnProgress.expressionBadIds.add(badIdsArray.getString(i));
+        }
+
+        return appLearnProgress;
+    }
 
     /**
      * add a screen

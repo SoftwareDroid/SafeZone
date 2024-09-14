@@ -103,11 +103,11 @@ public class ContentFilterService extends AccessibilityService implements IConte
     }
 
 
-    public boolean isKeyboardOpen()
-    {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        return imm.isAcceptingText();
-    }
+//    public boolean isKeyboardOpen()
+//    {
+//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        return imm.isAcceptingText();
+//    }
 
     public boolean isMagnificationEnabled()
     {
