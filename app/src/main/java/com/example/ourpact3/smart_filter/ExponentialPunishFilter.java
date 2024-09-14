@@ -5,6 +5,7 @@ import android.view.accessibility.AccessibilityEvent;
 import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.model.PipelineResultExpFilter;
 import com.example.ourpact3.model.PipelineWindowAction;
+import com.example.ourpact3.service.ScreenInfoExtractor;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -67,6 +68,12 @@ public class ExponentialPunishFilter extends SpecialSmartFilterBase
             default:
                 break;
         }
+        return null;
+    }
+
+    @Override
+    public PipelineResultBase onScreenEvent(ScreenInfoExtractor.Screen screen)
+    {
         return null;
     }
 

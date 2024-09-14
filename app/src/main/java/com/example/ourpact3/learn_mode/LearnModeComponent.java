@@ -218,6 +218,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                 } else if (item.getItemId() == R.id.save)
                 {
                     saveLearned();
+                    return true;
                 }
 
                 return false;
@@ -245,7 +246,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                         defaultGoodResult.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
                         defaultGoodResult.setHasExplainableButton(false);
                         UI_ID_Filter newUI_ID_Filter = new UI_ID_Filter(defaultGoodResult, this.context.getString(R.string.name_good_filter), goodIds);
-                        this.iContentFilterService.setSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_BAD, newUI_ID_Filter);
+                        this.iContentFilterService.setSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_GOOD, newUI_ID_Filter);
                     }
                     else
                     {
@@ -253,7 +254,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     }
                 }
                 {
-                    Set<String> badIds = learnProgress.getExpressionGoodIds();
+                    Set<String> badIds = learnProgress.getExpressionBadIds();
 
                     UI_ID_Filter oldBadFilter = (UI_ID_Filter) this.iContentFilterService.getSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_BAD);
                     if (oldBadFilter == null)
