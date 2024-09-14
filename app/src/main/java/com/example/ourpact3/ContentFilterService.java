@@ -37,7 +37,8 @@ import java.util.Set;
  */
 public class ContentFilterService extends AccessibilityService implements IContentFilterService
 {
-    private NormalModeComponent normalModeProcessor;;
+    private NormalModeComponent normalModeProcessor;
+    ;
     private AppKiller appKillerService;
     private LearnModeComponent learnModeComponent;
     private Mode mode = Mode.NORMAL_MODE;
@@ -45,15 +46,16 @@ public class ContentFilterService extends AccessibilityService implements IConte
     private CrashHandler crashHandler;
     private CheatKeyManager cheatKeyManager;
     private HashSet<String> ignoredPackagesForLearning;
+
     //    private boolean isRunning = false;
     @Override
     public void onServiceConnected()
     {
         // setup crash handler
-        crashHandler = new CrashHandler(this,this);
+        crashHandler = new CrashHandler(this, this);
         Thread.setDefaultUncaughtExceptionHandler(crashHandler);
         //
-        learnModeComponent = new LearnModeComponent(this,this);
+        learnModeComponent = new LearnModeComponent(this, this,this);
         this.setNewMode(Mode.LEARN_OVERLAY_MODE);
         Log.i("FOO", "Stating service");
 
@@ -135,18 +137,20 @@ public class ContentFilterService extends AccessibilityService implements IConte
         {
             // event splitting does the normal mode
             case LEARN_OVERLAY_MODE:
+                this.learnModeComponent.onAccessibilityEvent(event);
+                //Fall through here is correct
             case NORMAL_MODE:
-                Log.d("KILLER","NORMAL MODE");
+                Log.d("KILLER", "NORMAL MODE");
                 this.normalModeProcessor.onAccessibilityEvent(event);
                 break;
             case APP_KILL_MODE_1:
                 try
                 {
-                    Log.d("KILLER","APP killMode");
+                    Log.d("KILLER", "APP killMode");
                     this.appKillerService.onAccessibilityEvent(event);
                 } catch (InterruptedException ignored)
                 {
-                    Log.d("KILLER","APP killMode interrupt");
+                    Log.d("KILLER", "APP killMode interrupt");
 
                 }
                 break;
@@ -220,7 +224,8 @@ public class ContentFilterService extends AccessibilityService implements IConte
     public void setNewMode(Mode mode)
     {
         this.mode = mode;
-        switch (mode){
+        switch (mode)
+        {
             case NORMAL_MODE:
                 this.learnModeComponent.stopOverlay();
                 break;
@@ -250,36 +255,37 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void destroyGUI()
     {
-        if(this.learnModeComponent != null)
+        if (this.learnModeComponent != null)
         {
             this.learnModeComponent.stopOverlay();
         }
-        if(this.normalModeProcessor != null)
+        if (this.normalModeProcessor != null)
         {
-            this.normalModeProcessor.destroyGUI();        }
+            this.normalModeProcessor.destroyGUI();
+        }
     }
 
     @Override
     public void onAppChange(String oldApp, String newApp)
     {
-        this.learnModeComponent.onAppChange(oldApp,newApp);
+        this.learnModeComponent.onAppChange(oldApp, newApp);
     }
 
     @Override
     public void setSpecialSmartFilter(String app, SpecialSmartFilterBase.Name name, SpecialSmartFilterBase filter)
     {
-        AppFilter appFilter =  this.normalModeProcessor.keywordFilters.get(app);
-        if(appFilter != null)
+        AppFilter appFilter = this.normalModeProcessor.keywordFilters.get(app);
+        if (appFilter != null)
         {
-            appFilter.setSpecialSmartFilter(name,filter);
+            appFilter.setSpecialSmartFilter(name, filter);
         }
     }
 
     @Override
     public SpecialSmartFilterBase getSpecialSmartFilter(String app, SpecialSmartFilterBase.Name name)
     {
-        AppFilter appFilter =  this.normalModeProcessor.keywordFilters.get(app);
-        if(appFilter != null)
+        AppFilter appFilter = this.normalModeProcessor.keywordFilters.get(app);
+        if (appFilter != null)
         {
             return appFilter.getSpecialSmartFilter(name);
         }
@@ -287,11 +293,11 @@ public class ContentFilterService extends AccessibilityService implements IConte
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
 
         return START_STICKY;
     }
-
 
 
 }

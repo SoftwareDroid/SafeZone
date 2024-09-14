@@ -1,10 +1,12 @@
 package com.example.ourpact3.learn_mode;
 
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.view.MenuItem;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.PopupMenu;
 import android.provider.Settings;
 import android.view.Gravity;
@@ -17,7 +19,6 @@ import android.widget.TextView;
 
 import com.example.ourpact3.R;
 import com.example.ourpact3.model.PipelineResultBase;
-import com.example.ourpact3.model.PipelineResultKeywordFilter;
 import com.example.ourpact3.model.PipelineResultLearnedMode;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.service.IContentFilterService;
@@ -40,8 +41,8 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
     private final Context context;
     private final IContentFilterService iContentFilterService;
     private TextView currentStatus;
-
-    public LearnModeComponent(@NotNull Context context, @NotNull IContentFilterService iContentFilterService)
+    private  AccessibilityService service;
+    public LearnModeComponent(@NotNull Context context, @NotNull IContentFilterService iContentFilterService, AccessibilityService service)
     {
         if (!Settings.canDrawOverlays(context))
         {
@@ -50,6 +51,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         this.context = context;
         this.iContentFilterService = iContentFilterService;
+        this.service = service;
     }
 
     public void createOverlay()
@@ -115,17 +117,56 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
     private void loadLearnProgressFromDisk()
     {
-        if(this.lastResult != null)
+        if (this.lastResult != null)
         {
-            if(this.lastResult.getTriggerPackage() != null)
+            if (this.lastResult.getTriggerPackage() != null)
             {
-                AppLearnProgress progress = LearnProgressSaver.load(this.context,this.lastResult.getTriggerPackage());
-                if(progress != null)
+                AppLearnProgress progress = LearnProgressSaver.load(this.context, this.lastResult.getTriggerPackage());
+                if (progress != null)
                 {
-                    this.appIdToLearnProgress.put(lastResult.getTriggerPackage(),progress);
+                    this.appIdToLearnProgress.put(lastResult.getTriggerPackage(), progress);
                     saveLearned();
                 }
             }
+        }
+    }
+
+
+    public void onAccessibilityEvent(AccessibilityEvent event)
+    {
+        if(event.getPackageName() != null)
+        {
+            String app = event.getPackageName().toString();
+            if(!app.equals(lastResult.getTriggerPackage()))
+            {
+                return;
+            }
+            ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(service.getRootInActiveWindow(),false);
+            AppLearnProgress progress = this.appIdToLearnProgress.get(app);
+            if(progress == null)
+            {
+               progress = this.appIdToLearnProgress.put(app,new AppLearnProgress());
+            }
+
+            switch (event.getEventType())
+            {
+                case AccessibilityEvent.TYPE_VIEW_SCROLLED:
+                    assert progress != null;
+                    progress.expandCurrentScreen(screen);
+                    // Expand current screen
+                    break;
+                case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
+                case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
+                    assert progress != null;
+                    AppLearnProgress.LabeledScreen screen2 =  progress.findAndSetNewCurrentScreen(screen);
+                    if( screen2 == null)
+                    {
+                        progress.addNewScreen(screen);
+                    }
+                    break;
+            }
+            assert progress != null;
+            progress.mergeIdenticalLabeledScreens();
         }
     }
 
@@ -134,9 +175,9 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         for (Map.Entry<String, AppLearnProgress> entry : appIdToLearnProgress.entrySet())
         {
             String appId = entry.getKey();
-            if(entry.getValue().isDirty())
+            if (entry.getValue().isNeedsSaving())
             {
-                LearnProgressSaver.save(this.context,appId,entry.getValue());
+                LearnProgressSaver.save(this.context, appId, entry.getValue());
                 entry.getValue().saveToDisk();  // Undirty
             }
 
@@ -145,7 +186,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
     public void onAppChange(String oldApp, String newApp)
     {
-        if(overlayButtons != null)
+        if (overlayButtons != null)
         {
             Button buttonThumpUp = overlayButtons.findViewById(R.id.thumb_up);
             Button buttonThumpDown = overlayButtons.findViewById(R.id.thumb_down);
@@ -252,11 +293,11 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     saveLearnedToDisk();    //TODO Perhaps
                     saveLearned();
                     return true;
-                } else if(item.getItemId() == R.id.clear)
+                } else if (item.getItemId() == R.id.clear)
                 {
                     clearLearnProgress();
                     return true;
-                } else if(item.getItemId() == R.id.swap_sides)
+                } else if (item.getItemId() == R.id.swap_sides)
                 {
                     swapSiteOfGUI();
                     return true;
@@ -269,6 +310,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         // Show the menu
         popupMenu.show();
     }
+
     private void swapSiteOfGUI()
     {
         this.drawAtLeftEdge = !this.drawAtLeftEdge;
@@ -287,15 +329,14 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                 {
                     Set<String> goodIds = learnProgress.getExpressionGoodIds();
                     UI_ID_Filter oldGoodFilter = (UI_ID_Filter) this.iContentFilterService.getSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_GOOD);
-                    if(oldGoodFilter == null)
+                    if (oldGoodFilter == null)
                     {
                         PipelineResultLearnedMode defaultGoodResult = new PipelineResultLearnedMode(app);
                         defaultGoodResult.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
                         defaultGoodResult.setHasExplainableButton(false);
                         UI_ID_Filter newUI_ID_Filter = new UI_ID_Filter(defaultGoodResult, this.context.getString(R.string.name_good_filter), goodIds);
                         this.iContentFilterService.setSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_GOOD, newUI_ID_Filter);
-                    }
-                    else
+                    } else
                     {
                         oldGoodFilter.setFilterIds(goodIds);
                     }
@@ -410,10 +451,10 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
     private void clearLearnProgress()
     {
-        if(lastResult != null)
+        if (lastResult != null)
         {
             String app = lastResult.getTriggerPackage();
-            if(app != null)
+            if (app != null)
             {
                 AppLearnProgress learnProgress = this.appIdToLearnProgress.get(app);
                 if (learnProgress != null)

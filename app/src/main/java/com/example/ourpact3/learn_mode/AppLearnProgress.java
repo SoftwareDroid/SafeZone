@@ -21,11 +21,11 @@ public class AppLearnProgress
         BAD,
     }
 
-    private boolean dirty = false;
+    private boolean needsSaving = false;
 
-    public boolean isDirty()
+    public boolean isNeedsSaving()
     {
-        return dirty;
+        return needsSaving;
     }
 
     public static class LabeledScreen
@@ -36,7 +36,7 @@ public class AppLearnProgress
         public LabeledScreen(Set<String> ids, ScreenLabel label)
         {
             this.ids = ids;
-            this.label = label;
+            this.label = ScreenLabel.NOT_LABELED;
         }
 
         public Set<String> getIds()
@@ -124,18 +124,84 @@ public class AppLearnProgress
      * @param screen
      * @return
      */
-    public void addScreen(@NotNull ScreenInfoExtractor.Screen screen, ScreenLabel label)
+    /*public void addScreen(@NotNull ScreenInfoExtractor.Screen screen, ScreenLabel label)
     {
-        this.dirty = true;
+        this.needsSaving = true;
         assert label != ScreenLabel.NOT_LABELED;
         Set<String> simplifiedNodes = simplifyIdNodes(screen.getIdNodes());
         LabeledScreen labeledScreen = new LabeledScreen(simplifiedNodes, label);
         this.labeledScreens.add(labeledScreen);
+    }*/
+    private LabeledScreen currentScreen = null;
+    public void expandCurrentScreen(@NotNull ScreenInfoExtractor.Screen screen)
+    {
+        Set<String> newNodes = simplifyIdNodes(screen.getIdNodes());
+        if(currentScreen == null)
+        {
+            LabeledScreen newScreen = new LabeledScreen(newNodes,ScreenLabel.NOT_LABELED);
+            this.labeledScreens.add(newScreen);
+            this.currentScreen = newScreen;
+        } else
+        {
+            this.currentScreen.ids.addAll(newNodes);
+        }
+    }
+
+    public void addNewScreen(@NotNull ScreenInfoExtractor.Screen screen)
+    {
+        Set<String> newNodes = simplifyIdNodes(screen.getIdNodes());
+        LabeledScreen newScreen = new LabeledScreen(newNodes,ScreenLabel.NOT_LABELED);
+        this.labeledScreens.add(newScreen);
+        this.currentScreen = newScreen;
+    }
+
+    public LabeledScreen findAndSetNewCurrentScreen(@NotNull ScreenInfoExtractor.Screen screen)
+    {
+        Set<String> newIds = simplifyIdNodes(screen.getIdNodes());
+        for(LabeledScreen screenLabeled : this.labeledScreens)
+        {
+            if(screenLabeled.ids.containsAll(newIds))
+            {
+                this.currentScreen = screenLabeled;
+                return screenLabeled;
+            }
+        }
+        return null;
+    }
+
+    public void labelCurrentScreen(ScreenLabel newLabel)
+    {
+        if(this.currentScreen != null)
+        {
+            this.currentScreen.label = newLabel;
+        }
+    }
+
+    public void mergeIdenticalLabeledScreens() {
+        ArrayList<LabeledScreen> uniqueScreens = new ArrayList<>();
+
+        for (LabeledScreen currentScreen : this.labeledScreens) {
+            // Überprüfen, ob currentScreen bereits in uniqueScreens vorhanden ist
+            boolean isDuplicate = false;
+            for (LabeledScreen uniqueScreen : uniqueScreens) {
+                if (uniqueScreen.equals(currentScreen)) {
+                    isDuplicate = true;
+                    break; // Wenn ein Duplikat gefunden wurde, brechen Sie die Schleife ab
+                }
+            }
+            // Wenn kein Duplikat gefunden wurde, fügen Sie es zur Liste der eindeutigen Bildschirme hinzu
+            if (!isDuplicate) {
+                uniqueScreens.add(currentScreen);
+            }
+        }
+
+        // Aktualisieren Sie die ursprüngliche ArrayList mit den eindeutigen Bildschirmen
+        this.labeledScreens = uniqueScreens;
     }
 
     public void recalculateExpressions()
     {
-        this.dirty = true;
+        this.needsSaving = true;
         ArrayList<Set<String>> classGood = new ArrayList<>();
         ArrayList<Set<String>> classBad = new ArrayList<>();
         for (LabeledScreen screen : this.labeledScreens)
@@ -169,7 +235,7 @@ public class AppLearnProgress
      *
      * @param screen The screen to look for.
      * @return The corresponding LabeledScreen, or null if not found.
-     */
+
     public LabeledScreen getLabeledScreen(@NotNull ScreenInfoExtractor.Screen screen)
     {
         Set<ScreenInfoExtractor.Screen.ID_Node> idNodes = screen.getIdNodes();
@@ -184,7 +250,7 @@ public class AppLearnProgress
             }
         }
         return null; // Return null if no match is found
-    }
+    } */
 
     public ScreenLabel getLabelFromCalculatedExpression(@NotNull ScreenInfoExtractor.Screen screen)
     {
@@ -223,7 +289,7 @@ public class AppLearnProgress
         return returnSet;
     }
 
-    public boolean isScreenAlreadyAdded(@NotNull ScreenInfoExtractor.Screen screen)
+    /*public boolean isScreenAlreadyAdded(@NotNull ScreenInfoExtractor.Screen screen)
     {
         Set<ScreenInfoExtractor.Screen.ID_Node> idNodes = screen.getIdNodes();
         if (!idNodes.isEmpty())
@@ -237,16 +303,16 @@ public class AppLearnProgress
             }
         }
         return false;
-    }
+    }*/
 
     public void saveToDisk()
     {
-        this.dirty = false;
+        this.needsSaving = false;
     }
-
+/*
     public boolean removeScreen(@NotNull ScreenInfoExtractor.Screen screen)
     {
-        this.dirty = true;
+        this.needsSaving = true;
         Set<ScreenInfoExtractor.Screen.ID_Node> idNodes = screen.getIdNodes();
         Set<String> simplifiedIds = simplifyIdNodes(idNodes);
 
@@ -261,5 +327,5 @@ public class AppLearnProgress
             }
         }
         return false; // Return false if no matching LabeledScreen was found
-    }
+    }*/
 }
