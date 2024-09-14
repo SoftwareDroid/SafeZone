@@ -1,4 +1,4 @@
-package com.example.ourpact3.filter;
+package com.example.ourpact3.smart_filter;
 
 import androidx.annotation.NonNull;
 

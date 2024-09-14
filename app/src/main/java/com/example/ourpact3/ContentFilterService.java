@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.example.ourpact3.learn_mode.LearnModeComponent;
 import com.example.ourpact3.model.CheatKeyManager;
+import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.util.CrashHandler;
 import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.service.AppKiller;
@@ -262,6 +263,27 @@ public class ContentFilterService extends AccessibilityService implements IConte
     public void onAppChange(String oldApp, String newApp)
     {
         this.learnModeComponent.onAppChange(oldApp,newApp);
+    }
+
+    @Override
+    public void setSpecialSmartFilter(String app, SpecialSmartFilterBase.Name name, SpecialSmartFilterBase filter)
+    {
+        AppFilter appFilter =  this.normalModeProcessor.keywordFilters.get(app);
+        if(appFilter != null)
+        {
+            appFilter.setSpecialSmartFilter(name,filter);
+        }
+    }
+
+    @Override
+    public SpecialSmartFilterBase getSpecialSmartFilter(String app, SpecialSmartFilterBase.Name name)
+    {
+        AppFilter appFilter =  this.normalModeProcessor.keywordFilters.get(app);
+        if(appFilter != null)
+        {
+            return appFilter.getSpecialSmartFilter(name);
+        }
+        return null;
     }
 
     @Override

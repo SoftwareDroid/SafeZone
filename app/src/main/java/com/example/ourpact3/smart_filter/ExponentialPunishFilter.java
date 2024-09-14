@@ -1,4 +1,4 @@
-package com.example.ourpact3.filter;
+package com.example.ourpact3.smart_filter;
 
 import android.view.accessibility.AccessibilityEvent;
 
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 Only works with PERFORM_BACK_ACTION_AND_WARNING
 
  */
-public class ExponentialPunishFilter extends AppGenericEventFilterBase
+public class ExponentialPunishFilter extends SpecialSmartFilterBase
 {
     private long blockTil;
     private long lastEventTime;
@@ -43,7 +43,7 @@ public class ExponentialPunishFilter extends AppGenericEventFilterBase
     }
 
     @Override
-    public PipelineResultBase OnAccessibilityEvent(AccessibilityEvent event)
+    public PipelineResultBase onAccessibilityEvent(AccessibilityEvent event)
     {
         switch (event.getEventType())
         {
@@ -71,7 +71,7 @@ public class ExponentialPunishFilter extends AppGenericEventFilterBase
     }
 
     @Override
-    public PipelineResultBase OnPipelineResult(PipelineResultBase result)
+    public PipelineResultBase onPipelineResult(PipelineResultBase result)
     {
         long currentTime = System.currentTimeMillis();
         if (result.getWindowAction() == PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING || result.getWindowAction() == PipelineWindowAction.PERFORM_BACK_ACTION)

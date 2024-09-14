@@ -1,6 +1,6 @@
 package com.example.ourpact3;
 
-import com.example.ourpact3.filter.AppGenericEventFilterBase;
+import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.model.PipelineResultKeywordFilter;
 import com.example.ourpact3.service.IFilterResultCallback;
 import com.example.ourpact3.model.PipelineResultBase;
@@ -15,9 +15,11 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.topics.TopicManager;
-import com.example.ourpact3.filter.WordProcessorFilterBase;
+import com.example.ourpact3.smart_filter.WordProcessorFilterBase;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class AppFilter
 {
@@ -29,9 +31,8 @@ public class AppFilter
         this.keywordFilters = filters;
         this.packageName = packageName;
         this.isMagnificationEnabled = service.isMagnificationEnabled();
-        this.genericEventFilters = new ArrayList<>();
+        this.specialSmartFilters = new TreeMap<>();
     }
-
 
 
     public AccessibilityService service;
@@ -41,14 +42,19 @@ public class AppFilter
     private TopicManager topicManager;
     private int delayCount = 0;
     private final ArrayList<WordProcessorFilterBase> keywordFilters; //TODO: create and sort
-    private final ArrayList<AppGenericEventFilterBase> genericEventFilters;
+    private final TreeMap<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> specialSmartFilters;
     private IFilterResultCallback callback;
 
-    public ArrayList<WordProcessorFilterBase> getAllFilters() {return keywordFilters;}
+    public ArrayList<WordProcessorFilterBase> getAllFilters()
+    {
+        return keywordFilters;
+    }
+
     public String getPackageName()
     {
         return packageName;
     }
+
     public void setCallback(IFilterResultCallback callback)
     {
         if (callback != null)
@@ -56,10 +62,14 @@ public class AppFilter
             this.callback = callback;
         }
     }
-
-    public void addGenericEventFilters(AppGenericEventFilterBase genericEventFilter)
+    public SpecialSmartFilterBase getSpecialSmartFilter(SpecialSmartFilterBase.Name name)
     {
-        this.genericEventFilters.add(genericEventFilter);
+        return this.specialSmartFilters.get(name);
+    }
+
+    public void setSpecialSmartFilter(SpecialSmartFilterBase.Name name, SpecialSmartFilterBase filter)
+    {
+        this.specialSmartFilters.put(name, filter);
     }
 
     private final Handler handler = new Handler();
@@ -71,9 +81,11 @@ public class AppFilter
             pipelineRunning = true;
             delayCount = 0;
             AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
-            ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(rootNode,isMagnificationEnabled);
+            ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(rootNode, isMagnificationEnabled);
             String LOG_TAG = "ContentFiler";
             Log.d(LOG_TAG, "Start Search");
+            // First Check generic filters
+
             for (WordProcessorFilterBase processor : keywordFilters)
             {
                 processor.reset();
@@ -106,10 +118,12 @@ public class AppFilter
             case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
             case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
                 // First process generic filters but with viewer events
-                for(AppGenericEventFilterBase genericFilter : this.genericEventFilters)
+                // Traversing the TreeMap in ascending order of keys
+                for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet())
                 {
-                    PipelineResultBase result = genericFilter.OnAccessibilityEvent(event);
-                    if(result != null)
+                    System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+                    PipelineResultBase result = entry.getValue().onAccessibilityEvent(event);
+                    if (result != null)
                     {
                         PipelineResultBase resultCopy = result.clone();
                         resultCopy.setCurrentAppFilter(this);
@@ -119,7 +133,7 @@ public class AppFilter
                     }
                 }
             case AccessibilityEvent.TYPE_VIEW_CLICKED:
-                if(handler.hasCallbacks(searchRunnable))
+                if (handler.hasCallbacks(searchRunnable))
                 {
                     return;
                 }
@@ -159,16 +173,15 @@ public class AppFilter
         {
             if (textNode.visible || !currentFilter.isCheckOnlyVisibleNodes())
             {
-                String text = textNode.text;
                 // feed word into filter
                 PipelineResultBase result = currentFilter.feedWord(textNode);
                 if (result != null)
                 {
                     result.setTriggerPackage(this.packageName);
                     // Feed result to generic event filters
-                    for (AppGenericEventFilterBase genericFilter : this.genericEventFilters)
+                    for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet())
                     {
-                        PipelineResultBase genericResult = genericFilter.OnPipelineResult(result);
+                        PipelineResultBase genericResult = entry.getValue().onPipelineResult(result);
                         if (genericResult != null)
                         {
                             pipelineRunning = genericResult.getWindowAction() == PipelineWindowAction.CONTINUE_PIPELINE;

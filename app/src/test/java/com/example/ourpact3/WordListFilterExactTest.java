@@ -1,13 +1,5 @@
 package com.example.ourpact3;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import com.example.ourpact3.model.PipelineResultBase;
-import com.example.ourpact3.filter.WordListFilterExact;
-
-import java.util.ArrayList;
 /*
 public class WordListFilterExactTest {
 

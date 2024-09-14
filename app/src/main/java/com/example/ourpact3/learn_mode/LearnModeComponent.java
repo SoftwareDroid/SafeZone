@@ -19,13 +19,18 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.example.ourpact3.R;
 import com.example.ourpact3.model.PipelineResultBase;
+import com.example.ourpact3.model.PipelineResultKeywordFilter;
+import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.service.IContentFilterService;
 import com.example.ourpact3.service.ScreenInfoExtractor;
+import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
+import com.example.ourpact3.smart_filter.UI_ID_Filter;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedListener
@@ -210,6 +215,9 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                 {
                     showHelpDialog();
                     return true;
+                } else if (item.getItemId() == R.id.save)
+                {
+                    saveLearned();
                 }
 
                 return false;
@@ -218,6 +226,52 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
         // Show the menu
         popupMenu.show();
+    }
+
+    private void saveLearned()
+    {
+        String app = this.lastResult.getTriggerPackage();
+        if (app != null)
+        {
+            AppLearnProgress learnProgress = this.appIdToLearnProgress.get(app);
+            if (learnProgress != null)
+            {
+                {
+                    Set<String> goodIds = learnProgress.getExpressionGoodIds();
+                    UI_ID_Filter oldGoodFilter = (UI_ID_Filter) this.iContentFilterService.getSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_GOOD);
+                    if(oldGoodFilter == null)
+                    {
+                        PipelineResultKeywordFilter defaultGoodResult = new PipelineResultKeywordFilter(app);
+                        defaultGoodResult.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+                        defaultGoodResult.setHasExplainableButton(false);
+                        UI_ID_Filter newUI_ID_Filter = new UI_ID_Filter(defaultGoodResult, this.context.getString(R.string.name_good_filter), goodIds);
+                        this.iContentFilterService.setSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_BAD, newUI_ID_Filter);
+                    }
+                    else
+                    {
+                        oldGoodFilter.setFilterIds(goodIds);
+                    }
+                }
+                {
+                    Set<String> badIds = learnProgress.getExpressionGoodIds();
+
+                    UI_ID_Filter oldBadFilter = (UI_ID_Filter) this.iContentFilterService.getSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_BAD);
+                    if (oldBadFilter == null)
+                    {
+                        PipelineResultKeywordFilter defaultBadResult = new PipelineResultKeywordFilter(app);
+                        defaultBadResult.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+                        defaultBadResult.setHasExplainableButton(false);
+                        defaultBadResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
+                        UI_ID_Filter newUI_ID_Filter = new UI_ID_Filter(defaultBadResult, this.context.getString(R.string.name_bad_filter), badIds);
+                        this.iContentFilterService.setSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_BAD, newUI_ID_Filter);
+                    } else
+                    {
+                        oldBadFilter.setFilterIds(badIds);
+                    }
+                }
+                //                this.iContentFilterService.setSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_GOOD,goodIds);
+            }
+        }
     }
 
 

@@ -13,7 +13,7 @@ import com.example.ourpact3.topics.TopicAlreadyExistsException;
 import com.example.ourpact3.topics.TopicLoaderCycleDetectedException;
 import com.example.ourpact3.topics.TopicManager;
 import com.example.ourpact3.topics.TopicMissingException;
-import com.example.ourpact3.filter.WordListFilterScored;
+import com.example.ourpact3.smart_filter.WordListFilterScored;
 
 import java.util.ArrayList;
 import java.util.List;

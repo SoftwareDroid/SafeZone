@@ -1,18 +1,19 @@
 package com.example.ourpact3;
 
-import com.example.ourpact3.filter.ExponentialPunishFilter;
+import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
+import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.topics.InvalidTopicIDException;
 import com.example.ourpact3.model.PipelineResultKeywordFilter;
 import com.example.ourpact3.topics.TopicAlreadyExistsException;
 import com.example.ourpact3.topics.TopicLoaderCycleDetectedException;
 import com.example.ourpact3.topics.TopicManager;
 import com.example.ourpact3.topics.TopicMissingException;
-import com.example.ourpact3.filter.WordListFilterScored.TopicScoring;
+import com.example.ourpact3.smart_filter.WordListFilterScored.TopicScoring;
 import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.model.PipelineWindowAction;
-import com.example.ourpact3.filter.WordListFilterExact;
-import com.example.ourpact3.filter.WordProcessorFilterBase;
-import com.example.ourpact3.filter.WordListFilterScored;
+import com.example.ourpact3.smart_filter.WordListFilterExact;
+import com.example.ourpact3.smart_filter.WordProcessorFilterBase;
+import com.example.ourpact3.smart_filter.WordListFilterScored;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -85,7 +86,7 @@ public class ExampleAppKeywordFilters
         }
 
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.addGenericEventFilters(new ExponentialPunishFilter("test",1,30,120));
+        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH ,new ExponentialPunishFilter("test",1,30,120));
         return appFilter;
     }
 
@@ -194,7 +195,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.addGenericEventFilters(new ExponentialPunishFilter("test",10,30,5));
+        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH,new ExponentialPunishFilter("test",10,30,5));
         return appFilter;
 
     }
@@ -259,7 +260,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.addGenericEventFilters(new ExponentialPunishFilter("test",2,10,15));
+        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH,new ExponentialPunishFilter("test",2,10,15));
         return appFilter;
 
 

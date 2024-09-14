@@ -1,6 +1,7 @@
 package com.example.ourpact3.service;
 
 import com.example.ourpact3.model.PipelineResultBase;
+import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,4 +22,6 @@ public interface IContentFilterService
     boolean isPackagedIgnoredForLearning(String id);
     void destroyGUI();
     void onAppChange(String oldApp,String newApp);
+    void setSpecialSmartFilter(String app,SpecialSmartFilterBase.Name name, SpecialSmartFilterBase filter);
+    SpecialSmartFilterBase getSpecialSmartFilter(String app,SpecialSmartFilterBase.Name name);
 }

@@ -1,8 +1,8 @@
 package com.example.ourpact3;
 
 import com.example.ourpact3.service.ScreenInfoExtractor;
-import com.example.ourpact3.filter.WordListFilterScored;
-import com.example.ourpact3.filter.WordProcessorFilterBase;
+import com.example.ourpact3.smart_filter.WordListFilterScored;
+import com.example.ourpact3.smart_filter.WordProcessorFilterBase;
 import com.example.ourpact3.util.SubstringFinder;
 
 import java.util.TreeSet;

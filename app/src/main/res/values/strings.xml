@@ -7,7 +7,8 @@
     <string name="app_killed">This app has been blocked due to a rule.</string>
     <string name="force_kill_button">FORCE STOP</string>
     <string name="force_kill_ok_button">OK</string>
-
+    <string name="name_good_filter">Learned Good</string>
+    <string name="name_bad_filter">Learned Bad</string>
     <string name="reset_progress">Reset Progress</string>
     <string name="save">Save</string>
     <string name="swap_side">Swap Side</string>
