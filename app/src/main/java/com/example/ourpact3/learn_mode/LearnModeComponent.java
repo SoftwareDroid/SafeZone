@@ -112,9 +112,32 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
     private PipelineResultBase lastResult;
 
-    public void loadLearnProgressFromDisk(String app)
+    private void loadLearnProgressFromDisk()
     {
+        if(this.lastResult != null)
+        {
+            if(this.lastResult.getTriggerPackage() != null)
+            {
+                AppLearnProgress progress = LearnProgressSaver.load(this.context,this.lastResult.getTriggerPackage());
+                if(progress != null)
+                {
+                    this.appIdToLearnProgress.put(lastResult.getTriggerPackage(),progress);
+                    saveLearned();
+                }
+            }
+        }
+    }
 
+    private void saveLearnedToDisk()
+    {
+        for (Map.Entry<String, AppLearnProgress> entry : appIdToLearnProgress.entrySet())
+        {
+            String appId = entry.getKey();
+            if(entry.getValue().isDirty())
+            {
+                LearnProgressSaver.save(this.context,appId,entry.getValue());
+            }
+        }
     }
 
     public void onAppChange(String oldApp, String newApp)
@@ -129,6 +152,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         } else
         {
             overlayButtons.setVisibility(View.VISIBLE);
+            loadLearnProgressFromDisk();
         }
     }
 
@@ -219,6 +243,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     return true;
                 } else if (item.getItemId() == R.id.save)
                 {
+                    saveLearnedToDisk();    //TODO Perhaps remove
                     saveLearned();
                     return true;
                 } else if(item.getItemId() == R.id.clear)

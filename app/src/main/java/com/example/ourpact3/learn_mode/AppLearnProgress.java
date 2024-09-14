@@ -21,6 +21,13 @@ public class AppLearnProgress
         BAD,
     }
 
+    private boolean dirty = false;
+
+    public boolean isDirty()
+    {
+        return dirty;
+    }
+
     public static class LabeledScreen
     {
         Set<String> ids;
@@ -54,7 +61,8 @@ public class AppLearnProgress
 
         // Convert labeledScreens to JSONArray
         JSONArray labeledScreensArray = new JSONArray();
-        for (LabeledScreen labeledScreen : labeledScreens) {
+        for (LabeledScreen labeledScreen : labeledScreens)
+        {
             JSONObject labeledScreenJson = new JSONObject();
             labeledScreenJson.put("label", labeledScreen.label.name());
             JSONArray idsArray = new JSONArray(labeledScreen.ids);
@@ -74,17 +82,20 @@ public class AppLearnProgress
         return jsonObject;
     }
 
-    public static AppLearnProgress fromJson(JSONObject jsonObject) throws JSONException {
+    public static AppLearnProgress fromJson(JSONObject jsonObject) throws JSONException
+    {
         AppLearnProgress appLearnProgress = new AppLearnProgress();
 
         // Deserialize labeledScreens
         JSONArray labeledScreensArray = jsonObject.getJSONArray("labeledScreens");
-        for (int i = 0; i < labeledScreensArray.length(); i++) {
+        for (int i = 0; i < labeledScreensArray.length(); i++)
+        {
             JSONObject labeledScreenJson = labeledScreensArray.getJSONObject(i);
             ScreenLabel label = ScreenLabel.valueOf(labeledScreenJson.getString("label"));
             JSONArray idsArray = labeledScreenJson.getJSONArray("ids");
             Set<String> ids = new TreeSet<>();
-            for (int j = 0; j < idsArray.length(); j++) {
+            for (int j = 0; j < idsArray.length(); j++)
+            {
                 ids.add(idsArray.getString(j));
             }
             appLearnProgress.labeledScreens.add(new LabeledScreen(ids, label));
@@ -92,13 +103,15 @@ public class AppLearnProgress
 
         // Deserialize expressionGoodIds
         JSONArray goodIdsArray = jsonObject.getJSONArray("expressionGoodIds");
-        for (int i = 0; i < goodIdsArray.length(); i++) {
+        for (int i = 0; i < goodIdsArray.length(); i++)
+        {
             appLearnProgress.expressionGoodIds.add(goodIdsArray.getString(i));
         }
 
         // Deserialize expressionBadIds
         JSONArray badIdsArray = jsonObject.getJSONArray("expressionBadIds");
-        for (int i = 0; i < badIdsArray.length(); i++) {
+        for (int i = 0; i < badIdsArray.length(); i++)
+        {
             appLearnProgress.expressionBadIds.add(badIdsArray.getString(i));
         }
 
@@ -113,6 +126,7 @@ public class AppLearnProgress
      */
     public void addScreen(@NotNull ScreenInfoExtractor.Screen screen, ScreenLabel label)
     {
+        this.dirty = true;
         assert label != ScreenLabel.NOT_LABELED;
         Set<String> simplifiedNodes = simplifyIdNodes(screen.getIdNodes());
         LabeledScreen labeledScreen = new LabeledScreen(simplifiedNodes, label);
@@ -121,6 +135,7 @@ public class AppLearnProgress
 
     public void recalculateExpressions()
     {
+        this.dirty = true;
         ArrayList<Set<String>> classGood = new ArrayList<>();
         ArrayList<Set<String>> classBad = new ArrayList<>();
         for (LabeledScreen screen : this.labeledScreens)
@@ -174,16 +189,16 @@ public class AppLearnProgress
     public ScreenLabel getLabelFromCalculatedExpression(@NotNull ScreenInfoExtractor.Screen screen)
     {
         Set<String> simplifiedNodes = simplifyIdNodes(screen.getIdNodes());
-        for(String goodId: this.expressionGoodIds)
+        for (String goodId : this.expressionGoodIds)
         {
-            if(simplifiedNodes.contains(goodId))
+            if (simplifiedNodes.contains(goodId))
             {
                 return ScreenLabel.GOOD;
             }
         }
-        for(String badId: this.expressionBadIds)
+        for (String badId : this.expressionBadIds)
         {
-            if(simplifiedNodes.contains(badId))
+            if (simplifiedNodes.contains(badId))
             {
                 return ScreenLabel.BAD;
             }
@@ -224,8 +239,14 @@ public class AppLearnProgress
         return false;
     }
 
+    public void saveToDisk()
+    {
+        this.dirty = false;
+    }
+
     public boolean removeScreen(@NotNull ScreenInfoExtractor.Screen screen)
     {
+        this.dirty = true;
         Set<ScreenInfoExtractor.Screen.ID_Node> idNodes = screen.getIdNodes();
         Set<String> simplifiedIds = simplifyIdNodes(idNodes);
 

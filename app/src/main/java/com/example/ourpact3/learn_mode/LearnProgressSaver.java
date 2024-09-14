@@ -13,13 +13,13 @@ import org.json.JSONObject;
 
 public class LearnProgressSaver
 {
-    public static AppLearnProgress load(Context context, String app, AppLearnProgress learnProgress) throws JSONException
+    public static AppLearnProgress load(Context context, String app)
     {
         if(app != null && app.length() > 1)
         {
             try
             {
-                String file = convertAppNameToFileMame(app);
+                String file = convertAppNameToFileMame(app,context);
                 String jsonString = ReadFilesInMediaFolder.loadFileContent(context, file);
                 if (jsonString != null)
                 {
@@ -38,30 +38,38 @@ public class LearnProgressSaver
     public static boolean save(Context context, String app, AppLearnProgress learnProgress) {
         if (app != null && learnProgress != null) {
             try {
-                String fileName = convertAppNameToFileMame(app);
+                String fileName = convertAppNameToFileMame(app,context);
                 JSONObject jsonObject = learnProgress.toJson(); // Convert to JSON
                 String jsonString = jsonObject.toString(); // Convert JSONObject to String
 
-                // Get the external media directory
-                File externalDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-                if (!externalDir.exists()) {
-                    externalDir.mkdirs(); // Create the directory if it doesn't exist
-                }
-
                 // Create the file in the external media directory
-                File file = new File(externalDir, fileName);
+                File file = new File(getAndCreateFolder(context), fileName);
                 FileOutputStream fos = new FileOutputStream(file);
                 fos.write(jsonString.getBytes());
                 fos.close();
                 return true; // Save successful
             } catch (IOException | JSONException e) {
-                e.printStackTrace();
                 return false; // Save failed
             }
         }
         return false; // Invalid input
     }
-    private static String convertAppNameToFileMame(String app)
+    private static String getAndCreateFolder(Context context) {
+        File[] mediaDirs = context.getExternalMediaDirs();
+        if (mediaDirs != null && mediaDirs.length > 0) {
+            File learnedFolder = new File(mediaDirs[0], "learned");
+            if (!learnedFolder.exists()) {
+                learnedFolder.mkdirs();
+            }
+            return learnedFolder.getAbsolutePath();
+        } else {
+            // Fallback to a different directory, such as getExternalStorageDirectory()
+            return "";
+        }
+    }
+
+
+    private static String convertAppNameToFileMame(String app,Context context)
     {
         String baseFileName = app.replace(".", "_");
         // Add a prefix or suffix if needed
