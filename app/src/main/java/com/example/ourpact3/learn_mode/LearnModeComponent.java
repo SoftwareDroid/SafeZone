@@ -144,17 +144,20 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
     public void onAppChange(String oldApp, String newApp)
     {
-        Button buttonThumpUp = overlayButtons.findViewById(R.id.thumb_up);
-        Button buttonThumpDown = overlayButtons.findViewById(R.id.thumb_down);
-        assert buttonThumpDown != null;
-        assert buttonThumpUp != null;
-        if (this.iContentFilterService.isPackagedIgnoredForLearning(newApp))
+        if(overlayButtons != null)
         {
-            overlayButtons.setVisibility(View.GONE);
-        } else
-        {
-            overlayButtons.setVisibility(View.VISIBLE);
-            loadLearnProgressFromDisk();
+            Button buttonThumpUp = overlayButtons.findViewById(R.id.thumb_up);
+            Button buttonThumpDown = overlayButtons.findViewById(R.id.thumb_down);
+            assert buttonThumpDown != null;
+            assert buttonThumpUp != null;
+            if (this.iContentFilterService.isPackagedIgnoredForLearning(newApp))
+            {
+                overlayButtons.setVisibility(View.GONE);
+            } else
+            {
+                overlayButtons.setVisibility(View.VISIBLE);
+                loadLearnProgressFromDisk();
+            }
         }
     }
 
