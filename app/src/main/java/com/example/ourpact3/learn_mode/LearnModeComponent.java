@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.example.ourpact3.R;
 import com.example.ourpact3.model.PipelineResultBase;
 import com.example.ourpact3.model.PipelineResultKeywordFilter;
+import com.example.ourpact3.model.PipelineResultLearnedMode;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.service.IContentFilterService;
 import com.example.ourpact3.service.ScreenInfoExtractor;
@@ -255,6 +256,10 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                 {
                     clearLearnProgress();
                     return true;
+                } else if(item.getItemId() == R.id.swap_sides)
+                {
+                    swapSiteOfGUI();
+                    return true;
                 }
 
                 return false;
@@ -263,6 +268,12 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
         // Show the menu
         popupMenu.show();
+    }
+    private void swapSiteOfGUI()
+    {
+        this.drawAtLeftEdge = !this.drawAtLeftEdge;
+        this.stopOverlay();
+        this.createOverlay();
     }
 
     private void saveLearned()
@@ -278,7 +289,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     UI_ID_Filter oldGoodFilter = (UI_ID_Filter) this.iContentFilterService.getSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_GOOD);
                     if(oldGoodFilter == null)
                     {
-                        PipelineResultKeywordFilter defaultGoodResult = new PipelineResultKeywordFilter(app);
+                        PipelineResultLearnedMode defaultGoodResult = new PipelineResultLearnedMode(app);
                         defaultGoodResult.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
                         defaultGoodResult.setHasExplainableButton(false);
                         UI_ID_Filter newUI_ID_Filter = new UI_ID_Filter(defaultGoodResult, this.context.getString(R.string.name_good_filter), goodIds);
@@ -295,7 +306,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     UI_ID_Filter oldBadFilter = (UI_ID_Filter) this.iContentFilterService.getSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_BAD);
                     if (oldBadFilter == null)
                     {
-                        PipelineResultKeywordFilter defaultBadResult = new PipelineResultKeywordFilter(app);
+                        PipelineResultLearnedMode defaultBadResult = new PipelineResultLearnedMode(app);
                         defaultBadResult.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
                         defaultBadResult.setHasExplainableButton(false);
                         defaultBadResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
