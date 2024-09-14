@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.view.MenuItem;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.PopupMenu;
 import android.provider.Settings;
 import android.view.Gravity;
@@ -112,6 +113,17 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
     }
 
     private PipelineResultBase lastResult;
+
+
+    public void onAccessibilityEvent(AccessibilityEvent event)
+    {
+        TODO:
+        //1 scrollen muss zum gleichen Ergebnis fürhen (add scrren
+
+        // 2. Window oder View wechel und wenn unbekannt => NOT_LABELED autoamtically
+
+        // 3. Buttons überarbeiten einfach nur Hintergrund ändern und deaktieren
+    }
 
     private void loadLearnProgressFromDisk()
     {
