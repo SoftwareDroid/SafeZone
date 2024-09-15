@@ -1,6 +1,5 @@
 package com.example.ourpact3.learn_mode;
 import android.content.Context;
-import android.os.Environment;
 
 import com.example.ourpact3.util.ReadFilesInMediaFolder;
 
@@ -13,6 +12,7 @@ import org.json.JSONObject;
 
 public class LearnProgressSaver
 {
+    private static final String FILE_ENDING = ".txt";
     public static AppLearnProgress load(Context context, String app)
     {
         if(app != null && app.length() > 1)
@@ -73,6 +73,6 @@ public class LearnProgressSaver
     {
         String baseFileName = app.replace(".", "_");
         // Add a prefix or suffix if needed
-        return baseFileName + "_learned_" + ".json";
+        return baseFileName + "_learned_"  + FILE_ENDING;
     }
 }

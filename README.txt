@@ -38,3 +38,7 @@ words in Topics are scored for their nearest topic (Deep).
 
 SmartFilter; Trigger + Action
 Smart Bundling for Lang x for App y makes senses (sharing)
+
+
+# Changelog
+1.1 Learn Mode

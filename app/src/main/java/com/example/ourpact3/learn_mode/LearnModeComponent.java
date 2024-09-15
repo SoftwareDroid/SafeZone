@@ -2,6 +2,7 @@ package com.example.ourpact3.learn_mode;
 
 
 import android.accessibilityservice.AccessibilityService;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -42,7 +43,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
     private final Context context;
     private final IContentFilterService iContentFilterService;
     private TextView currentStatus;
-    private AccessibilityService service;
+    private final AccessibilityService service;
     private CheckBox checkboxThumpUp;
     private CheckBox checkboxThumpDown;
 
@@ -58,6 +59,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         this.service = service;
     }
 
+    @SuppressLint("InflateParams")
     public void createOverlay()
     {
         if (overlayButtons != null)
@@ -144,6 +146,19 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         }
     }
 
+    private void refreshOverlayGUI(ScreenInfoExtractor.Screen screen,AppLearnProgress progress)
+    {
+        AppLearnProgress.LabeledScreen oldScreen = progress.findAndSetNewCurrentScreen(screen);
+        AppLearnProgress.ScreenLabel currentLabel = AppLearnProgress.ScreenLabel.NOT_LABELED;
+        if (oldScreen == null)
+        {
+            progress.addNewScreenAndMakeCurrent(screen);
+        } else
+        {
+            currentLabel = oldScreen.label;
+        }
+        useLabelForCurrentScreen(currentLabel);
+    }
 
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
@@ -155,12 +170,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                 return;
             }
             ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(service.getRootInActiveWindow(), false);
-            AppLearnProgress progress = this.appIdToLearnProgress.get(app);
-            if (progress == null)
-            {
-                progress = new AppLearnProgress();
-                this.appIdToLearnProgress.put(app, progress);
-            }
+            AppLearnProgress progress = this.appIdToLearnProgress.computeIfAbsent(app,k -> new AppLearnProgress());
 
             switch (event.getEventType())
             {
@@ -174,17 +184,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                 case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
                 case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
                 case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-                    AppLearnProgress.LabeledScreen oldScreen = progress.findAndSetNewCurrentScreen(screen);
-                    AppLearnProgress.ScreenLabel currentLabel = AppLearnProgress.ScreenLabel.NOT_LABELED;
-                    if (oldScreen == null)
-                    {
-                        progress.addNewScreenAndMakeCurrent(screen);
-                    } else
-                    {
-                        currentLabel = oldScreen.label;
-                    }
-                    useLabelForCurrentScreen(currentLabel);
-
+                    refreshOverlayGUI(screen,progress);
                     break;
                 default:
                     break;
@@ -224,7 +224,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
             if (entry.getValue().isNeedsSaving())
             {
                 LearnProgressSaver.save(this.context, appId, entry.getValue());
-                entry.getValue().saveToDisk();  // Undirty
+                entry.getValue().saveToDisk();
             }
 
         }
@@ -240,7 +240,11 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
             } else
             {
                 overlayButtons.setVisibility(View.VISIBLE);
-                loadLearnProgressFromDisk();
+                // reload UI
+                ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(service.getRootInActiveWindow(), false);
+                AppLearnProgress progress = this.appIdToLearnProgress.computeIfAbsent(newApp,k -> new AppLearnProgress());
+                this.refreshOverlayGUI(screen,progress);
+//                loadLearnProgressFromDisk();
             }
         }
     }
@@ -248,10 +252,14 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
     public void onPipelineResult(@NotNull PipelineResultBase result)
     {
         lastResult = result;
+        ScreenInfoExtractor.Screen screen = lastResult.getScreen();
+        if (screen != null)
+        {
+
+        }
         /*
         // update GUI
         lastResult = result;
-        ScreenInfoExtractor.Screen screen = lastResult.getScreen();
         if (screen != null)
         {
             if (currentStatus != null)
@@ -283,7 +291,6 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
     {
         if (currentStatus != null && overlayButtons != null)
         {
-            assert currentStatus != null;
             currentStatus.setBackgroundColor(overwritten ? context.getColor(R.color.learner_screen_learned) : context.getColor(R.color.learner_screen_not_learned));
             overlayButtons.setVisibility(this.iContentFilterService.isPackagedIgnoredForLearning(packageID) ? View.INVISIBLE : View.VISIBLE);
         }
@@ -381,7 +388,6 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                         oldBadFilter.setFilterIds(badIds);
                     }
                 }
-                //                this.iContentFilterService.setSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_GOOD,goodIds);
             }
         }
     }
@@ -394,10 +400,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
             String app = this.lastResult.getTriggerPackage();
             if (app != null)
             {
-                if (!this.appIdToLearnProgress.containsKey(app))
-                {
-                    appIdToLearnProgress.put(app, new AppLearnProgress());
-                }
+                this.appIdToLearnProgress.computeIfAbsent(app,k -> new AppLearnProgress());
                 AppLearnProgress learnProgress = this.appIdToLearnProgress.get(app);
 
                 ScreenInfoExtractor.Screen currenScreen = ScreenInfoExtractor.extractTextElements(service.getRootInActiveWindow(), false);
@@ -410,8 +413,6 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
                 learnProgress.setLabelForCurrentScreen(label);
                 learnProgress.recalculateExpressions();
-                // Wait for the next pipeline Update
-//                this.updateUIBasedOnCurrentLabel(newCurrentScreenlabel, app, newCurrentScreenlabel != AppLearnProgress.ScreenLabel.NOT_LABELED);
             }
         }
     }
