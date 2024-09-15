@@ -83,7 +83,6 @@ public class AppFilter
             AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
             ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(rootNode, isMagnificationEnabled);
             String LOG_TAG = "ContentFiler";
-            Log.d(LOG_TAG, "Start Search");
             // First Check generic filters
 
             for (WordProcessorFilterBase processor : keywordFilters)

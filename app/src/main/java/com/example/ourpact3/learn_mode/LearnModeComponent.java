@@ -90,6 +90,11 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         currentStatus = overlayButtons.findViewById(R.id.current_status);
 
         this.checkboxThumpUp.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (programmaticCheckBoxChange)
+            {
+                return;
+            }
+
             if (isChecked)
             {
                 checkboxThumpDown.setChecked(false);
@@ -99,6 +104,10 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         });
 
         this.checkboxThumpDown.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (programmaticCheckBoxChange)
+            {
+                return;
+            }
             if (isChecked)
             {
                 checkboxThumpUp.setChecked(false);
@@ -150,30 +159,61 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
             if (progress == null)
             {
                 progress = new AppLearnProgress();
-                this.appIdToLearnProgress.put(app,progress);
+                this.appIdToLearnProgress.put(app, progress);
             }
 
             switch (event.getEventType())
             {
-                case AccessibilityEvent.TYPE_VIEW_SCROLLED:
+                /*
                     assert progress != null;
-                    progress.expandCurrentScreen(screen);
-                    break;
+                    Log.d("LEEEEN","Expand");
+                    //TODO: expand erweitert irgendwie history
+//                    progress.expandCurrentScreen(screen);
+                    break;*/
+//                case AccessibilityEvent.TYPE_VIEW_SCROLLED:
                 case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
                 case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
                 case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-                    assert progress != null;
-                    AppLearnProgress.LabeledScreen screen2 = progress.findAndSetNewCurrentScreen(screen);
-                    if (screen2 == null)
+                    AppLearnProgress.LabeledScreen oldScreen = progress.findAndSetNewCurrentScreen(screen);
+                    AppLearnProgress.ScreenLabel currentLabel = AppLearnProgress.ScreenLabel.NOT_LABELED;
+                    if (oldScreen == null)
                     {
-                        progress.addNewScreen(screen);
+                        progress.addNewScreenAndMakeCurrent(screen);
+                    } else
+                    {
+                        currentLabel = oldScreen.label;
                     }
+                    useLabelForCurrentScreen(currentLabel);
+
                     break;
                 default:
                     break;
             }
-            assert progress != null;
         }
+    }
+
+    private boolean programmaticCheckBoxChange = false;
+
+    private void useLabelForCurrentScreen(AppLearnProgress.ScreenLabel label)
+    {
+        programmaticCheckBoxChange = true;
+        switch (label)
+        {
+            case NOT_LABELED:
+                this.checkboxThumpDown.setChecked(false);
+                this.checkboxThumpUp.setChecked(false);
+                break;
+            case GOOD:
+                this.checkboxThumpDown.setChecked(false);
+                this.checkboxThumpUp.setChecked(true);
+                break;
+            case BAD:
+                this.checkboxThumpDown.setChecked(true);
+                this.checkboxThumpUp.setChecked(false);
+                break;
+        }
+        programmaticCheckBoxChange = false;
+
     }
 
     private void saveLearnedToDisk()
@@ -359,7 +399,16 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     appIdToLearnProgress.put(app, new AppLearnProgress());
                 }
                 AppLearnProgress learnProgress = this.appIdToLearnProgress.get(app);
-                learnProgress.labelCurrentScreen(label);
+
+                ScreenInfoExtractor.Screen currenScreen = ScreenInfoExtractor.extractTextElements(service.getRootInActiveWindow(), false);
+                // current screen was not added then we do it
+                if (learnProgress.findAndSetNewCurrentScreen(currenScreen) == null)
+                {
+                    // add new screen
+                    learnProgress.addNewScreenAndMakeCurrent(currenScreen);
+                }
+
+                learnProgress.setLabelForCurrentScreen(label);
                 learnProgress.recalculateExpressions();
                 // Wait for the next pipeline Update
 //                this.updateUIBasedOnCurrentLabel(newCurrentScreenlabel, app, newCurrentScreenlabel != AppLearnProgress.ScreenLabel.NOT_LABELED);

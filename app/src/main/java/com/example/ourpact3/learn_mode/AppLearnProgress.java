@@ -142,13 +142,16 @@ public class AppLearnProgress
             LabeledScreen newScreen = new LabeledScreen(newNodes, ScreenLabel.NOT_LABELED);
             this.labeledScreens.add(newScreen);
             this.currentScreen = newScreen;
-        } else if (this.currentScreen.ids.addAll(newNodes))
+        } else
         {
-            mergeIdenticalLabeledScreens(newNodes);
+            if(this.currentScreen.ids.addAll(newNodes))
+            {
+                mergeIdenticalLabeledScreens(newNodes);
+            }
         }
     }
 
-    public void addNewScreen(@NotNull ScreenInfoExtractor.Screen screen)
+    public void addNewScreenAndMakeCurrent(@NotNull ScreenInfoExtractor.Screen screen)
     {
         Set<String> newNodes = simplifyIdNodes(screen.getIdNodes());
         LabeledScreen newScreen = new LabeledScreen(newNodes, ScreenLabel.NOT_LABELED);
@@ -167,10 +170,11 @@ public class AppLearnProgress
                 return screenLabeled;
             }
         }
+        this.currentScreen = null;
         return null;
     }
 
-    public void labelCurrentScreen(ScreenLabel newLabel)
+    public void setLabelForCurrentScreen(ScreenLabel newLabel)
     {
         if (this.currentScreen != null)
         {
