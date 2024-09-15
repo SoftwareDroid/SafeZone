@@ -1,4 +1,4 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.pipeline;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 
 import com.example.ourpact3.AppFilter;
+import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 
 public abstract class PipelineResultBase implements Cloneable
@@ -46,7 +47,7 @@ public abstract class PipelineResultBase implements Cloneable
         KILL_BEFORE_WINDOW,
         KILLED // internal usage only
     }
-
+    private PipelineHistory history; //TODO: irgendwie dranhängen usw auf aufbauen
     private PipelineWindowAction windowAction; // Changed to private
     private String triggerPackage; // Changed to private
     private String triggerFilter; // Changed to private

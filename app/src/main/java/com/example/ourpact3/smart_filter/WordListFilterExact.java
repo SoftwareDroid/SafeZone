@@ -2,15 +2,15 @@ package com.example.ourpact3.smart_filter;
 
 import androidx.annotation.NonNull;
 
-import com.example.ourpact3.model.PipelineResultBase;
-import com.example.ourpact3.model.PipelineResultKeywordFilter;
+import com.example.ourpact3.pipeline.PipelineResultBase;
+import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WordListFilterExact extends WordProcessorFilterBase
+public class WordListFilterExact extends WordProcessorSmartFilterBase
 {
     public WordListFilterExact(String name, ArrayList<String> listOfWords, boolean ignoreCase, PipelineResultKeywordFilter result, boolean searchForEditable) throws CloneNotSupportedException
     {

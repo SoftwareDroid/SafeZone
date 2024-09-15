@@ -2,7 +2,7 @@ package com.example.ourpact3.smart_filter;
 
 import android.view.accessibility.AccessibilityEvent;
 
-import com.example.ourpact3.model.PipelineResultBase;
+import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 
 public abstract class SpecialSmartFilterBase

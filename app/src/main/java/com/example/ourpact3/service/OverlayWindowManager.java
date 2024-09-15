@@ -8,13 +8,12 @@ import android.graphics.PixelFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.ourpact3.KeywordScoreWindowCalculator;
 import com.example.ourpact3.R;
-import com.example.ourpact3.model.PipelineResultBase;
+import com.example.ourpact3.pipeline.PipelineResultBase;
 
 public class OverlayWindowManager
 {

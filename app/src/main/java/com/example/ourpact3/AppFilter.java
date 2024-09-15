@@ -1,21 +1,20 @@
 package com.example.ourpact3;
 
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
-import com.example.ourpact3.model.PipelineResultKeywordFilter;
+import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.service.IFilterResultCallback;
-import com.example.ourpact3.model.PipelineResultBase;
+import com.example.ourpact3.pipeline.PipelineResultBase;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
 import android.os.Handler;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.topics.TopicManager;
-import com.example.ourpact3.smart_filter.WordProcessorFilterBase;
+import com.example.ourpact3.smart_filter.WordProcessorSmartFilterBase;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -23,7 +22,7 @@ import java.util.TreeMap;
 
 public class AppFilter
 {
-    AppFilter(ContentFilterService service, TopicManager topicManager, ArrayList<WordProcessorFilterBase> filters, String packageName)
+    AppFilter(ContentFilterService service, TopicManager topicManager, ArrayList<WordProcessorSmartFilterBase> filters, String packageName)
 
     {
         this.service = service;
@@ -41,11 +40,11 @@ public class AppFilter
     private boolean pipelineRunning = false;
     private TopicManager topicManager;
     private int delayCount = 0;
-    private final ArrayList<WordProcessorFilterBase> keywordFilters; //TODO: create and sort
+    private final ArrayList<WordProcessorSmartFilterBase> keywordFilters; //TODO: create and sort
     private final TreeMap<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> specialSmartFilters;
     private IFilterResultCallback callback;
 
-    public ArrayList<WordProcessorFilterBase> getAllFilters()
+    public ArrayList<WordProcessorSmartFilterBase> getAllFilters()
     {
         return keywordFilters;
     }
@@ -85,7 +84,7 @@ public class AppFilter
             String LOG_TAG = "ContentFiler";
             // First Check generic filters
 
-            for (WordProcessorFilterBase processor : keywordFilters)
+            for (WordProcessorSmartFilterBase processor : keywordFilters)
             {
                 processor.reset();
                 processScreen(screen, processor);
@@ -166,7 +165,7 @@ public class AppFilter
      * @param currentFilter
      * @return
      */
-    private void processScreen(ScreenInfoExtractor.Screen screen, WordProcessorFilterBase currentFilter)
+    private void processScreen(ScreenInfoExtractor.Screen screen, WordProcessorSmartFilterBase currentFilter)
     {
         for (ScreenInfoExtractor.Screen.TextNode textNode : screen.getTextNodes())
         {

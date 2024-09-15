@@ -1,4 +1,4 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.pipeline;
 
 import android.content.Context;
 

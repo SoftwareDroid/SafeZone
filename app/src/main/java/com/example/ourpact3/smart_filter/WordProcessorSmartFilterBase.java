@@ -2,16 +2,16 @@ package com.example.ourpact3.smart_filter;
 
 import androidx.annotation.NonNull;
 
-import com.example.ourpact3.model.PipelineResultBase;
-import com.example.ourpact3.model.PipelineResultKeywordFilter;
+import com.example.ourpact3.pipeline.PipelineResultBase;
+import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 
-public abstract class WordProcessorFilterBase implements Cloneable {
+public abstract class WordProcessorSmartFilterBase implements Cloneable {
     private PipelineResultKeywordFilter constResult; // Made private
     public final String name; // Kept as final and public
     private boolean checkOnlyVisibleNodes = true; // Made private
 
-    WordProcessorFilterBase(PipelineResultKeywordFilter constResult, String name) throws CloneNotSupportedException {
+    WordProcessorSmartFilterBase(PipelineResultKeywordFilter constResult, String name) throws CloneNotSupportedException {
         this.constResult = (PipelineResultKeywordFilter) constResult.clone();
         constResult.setTriggerFilter(name);
         this.name = name;
@@ -19,9 +19,9 @@ public abstract class WordProcessorFilterBase implements Cloneable {
 
     @NonNull
     @Override
-    public WordProcessorFilterBase clone() {
+    public WordProcessorSmartFilterBase clone() {
         try {
-            WordProcessorFilterBase clone = (WordProcessorFilterBase) super.clone();
+            WordProcessorSmartFilterBase clone = (WordProcessorSmartFilterBase) super.clone();
             // Deep copy the constResult
             clone.constResult = (PipelineResultKeywordFilter) this.constResult.clone();
             // Note: name is final and immutable, so no need to clone it

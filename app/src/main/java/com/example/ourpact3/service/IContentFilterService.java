@@ -1,6 +1,6 @@
 package com.example.ourpact3.service;
 
-import com.example.ourpact3.model.PipelineResultBase;
+import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 
 import org.jetbrains.annotations.NotNull;

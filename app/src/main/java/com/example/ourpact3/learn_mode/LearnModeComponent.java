@@ -20,8 +20,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.ourpact3.R;
-import com.example.ourpact3.model.PipelineResultBase;
-import com.example.ourpact3.model.PipelineResultLearnedMode;
+import com.example.ourpact3.pipeline.PipelineResultBase;
+import com.example.ourpact3.pipeline.PipelineResultLearnedMode;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.service.IContentFilterService;
 import com.example.ourpact3.service.ScreenInfoExtractor;

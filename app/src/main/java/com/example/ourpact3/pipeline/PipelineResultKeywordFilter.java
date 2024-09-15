@@ -1,7 +1,8 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.pipeline;
 
 import android.content.Context;
 import com.example.ourpact3.R; // Adjust the package name as necessary
+
 import androidx.annotation.NonNull;
 
 public class PipelineResultKeywordFilter extends PipelineResultBase

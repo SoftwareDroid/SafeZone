@@ -1,7 +1,7 @@
 package com.example.ourpact3.smart_filter;
 
-import com.example.ourpact3.model.PipelineResultBase;
-import com.example.ourpact3.model.PipelineResultKeywordFilter;
+import com.example.ourpact3.pipeline.PipelineResultBase;
+import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.topics.TopicManager;
 import com.example.ourpact3.topics.TopicMissingException;
@@ -9,7 +9,7 @@ import com.example.ourpact3.topics.TopicMissingException;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
-public class WordListFilterScored extends WordProcessorFilterBase
+public class WordListFilterScored extends WordProcessorSmartFilterBase
 {
     public static class TopicScoring
     {

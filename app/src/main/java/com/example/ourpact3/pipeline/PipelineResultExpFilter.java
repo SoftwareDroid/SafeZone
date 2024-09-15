@@ -1,6 +1,8 @@
-package com.example.ourpact3.model;
+package com.example.ourpact3.pipeline;
 
 import android.content.Context;
+
+import com.example.ourpact3.model.PipelineWindowAction;
 
 public class PipelineResultExpFilter extends PipelineResultBase
 {

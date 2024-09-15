@@ -5,8 +5,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.example.ourpact3.topics.InvalidTopicIDException;
-import com.example.ourpact3.model.PipelineResultBase;
-import com.example.ourpact3.model.PipelineResultKeywordFilter;
+import com.example.ourpact3.pipeline.PipelineResultBase;
+import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.topics.Topic;
 import com.example.ourpact3.topics.TopicAlreadyExistsException;

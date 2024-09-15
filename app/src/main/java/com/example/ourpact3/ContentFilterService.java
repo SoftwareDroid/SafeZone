@@ -14,7 +14,7 @@ import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.util.CrashHandler;
-import com.example.ourpact3.model.PipelineResultBase;
+import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.service.AppKiller;
 import com.example.ourpact3.service.IContentFilterService;
 import com.example.ourpact3.service.NormalModeComponent;

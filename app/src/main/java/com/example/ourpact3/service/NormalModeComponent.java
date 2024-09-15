@@ -4,7 +4,7 @@ import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.example.ourpact3.AppFilter;
-import com.example.ourpact3.model.PipelineResultBase;
+import com.example.ourpact3.pipeline.PipelineResultBase;
 
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
