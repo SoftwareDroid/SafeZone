@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.view.MenuItem;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.CheckBox;
 import android.widget.PopupMenu;
 import android.provider.Settings;
 import android.view.Gravity;
@@ -41,7 +42,10 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
     private final Context context;
     private final IContentFilterService iContentFilterService;
     private TextView currentStatus;
-    private  AccessibilityService service;
+    private AccessibilityService service;
+    private CheckBox checkboxThumpUp;
+    private CheckBox checkboxThumpDown;
+
     public LearnModeComponent(@NotNull Context context, @NotNull IContentFilterService iContentFilterService, AccessibilityService service)
     {
         if (!Settings.canDrawOverlays(context))
@@ -70,7 +74,6 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
-//        params.gravity = Gravity.END | Gravity.TOP; // Position the overlay
         params.gravity = (drawAtLeftEdge ? Gravity.START : Gravity.END) | Gravity.CLIP_VERTICAL; // Position the overlay
         params.x = 0;
         params.y = 0; // No need to adjust y, as it's centered vertically
@@ -79,29 +82,30 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         windowManager.addView(overlayButtons, params);
 
         // Set up button click listeners
-        Button buttonThumpUp = overlayButtons.findViewById(R.id.thumb_up);
-        Button buttonThumpDown = overlayButtons.findViewById(R.id.thumb_down);
+        this.checkboxThumpUp = overlayButtons.findViewById(R.id.thumb_up);
+        this.checkboxThumpDown = overlayButtons.findViewById(R.id.thumb_down);
         Button buttonSettings = overlayButtons.findViewById(R.id.button_settings);
         buttonSettings.setOnClickListener(this::showSettingsContextMenu);
 
         currentStatus = overlayButtons.findViewById(R.id.current_status);
 
-        buttonThumpUp.setOnClickListener(v -> {
-            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.GOOD, false);
-        });
-        buttonThumpUp.setOnLongClickListener(v -> {
-            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.GOOD, true);
-            return true;
+        this.checkboxThumpUp.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked)
+            {
+                checkboxThumpDown.setChecked(false);
+            }
+            this.labelCurrentScreen(isChecked ? AppLearnProgress.ScreenLabel.GOOD : AppLearnProgress.ScreenLabel.NOT_LABELED);
+
         });
 
-        buttonThumpDown.setOnClickListener(v -> {
-            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.BAD, false);
-        });
-        buttonThumpDown.setOnLongClickListener(v -> {
-            this.labelCurrentScreen(AppLearnProgress.ScreenLabel.BAD, true);
-            return true;
-        });
+        this.checkboxThumpDown.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked)
+            {
+                checkboxThumpUp.setChecked(false);
+            }
+            this.labelCurrentScreen(isChecked ? AppLearnProgress.ScreenLabel.BAD : AppLearnProgress.ScreenLabel.NOT_LABELED);
 
+        });
 
         // Handle touch events to allow interaction with the underlying app
         overlayButtons.setOnTouchListener((v, event) -> {
@@ -134,18 +138,19 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
-        if(event.getPackageName() != null)
+        if (event.getPackageName() != null && lastResult != null)
         {
             String app = event.getPackageName().toString();
-            if(!app.equals(lastResult.getTriggerPackage()))
+            if (!app.equals(lastResult.getTriggerPackage()))
             {
                 return;
             }
-            ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(service.getRootInActiveWindow(),false);
+            ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(service.getRootInActiveWindow(), false);
             AppLearnProgress progress = this.appIdToLearnProgress.get(app);
-            if(progress == null)
+            if (progress == null)
             {
-               progress = this.appIdToLearnProgress.put(app,new AppLearnProgress());
+                progress = new AppLearnProgress();
+                this.appIdToLearnProgress.put(app,progress);
             }
 
             switch (event.getEventType())
@@ -153,20 +158,21 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                 case AccessibilityEvent.TYPE_VIEW_SCROLLED:
                     assert progress != null;
                     progress.expandCurrentScreen(screen);
-                    // Expand current screen
                     break;
                 case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
                 case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
+                case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                     assert progress != null;
-                    AppLearnProgress.LabeledScreen screen2 =  progress.findAndSetNewCurrentScreen(screen);
-                    if( screen2 == null)
+                    AppLearnProgress.LabeledScreen screen2 = progress.findAndSetNewCurrentScreen(screen);
+                    if (screen2 == null)
                     {
                         progress.addNewScreen(screen);
                     }
                     break;
+                default:
+                    break;
             }
             assert progress != null;
-            progress.mergeIdenticalLabeledScreens();
         }
     }
 
@@ -188,10 +194,6 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
     {
         if (overlayButtons != null)
         {
-            Button buttonThumpUp = overlayButtons.findViewById(R.id.thumb_up);
-            Button buttonThumpDown = overlayButtons.findViewById(R.id.thumb_down);
-            assert buttonThumpDown != null;
-            assert buttonThumpUp != null;
             if (this.iContentFilterService.isPackagedIgnoredForLearning(newApp))
             {
                 overlayButtons.setVisibility(View.GONE);
@@ -205,6 +207,8 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
     public void onPipelineResult(@NotNull PipelineResultBase result)
     {
+        lastResult = result;
+        /*
         // update GUI
         lastResult = result;
         ScreenInfoExtractor.Screen screen = lastResult.getScreen();
@@ -232,37 +236,16 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel.NOT_LABELED, result.getTriggerPackage(), overwritten);
                 }
             }
-        }
+        }*/
     }
 
     private void updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel label, String packageID, boolean overwritten)
     {
-        assert currentStatus != null;
-        currentStatus.setBackgroundColor(overwritten ? context.getColor(R.color.learner_screen_learned) : context.getColor(R.color.learner_screen_not_learned));
-        Button buttonThumpUp = overlayButtons.findViewById(R.id.thumb_up);
-        Button buttonThumpDown = overlayButtons.findViewById(R.id.thumb_down);
-        assert buttonThumpDown != null;
-        assert buttonThumpUp != null;
-        if (this.iContentFilterService.isPackagedIgnoredForLearning(packageID))
+        if (currentStatus != null && overlayButtons != null)
         {
-            buttonThumpUp.setVisibility(View.INVISIBLE);
-            buttonThumpDown.setVisibility(View.INVISIBLE);
-            return;
-        }
-        switch (label)
-        {
-            case GOOD:
-                buttonThumpUp.setVisibility(View.INVISIBLE);
-                buttonThumpDown.setVisibility(View.VISIBLE);
-                break;
-            case BAD:
-                buttonThumpUp.setVisibility(View.VISIBLE);
-                buttonThumpDown.setVisibility(View.INVISIBLE);
-                break;
-            case NOT_LABELED:
-                buttonThumpUp.setVisibility(View.VISIBLE);
-                buttonThumpDown.setVisibility(View.VISIBLE);
-                break;
+            assert currentStatus != null;
+            currentStatus.setBackgroundColor(overwritten ? context.getColor(R.color.learner_screen_learned) : context.getColor(R.color.learner_screen_not_learned));
+            overlayButtons.setVisibility(this.iContentFilterService.isPackagedIgnoredForLearning(packageID) ? View.INVISIBLE : View.VISIBLE);
         }
     }
 
@@ -364,7 +347,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
     }
 
 
-    private void labelCurrentScreen(AppLearnProgress.ScreenLabel label, boolean force)
+    private void labelCurrentScreen(AppLearnProgress.ScreenLabel label)
     {
         if (this.lastResult != null)
         {
@@ -376,30 +359,10 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     appIdToLearnProgress.put(app, new AppLearnProgress());
                 }
                 AppLearnProgress learnProgress = this.appIdToLearnProgress.get(app);
-                // if a screen already there we remove it. so that it is not in any class and we can relabel it.
-                ScreenInfoExtractor.Screen screen = lastResult.getScreen();
-                assert learnProgress != null;
-                // Check if we already the same screen
-                AppLearnProgress.LabeledScreen labeledScreen = learnProgress.getLabeledScreen(screen);
-                AppLearnProgress.ScreenLabel newCurrentScreenlabel = label;
-                if (!force)
-                {
-                    if (labeledScreen != null)
-                    {
-                        learnProgress.removeScreen(lastResult.getScreen());
-                        newCurrentScreenlabel = AppLearnProgress.ScreenLabel.NOT_LABELED; // go e.g from Up -> NOT_LABELED and with next click to
-                    } else
-                    {
-                        learnProgress.addScreen(lastResult.getScreen(), label);
-                    }
-                } else
-                {
-                    learnProgress.removeScreen(lastResult.getScreen());
-                    learnProgress.addScreen(lastResult.getScreen(), label);
-                }
+                learnProgress.labelCurrentScreen(label);
                 learnProgress.recalculateExpressions();
                 // Wait for the next pipeline Update
-                this.updateUIBasedOnCurrentLabel(newCurrentScreenlabel, app, newCurrentScreenlabel != AppLearnProgress.ScreenLabel.NOT_LABELED);
+//                this.updateUIBasedOnCurrentLabel(newCurrentScreenlabel, app, newCurrentScreenlabel != AppLearnProgress.ScreenLabel.NOT_LABELED);
             }
         }
     }

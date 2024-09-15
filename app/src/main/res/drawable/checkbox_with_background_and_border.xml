@@ -1,0 +1,19 @@
+<!-- res/drawable/checkbox_background_with_border.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Border -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/black" /> <!-- Border color -->
+            <corners android:radius="4dp" /> <!-- Optional: rounded corners -->
+        </shape>
+    </item>
+    <!-- Background -->
+    <item android:top="2dp" android:left="2dp" android:right="2dp" android:bottom="2dp">
+        <selector>
+            <item android:state_checked="true" android:drawable="@android:color/holo_green_dark" />
+            <item android:state_checked="false" android:drawable="@android:color/white" />
+<!--            Default state if no other selctor matches-->
+            <item android:drawable="@android:color/darker_gray" />
+        </selector>
+    </item>
+</layer-list>

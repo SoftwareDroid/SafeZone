@@ -133,27 +133,25 @@ public class ContentFilterService extends AccessibilityService implements IConte
         {
             return;
         }
-        switch (mode)
+        if(mode == Mode.LEARN_OVERLAY_MODE)
         {
-            // event splitting does the normal mode
-            case LEARN_OVERLAY_MODE:
-                this.learnModeComponent.onAccessibilityEvent(event);
-                //Fall through here is correct
-            case NORMAL_MODE:
-                Log.d("KILLER", "NORMAL MODE");
-                this.normalModeProcessor.onAccessibilityEvent(event);
-                break;
-            case APP_KILL_MODE_1:
-                try
-                {
-                    Log.d("KILLER", "APP killMode");
-                    this.appKillerService.onAccessibilityEvent(event);
-                } catch (InterruptedException ignored)
-                {
-                    Log.d("KILLER", "APP killMode interrupt");
+            this.normalModeProcessor.onAccessibilityEvent(event);
+            this.learnModeComponent.onAccessibilityEvent(event);
+        } else if(mode == Mode.NORMAL_MODE)
+        {
+            this.normalModeProcessor.onAccessibilityEvent(event);
 
-                }
-                break;
+        } else if(mode == Mode.APP_KILL_MODE_1)
+        {
+            try
+            {
+                Log.d("KILLER", "APP killMode");
+                this.appKillerService.onAccessibilityEvent(event);
+            } catch (InterruptedException ignored)
+            {
+                Log.d("KILLER", "APP killMode interrupt");
+
+            }
         }
 
     }
