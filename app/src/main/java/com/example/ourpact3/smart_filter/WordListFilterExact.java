@@ -8,75 +8,97 @@ import com.example.ourpact3.service.ScreenInfoExtractor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class WordListFilterExact extends WordProcessorSmartFilterBase
 {
-    public WordListFilterExact(WordSmartFilterIdentifier identifier, ArrayList<String> listOfWords, boolean ignoreCase, PipelineResultKeywordFilter result, boolean searchForEditable) throws CloneNotSupportedException
+
+public WordListFilterExact(WordSmartFilterIdentifier identifier, ArrayList<ArrayList<String>> listOfWords, boolean ignoreCase, PipelineResultKeywordFilter result, boolean searchForEditable) throws CloneNotSupportedException
+{
+    super(result, identifier);
+    this.editable = searchForEditable;
+    this.ignoreCase = ignoreCase;
+    for (ArrayList<String> wordGroup : listOfWords)
     {
-        super(result, identifier);
-        this.editable = searchForEditable;
-        this.ignoreCase = ignoreCase;
-        for (String word : listOfWords)
+        HashMap<String, Integer> groupHits = new HashMap<>();
+        for (String word : wordGroup)
         {
             if (ignoreCase)
             {
                 word = word.toLowerCase();
             }
-            this.wordToHits.put(word, 0);
-
+            groupHits.put(word, 0);
         }
+        wordToHits.add(groupHits);
     }
+}
 
-    @NonNull
-    @Override
-    public WordListFilterExact clone() {
-            WordListFilterExact clone = (WordListFilterExact) super.clone();
-            // Deep copy the mutable HashMap
-            clone.wordToHits.putAll(new HashMap<>(this.wordToHits));
-            return clone;
-    }
-    private final boolean editable;
-    private final boolean ignoreCase;
-    private final HashMap<String, Integer> wordToHits = new HashMap<>();
+@NonNull
+@Override
+public WordListFilterExact clone()
+{
+    WordListFilterExact clone = (WordListFilterExact) super.clone();
+    // Deep copy the mutable HashMap
+    clone.wordToHits.addAll(this.wordToHits);
+    return clone;
+}
 
-    public PipelineResultBase feedWord(ScreenInfoExtractor.Screen.TextNode textNode)
+private final boolean editable;
+private final boolean ignoreCase;
+private final ArrayList<HashMap<String, Integer>> wordToHits = new ArrayList<HashMap<String, Integer>>();
+
+public PipelineResultBase feedWord(ScreenInfoExtractor.Screen.TextNode textNode)
+{
+    //Only process readonly fields
+    if (textNode.editable != this.editable)
     {
-        //Only process readonly fields
-        if (textNode.editable != this.editable)
-        {
-            return null;
-        }
-        String text = ignoreCase ? textNode.textInLowerCase : textNode.text;
-
-        Integer hits = this.wordToHits.get(text);
-        if (hits != null)
-        {
-            // Update
-            wordToHits.put(text, hits + 1);
-            PipelineResultKeywordFilter copy = (PipelineResultKeywordFilter) getConstResult().clone();
-            return this.isFinished() ? copy : null;
-
-        }
-
-
         return null;
     }
+    String text = ignoreCase ? textNode.textInLowerCase : textNode.text;
 
-    public boolean isFinished()
+    for (HashMap<String, Integer> group : this.wordToHits)
     {
-        for (Map.Entry<String, Integer> entry : wordToHits.entrySet())
+        Integer hits = group.get(text);
+        if (hits != null)
+        {
+            group.put(text, hits + 1);
+            PipelineResultKeywordFilter copy = (PipelineResultKeywordFilter) getConstResult().clone();
+            return this.isFinished() ? copy : null;
+        }
+    }
+
+
+    return null;
+}
+
+public boolean isFinished()
+{
+    boolean oneGroupHit = false;
+    for (HashMap<String, Integer> group : this.wordToHits)
+    {
+        boolean allHit = true;
+        for (Map.Entry<String, Integer> entry : group.entrySet())
         {
             if (entry.getValue() == 0)
             {
-                return false;
+                allHit = false;
+                break;
             }
         }
-        return true;
+        if (allHit)
+        {
+            return true;
+        }
     }
+    return false;
+}
 
-    public void reset()
+public void reset()
+{
+    for (HashMap<String, Integer> groupHits : wordToHits)
     {
-        wordToHits.replaceAll((k, v) -> 0);
+        groupHits.replaceAll((k, v) -> 0); // Reset each entry to 0
     }
+}
 }

@@ -80,6 +80,13 @@ public class ExampleAppKeywordFilters
             preventDisabelingAccessabilty.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             preventDisabelingAccessabilty.setHasExplainableButton(true);
             // Add test Filter
+            // Create the inner ArrayList
+            ArrayList<String> innerList1 = new ArrayList<>(List.of("Recent searches", "CLEAR ALL"));
+
+// Create the outer ArrayList and add the inner list to it
+            ArrayList<ArrayList<String>> outerList = new ArrayList<>();
+            outerList.add(innerList1);
+
             WordProcessorSmartFilterBase accessibilityOverview = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of("Use OurPact3")), false, preventDisabelingAccessabilty,false);
             WordProcessorSmartFilterBase accessibilityDialog = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of("Stop OurPact3?")), false, preventDisabelingAccessabilty,false);
             WordProcessorSmartFilterBase preventUninstall = new WordListFilterExact(WordSmartFilterIdentifier.USER_3, new ArrayList<>(List.of("OurPact3","UNINSTALL")), false, preventDisabelingAccessabilty,false);
@@ -103,7 +110,13 @@ public class ExampleAppKeywordFilters
             resultIgnoreSearch.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             resultIgnoreSearch.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_4, new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, resultIgnoreSearch,false);
+            // Create the inner ArrayList
+            ArrayList<String> innerList = new ArrayList<>(List.of("Recent searches", "CLEAR ALL"));
+
+// Create the outer ArrayList and add the inner list to it
+            ArrayList<ArrayList<String>> outerList = new ArrayList<>();
+            outerList.add(innerList);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_4, outerList, false, resultIgnoreSearch,false);
             filters.add(ignoreSearch);
         }
         {
