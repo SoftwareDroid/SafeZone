@@ -63,8 +63,11 @@ public PipelineResultBase feedWord(ScreenInfoExtractor.Screen.TextNode textNode)
         if (hits != null)
         {
             group.put(text, hits + 1);
-            PipelineResultKeywordFilter copy = (PipelineResultKeywordFilter) getConstResult().clone();
-            return this.isFinished() ? copy : null;
+            if(isFinished())
+            {
+                PipelineResultKeywordFilter copy = (PipelineResultKeywordFilter) getConstResult().clone();
+                return copy;
+            }
         }
     }
 

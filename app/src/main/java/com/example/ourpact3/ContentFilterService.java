@@ -53,7 +53,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
         Thread.setDefaultUncaughtExceptionHandler(crashHandler);
         //
         learnModeComponent = new LearnModeComponent(this, this,this);
-        this.setNewMode(Mode.LEARN_OVERLAY_MODE);
+        this.setNewMode(Mode.NORMAL_MODE);
         Log.i("FOO", "Stating service");
 
         normalModeProcessor = new NormalModeComponent(this, this);

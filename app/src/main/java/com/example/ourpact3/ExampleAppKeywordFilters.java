@@ -32,26 +32,26 @@ public class ExampleAppKeywordFilters
     private final ContentFilterService service;
     private final TopicManager topicManager;
 
-    public TreeMap<String,AppPermission> getAppPermissions()
+    public TreeMap<String, AppPermission> getAppPermissions()
     {
         TreeMap<String, AppPermission> appPermissions = new TreeMap<>();
         // Add the apps to the HashSet
-        appPermissions.put(this.service.getApplicationContext().getPackageName(),AppPermission.USER_RO);
-        appPermissions.put("com.android.settings",AppPermission.USER_RO);
-        appPermissions.put("net.tandem",AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("org.thoughtcrime.securesms",AppPermission.USER_IGNORE_LIST);
+        appPermissions.put(this.service.getApplicationContext().getPackageName(), AppPermission.USER_RO);
+        appPermissions.put("com.android.settings", AppPermission.USER_RO);
+        appPermissions.put("net.tandem", AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("org.thoughtcrime.securesms", AppPermission.USER_IGNORE_LIST);
 //        ignoredApps.add("org.telegram.messenger");
-        appPermissions.put("com.whatsapp",AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("cz.mobilesoft.appblock",AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.standardnotes",AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("de.c24.bankapp",AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("ws.xsoh.etar",AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.example.ourpact3",AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.ichi2.anki",AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.epson.epsonsmart",AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("de.mm20.launcher2",AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("de.reimardoeffinger.quickdic",AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("de.mm20.launcher2.release",AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("com.whatsapp", AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("cz.mobilesoft.appblock", AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("com.standardnotes", AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("de.c24.bankapp", AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("ws.xsoh.etar", AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("com.example.ourpact3", AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("com.ichi2.anki", AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("com.epson.epsonsmart", AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("de.mm20.launcher2", AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("de.reimardoeffinger.quickdic", AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("de.mm20.launcher2.release", AppPermission.USER_IGNORE_LIST);
 
         return appPermissions;
     }
@@ -87,16 +87,17 @@ public class ExampleAppKeywordFilters
             ArrayList<ArrayList<String>> outerList = new ArrayList<>();
             outerList.add(innerList1);
 
-            WordProcessorSmartFilterBase accessibilityOverview = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of("Use OurPact3")), false, preventDisabelingAccessabilty,false);
-            WordProcessorSmartFilterBase accessibilityDialog = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of("Stop OurPact3?")), false, preventDisabelingAccessabilty,false);
-            WordProcessorSmartFilterBase preventUninstall = new WordListFilterExact(WordSmartFilterIdentifier.USER_3, new ArrayList<>(List.of("OurPact3","UNINSTALL")), false, preventDisabelingAccessabilty,false);
+            WordProcessorSmartFilterBase accessibilityOverview = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
+                    new ArrayList<>(List.of("Use OurPact3")),
+                    new ArrayList<>(List.of("Stop OurPact3?")),
+
+                    new ArrayList<>(List.of(new String[]{"OurPact3", "UNINSTALL"}))
+            )), false, preventDisabelingAccessabilty, false);
             filters.add(accessibilityOverview);
-            filters.add(preventUninstall);
-            filters.add(accessibilityDialog);
         }
 
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH ,new ExponentialPunishFilter("test",1,30,120));
+        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 1, 30, 120));
         return appFilter;
     }
 
@@ -116,7 +117,7 @@ public class ExampleAppKeywordFilters
 // Create the outer ArrayList and add the inner list to it
             ArrayList<ArrayList<String>> outerList = new ArrayList<>();
             outerList.add(innerList);
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_4, outerList, false, resultIgnoreSearch,false);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_4, outerList, false, resultIgnoreSearch, false);
             filters.add(ignoreSearch);
         }
         {
@@ -152,8 +153,8 @@ public class ExampleAppKeywordFilters
             ignoreHistoryPage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             ignoreHistoryPage.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage,false);
-            filters.add(ignoreSearch);
+//            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage,false);
+//            filters.add(ignoreSearch);
         }
 
         {
@@ -163,8 +164,8 @@ public class ExampleAppKeywordFilters
             resultIgnoreSearch.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             resultIgnoreSearch.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of("Firefox Suggest")), false, resultIgnoreSearch,false);
-            filters.add(ignoreSearch);
+//            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of("Firefox Suggest")), false, resultIgnoreSearch,false);
+//            filters.add(ignoreSearch);
         }
         {
             // ignore history page
@@ -172,9 +173,9 @@ public class ExampleAppKeywordFilters
             ignoreStartpage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             ignoreStartpage.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_3, new ArrayList<>(List.of("Firefox", "Jump back in")), false, ignoreStartpage,false);
-            ignoreSearch.setCheckOnlyVisibleNodes(false);
-            filters.add(ignoreSearch);
+//            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_3, new ArrayList<>(List.of("Firefox", "Jump back in")), false, ignoreStartpage,false);
+//            ignoreSearch.setCheckOnlyVisibleNodes(false);
+//            filters.add(ignoreSearch);
         }
         // Block stuff
         {
@@ -211,7 +212,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH,new ExponentialPunishFilter("test",10,30,5));
+        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 10, 30, 5));
         return appFilter;
 
     }
@@ -223,9 +224,12 @@ public class ExampleAppKeywordFilters
         {
             PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
             resultIgnoreSearch.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
+            resultIgnoreSearch.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             resultIgnoreSearch.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of("People Nearby", "Make Myself Visible")), false, resultIgnoreSearch,false);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
+                    new ArrayList<>(List.of(
+                            new ArrayList<>(List.of("People Nearby", "Make Myself Visible")))), false, resultIgnoreSearch, false);
             filters.add(ignoreSearch);
         }
         return new AppFilter(service, topicManager, filters, appName);
@@ -243,18 +247,19 @@ public class ExampleAppKeywordFilters
             ignoreSettings.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             ignoreSettings.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of("Settings", "Content")), false, ignoreSettings,false);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
+                    new ArrayList<>(List.of(new ArrayList<>(List.of("Settings", "Content")))), false, ignoreSettings, false);
             filters.add(ignoreSearch);
         }
         {
-        // ignore history page
-        PipelineResultKeywordFilter ignoreSettings = new PipelineResultKeywordFilter("");
-        ignoreSettings.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-        ignoreSettings.setHasExplainableButton(true);
-        // Add test Filter
-        WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of("Search")), false, ignoreSettings,true);
-        filters.add(ignoreSearch);
-    }
+            // ignore history page
+            PipelineResultKeywordFilter ignoreSettings = new PipelineResultKeywordFilter("");
+            ignoreSettings.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            ignoreSettings.setHasExplainableButton(true);
+            // Add test Filter
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(new ArrayList<>(List.of("Search")))), false, ignoreSettings, true);
+            filters.add(ignoreSearch);
+        }
 
 
         {
@@ -276,7 +281,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH,new ExponentialPunishFilter("test",2,10,15));
+        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 10, 15));
         return appFilter;
 
 
