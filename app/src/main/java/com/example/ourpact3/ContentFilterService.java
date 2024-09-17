@@ -5,6 +5,8 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -114,7 +116,9 @@ public class ContentFilterService extends AccessibilityService implements IConte
         return Settings.Secure.getInt(cr, "accessibility_display_magnification_enabled", 0) == 1;
     }
 
-
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable scheduledRunnable;
+    private boolean isHandlerScheduled = false;
     @SuppressLint("NewApi")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
@@ -124,7 +128,28 @@ public class ContentFilterService extends AccessibilityService implements IConte
         {
             return;
         }
-        this.normalModeProcessor.processPipelineResults();
+
+        // Schedule the execution of processPipelineResults in the foreground after 500ms
+        // Create a new runnable to execute in the foreground after 500ms
+        // If a handler is already scheduled, remove it
+        normalModeProcessor.processPipelineResults();
+        if (isHandlerScheduled) {
+            handler.removeCallbacks(scheduledRunnable);
+        }
+        scheduledRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Execute the method in the foreground
+                normalModeProcessor.processPipelineResults();
+                isHandlerScheduled = false; // Reset the flag after execution
+            }
+        };
+        isHandlerScheduled = true; // Set the flag to indicate a handler is scheduled
+
+        // Schedule the new runnable with a delay of 500ms
+        handler.postDelayed(scheduledRunnable, 750);
+
+
         // never process this for UI control reasons
         if (event == null || event.getPackageName() == null || event.getPackageName().equals(this.getPackageName()))
         {
