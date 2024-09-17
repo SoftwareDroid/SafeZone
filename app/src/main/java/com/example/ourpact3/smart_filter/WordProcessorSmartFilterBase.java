@@ -8,15 +8,17 @@ import com.example.ourpact3.service.ScreenInfoExtractor;
 
 public abstract class WordProcessorSmartFilterBase implements Cloneable {
     private PipelineResultKeywordFilter constResult; // Made private
-    public final String name; // Kept as final and public
     private boolean checkOnlyVisibleNodes = true; // Made private
-
-    WordProcessorSmartFilterBase(PipelineResultKeywordFilter constResult, String name) throws CloneNotSupportedException {
+    public final WordSmartFilterIdentifier identifier;
+    WordProcessorSmartFilterBase(PipelineResultKeywordFilter constResult, WordSmartFilterIdentifier identifier) throws CloneNotSupportedException {
         this.constResult = (PipelineResultKeywordFilter) constResult.clone();
-        constResult.setTriggerFilter(name);
-        this.name = name;
+        this.identifier = identifier;
     }
 
+    public void setName(String name )
+    {
+        constResult.setTriggerFilter(name);
+    }
     @NonNull
     @Override
     public WordProcessorSmartFilterBase clone() {

@@ -40,7 +40,7 @@ public class KeywordScoreWindowCalculator
 
                 if (sumScore != 0)
                 {
-                    combinedDebugState.append("Filter: ").append(filter.name).append("\n");
+                    combinedDebugState.append("Filter: ").append(filter.identifier.toString()).append("\n");
                     combinedDebugState.append("Sum: ").append(sumScore).append("\n");
                     combinedDebugState.append("Found matches: \n");
                     combinedDebugState.append(filterResultLines);

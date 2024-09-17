@@ -18,4 +18,7 @@
     <string name="help_learn_mode_body">The Learn Mode identifies different screens, such as History, Settings, and Main Screen, based on their design. You can use the thumbs-up button to mark a screen as "good" and the thumbs-down button to mark it as "bad." To remove a screen from a category, simply click the corresponding button again. If you press and hold a button, the screen will be immediately added to your desired category. The settings button provides additional options for customization. The current filter results are displayed above the buttons, and a blue background indicates that the screen has been learned but not yet saved.</string>
     <string name="message_body_blocked_by_learned">This app was block because of my memory. Use Learn mode to fix it.</string>
     <string name="message_title_blocked_by_learned">Learned Block: </string>
+    <string name="learn_mode_label_thump_down">🛑</string>
+    <string name="learn_mode_label_thumb_up">👍</string>
+    <string name="learn_mode_more_options_symbol">…</string>
 </resources>

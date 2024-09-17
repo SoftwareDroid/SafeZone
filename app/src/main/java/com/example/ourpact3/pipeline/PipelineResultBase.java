@@ -41,6 +41,7 @@ public abstract class PipelineResultBase implements Cloneable
         }
     }
 
+
     public enum KillState
     {
         DO_NOT_KILL,

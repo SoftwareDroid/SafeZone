@@ -253,11 +253,8 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
     {
         lastResult = result;
         ScreenInfoExtractor.Screen screen = lastResult.getScreen();
-        if (screen != null)
-        {
 
-        }
-        /*
+
         // update GUI
         lastResult = result;
         if (screen != null)
@@ -284,7 +281,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel.NOT_LABELED, result.getTriggerPackage(), overwritten);
                 }
             }
-        }*/
+        }
     }
 
     private void updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel label, String packageID, boolean overwritten)
@@ -419,37 +416,42 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
     public String convertLabelTOResultToInfoTest(AppLearnProgress.ScreenLabel label)
     {
-        return label == AppLearnProgress.ScreenLabel.GOOD ? "GOOD" : "BAD";
+        return label == AppLearnProgress.ScreenLabel.GOOD ? context.getString(R.string.learn_mode_label_thumb_up) : context.getString(R.string.learn_mode_label_thump_down);
     }
 
     public String convertPiplineResultToInfoText(PipelineResultBase result)
     {
         // TODO: UTF chars nehmen ggf. Totenkopf falls KILL_ACTION
         String status = "";
+        if(result.getKillState() == PipelineResultBase.KillState.KILLED || result.getKillState() == PipelineResultBase.KillState.KILL_BEFORE_WINDOW)
+        {
+            status = "💀 + ";
+        }
+
         switch (result.getWindowAction())
         {
             case PERFORM_HOME_BUTTON_AND_WARNING:
-                status = "HOME";
+                status =  "🏡";
                 break;
             case WARNING:
-                status = "WARN";
+                status = "⚠";
                 break;
             case CONTINUE_PIPELINE:
                 break;
             case PERFORM_BACK_ACTION:
-                status = "BACK";
+                status = "⬅";
                 break;
             case STOP_FURTHER_PROCESSING:
-                status = "STOP";
+                status = "⛔";
                 break;
             case PERFORM_BACK_ACTION_AND_WARNING:
-                status = "WARN2";
+                status = "⚠ + ⬅";
                 break;
             case END_OF_PIPE_LINE:
-                status = "OMIT";
+                status = "🎌";
                 break;
         }
-        return String.format("[%s]", status);
+        return status;
     }
 
 

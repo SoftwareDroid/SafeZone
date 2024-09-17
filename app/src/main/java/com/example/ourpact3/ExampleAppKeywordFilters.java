@@ -3,6 +3,7 @@ package com.example.ourpact3;
 import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
+import com.example.ourpact3.smart_filter.WordSmartFilterIdentifier;
 import com.example.ourpact3.topics.InvalidTopicIDException;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.topics.TopicAlreadyExistsException;
@@ -79,9 +80,9 @@ public class ExampleAppKeywordFilters
             preventDisabelingAccessabilty.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             preventDisabelingAccessabilty.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase accessibilityOverview = new WordListFilterExact("prevent turning of", new ArrayList<>(List.of("Use OurPact3")), false, preventDisabelingAccessabilty,false);
-            WordProcessorSmartFilterBase accessibilityDialog = new WordListFilterExact("prevent turning of", new ArrayList<>(List.of("Stop OurPact3?")), false, preventDisabelingAccessabilty,false);
-            WordProcessorSmartFilterBase preventUninstall = new WordListFilterExact("prevent uninstall", new ArrayList<>(List.of("OurPact3","UNINSTALL")), false, preventDisabelingAccessabilty,false);
+            WordProcessorSmartFilterBase accessibilityOverview = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of("Use OurPact3")), false, preventDisabelingAccessabilty,false);
+            WordProcessorSmartFilterBase accessibilityDialog = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of("Stop OurPact3?")), false, preventDisabelingAccessabilty,false);
+            WordProcessorSmartFilterBase preventUninstall = new WordListFilterExact(WordSmartFilterIdentifier.USER_3, new ArrayList<>(List.of("OurPact3","UNINSTALL")), false, preventDisabelingAccessabilty,false);
             filters.add(accessibilityOverview);
             filters.add(preventUninstall);
             filters.add(accessibilityDialog);
@@ -102,7 +103,7 @@ public class ExampleAppKeywordFilters
             resultIgnoreSearch.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             resultIgnoreSearch.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, resultIgnoreSearch,false);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_4, new ArrayList<>(List.of("Recent searches", "CLEAR ALL")), false, resultIgnoreSearch,false);
             filters.add(ignoreSearch);
         }
         {
@@ -121,7 +122,7 @@ public class ExampleAppKeywordFilters
             boolean ignoreCase = true;  // important for porn filter
 
 //            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
-            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.PORN, allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
         return new AppFilter(service, topicManager, filters, appName);
@@ -138,7 +139,7 @@ public class ExampleAppKeywordFilters
             ignoreHistoryPage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             ignoreHistoryPage.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage,false);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage,false);
             filters.add(ignoreSearch);
         }
 
@@ -149,7 +150,7 @@ public class ExampleAppKeywordFilters
             resultIgnoreSearch.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             resultIgnoreSearch.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox Suggest")), false, resultIgnoreSearch,false);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of("Firefox Suggest")), false, resultIgnoreSearch,false);
             filters.add(ignoreSearch);
         }
         {
@@ -158,7 +159,7 @@ public class ExampleAppKeywordFilters
             ignoreStartpage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             ignoreStartpage.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Firefox", "Jump back in")), false, ignoreStartpage,false);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_3, new ArrayList<>(List.of("Firefox", "Jump back in")), false, ignoreStartpage,false);
             ignoreSearch.setCheckOnlyVisibleNodes(false);
             filters.add(ignoreSearch);
         }
@@ -172,7 +173,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("enforce_safe_search", 100, 0));
             boolean ignoreCase = false;  // important for porn filter
 
-            WordListFilterScored blockAdultStuff = new WordListFilterScored("Enforce safe search", allScorings, ignoreCase, topicManager, blockUnsafesearch);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.ENFORCE_SAFE_SEARCH, allScorings, ignoreCase, topicManager, blockUnsafesearch);
             filters.add(blockAdultStuff);
         }
 
@@ -193,7 +194,7 @@ public class ExampleAppKeywordFilters
             boolean ignoreCase = true;  // important for porn filter
 
 //            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
-            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_1, allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
@@ -211,7 +212,7 @@ public class ExampleAppKeywordFilters
             resultIgnoreSearch.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
             resultIgnoreSearch.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact("Block people nearby", new ArrayList<>(List.of("People Nearby", "Make Myself Visible")), false, resultIgnoreSearch,false);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of("People Nearby", "Make Myself Visible")), false, resultIgnoreSearch,false);
             filters.add(ignoreSearch);
         }
         return new AppFilter(service, topicManager, filters, appName);
@@ -229,7 +230,7 @@ public class ExampleAppKeywordFilters
             ignoreSettings.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             ignoreSettings.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Settings", "Content")), false, ignoreSettings,false);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of("Settings", "Content")), false, ignoreSettings,false);
             filters.add(ignoreSearch);
         }
         {
@@ -238,7 +239,7 @@ public class ExampleAppKeywordFilters
         ignoreSettings.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
         ignoreSettings.setHasExplainableButton(true);
         // Add test Filter
-        WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact("null", new ArrayList<>(List.of("Search")), false, ignoreSettings,true);
+        WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of("Search")), false, ignoreSettings,true);
         filters.add(ignoreSearch);
     }
 
@@ -258,7 +259,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("patrick_all_merged", 49, 66));
             boolean ignoreCase = true;  // important for porn filter
 
-            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_3, allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);

@@ -25,9 +25,9 @@ public class WordListFilterScored extends WordProcessorSmartFilterBase
         final int writeScore;
     }
 
-    public WordListFilterScored(String name, ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, PipelineResultKeywordFilter result) throws TopicMissingException, CloneNotSupportedException
+    public WordListFilterScored(WordSmartFilterIdentifier identifier, ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, PipelineResultKeywordFilter result) throws TopicMissingException, CloneNotSupportedException
     {
-        super(result, name);
+        super(result, identifier);
         this.ignoreCase = ignoreCase;
         this.topicManager = topicManager;
         this.topicScorings = topicScorings;
@@ -37,7 +37,7 @@ public class WordListFilterScored extends WordProcessorSmartFilterBase
         {
             if (!topicManager.isTopicIdLoaded(scoring.topicId))
             {
-                throw new TopicMissingException("scoring " + name + " need topic" + scoring.topicId + " but it is missing");
+                throw new TopicMissingException("scoring " + identifier + " need topic" + scoring.topicId + " but it is missing");
             }
         }
     }

@@ -41,4 +41,9 @@ Smart Bundling for Lang x for App y makes senses (sharing)
 
 
 # Changelog
+0.* Topic Manager, Regex Support,...
+1.0 App Killing with UI Automation
 1.1 Learn Mode
+1.1.1 Hamburger Button in Learn Mode
+1.2.0 Thump Down => Block Sign + Symbols for Home,
+      Use Idendifier for Word Filter

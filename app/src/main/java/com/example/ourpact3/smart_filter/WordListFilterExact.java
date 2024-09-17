@@ -12,9 +12,9 @@ import java.util.Map;
 
 public class WordListFilterExact extends WordProcessorSmartFilterBase
 {
-    public WordListFilterExact(String name, ArrayList<String> listOfWords, boolean ignoreCase, PipelineResultKeywordFilter result, boolean searchForEditable) throws CloneNotSupportedException
+    public WordListFilterExact(WordSmartFilterIdentifier identifier, ArrayList<String> listOfWords, boolean ignoreCase, PipelineResultKeywordFilter result, boolean searchForEditable) throws CloneNotSupportedException
     {
-        super(result, name);
+        super(result, identifier);
         this.editable = searchForEditable;
         this.ignoreCase = ignoreCase;
         for (String word : listOfWords)
