@@ -153,8 +153,8 @@ public class ExampleAppKeywordFilters
             ignoreHistoryPage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             ignoreHistoryPage.setHasExplainableButton(true);
             // Add test Filter
-//            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of("History", "Recently closed tabs")), false, ignoreHistoryPage,false);
-//            filters.add(ignoreSearch);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,new ArrayList<>( List.of(new ArrayList<>(List.of("History", "Recently closed tabs")))), false, ignoreHistoryPage,false);
+            filters.add(ignoreSearch);
         }
 
         {
@@ -164,8 +164,8 @@ public class ExampleAppKeywordFilters
             resultIgnoreSearch.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             resultIgnoreSearch.setHasExplainableButton(true);
             // Add test Filter
-//            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of("Firefox Suggest")), false, resultIgnoreSearch,false);
-//            filters.add(ignoreSearch);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2,new ArrayList<>(List.of( new ArrayList<>(List.of("Firefox Suggest")))), false, resultIgnoreSearch,false);
+            filters.add(ignoreSearch);
         }
         {
             // ignore history page
@@ -173,9 +173,9 @@ public class ExampleAppKeywordFilters
             ignoreStartpage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             ignoreStartpage.setHasExplainableButton(true);
             // Add test Filter
-//            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_3, new ArrayList<>(List.of("Firefox", "Jump back in")), false, ignoreStartpage,false);
-//            ignoreSearch.setCheckOnlyVisibleNodes(false);
-//            filters.add(ignoreSearch);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_3,new ArrayList<>(List.of( new ArrayList<>(List.of("Firefox", "Jump back in")))), false, ignoreStartpage,false);
+            ignoreSearch.setCheckOnlyVisibleNodes(false);
+            filters.add(ignoreSearch);
         }
         // Block stuff
         {
@@ -212,7 +212,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 10, 30, 5));
+        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5));
         return appFilter;
 
     }
