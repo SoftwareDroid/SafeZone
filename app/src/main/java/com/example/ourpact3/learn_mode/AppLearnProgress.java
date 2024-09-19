@@ -211,7 +211,10 @@ public class AppLearnProgress
         // collect first all neutral ids and then remove them before
         for (LabeledScreen screen : this.labeledScreens)
         {
-            unlabeledIds.addAll(screen.ids);
+            if(screen.label == ScreenLabel.NOT_LABELED)
+            {
+                unlabeledIds.addAll(screen.ids);
+            }
         }
 
         for (LabeledScreen screen : this.labeledScreens)

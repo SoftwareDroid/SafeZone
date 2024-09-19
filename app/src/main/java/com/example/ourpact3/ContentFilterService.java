@@ -41,7 +41,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     ;
     private AppKiller appKillerService;
     private LearnModeComponent learnModeComponent;
-    private Mode mode = Mode.NORMAL_MODE;
+    private Mode mode = Mode.LEARN_OVERLAY_MODE;
     private final TopicManager topicManager = new TopicManager();
     private CrashHandler crashHandler;
     private CheatKeyManager cheatKeyManager;
@@ -55,7 +55,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
         Thread.setDefaultUncaughtExceptionHandler(crashHandler);
         //
         learnModeComponent = new LearnModeComponent(this, this,this);
-        this.setNewMode(Mode.NORMAL_MODE);
+        this.setNewMode(Mode.LEARN_OVERLAY_MODE);
         Log.i("FOO", "Stating service");
 
         normalModeProcessor = new NormalModeComponent(this, this);
