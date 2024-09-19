@@ -47,3 +47,4 @@ Smart Bundling for Lang x for App y makes senses (sharing)
 1.1.1 Hamburger Button in Learn Mode
 1.2.0 Thump Down => Block Sign + Symbols for Home,
       Use Idendifier for Word Filter
+1.2.1 fix error reacalcualte expresion

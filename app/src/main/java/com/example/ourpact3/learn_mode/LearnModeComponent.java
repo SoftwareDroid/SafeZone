@@ -42,7 +42,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
     private View overlayButtons;
     private final Context context;
     private final IContentFilterService iContentFilterService;
-    private TextView currentStatus;
+    private Button currentStatus;
     private final AccessibilityService service;
     private CheckBox checkboxThumpUp;
     private CheckBox checkboxThumpDown;

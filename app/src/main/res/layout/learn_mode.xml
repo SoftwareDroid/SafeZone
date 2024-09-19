@@ -3,14 +3,24 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="1dp">
-
-        <TextView
+        <Button
             android:id="@+id/current_status"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:background="#CCCCCC"
-            android:padding="8dp"
-            android:textSize="16sp" />
+            android:background="@drawable/button_background_gray"
+            android:gravity="center"
+            android:padding="1dp"
+            android:text=""
+            android:textStyle="bold"
+            android:textSize="20sp" />
+
+<!--        <TextView-->
+<!--            android:id="@+id/current_status"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="#CCCCCC"-->
+<!--            android:padding="8dp"-->
+<!--            android:textSize="16sp" />-->
 
 
         <CheckBox
