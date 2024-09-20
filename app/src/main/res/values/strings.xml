@@ -21,4 +21,6 @@
     <string name="learn_mode_label_thump_down">🛑</string>
     <string name="learn_mode_label_thumb_up">👍</string>
     <string name="learn_mode_more_options_symbol">…</string>
+    <string name="button_request_device_admin">Request Device Admin</string>
+    <string name="button_request_overlay_permission">Request Overlay Permission</string>
 </resources>

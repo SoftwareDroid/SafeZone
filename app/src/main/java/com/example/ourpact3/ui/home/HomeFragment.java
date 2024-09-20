@@ -22,6 +22,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ourpact3.ContentFilterService;
+import com.example.ourpact3.MainActivity;
+import com.example.ourpact3.MyDeviceAdminReceiver;
 import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentHomeBinding;
 
@@ -34,6 +36,7 @@ public class HomeFragment extends Fragment
     private ActivityResultLauncher<Intent> overlayPermissionLauncher;
     private FragmentHomeBinding binding;
     private Button buttonRequestOverlayPermission;
+    private Button buttonRequestDeviceAdmin;
     private static final int REQUEST_CODE_ENABLE_ADMIN = 1;
     private ComponentName deviceAdminComponent;
 
@@ -71,6 +74,15 @@ public class HomeFragment extends Fragment
                 startOverlayService();
             }
         });
+        binding.buttonRequestDeviceAdmin.setOnClickListener(v -> {
+//            Intent intent = new Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS);
+            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, new ComponentName(requireContext(), MyDeviceAdminReceiver.class));
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                    "You need to activate Device Administrator to perform phonelost tasks!");
+            overlayPermissionLauncher.launch(intent);
+    });
+
 
         // Check if overlay permission is already granted and hide the button if it is
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(requireActivity()))
