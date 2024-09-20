@@ -6,7 +6,7 @@
         <Button
             android:id="@+id/current_status"
             android:layout_width="60dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:background="@drawable/button_background_gray"
             android:gravity="center"
             android:padding="1dp"

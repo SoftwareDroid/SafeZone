@@ -1,5 +1,7 @@
 package com.example.ourpact3.learn_mode;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
@@ -18,7 +20,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.example.ourpact3.R;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.pipeline.PipelineResultLearnedMode;
@@ -59,6 +60,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         this.service = service;
     }
 
+
     @SuppressLint("InflateParams")
     public void createOverlay()
     {
@@ -68,6 +70,8 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         }
         overlayButtons = LayoutInflater.from(context).inflate(R.layout.learn_mode, null);
 
+        // Create a single-threaded executor
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         // Set the layout parameters for the overlay
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -101,7 +105,12 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
             {
                 checkboxThumpDown.setChecked(false);
             }
-            this.labelCurrentScreen(isChecked ? AppLearnProgress.ScreenLabel.GOOD : AppLearnProgress.ScreenLabel.NOT_LABELED);
+            executor.execute(() -> {
+                labelCurrentScreen(isChecked ? AppLearnProgress.ScreenLabel.GOOD : AppLearnProgress.ScreenLabel.NOT_LABELED);
+            });
+
+//            new LabelCurrentScreenTask().execute(isChecked ? AppLearnProgress.ScreenLabel.GOOD : AppLearnProgress.ScreenLabel.NOT_LABELED);
+//            this.labelCurrentScreen(isChecked ? AppLearnProgress.ScreenLabel.GOOD : AppLearnProgress.ScreenLabel.NOT_LABELED);
 
         });
 
@@ -114,7 +123,12 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
             {
                 checkboxThumpUp.setChecked(false);
             }
-            this.labelCurrentScreen(isChecked ? AppLearnProgress.ScreenLabel.BAD : AppLearnProgress.ScreenLabel.NOT_LABELED);
+            executor.execute(() -> {
+                labelCurrentScreen(isChecked ? AppLearnProgress.ScreenLabel.BAD : AppLearnProgress.ScreenLabel.NOT_LABELED);
+            });
+
+//            new LabelCurrentScreenTask().execute(isChecked ? AppLearnProgress.ScreenLabel.BAD : AppLearnProgress.ScreenLabel.NOT_LABELED);
+//            this.labelCurrentScreen(isChecked ? AppLearnProgress.ScreenLabel.BAD : AppLearnProgress.ScreenLabel.NOT_LABELED);
 
         });
 
