@@ -1,5 +1,8 @@
 package com.example.ourpact3.ui.home;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.app.admin.DevicePolicyManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.content.Intent;
@@ -24,12 +27,15 @@ import com.example.ourpact3.databinding.FragmentHomeBinding;
 
 import android.content.ComponentName;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 public class HomeFragment extends Fragment
 {
     private ActivityResultLauncher<Intent> overlayPermissionLauncher;
     private FragmentHomeBinding binding;
     private Button buttonRequestOverlayPermission;
+    private static final int REQUEST_CODE_ENABLE_ADMIN = 1;
+    private ComponentName deviceAdminComponent;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)

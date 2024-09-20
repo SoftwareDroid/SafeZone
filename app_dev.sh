@@ -1,5 +1,7 @@
 #!/bin/bash
 echo "hallo welt"
+
+#adb shell dpm set-device-owner com.example.ourpact3/.MyDeviceAdminReceiver
 adb shell appops get com.example.ourpact3
 adb shell appops set com.example.ourpact3 SYSTEM_ALERT_WINDOW allow
 adb shell pm grant com.example.ourpact3 android.permission.SYSTEM_ALERT_WINDOW

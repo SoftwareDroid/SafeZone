@@ -39,6 +39,8 @@ words in Topics are scored for their nearest topic (Deep).
 SmartFilter; Trigger + Action
 Smart Bundling for Lang x for App y makes senses (sharing)
 
+How to prevent uninstall
+# Give first accessabilty permisson then device admin and go out of learn mode
 
 # Changelog
 0.* Topic Manager, Regex Support,...
