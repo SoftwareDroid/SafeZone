@@ -1,5 +1,7 @@
 package com.example.ourpact3.service;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
@@ -17,7 +19,7 @@ import java.util.Set;
 
 public class ScreenInfoExtractor
 {
-    public static class Screen
+    public static class Screen implements Parcelable
     {
         // Constructor for Screen
         public Screen(Set<ID_Node> idNodes, ArrayList<TextNode> textNodes)
@@ -25,6 +27,54 @@ public class ScreenInfoExtractor
             this.idNodes = idNodes != null ? idNodes : new HashSet<>();
             this.textNodes = textNodes != null ? textNodes : new ArrayList<>();
         }
+
+        protected Screen(Parcel in) {
+            // Read the ID_Nodes
+            int idNodeCount = in.readInt();
+            idNodes = new HashSet<>(idNodeCount);
+            for (int i = 0; i < idNodeCount; i++) {
+                idNodes.add(in.readParcelable(ID_Node.class.getClassLoader()));
+            }
+
+            // Read the TextNodes
+            int textNodeCount = in.readInt();
+            textNodes = new ArrayList<>(textNodeCount);
+            for (int i = 0; i < textNodeCount; i++) {
+                textNodes.add(in.readParcelable(TextNode.class.getClassLoader()));
+            }
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            // Write the ID_Nodes
+            dest.writeInt(idNodes.size());
+            for (ID_Node idNode : idNodes) {
+                dest.writeParcelable(idNode, flags);
+            }
+
+            // Write the TextNodes
+            dest.writeInt(textNodes.size());
+            for (TextNode textNode : textNodes) {
+                dest.writeParcelable(textNode, flags);
+            }
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Parcelable.Creator<Screen> CREATOR = new Parcelable.Creator<Screen>() {
+            @Override
+            public Screen createFromParcel(Parcel in) {
+                return new Screen(in);
+            }
+
+            @Override
+            public Screen[] newArray(int size) {
+                return new Screen[size];
+            }
+        };
 
         // Method to convert Screen object to JSON
         public JSONObject toJson() throws JSONException
@@ -81,42 +131,101 @@ public class ScreenInfoExtractor
             return new Screen(idNodes, textNodes);
         }
 
-        public static class TextNode
-        {
-            public TextNode(boolean visible, boolean editable, String text)
-            {
+        public static class TextNode implements Parcelable {
+            public final boolean visible;
+            public final boolean editable;
+            public final String text;
+            public final String textInLowerCase;
+
+            public TextNode(boolean visible, boolean editable, String text) {
                 this.visible = visible;
                 this.editable = editable;
                 this.text = text;
                 this.textInLowerCase = text.toLowerCase();
             }
 
-            public final boolean visible;
-            public final boolean editable;
-            public final String text;
-            public final String textInLowerCase;
+            protected TextNode(Parcel in) {
+                visible = in.readByte() != 0;
+                editable = in.readByte() != 0;
+                text = in.readString();
+                textInLowerCase = in.readString();
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeByte((byte) (visible ? 1 : 0));
+                dest.writeByte((byte) (editable ? 1 : 0));
+                dest.writeString(text);
+                dest.writeString(textInLowerCase);
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            public static final Creator<TextNode> CREATOR = new Creator<TextNode>() {
+                @Override
+                public TextNode createFromParcel(Parcel in) {
+                    return new TextNode(in);
+                }
+
+                @Override
+                public TextNode[] newArray(int size) {
+                    return new TextNode[size];
+                }
+            };
         }
 
-        public static class ID_Node
-        {
+
+        public static class ID_Node implements Parcelable {
             public final String className;
             public final String id;
             public final boolean visible;
 
-            public ID_Node(String className, String id, boolean visible)
-            {
+            public ID_Node(String className, String id, boolean visible) {
                 this.className = className;
                 this.id = id;
                 this.visible = visible;
             }
 
+            protected ID_Node(Parcel in) {
+                className = in.readString();
+                id = in.readString();
+                visible = in.readByte() != 0;
+            }
+
             @NonNull
             @Override
-            public String toString()
-            {
+            public String toString() {
                 return "ID_Node [className='" + className + "', id='" + id + "', visible=" + visible + "]";
             }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(className);
+                dest.writeString(id);
+                dest.writeByte((byte) (visible ? 1 : 0));
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            public static final Parcelable.Creator<ID_Node> CREATOR = new Creator<ID_Node>() {
+                @Override
+                public ID_Node createFromParcel(Parcel in) {
+                    return new ID_Node(in);
+                }
+
+                @Override
+                public ID_Node[] newArray(int size) {
+                    return new ID_Node[size];
+                }
+            };
         }
+
 
         private final Set<ID_Node> idNodes;
         private final ArrayList<TextNode> textNodes;

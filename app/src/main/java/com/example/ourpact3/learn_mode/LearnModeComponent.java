@@ -19,7 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
+
 import com.example.ourpact3.R;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.pipeline.PipelineResultLearnedMode;
@@ -28,6 +28,7 @@ import com.example.ourpact3.service.IContentFilterService;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.smart_filter.UI_ID_Filter;
+import com.example.ourpact3.ui.misc.PipelineResultView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,7 +44,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
     private View overlayButtons;
     private final Context context;
     private final IContentFilterService iContentFilterService;
-    private Button currentStatus;
+    private Button lastPipelineResultButton;
     private final AccessibilityService service;
     private CheckBox checkboxThumpUp;
     private CheckBox checkboxThumpDown;
@@ -93,7 +94,12 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         Button buttonSettings = overlayButtons.findViewById(R.id.button_settings);
         buttonSettings.setOnClickListener(this::showSettingsContextMenu);
 
-        currentStatus = overlayButtons.findViewById(R.id.current_status);
+
+        lastPipelineResultButton = overlayButtons.findViewById(R.id.current_status);
+//        PipelineResultView pipelineResultView = overlayButtons.findViewById(R.id.pipeline_result_view);
+//        pipelineResultView.initStaticTextLayout();
+//        pipelineResultView.setVisibility(View.VISIBLE);
+        lastPipelineResultButton.setOnClickListener(this::showLastPipelineResult);
 
         this.checkboxThumpUp.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (programmaticCheckBoxChange)
@@ -108,10 +114,6 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
             executor.execute(() -> {
                 labelCurrentScreen(isChecked ? AppLearnProgress.ScreenLabel.GOOD : AppLearnProgress.ScreenLabel.NOT_LABELED);
             });
-
-//            new LabelCurrentScreenTask().execute(isChecked ? AppLearnProgress.ScreenLabel.GOOD : AppLearnProgress.ScreenLabel.NOT_LABELED);
-//            this.labelCurrentScreen(isChecked ? AppLearnProgress.ScreenLabel.GOOD : AppLearnProgress.ScreenLabel.NOT_LABELED);
-
         });
 
         this.checkboxThumpDown.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -127,9 +129,6 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                 labelCurrentScreen(isChecked ? AppLearnProgress.ScreenLabel.BAD : AppLearnProgress.ScreenLabel.NOT_LABELED);
             });
 
-//            new LabelCurrentScreenTask().execute(isChecked ? AppLearnProgress.ScreenLabel.BAD : AppLearnProgress.ScreenLabel.NOT_LABELED);
-//            this.labelCurrentScreen(isChecked ? AppLearnProgress.ScreenLabel.BAD : AppLearnProgress.ScreenLabel.NOT_LABELED);
-
         });
 
         // Handle touch events to allow interaction with the underlying app
@@ -140,6 +139,20 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
             }
             return false; // Allow touch events to pass through
         });
+    }
+
+    private void showLastPipelineResult(View view)
+    {
+        if(lastResult != null)
+        {/*
+            PipelineResultView pipelineResultView = this.overlayButtons.findViewById(R.id.pipeline_result_view);
+            if(pipelineResultView != null)
+            {
+                pipelineResultView.setPipelineResult(lastResult, this.context);
+                pipelineResultView.setVisibility(View.VISIBLE);
+            }*/
+
+        }
     }
 
     private PipelineResultBase lastResult;
@@ -273,7 +286,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         lastResult = result;
         if (screen != null)
         {
-            if (currentStatus != null)
+            if (lastPipelineResultButton != null)
             {
                 boolean overwritten = false;
                 // first check if result is in expression the overwrite the
@@ -284,14 +297,14 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     AppLearnProgress.ScreenLabel screenLabel = learnProgress.getLabelFromCalculatedExpression(screen);
                     if (screenLabel != AppLearnProgress.ScreenLabel.NOT_LABELED)
                     {
-                        currentStatus.setText(convertLabelTOResultToInfoTest(screenLabel));
+                        lastPipelineResultButton.setText(convertLabelTOResultToInfoTest(screenLabel));
                         overwritten = true;
                         updateUIBasedOnCurrentLabel(screenLabel, result.getTriggerPackage(), overwritten);
                     }
                 }
                 if (!overwritten)
                 {
-                    currentStatus.setText(convertPiplineResultToInfoText(lastResult));
+                    lastPipelineResultButton.setText(convertPiplineResultToInfoText(lastResult));
                     updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel.NOT_LABELED, result.getTriggerPackage(), overwritten);
                 }
             }
@@ -300,9 +313,9 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
     private void updateUIBasedOnCurrentLabel(AppLearnProgress.ScreenLabel label, String packageID, boolean overwritten)
     {
-        if (currentStatus != null && overlayButtons != null)
+        if (lastPipelineResultButton != null && overlayButtons != null)
         {
-            currentStatus.setBackgroundColor(overwritten ? context.getColor(R.color.learner_screen_learned) : context.getColor(R.color.learner_screen_not_learned));
+            lastPipelineResultButton.setBackgroundColor(overwritten ? context.getColor(R.color.learner_screen_learned) : context.getColor(R.color.learner_screen_not_learned));
             overlayButtons.setVisibility(this.iContentFilterService.isPackagedIgnoredForLearning(packageID) ? View.INVISIBLE : View.VISIBLE);
         }
     }

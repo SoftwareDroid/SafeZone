@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="learner_screen_learned">#FF448D9A</color>
     <color name="learner_screen_not_learned">#FFCCCCCC</color>
+    <color name="lime_dark">#2E8B57</color>
 </resources>

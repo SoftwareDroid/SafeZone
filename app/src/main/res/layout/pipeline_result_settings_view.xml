@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical">
+<!--Label and text this is one Element like in F-Droid Settings-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_name"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/smart_filter_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="My Filter"
+                android:textSize="14sp" />
+        </LinearLayout>
+<!-- Filter Typ-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_typ"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/smart_filter_typ"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="My Filter Typ"
+                android:textSize="14sp" />
+        </LinearLayout>
+<!-- Filter Parameters-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/additional_parameters"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/smart_filter_parameters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Addional Parameters for the Smart Filter"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!--        Seperator Line-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/pipeline_result_additional_actions_labels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pipeline_result_additional_actions_labels"
+            android:textColor="@color/lime_dark"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/back_button_checkbox"
+                android:textSize="14sp" />
+
+            <Switch
+                android:id="@+id/back_button_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/warning_window"
+                android:textSize="14sp" />
+
+            <Switch
+                android:id="@+id/warning_win_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </LinearLayout>
+
+<!--       Force Kill Checkbox -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/force_kill"
+                android:textSize="14sp" />
+            <Switch
+                android:id="@+id/force_kill_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+<!--All Trigger Information-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pipeline_result_trigger_infos_labels"
+            android:textColor="@color/lime_dark"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+<!--        Trigge App (Name, Package ID-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name_label"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/app_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="My App"
+                android:textSize="14sp" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/pipeline_result_additional_info_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pipeline_result_additional_info_label"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/more_info_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="More info about the app"
+            android:textSize="14sp" />
+
+
+    </LinearLayout>
+
+</LinearLayout>
