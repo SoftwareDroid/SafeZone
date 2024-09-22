@@ -26,11 +26,14 @@
     <string name="force_kill">Force Kill</string>
     <string name="pipeline_result_additional_info_label">Trigger Reason:</string>
     <string name="warning_window">Warning Window</string>
-    <string name="back_button_checkbox">Trigger Back Button</string>
+    <string name="pipline_result_main_win_action">Window Action</string>
     <string name="pipeline_result_additional_actions_labels">Actions</string>
     <string name="filter_name">Smart Filter Name</string>
     <string name="filter_typ">Filter Typ</string>
     <string name="pipeline_result_trigger_infos_labels">Trigger Info</string>
     <string name="app_name_label">App Name</string>
     <string name="additional_parameters">Parameters</string>
+    <string name="home_button">Home Button</string>
+    <string name="nothing">Nothing</string>
+    <string name="back_button">Back Button</string>
 </resources>

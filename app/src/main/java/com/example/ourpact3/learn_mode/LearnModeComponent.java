@@ -11,6 +11,7 @@ import android.graphics.PixelFormat;
 import android.view.MenuItem;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.provider.Settings;
 import android.view.Gravity;
@@ -146,11 +147,12 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
         if(lastResult != null)
         {
             PipelineResultView pipelineResultView = (PipelineResultView) overlayButtons.findViewById(R.id.pipline_result_view);
+            //toggle visablity
             boolean visible = pipelineResultView.getVisibility() == View.VISIBLE;
             if(!visible)
             {
                 pipelineResultView.setVisibility(View.VISIBLE);
-                pipelineResultView.setPipelineResult(lastResult, context, true);
+                pipelineResultView.setPipelineResult(lastResult, context);
             }
             else
             {

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="result_button_options">
+        <item>@string/back_button</item>
+        <item>@string/home_button</item>
+        <item>@string/nothing</item>
+    </string-array>
+</resources>

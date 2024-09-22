@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import com.example.ourpact3.AppFilter;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.service.ScreenInfoExtractor;
+import com.example.ourpact3.util.PackageUtil;
 
 public abstract class PipelineResultBase implements Cloneable
 {
@@ -49,7 +50,7 @@ public abstract class PipelineResultBase implements Cloneable
         KILL_BEFORE_WINDOW,
         KILLED // internal usage only
     }
-    private PipelineHistory history; //TODO: irgendwie dranhängen usw auf aufbauen
+//    private PipelineHistory history; //TODO: irgendwie dranhängen usw auf aufbauen
     private PipelineWindowAction windowAction; // Changed to private
     private String triggerPackage; // Changed to private
     private String triggerFilter; // Changed to private
@@ -183,14 +184,6 @@ public abstract class PipelineResultBase implements Cloneable
 
     public String getAppName(Context ctx)
     {
-        try
-        {
-            PackageManager packageManager = ctx.getPackageManager();
-            ApplicationInfo appInfo = packageManager.getApplicationInfo(triggerPackage, 0);
-            return (String) packageManager.getApplicationLabel(appInfo);
-        } catch (Exception e)
-        {
-            return triggerPackage;
-        }
+        return PackageUtil.getAppName(ctx,triggerPackage);
     }
 }
