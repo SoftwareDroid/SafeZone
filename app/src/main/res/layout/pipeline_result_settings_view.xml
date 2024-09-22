@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -86,6 +87,8 @@
             android:layout_height="wrap_content"
             android:text="@string/pipeline_result_additional_actions_labels"
             android:textColor="@color/lime_dark"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -160,7 +163,9 @@
             android:text="@string/pipeline_result_trigger_infos_labels"
             android:textColor="@color/lime_dark"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"/>
 <!--        Trigge App (Name, Package ID-->
         <LinearLayout
             android:layout_width="match_parent"

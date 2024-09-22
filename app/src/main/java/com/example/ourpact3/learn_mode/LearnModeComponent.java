@@ -96,9 +96,9 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
 
         lastPipelineResultButton = overlayButtons.findViewById(R.id.current_status);
-//        PipelineResultView pipelineResultView = overlayButtons.findViewById(R.id.pipeline_result_view);
-//        pipelineResultView.initStaticTextLayout();
-//        pipelineResultView.setVisibility(View.VISIBLE);
+        PipelineResultView pipelineResultView = (PipelineResultView) overlayButtons.findViewById(R.id.pipline_result_view);
+        pipelineResultView.setVisibility(View.GONE);
+
         lastPipelineResultButton.setOnClickListener(this::showLastPipelineResult);
 
         this.checkboxThumpUp.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -144,14 +144,18 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
     private void showLastPipelineResult(View view)
     {
         if(lastResult != null)
-        {/*
-            PipelineResultView pipelineResultView = this.overlayButtons.findViewById(R.id.pipeline_result_view);
-            if(pipelineResultView != null)
+        {
+            PipelineResultView pipelineResultView = (PipelineResultView) overlayButtons.findViewById(R.id.pipline_result_view);
+            boolean visible = pipelineResultView.getVisibility() == View.VISIBLE;
+            if(!visible)
             {
-                pipelineResultView.setPipelineResult(lastResult, this.context);
                 pipelineResultView.setVisibility(View.VISIBLE);
-            }*/
-
+                pipelineResultView.setPipelineResult(lastResult, context, true);
+            }
+            else
+            {
+                pipelineResultView.setVisibility(View.GONE);
+            }
         }
     }
 

@@ -50,3 +50,36 @@ How to prevent uninstall
 1.2.0 Thump Down => Block Sign + Symbols for Home,
       Use Idendifier for Word Filter
 1.2.1 fix error reacalcualte expresion
+
+
+
+==
+public class PipelineResultView extends LinearLayout {
+    public PipelineResultView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        inflate(context, R.layout.pipeline_result_settings_view, this);
+        init();
+    }
+
+    private void init() {
+        // Hier kannst du die XML-Knoten finden und bearbeiten
+        TextView textView = (TextView) findViewById(R.id.text_view);
+        textView.setText("Neuer Text");
+
+        Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Code hier
+            }
+        });
+    }
+}
+
+==
+<com.example.ourpact3.ui.misc.PipelineResultView
+    android:id="@+id/pipline_result_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+    ==
+    PipelineResultView pipelineResultView = (PipelineResultView) findViewById(R.id.pipline_result_view);
