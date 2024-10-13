@@ -24,7 +24,7 @@
     "financial domination",
     "asshole",
     "butthole",
-    "sex",
+//    "sex", unisex
     //"ass ", use regexp
     //" ass",
     "penis",
@@ -115,7 +115,8 @@
     "\\bcum\\b",
     "\\bcbt\\b",
     "\\bbutt\\b",
-    "\\bpee\\b"
+    "\\bpee\\b",
+    "\\bsex\\b"
   ],
   "includedTopics": [
   ]

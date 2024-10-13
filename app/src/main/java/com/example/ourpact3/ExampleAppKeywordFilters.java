@@ -1,5 +1,11 @@
 package com.example.ourpact3;
 
+import android.content.Context;
+
+import com.example.ourpact3.db.AppDao;
+import com.example.ourpact3.db.AppDatabase;
+import com.example.ourpact3.db.AppInfo;
+import com.example.ourpact3.db.AppState;
 import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
@@ -31,6 +37,23 @@ public class ExampleAppKeywordFilters
 
     private final ContentFilterService service;
     private final TopicManager topicManager;
+
+    private AppDatabase db;
+    private AppDao packageDao;
+    public void fillDatabase(Context context)
+    {
+        db = AppDatabase.getDatabase(context);
+        packageDao = db.packageDao();
+        if (packageDao.getAllPackages().isEmpty())
+        {
+            // Insert a package
+            AppInfo appInfo = new AppInfo();
+            appInfo.packageId = "package_1";
+            appInfo.state = AppState.NORMAL;
+            appInfo.lockedUntil = System.currentTimeMillis() + (24 * 60 * 60 * 1000); // Lock for 24 hours
+            packageDao.insert(appInfo);
+        }
+    }
 
     public TreeMap<String, AppPermission> getAppPermissions()
     {
@@ -190,7 +213,7 @@ public class ExampleAppKeywordFilters
             blockUnsafesearch.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
             blockUnsafesearch.setHasExplainableButton(true);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
-            allScorings.add(new TopicScoring("enforce_safe_search", 100, 0));
+            allScorings.add(new TopicScoring("enforce_safe_search", 100, 100));
             boolean ignoreCase = false;  // important for porn filter
 
             WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.ENFORCE_SAFE_SEARCH, allScorings, ignoreCase, topicManager, blockUnsafesearch);
@@ -208,7 +231,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("female_body_parts", 30, 45));
             allScorings.add(new TopicScoring("adult_nudity", 32, 45));
             allScorings.add(new TopicScoring("adult_sex_toys", 32, 45));
-            allScorings.add(new TopicScoring("female_names", 15, 30));
+//            allScorings.add(new TopicScoring("female_names", 15, 30));
             allScorings.add(new TopicScoring("female_clothing", 15, 30));
             allScorings.add(new TopicScoring("patrick_all_merged", 49, 66));
             boolean ignoreCase = true;  // important for porn filter
@@ -301,7 +324,7 @@ public class ExampleAppKeywordFilters
         list.add(getPocketCastsFilter());
         list.add(getTelegramFilter2());
         list.add(getYoutubeFilter());
-        list.add(getSettings());
+//        list.add(getSettings());
 
         return list;
     }
