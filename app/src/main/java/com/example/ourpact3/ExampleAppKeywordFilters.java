@@ -38,21 +38,20 @@ public class ExampleAppKeywordFilters
     private final ContentFilterService service;
     private final TopicManager topicManager;
 
-    private AppDatabase db;
-    private AppDao packageDao;
     public void fillDatabase(Context context)
     {
-        db = AppDatabase.getDatabase(context);
-        packageDao = db.packageDao();
-        if (packageDao.getAllPackages().isEmpty())
-        {
-            // Insert a package
-            AppInfo appInfo = new AppInfo();
-            appInfo.packageId = "package_1";
-            appInfo.state = AppState.NORMAL;
-            appInfo.lockedUntil = System.currentTimeMillis() + (24 * 60 * 60 * 1000); // Lock for 24 hours
-            packageDao.insert(appInfo);
-        }
+        new Thread(() -> {
+            AppDatabase db = AppDatabase.getDatabase(context);
+            AppDao packageDao = db.packageDao();
+            if (packageDao.getAllPackages().isEmpty()) {
+                // Insert a package
+                AppInfo appInfo = new AppInfo();
+                appInfo.packageId = "org.mozilla.firefox";
+                appInfo.state = AppPermission.USER_RW;
+                appInfo.lockedUntil = System.currentTimeMillis() + (24 * 60 * 60 * 1000); // Lock for 24 hours
+                packageDao.insert(appInfo);
+            }
+        }).start();
     }
 
     public TreeMap<String, AppPermission> getAppPermissions()
