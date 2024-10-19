@@ -24,7 +24,7 @@
     "financial domination",
     "asshole",
     "butthole",
-    "sex",
+    //"sex", problem with unisex
     //"ass ", use regexp
     //" ass",
     "penis",
@@ -61,7 +61,6 @@
     "missionary",
     "doggy style",
     "cowgirl",
-    "oral ",
     "blowjob",
     "handjob",
     "fingering",
@@ -112,10 +111,13 @@
   ],
   "regExpWords" : [
     "\\bass\\b",
+    "\\bbsdm\\b",
     "\\bcum\\b",
     "\\bcbt\\b",
     "\\bbutt\\b",
-    "\\bpee\\b"
+    "\\bpee\\b",
+    "\\boral\\b", // problem oral in doctoral
+    "\\bsex\\b" //allow e.g unisex
   ],
   "includedTopics": [
   ]

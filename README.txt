@@ -52,6 +52,10 @@ How to prevent uninstall
 1.2.1 fix error reacalcualte expresion
 
 Add Default/all other apps handling killing works
+term Sex to regex because of unisex clothing
+term slavery => remove history podcast
+oral in doctoral
+
 
 
 ==
