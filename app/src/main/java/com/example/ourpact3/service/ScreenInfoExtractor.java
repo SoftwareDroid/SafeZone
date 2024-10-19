@@ -21,14 +21,17 @@ public class ScreenInfoExtractor
 {
     public static class Screen implements Parcelable
     {
+        public final String appName;
         // Constructor for Screen
-        public Screen(Set<ID_Node> idNodes, ArrayList<TextNode> textNodes)
+        public Screen(Set<ID_Node> idNodes, ArrayList<TextNode> textNodes,String appName)
         {
+            this.appName = appName;
             this.idNodes = idNodes != null ? idNodes : new HashSet<>();
             this.textNodes = textNodes != null ? textNodes : new ArrayList<>();
         }
 
-        protected Screen(Parcel in) {
+        protected Screen(Parcel in, String appName) {
+            this.appName = appName;
             // Read the ID_Nodes
             int idNodeCount = in.readInt();
             idNodes = new HashSet<>(idNodeCount);
@@ -43,6 +46,8 @@ public class ScreenInfoExtractor
                 textNodes.add(in.readParcelable(TextNode.class.getClassLoader()));
             }
         }
+
+
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
@@ -67,7 +72,7 @@ public class ScreenInfoExtractor
         public static final Parcelable.Creator<Screen> CREATOR = new Parcelable.Creator<Screen>() {
             @Override
             public Screen createFromParcel(Parcel in) {
-                return new Screen(in);
+                return null;
             }
 
             @Override
@@ -128,7 +133,7 @@ public class ScreenInfoExtractor
                 textNodes.add(new TextNode(visible, editable, text));
             }
 
-            return new Screen(idNodes, textNodes);
+            return new Screen(idNodes, textNodes,"foo");
         }
 
         public static class TextNode implements Parcelable {
@@ -277,7 +282,6 @@ public class ScreenInfoExtractor
             return sb.toString();
         }
     }
-
     public static Screen extractTextElements(AccessibilityNodeInfo node, boolean isMagnificationEnabled)
     {
         HashSet<Screen.ID_Node> idNodes = new HashSet<>();
@@ -317,6 +321,6 @@ public class ScreenInfoExtractor
             }
         }
 
-        return new Screen(idNodes, textNodes); // Return a new Screen with both ID_Nodes and TextNodes
+        return new Screen(idNodes, textNodes,node.getPackageName().toString()); // Return a new Screen with both ID_Nodes and TextNodes
     }
 }

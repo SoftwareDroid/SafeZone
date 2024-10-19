@@ -41,7 +41,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     ;
     private AppKiller appKillerService;
     private LearnModeComponent learnModeComponent;
-    private Mode mode = Mode.LEARN_OVERLAY_MODE;
+    private Mode mode = Mode.NORMAL_MODE;
     private final TopicManager topicManager = new TopicManager();
     private CrashHandler crashHandler;
     private CheatKeyManager cheatKeyManager;
@@ -55,7 +55,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
         Thread.setDefaultUncaughtExceptionHandler(crashHandler);
         //
         learnModeComponent = new LearnModeComponent(this, this,this);
-        this.setNewMode(Mode.LEARN_OVERLAY_MODE);
+        this.setNewMode(Mode.NORMAL_MODE);
         Log.i("FOO", "Stating service");
 
         normalModeProcessor = new NormalModeComponent(this, this);
@@ -89,7 +89,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
             for (AppFilter filter : exampleFilters.getAllExampleFilters())
             {
                 filter.setCallback(normalModeProcessor);
-                normalModeProcessor.keywordFilters.put(filter.getPackageName(), filter);
+                normalModeProcessor.appFilters.put(filter.getPackageName(), filter);
             }
             AccessibilityServiceInfo info = new AccessibilityServiceInfo();
             info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
@@ -299,7 +299,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void setSpecialSmartFilter(String app, SpecialSmartFilterBase.Name name, SpecialSmartFilterBase filter)
     {
-        AppFilter appFilter = this.normalModeProcessor.keywordFilters.get(app);
+        AppFilter appFilter = this.normalModeProcessor.appFilters.get(app);
         if (appFilter != null)
         {
             appFilter.setSpecialSmartFilter(name, filter);
@@ -309,7 +309,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public SpecialSmartFilterBase getSpecialSmartFilter(String app, SpecialSmartFilterBase.Name name)
     {
-        AppFilter appFilter = this.normalModeProcessor.keywordFilters.get(app);
+        AppFilter appFilter = this.normalModeProcessor.appFilters.get(app);
         if (appFilter != null)
         {
             return appFilter.getSpecialSmartFilter(name);

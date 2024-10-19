@@ -149,6 +149,7 @@ public class ExampleAppKeywordFilters
 
     }
 
+
     private AppFilter getFirefoxFilter() throws TopicMissingException, CloneNotSupportedException
     {
         String appName = "org.mozilla.firefox";
@@ -224,6 +225,53 @@ public class ExampleAppKeywordFilters
 
     }
 
+    private AppFilter getDefaultFilter() throws TopicMissingException, CloneNotSupportedException
+    {
+        String appName = "";
+        ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
+
+
+        // Block stuff
+        {
+            //block unsafe search
+            PipelineResultKeywordFilter blockUnsafesearch = new PipelineResultKeywordFilter("");
+            blockUnsafesearch.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            blockUnsafesearch.setHasExplainableButton(true);
+            ArrayList<TopicScoring> allScorings = new ArrayList<>();
+            allScorings.add(new TopicScoring("enforce_safe_search", 100, 100));
+            boolean ignoreCase = false;  // important for porn filter
+
+            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.ENFORCE_SAFE_SEARCH, allScorings, ignoreCase, topicManager, blockUnsafesearch);
+            filters.add(blockAdultStuff);
+        }
+
+
+        {
+            PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
+            pornResult.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            pornResult.setHasExplainableButton(true);
+            pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
+            ArrayList<TopicScoring> allScorings = new ArrayList<>();
+            allScorings.add(new TopicScoring("porn_explicit", 100, 100));
+            allScorings.add(new TopicScoring("female_body_parts", 30, 45));
+            allScorings.add(new TopicScoring("adult_nudity", 32, 45));
+            allScorings.add(new TopicScoring("adult_sex_toys", 32, 45));
+//            allScorings.add(new TopicScoring("female_names", 15, 30));
+            allScorings.add(new TopicScoring("female_clothing", 15, 30));
+            allScorings.add(new TopicScoring("patrick_all_merged", 49, 66));
+            boolean ignoreCase = true;  // important for porn filter
+
+//            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_1, allScorings, ignoreCase, topicManager, pornResult);
+            blockAdultStuff.setName("Block NSFW");
+            filters.add(blockAdultStuff);
+        }
+        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
+//        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5));
+        return appFilter;
+
+    }
+
     private AppFilter getTelegramFilter2() throws CloneNotSupportedException
     {
         String appName = "org.telegram.messenger";
@@ -279,7 +327,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("female_body_parts", 30, 45));
             allScorings.add(new TopicScoring("adult_nudity", 32, 45));
             allScorings.add(new TopicScoring("adult_sex_toys", 32, 45));
-            allScorings.add(new TopicScoring("female_names", 15, 30));
+//            allScorings.add(new TopicScoring("female_names", 15, 30));
             allScorings.add(new TopicScoring("female_clothing", 15, 30));
             allScorings.add(new TopicScoring("patrick_all_merged", 49, 66));
             boolean ignoreCase = true;  // important for porn filter
@@ -302,6 +350,7 @@ public class ExampleAppKeywordFilters
         list.add(getTelegramFilter2());
         list.add(getYoutubeFilter());
         list.add(getSettings());
+        list.add(getDefaultFilter());
 
         return list;
     }

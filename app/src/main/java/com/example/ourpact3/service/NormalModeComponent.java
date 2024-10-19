@@ -13,7 +13,7 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
 {
     private IContentFilterService iContentFilterService;
     private final OverlayWindowManager overlayWindowManager;
-    public TreeMap<String, AppFilter> keywordFilters = new TreeMap<>();
+    public TreeMap<String, AppFilter> appFilters = new TreeMap<>();
     private ConcurrentLinkedDeque<PipelineResultBase> pipelineResults = new ConcurrentLinkedDeque<PipelineResultBase>();
 
     private final AccessibilityService service;
@@ -77,19 +77,24 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
-        AppFilter filter = this.keywordFilters.get(event.getPackageName());
+        String appName = event.getPackageName().toString();
+        AppFilter filter = this.appFilters.get(appName);
         if (filter != null)
         {
             filter.processEvent(event);
         }
+        else if (this.appFilters.containsKey(""))
+        {
+            appName = "";
+            this.appFilters.get("").processEvent(event);
+        }
         switch (event.getEventType())
         {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-                if(event.getPackageName() != null && !event.getPackageName().toString().equals(lastUsedApp))
+                if(event.getPackageName() != null && !appName.equals(lastUsedApp))
                 {
-                    String app = event.getPackageName().toString();
-                    lastUsedApp = app;
-                    this.iContentFilterService.onAppChange(lastUsedApp,app);
+                    lastUsedApp = appName;
+                    this.iContentFilterService.onAppChange(lastUsedApp,appName);
                 }
                 break;
         }

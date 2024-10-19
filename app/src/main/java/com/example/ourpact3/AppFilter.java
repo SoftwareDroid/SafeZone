@@ -102,7 +102,8 @@ public class AppFilter
     @SuppressLint("NewApi")
     public void processEvent(AccessibilityEvent event)
     {
-        if (event.getPackageName() == null || !event.getPackageName().toString().equals(packageName))
+        // Empty string is default app this is every other app
+        if (event.getPackageName() == null || (!event.getPackageName().toString().equals(packageName) && !packageName.isEmpty()))
         {
             return;
         }
@@ -175,7 +176,7 @@ public class AppFilter
                 PipelineResultBase result = currentFilter.feedWord(textNode);
                 if (result != null)
                 {
-                    result.setTriggerPackage(this.packageName);
+                    result.setTriggerPackage(screen.appName);
                     // Feed result to generic event filters
                     for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet())
                     {
