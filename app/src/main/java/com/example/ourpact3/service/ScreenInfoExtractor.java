@@ -286,7 +286,7 @@ public class ScreenInfoExtractor
     {
         HashSet<Screen.ID_Node> idNodes = new HashSet<>();
         ArrayList<Screen.TextNode> textNodes = new ArrayList<>();
-
+        String app = "";
         if (node != null)
         {
             // Extract ID_Node information
@@ -319,8 +319,11 @@ public class ScreenInfoExtractor
                     idNodes.addAll(tempScreen.idNodes); // Collect ID_Nodes from child nodes
                 }
             }
+            if(node.getPackageName() != null)
+            {
+                app = node.getPackageName().toString();
+            }
         }
-
-        return new Screen(idNodes, textNodes,node.getPackageName().toString()); // Return a new Screen with both ID_Nodes and TextNodes
+        return new Screen(idNodes, textNodes,app); // Return a new Screen with both ID_Nodes and TextNodes
     }
 }

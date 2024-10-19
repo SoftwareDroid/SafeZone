@@ -51,6 +51,7 @@ How to prevent uninstall
       Use Idendifier for Word Filter
 1.2.1 fix error reacalcualte expresion
 
+Add Default/all other apps handling killing works
 
 
 ==

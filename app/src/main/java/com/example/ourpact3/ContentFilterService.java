@@ -161,7 +161,10 @@ public class ContentFilterService extends AccessibilityService implements IConte
             this.learnModeComponent.onAccessibilityEvent(event);
         } else if(mode == Mode.NORMAL_MODE)
         {
-            this.normalModeProcessor.onAccessibilityEvent(event);
+            if(!this.isPackageIgnoredForNormalMode(event.getPackageName().toString()))
+            {
+                this.normalModeProcessor.onAccessibilityEvent(event);
+            }
 
         } else if(mode == Mode.APP_KILL_MODE_1)
         {
@@ -264,6 +267,16 @@ public class ContentFilterService extends AccessibilityService implements IConte
         // Perhaps show warning or notification after killing
         this.mode = Mode.NORMAL_MODE;
         this.normalModeProcessor.onPipelineResultForeground(lastResult);
+    }
+
+    public boolean isPackageIgnoredForNormalMode(String id)
+    {
+        AppPermission permission = this.usedAppPermissions.get(id);
+        if(id != null && permission != null)
+        {
+            return permission == AppPermission.USER_IGNORE_LIST;
+        }
+        return false;
     }
 
     @Override

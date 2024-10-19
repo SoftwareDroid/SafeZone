@@ -252,7 +252,7 @@ public class ExampleAppKeywordFilters
             pornResult.setHasExplainableButton(true);
             pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
-            allScorings.add(new TopicScoring("porn_explicit", 100, 100));
+            allScorings.add(new TopicScoring("porn_explicit", 40, 100));
             allScorings.add(new TopicScoring("female_body_parts", 30, 45));
             allScorings.add(new TopicScoring("adult_nudity", 32, 45));
             allScorings.add(new TopicScoring("adult_sex_toys", 32, 45));
