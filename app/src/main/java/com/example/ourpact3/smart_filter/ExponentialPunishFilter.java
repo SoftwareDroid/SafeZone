@@ -23,9 +23,10 @@ public class ExponentialPunishFilter extends SpecialSmartFilterBase
     private boolean isBlocking = false;
     private final int MIN_NEEDED_VIOLATATIONS;
     private final int MIN_TIME_OF_BLOCKING_IN_SECONDS;
-    public ExponentialPunishFilter(String name, int MIN_NEEDED_VIOLATATIONS, int violationExpiringInMin, int MIN_TIME_OF_BLOCKING_IN_SECONDS)
+    public ExponentialPunishFilter(String name, int MIN_NEEDED_VIOLATATIONS, int violationExpiringInMin, int MIN_TIME_OF_BLOCKING_IN_SECONDS, PipelineWindowAction action)
     {
-        super(new PipelineResultExpFilter(""), name);
+        //Default action should be with warning but settings are then triggered to ofen and Warning is not closeable
+        super(new PipelineResultExpFilter("",action), name);
         this.violationExpiringInMin = violationExpiringInMin;
         this.MIN_NEEDED_VIOLATATIONS = MIN_NEEDED_VIOLATATIONS;
         this.MIN_TIME_OF_BLOCKING_IN_SECONDS = MIN_TIME_OF_BLOCKING_IN_SECONDS;

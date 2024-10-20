@@ -36,7 +36,7 @@ public class AppFilter
 
     public AccessibilityService service;
     private final boolean isMagnificationEnabled; //needed beacuse node isVisible behaves differnt
-    private String packageName = "";
+    private final String packageName;
     private boolean pipelineRunning = false;
     private TopicManager topicManager;
     private int delayCount = 0;
@@ -98,12 +98,16 @@ public class AppFilter
 
         }
     };
+    public boolean isAllOtherApps()
+    {
+        return packageName.isEmpty();
+    }
 
     @SuppressLint("NewApi")
     public void processEvent(AccessibilityEvent event)
     {
         // Empty string is default app this is every other app
-        if (event.getPackageName() == null || (!event.getPackageName().toString().equals(packageName) && !packageName.isEmpty()))
+        if (event.getPackageName() == null || (!event.getPackageName().toString().equals(packageName) && !isAllOtherApps()))
         {
             return;
         }
@@ -155,7 +159,8 @@ public class AppFilter
 
     private void endOfPipelineReached(ScreenInfoExtractor.Screen screen)
     {
-        PipelineResultBase endToken = new PipelineResultKeywordFilter(this.packageName);
+        // mismatch of ids packageName != screen name
+        PipelineResultBase endToken = new PipelineResultKeywordFilter(screen.appName);
         endToken.setWindowAction(PipelineWindowAction.END_OF_PIPE_LINE);
         endToken.setScreen(screen);
         this.callback.onPipelineResultBackground(endToken);

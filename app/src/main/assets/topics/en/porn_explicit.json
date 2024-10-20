@@ -52,7 +52,6 @@
     "pornstar",
     "stockings",
     "corset",
-    "bdsm ",
     "bondage",
     "figging",
     "fetish",
@@ -103,11 +102,11 @@
     "jack off",
     "whack off",
     "beat off",
-    "get off",
+//    "get off",
     "orgasm",
     "climax",
-    "ejaculation",
-    "moan"
+    "ejaculation"
+//    "moan"
   ],
   "regExpWords" : [
     "\\bass\\b",

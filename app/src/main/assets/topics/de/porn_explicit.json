@@ -7,8 +7,6 @@
     "arschloch",
     "vagina",
     "gesichtssitzen",
-    "po ",
-    "kot ",
     "masturbieren",
     "genitalien",
     "muschi",
@@ -18,7 +16,6 @@
     "pimmel",
     "schwanz",
     "eier",
-    "arsch",
     "hintern",
     "popo",
     "kitzler",
@@ -31,15 +28,13 @@
     "blasen",
     "streicheln",
     "kuscheln",
-    "anal",
+    //    "anal", in english
     "analverkehr",
     "oralverkehr",
     "vaginalverkehr",
     "sodomie",
     "päderastie",
     "inzest",
-    "sexuelle nötigung",
-    "sexuelle belästigung",
     "prostitution",
     "zuhälterei",
     "sexuelle",
@@ -47,6 +42,11 @@
     "hebephilie",
     "nekrophilie",
     "zoophilie"
+  ],
+  "regExpWords": [
+    "\\barsch\\b",
+    "\\bpo\\b",
+    "\\bkont\\b"
   ],
   "includedTopics": [
   ]

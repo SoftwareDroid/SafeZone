@@ -6,10 +6,10 @@ import com.example.ourpact3.model.PipelineWindowAction;
 
 public class PipelineResultExpFilter extends PipelineResultBase
 {
-    public PipelineResultExpFilter(String app)
+    public PipelineResultExpFilter(String app, PipelineWindowAction action)
     {
         super(app);
-        this.setWindowAction(PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING);
+        this.setWindowAction(action);
     }
     public long blockedTil;
     public long violationCounter;

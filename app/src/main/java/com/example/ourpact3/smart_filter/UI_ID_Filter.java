@@ -2,6 +2,7 @@ package com.example.ourpact3.smart_filter;
 
 import android.view.accessibility.AccessibilityEvent;
 
+import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.pipeline.PipelineResultExpFilter;
 import com.example.ourpact3.service.ScreenInfoExtractor;
@@ -16,7 +17,7 @@ public class UI_ID_Filter extends SpecialSmartFilterBase
 {
     public UI_ID_Filter(PipelineResultBase result, String name, @NotNull Set<String> setOfIDs)
     {
-        super(new PipelineResultExpFilter(""), name);
+        super(new PipelineResultExpFilter("", PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING), name);
         this.result = result;
         this.result.setTriggerFilter(name);
         this.name = name;

@@ -69,14 +69,14 @@ public class ExampleAppKeywordFilters
 //        topicManager.addTopic(adultChildTopic);
     }
 
-    private AppFilter getSettings() throws CloneNotSupportedException
+    private AppFilter getAndroidSettings() throws CloneNotSupportedException
     {
         String appName = "com.android.settings";
         ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
         // prevent user for disabling the accessabilty service (only works in english)
         {
             PipelineResultKeywordFilter preventDisabelingAccessabilty = new PipelineResultKeywordFilter("");
-            preventDisabelingAccessabilty.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            preventDisabelingAccessabilty.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
             preventDisabelingAccessabilty.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             preventDisabelingAccessabilty.setHasExplainableButton(true);
             WordProcessorSmartFilterBase accessibilityOverview = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
@@ -90,7 +90,7 @@ public class ExampleAppKeywordFilters
 
         {
             PipelineResultKeywordFilter preventTurnOfDeviceAdmin = new PipelineResultKeywordFilter("");
-            preventTurnOfDeviceAdmin.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            preventTurnOfDeviceAdmin.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
             preventTurnOfDeviceAdmin.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             preventTurnOfDeviceAdmin.setHasExplainableButton(true);
             WordProcessorSmartFilterBase searchForDeviceAdmin = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(
@@ -103,7 +103,7 @@ public class ExampleAppKeywordFilters
         }
 
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 1, 30, 120));
+        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 1, 30, 120,PipelineWindowAction.PERFORM_BACK_ACTION));
         return appFilter;
     }
 
@@ -220,7 +220,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5));
+        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5,PipelineWindowAction.PERFORM_BACK_ACTION));
         return appFilter;
 
     }
@@ -336,7 +336,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 10, 15));
+//        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 10, 15,PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING));
         return appFilter;
 
 
@@ -349,7 +349,7 @@ public class ExampleAppKeywordFilters
         list.add(getPocketCastsFilter());
         list.add(getTelegramFilter2());
         list.add(getYoutubeFilter());
-        list.add(getSettings());
+        list.add(getAndroidSettings());
         list.add(getDefaultFilter());
 
         return list;
