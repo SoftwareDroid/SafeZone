@@ -103,7 +103,7 @@ public class ExampleAppKeywordFilters
         }
 
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 1, 30, 120,PipelineWindowAction.PERFORM_BACK_ACTION));
+        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 1, 30, 120,PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING));
         return appFilter;
     }
 
@@ -220,7 +220,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
-        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5,PipelineWindowAction.PERFORM_BACK_ACTION));
+        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5,PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING));
         return appFilter;
 
     }

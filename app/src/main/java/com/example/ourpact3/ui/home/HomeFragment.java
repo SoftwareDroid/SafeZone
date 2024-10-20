@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment
                 result -> {
                     if (Settings.canDrawOverlays(requireActivity()))
                     {
-                        startOverlayService(); // Start the service if permission is granted
+                        startOverlayService(); // Start the service if permissi8on is granted
                         buttonRequestOverlayPermission.setVisibility(View.GONE); // Hide the button
                     }
                 });
