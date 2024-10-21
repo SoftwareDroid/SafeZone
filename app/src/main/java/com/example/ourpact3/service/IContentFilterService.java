@@ -20,6 +20,7 @@ public interface IContentFilterService
     void stopLearnMode();
     void finishAppKilling(PipelineResultBase lastResult);
     boolean isPackagedIgnoredForLearning(String id);
+    boolean isPackageIgnoredForNormalMode(String id);
     void destroyGUI();
     void onAppChange(String oldApp,String newApp);
     void setSpecialSmartFilter(String app,SpecialSmartFilterBase.Name name, SpecialSmartFilterBase filter);

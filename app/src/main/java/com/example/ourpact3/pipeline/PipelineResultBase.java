@@ -52,17 +52,14 @@ public abstract class PipelineResultBase implements Cloneable
     }
 //    private PipelineHistory history; //TODO: irgendwie dranhängen usw auf aufbauen
     private PipelineWindowAction windowAction; // Changed to private
-    private String triggerPackage; // Changed to private
+//    private String triggerPackage; // Changed to private
     private String triggerFilter; // Changed to private
     private ScreenInfoExtractor.Screen screen; // Changed to private
     private AppFilter currentAppFilter; // Changed to private
     private KillState killState = KillState.DO_NOT_KILL; // Changed to private
     private boolean hasExplainableButton; // Changed to private
-    public PipelineResultBase(String triggerPackage) {
-        if (triggerPackage == null) {
-            throw new IllegalArgumentException("triggerPackage cannot be null");
-        }
-        this.triggerPackage = triggerPackage;
+    public PipelineResultBase() {
+
     }
     /*
     // Parcelable implementation
@@ -120,12 +117,8 @@ public abstract class PipelineResultBase implements Cloneable
 
     public String getTriggerPackage()
     {
-        return triggerPackage;
-    }
-
-    public void setTriggerPackage(String triggerPackage)
-    {
-        this.triggerPackage = triggerPackage;
+        assert getScreen() != null;
+        return getScreen().appName;
     }
 
     public String getTriggerFilter()
@@ -184,6 +177,6 @@ public abstract class PipelineResultBase implements Cloneable
 
     public String getAppName(Context ctx)
     {
-        return PackageUtil.getAppName(ctx,triggerPackage);
+        return PackageUtil.getAppName(ctx,getTriggerPackage());
     }
 }

@@ -89,7 +89,8 @@ public class ExponentialPunishFilter extends SpecialSmartFilterBase
                 this.lastEventTime = currentTime;
 
                 // Add new violation to list
-                this.result.setTriggerPackage(result.getTriggerPackage()); // last event defines the trigger package
+
+                this.result.setScreen(result.getScreen()); // copy app name
                 boolean haveToKill = result.getKillState() == PipelineResultBase.KillState.KILL_BEFORE_WINDOW;
                 violationList.add(new Violation(currentTime, haveToKill));
 

@@ -10,7 +10,7 @@ public class PipelineResultLearnedMode extends PipelineResultBase
 {
     public PipelineResultLearnedMode(String triggerPackage)
     {
-        super(triggerPackage);
+//        super(triggerPackage);
     }
     @NonNull
     @Override

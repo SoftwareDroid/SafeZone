@@ -261,7 +261,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
         this.mode = Mode.NORMAL_MODE;
         this.normalModeProcessor.onPipelineResultForeground(lastResult);
     }
-
+    @Override
     public boolean isPackageIgnoredForNormalMode(String id)
     {
         AppPermission permission = this.usedAppPermissions.get(id);

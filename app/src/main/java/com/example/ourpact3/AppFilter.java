@@ -8,6 +8,7 @@ import com.example.ourpact3.pipeline.PipelineResultBase;
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
 import android.os.Handler;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -130,7 +131,8 @@ public class AppFilter
                     {
                         PipelineResultBase resultCopy = result.clone();
                         resultCopy.setCurrentAppFilter(this);
-                        resultCopy.setTriggerPackage(event.getPackageName().toString());
+                        // set package name in empty screen
+                        resultCopy.setScreen(new ScreenInfoExtractor.Screen(null,null,event.getPackageName().toString()));
                         this.callback.onPipelineResultBackground(resultCopy);
                         return;
                     }
@@ -157,8 +159,18 @@ public class AppFilter
         }
     }
 
+    public void cancelAllCallbacks()
+    {
+        handler.removeCallbacks(searchRunnable);
+    }
     private void endOfPipelineReached(ScreenInfoExtractor.Screen screen)
     {
+        //
+//        if(!this.packageName.isEmpty() && !screen.appName.equals(this.packageName))
+//        {
+//            Log.d("mismatch","");
+//            return;
+//        }
         // mismatch of ids packageName != screen name
         PipelineResultBase endToken = new PipelineResultKeywordFilter(screen.appName);
         endToken.setWindowAction(PipelineWindowAction.END_OF_PIPE_LINE);
@@ -181,7 +193,7 @@ public class AppFilter
                 PipelineResultBase result = currentFilter.feedWord(textNode);
                 if (result != null)
                 {
-                    result.setTriggerPackage(screen.appName);
+//                    result.setTriggerPackage(screen.appName);
                     // Feed result to generic event filters
                     for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet())
                     {

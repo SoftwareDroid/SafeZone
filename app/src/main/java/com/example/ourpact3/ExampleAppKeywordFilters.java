@@ -38,6 +38,7 @@ public class ExampleAppKeywordFilters
         // Add the apps to the HashSet
         appPermissions.put(this.service.getApplicationContext().getPackageName(), AppPermission.USER_RO);
         appPermissions.put("com.android.settings", AppPermission.USER_RO);
+        appPermissions.put("com.google.android.inputmethod.latin", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("net.tandem", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("org.thoughtcrime.securesms", AppPermission.USER_IGNORE_LIST);
 //        ignoredApps.add("org.telegram.messenger");
@@ -262,7 +263,7 @@ public class ExampleAppKeywordFilters
             boolean ignoreCase = true;  // important for porn filter
 
 //            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
-            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_1, allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_4, allScorings, ignoreCase, topicManager, pornResult);
             blockAdultStuff.setName("Block NSFW");
             filters.add(blockAdultStuff);
         }

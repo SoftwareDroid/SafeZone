@@ -8,7 +8,7 @@ public class PipelineResultExpFilter extends PipelineResultBase
 {
     public PipelineResultExpFilter(String app, PipelineWindowAction action)
     {
-        super(app);
+//        super(app);
         this.setWindowAction(action);
     }
     public long blockedTil;

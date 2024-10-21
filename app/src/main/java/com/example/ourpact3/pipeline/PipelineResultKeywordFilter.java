@@ -11,7 +11,7 @@ public class PipelineResultKeywordFilter extends PipelineResultBase
 
     public PipelineResultKeywordFilter(String triggerPackage)
     {
-        super(triggerPackage);
+//        super(triggerPackage);
     }
 
     @NonNull

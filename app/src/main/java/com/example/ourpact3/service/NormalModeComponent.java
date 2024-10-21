@@ -17,10 +17,12 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
     private ConcurrentLinkedDeque<PipelineResultBase> pipelineResults = new ConcurrentLinkedDeque<PipelineResultBase>();
 
     private final AccessibilityService service;
+
     public void destroyGUI()
     {
         this.overlayWindowManager.hideOverlayWindow();
     }
+
     public NormalModeComponent(AccessibilityService service, IContentFilterService iContentFilterService)
     {
         this.service = service;
@@ -31,7 +33,11 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
 
     public void onPipelineResultForeground(PipelineResultBase result)
     {
-        if(this.iContentFilterService.getMode() == IContentFilterService.Mode.LEARN_OVERLAY_MODE)
+        if(iContentFilterService.isPackageIgnoredForNormalMode(result.getTriggerPackage()))
+        {
+            return;
+        }
+        if (this.iContentFilterService.getMode() == IContentFilterService.Mode.LEARN_OVERLAY_MODE)
         {
             iContentFilterService.forwardPipelineResultToLearner(result);
             return;
@@ -73,28 +79,33 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
     {
 
     }
+
     private String lastUsedApp = "";
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
         String appName = event.getPackageName().toString();
         AppFilter filter = this.appFilters.get(appName);
-        if (filter != null)
+        if (filter == null && this.appFilters.containsKey(""))
+        {
+            filter = this.appFilters.get("");
+            assert filter != null;
+            filter.cancelAllCallbacks();
+
+        }
+        if (filter != null && !this.iContentFilterService.isPackageIgnoredForNormalMode(appName))
         {
             filter.processEvent(event);
         }
-        else if (this.appFilters.containsKey(""))
-        {
-            appName = "";
-            this.appFilters.get("").processEvent(event);
-        }
+
         switch (event.getEventType())
         {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-                if(event.getPackageName() != null && !appName.equals(lastUsedApp))
+                if (event.getPackageName() != null && !appName.equals(lastUsedApp))
                 {
                     lastUsedApp = appName;
-                    this.iContentFilterService.onAppChange(lastUsedApp,appName);
+                    this.iContentFilterService.onAppChange(lastUsedApp, appName);
                 }
                 break;
         }
@@ -104,7 +115,7 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
 
     public void processPipelineResults()
     {
-        while(!this.pipelineResults.isEmpty())
+        while (!this.pipelineResults.isEmpty())
         {
             PipelineResultBase result = pipelineResults.poll();
             this.onPipelineResultForeground(result);
