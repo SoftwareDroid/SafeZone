@@ -14,19 +14,23 @@
     "vulva",
     "klitoris",
     "kitzler",
-    "scheide",
+//    "scheide", in entscheiden
     "vagina",
     "möse",
     "mumu",
-    "po ",
+//    "po ",
     "pobacke",
 //    "arsch", in porn
     "schambehaarung",
     "venusberg",
     "mons veneris",
     "labia",
-    "labien",
+//    "labien",
     "schamlippen"
+  ],
+  "regExpWords": [
+    "\\bpo\\b",
+    "\\bscheide\\b"
   ],
   "includedTopics": [
   ]

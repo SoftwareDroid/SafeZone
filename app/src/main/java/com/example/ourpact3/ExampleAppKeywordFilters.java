@@ -43,6 +43,7 @@ public class ExampleAppKeywordFilters
         appPermissions.put("org.thoughtcrime.securesms", AppPermission.USER_IGNORE_LIST);
 //        ignoredApps.add("org.telegram.messenger");
         appPermissions.put("com.whatsapp", AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("com.fsck.k9", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("cz.mobilesoft.appblock", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("com.standardnotes", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("de.c24.bankapp", AppPermission.USER_IGNORE_LIST);
