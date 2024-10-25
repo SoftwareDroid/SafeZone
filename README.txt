@@ -60,6 +60,13 @@ eier => kommt beim kochen vor
 girl => in word check for usernames
 add sexy and hottest for picture search 
 scheide -> entscheiden + add k9 to ignore list
+//    "pornography",
+//    "cock", in cocktail
+//    "moan"
+//    "get off",
+    "twerk", //perhaps adult list?
+//    "grinding",
+//    "sex swing",
 
 ==
 public class PipelineResultView extends LinearLayout {

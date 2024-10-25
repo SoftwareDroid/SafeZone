@@ -93,7 +93,7 @@ public class TopicLoader
             return topic;
         } catch (IOException | JSONException e)
         {
-            throw new TopicLoaderException("could not load topic file " + descriptor.file_name + " in language " + descriptor.language );
+            throw new TopicLoaderException("could not load topic file " + descriptor.file_name + " in language " + descriptor.language + "Error: " + e.toString());
         }
     }
 
