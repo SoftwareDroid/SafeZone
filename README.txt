@@ -51,6 +51,7 @@ How to prevent uninstall
       Use Idendifier for Word Filter
 1.2.1 fix error reacalcualte expresion
 1.4.0 fix AI duckduckgo and big text nodes problem => but now suffix search problem
+Ignore Write fields as search aborts
 
 ==
 public class PipelineResultView extends LinearLayout {
