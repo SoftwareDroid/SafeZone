@@ -50,23 +50,7 @@ How to prevent uninstall
 1.2.0 Thump Down => Block Sign + Symbols for Home,
       Use Idendifier for Word Filter
 1.2.1 fix error reacalcualte expresion
-
-Add Default/all other apps handling killing works
-term Sex to regex because of unisex clothing
-term slavery => remove history podcast
-oral in doctoral
-arsch in nachtbarschaft
-eier => kommt beim kochen vor
-girl => in word check for usernames
-add sexy and hottest for picture search 
-scheide -> entscheiden + add k9 to ignore list
-//    "pornography",
-//    "cock", in cocktail
-//    "moan"
-//    "get off",
-    "twerk", //perhaps adult list?
-//    "grinding",
-//    "sex swing",
+1.4.0 fix AI duckduckgo and big text nodes problem => but now suffix search problem
 
 ==
 public class PipelineResultView extends LinearLayout {
@@ -98,3 +82,20 @@ public class PipelineResultView extends LinearLayout {
     android:layout_height="wrap_content" />
     ==
     PipelineResultView pipelineResultView = (PipelineResultView) findViewById(R.id.pipline_result_view);
+
+    Add Default/all other apps handling killing works
+    term Sex to regex because of unisex clothing
+    term slavery => remove history podcast
+    oral in doctoral
+    arsch in nachtbarschaft
+    eier => kommt beim kochen vor
+    girl => in word check for usernames
+    add sexy and hottest for picture search
+    scheide -> entscheiden + add k9 to ignore list
+    //    "pornography",
+    //    "cock", in cocktail
+    //    "moan"
+    //    "get off",
+        "twerk", //perhaps adult list?
+    //    "grinding",
+    //    "sex swing",

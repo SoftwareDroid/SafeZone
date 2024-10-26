@@ -18,18 +18,17 @@
     "vagina",
     "möse",
     "mumu",
-//    "po ",
     "pobacke",
 //    "arsch", in porn
     "schambehaarung",
     "venusberg",
-    "mons veneris",
+//    "mons veneris", unwahrscheinlich
     "labia",
 //    "labien",
     "schamlippen"
   ],
   "regExpWords": [
-    "\\bpo\\b",
+//    "\\bpo\\b", // prevents using as prefix
     "\\bscheide\\b"
   ],
   "includedTopics": [

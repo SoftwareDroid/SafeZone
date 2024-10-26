@@ -3,7 +3,7 @@
   "id": "porn_explicit",
   "description": "Blocks porn content",
   "words": [
-    "intim",
+//    "intim",
     "arschloch",
     "vagina",
     "gesichtssitzen",
@@ -26,28 +26,27 @@
     "vögeln",
     "bumsen",
     "blasen",
-//    "streicheln",
-//    "kuscheln",
     //    "anal", in english
     "analverkehr",
     "oralverkehr",
-    "vaginalverkehr",
+//    "vaginalverkehr", in vagina
     "sodomie",
-    "päderastie",
-    "inzest",
+//    "päderastie",
+//    "inzest",
     "prostitution",
-    "zuhälterei",
-    "sexuelle",
+//    "zuhälterei",
+    "sexuell",
     "pädophilie",
-    "hebephilie",
-    "nekrophilie",
-    "orgasmus",
-    "zoophilie"
+//    "hebephilie",
+//    "nekrophilie",
+    "orgasmus"
+//    "zoophilie"
   ],
   "regExpWords": [
     "\\barsch\\b",
-    "\\bpo\\b",
-    "\\bkot\\b"
+    "\\bintim\\b"
+//    "\\bpo\\b",
+//    "\\bkot\\b" // in kotlin
   ],
   "includedTopics": [
   ]
