@@ -12,7 +12,7 @@
     "creampie",
     "hentai",
     "masturbate",
-    "porno",
+//    "porno", in porn
     "sexuality",
     "edging",
     "chastity",
@@ -47,9 +47,9 @@
     "degradation",
     "hardcore",
     "softcore",
-    "pornstar",
-    "stockings",
-    "corset",
+//    "pornstar",
+//    "stockings",
+//    "corset",
     "bondage",
     "figging",
     "fetish",
@@ -77,13 +77,13 @@
     "bondage",
     "role-playing",
     "dirty talk",
-    "sex toy",
+//    "sex toy", already in sex
     "vibrators",
     "dildo",
-    "butt plugs",
+//    "butt plugs", i have already butt
     "strap-on",
     "kama sutra",
-    "tantric sex",
+//    "tantric sex",
     "erotic massage",
     "sensual massage",
     "foreplay",
@@ -91,7 +91,7 @@
     "human toilet",
     "self-pleasure",
     "self-love",
-    "twerk", //perhaps adult list?
+//    "twerk", //perhaps adult list?
     "hand job",
     "jerk off",
     "jack off",
@@ -99,6 +99,7 @@
     "beat off",
     "orgasm",
     "climax",
+    "twerking",
     "ejaculation"
   ],
   "regExpWords" : [

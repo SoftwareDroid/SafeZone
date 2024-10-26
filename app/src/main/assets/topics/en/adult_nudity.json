@@ -11,7 +11,7 @@
     "skyclad",
     "unclothed",
     "nudity",
-    "bare",
+//    "bare",
     "exposed",
     "undressed",
     "stripped",
@@ -43,6 +43,10 @@
     "starkers",
     "bare-ass"
   ],
+  "regExpWords" : [
+    "\\bbare\\b"
+  ],
+
   "includedTopics": [
 
   ]

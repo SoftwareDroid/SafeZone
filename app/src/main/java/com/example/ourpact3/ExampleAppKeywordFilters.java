@@ -84,8 +84,9 @@ public class ExampleAppKeywordFilters
             WordProcessorSmartFilterBase accessibilityOverview = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Use OurPact3")),
                     new ArrayList<>(List.of("Stop OurPact3?")),
+                    new ArrayList<>(List.of("Accessibility"))
 
-                    new ArrayList<>(List.of(new String[]{"OurPact3", "UNINSTALL"}))
+//                    ,new ArrayList<>(List.of(new String[]{"Accessibility"}))
             )), false, preventDisabelingAccessabilty, false);
             filters.add(accessibilityOverview);
         }
@@ -105,7 +106,7 @@ public class ExampleAppKeywordFilters
         }
 
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName,true);
-        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 1, 30, 120,PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING));
+//        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 1, 30, 120,PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING));
         return appFilter;
     }
 

@@ -7,12 +7,9 @@
     "tits",
     "cleavage",
     "bust ",
-    "chest",
+//    "chest",
     "nipples",
     "areola",
-    "boobs",
-    "boob ",
-    " boob",
     "buttocks",
     "booty",
     "bottom",
@@ -63,6 +60,7 @@
   ],
   "regExpWords" : [
     "\\bbutt\\b",
+    "\\bboob\\b",
     "\\bbum\\b",
     "\\bbra\\b"
     ],
