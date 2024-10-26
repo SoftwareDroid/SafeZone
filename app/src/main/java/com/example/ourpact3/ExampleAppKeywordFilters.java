@@ -208,13 +208,13 @@ public class ExampleAppKeywordFilters
             pornResult.setHasExplainableButton(true);
             pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
-            allScorings.add(new TopicScoring("porn_explicit", 33, 50));
-            allScorings.add(new TopicScoring("female_body_parts", 30, 45));
-            allScorings.add(new TopicScoring("adult_nudity", 32, 45));
-            allScorings.add(new TopicScoring("adult_sex_toys", 32, 45));
-            allScorings.add(new TopicScoring("female_names", 15, 30));
-            allScorings.add(new TopicScoring("female_clothing", 15, 30));
-            allScorings.add(new TopicScoring("patrick_all_merged", 49, 66));
+            allScorings.add(new TopicScoring("porn_explicit", 33, 0));
+            allScorings.add(new TopicScoring("female_body_parts", 30, 0));
+            allScorings.add(new TopicScoring("adult_nudity", 32, 0));
+            allScorings.add(new TopicScoring("adult_sex_toys", 32, 0));
+            allScorings.add(new TopicScoring("female_names", 15, 0));
+            allScorings.add(new TopicScoring("female_clothing", 15, 0));
+            allScorings.add(new TopicScoring("patrick_all_merged", 49, 0));
             boolean ignoreCase = true;  // important for porn filter
 
 //            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
@@ -255,13 +255,13 @@ public class ExampleAppKeywordFilters
             pornResult.setHasExplainableButton(true);
             pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
-            allScorings.add(new TopicScoring("porn_explicit", 40, 100));
-            allScorings.add(new TopicScoring("female_body_parts", 30, 45));
-            allScorings.add(new TopicScoring("adult_nudity", 32, 45));
-            allScorings.add(new TopicScoring("adult_sex_toys", 32, 45));
+            allScorings.add(new TopicScoring("porn_explicit", 40, 0));
+            allScorings.add(new TopicScoring("female_body_parts", 30, 0));
+            allScorings.add(new TopicScoring("adult_nudity", 32, 0));
+            allScorings.add(new TopicScoring("adult_sex_toys", 32, 0));
 //            allScorings.add(new TopicScoring("female_names", 15, 30));
-            allScorings.add(new TopicScoring("female_clothing", 15, 30));
-            allScorings.add(new TopicScoring("patrick_all_merged", 49, 66));
+            allScorings.add(new TopicScoring("female_clothing", 15, 0));
+            allScorings.add(new TopicScoring("patrick_all_merged", 49, 0));
             boolean ignoreCase = true;  // important for porn filter
 
 //            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
@@ -326,13 +326,13 @@ public class ExampleAppKeywordFilters
             pornResult.setHasExplainableButton(true);
             pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
-            allScorings.add(new TopicScoring("porn_explicit", 33, 50));
-            allScorings.add(new TopicScoring("female_body_parts", 30, 45));
-            allScorings.add(new TopicScoring("adult_nudity", 32, 45));
-            allScorings.add(new TopicScoring("adult_sex_toys", 32, 45));
+            allScorings.add(new TopicScoring("porn_explicit", 33, 0));
+            allScorings.add(new TopicScoring("female_body_parts", 30, 0));
+            allScorings.add(new TopicScoring("adult_nudity", 32, 0));
+            allScorings.add(new TopicScoring("adult_sex_toys", 32, 0));
 //            allScorings.add(new TopicScoring("female_names", 15, 30));
-            allScorings.add(new TopicScoring("female_clothing", 15, 30));
-            allScorings.add(new TopicScoring("patrick_all_merged", 49, 66));
+            allScorings.add(new TopicScoring("female_clothing", 15, 0));
+            allScorings.add(new TopicScoring("patrick_all_merged", 49, 0));
             boolean ignoreCase = true;  // important for porn filter
 
             WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_3, allScorings, ignoreCase, topicManager, pornResult);
