@@ -104,7 +104,7 @@ public class ExampleAppKeywordFilters
 
         }
 
-        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
+        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName,true);
         appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 1, 30, 120,PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING));
         return appFilter;
     }
@@ -147,7 +147,7 @@ public class ExampleAppKeywordFilters
             WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.PORN, allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
-        return new AppFilter(service, topicManager, filters, appName);
+        return new AppFilter(service, topicManager, filters, appName,false);
 
     }
 
@@ -221,7 +221,7 @@ public class ExampleAppKeywordFilters
             blockAdultStuff.setName("Block NSFW");
             filters.add(blockAdultStuff);
         }
-        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
+        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName,true);
         appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5,PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING));
         return appFilter;
 
@@ -268,7 +268,7 @@ public class ExampleAppKeywordFilters
             blockAdultStuff.setName("Block NSFW");
             filters.add(blockAdultStuff);
         }
-        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
+        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName,true);
 //        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5));
         return appFilter;
 
@@ -289,7 +289,7 @@ public class ExampleAppKeywordFilters
                             new ArrayList<>(List.of("People Nearby", "Make Myself Visible")))), false, resultIgnoreSearch, false);
             filters.add(ignoreSearch);
         }
-        return new AppFilter(service, topicManager, filters, appName);
+        return new AppFilter(service, topicManager, filters, appName,false);
     }
 
     private AppFilter getYoutubeFilter() throws TopicMissingException, CloneNotSupportedException
@@ -337,7 +337,7 @@ public class ExampleAppKeywordFilters
             WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_3, allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
-        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName);
+        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName,false);
 //        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 10, 15,PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING));
         return appFilter;
 

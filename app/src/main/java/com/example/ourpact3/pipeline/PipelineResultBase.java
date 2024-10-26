@@ -1,4 +1,5 @@
 package com.example.ourpact3.pipeline;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.content.Context;
@@ -16,29 +17,36 @@ public abstract class PipelineResultBase implements Cloneable
 {
     @NonNull
     @Override
-    public PipelineResultBase clone() {
-        try {
+    public PipelineResultBase clone()
+    {
+        try
+        {
             PipelineResultBase clone = (PipelineResultBase) super.clone();
 
             // Deep copy mutable fields
-            if (this.windowAction != null) {
+            if (this.windowAction != null)
+            {
                 clone.windowAction = this.windowAction;
             }
-            if (this.triggerFilter != null) {
+            if (this.triggerFilter != null)
+            {
                 clone.triggerFilter = this.triggerFilter; // Strings are immutable, but this is just for clarity
             }
-            if (this.screen != null) {
+            if (this.screen != null)
+            {
                 //TODO: perhaps clone in future
                 clone.screen = this.screen; // Assuming ScreenTextExtractor.Screen has a clone method
             }
-            if (this.currentAppFilter != null) {
+            if (this.currentAppFilter != null)
+            {
                 clone.currentAppFilter = this.currentAppFilter; // Shallow ref is OK
             }
             clone.killState = this.killState; // Enum is immutable
             clone.hasExplainableButton = this.hasExplainableButton;
 
             return clone;
-        } catch (CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e)
+        {
             throw new AssertionError(); // Can't happen since we are Cloneable
         }
     }
@@ -50,15 +58,18 @@ public abstract class PipelineResultBase implements Cloneable
         KILL_BEFORE_WINDOW,
         KILLED // internal usage only
     }
-//    private PipelineHistory history; //TODO: irgendwie dranhängen usw auf aufbauen
+
+    //    private PipelineHistory history; //TODO: irgendwie dranhängen usw auf aufbauen
     private PipelineWindowAction windowAction; // Changed to private
-//    private String triggerPackage; // Changed to private
+    //    private String triggerPackage; // Changed to private
     private String triggerFilter; // Changed to private
     private ScreenInfoExtractor.Screen screen; // Changed to private
     private AppFilter currentAppFilter; // Changed to private
     private KillState killState = KillState.DO_NOT_KILL; // Changed to private
     private boolean hasExplainableButton; // Changed to private
-    public PipelineResultBase() {
+
+    public PipelineResultBase()
+    {
 
     }
     /*
@@ -103,6 +114,18 @@ public abstract class PipelineResultBase implements Cloneable
         }
     };*/
 
+    public boolean isBlockingAction()
+    {
+        if (this.windowAction == PipelineWindowAction.PERFORM_BACK_ACTION || this.windowAction == PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING)
+        {
+            return true;
+        }
+        if (this.killState == KillState.KILL_BEFORE_WINDOW)
+        {
+            return true;
+        }
+        return false;
+    }
 
     // Getters and Setters
     public PipelineWindowAction getWindowAction()
@@ -177,6 +200,6 @@ public abstract class PipelineResultBase implements Cloneable
 
     public String getAppName(Context ctx)
     {
-        return PackageUtil.getAppName(ctx,getTriggerPackage());
+        return PackageUtil.getAppName(ctx, getTriggerPackage());
     }
 }

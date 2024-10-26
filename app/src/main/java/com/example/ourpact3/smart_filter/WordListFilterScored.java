@@ -61,7 +61,6 @@ public class WordListFilterScored extends WordProcessorSmartFilterBase
     public PipelineResultBase feedWord(ScreenInfoExtractor.Screen.TextNode textNode)
     {
         String text = ignoreCase ? textNode.textInLowerCase : textNode.text;
-
         TopicManager.SearchResult bestSearchResult = null;
         int scoringChange = 0;
         for (TopicScoring scoring : this.topicScorings)
@@ -73,11 +72,14 @@ public class WordListFilterScored extends WordProcessorSmartFilterBase
 
             TopicManager.SearchResult result = topicManager.isStringInTopic(text, scoring.topicId, TopicManager.TopicMatchMode.TOPIC_WORD_IS_INFIX, ignoreCase, TopicManager.ALL_LANGUAGE_CODE, 0);
             // Pick the topic with which is the directest e.g All contains porn and clothing. We want to count clothing with its own score
-            if (result.found && (bestSearchResult == null || result.deep < bestSearchResult.deep))
+            // long text blocks make problems so we sum the score here
+            if (result.found)
             {
-                bestSearchResult = result;
-                scoringChange = textNode.editable ? scoring.writeScore : scoring.readScore;
-
+                scoringChange += textNode.editable ? scoring.writeScore : scoring.readScore;
+                if(bestSearchResult == null || result.deep < bestSearchResult.deep)
+                {
+                    bestSearchResult = result;
+                }
             }
         }
         if (bestSearchResult != null)

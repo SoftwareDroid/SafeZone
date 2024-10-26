@@ -7,6 +7,7 @@ import com.example.ourpact3.pipeline.PipelineResultBase;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -23,7 +24,9 @@ import java.util.TreeMap;
 
 public class AppFilter
 {
-    AppFilter(ContentFilterService service, TopicManager topicManager, ArrayList<WordProcessorSmartFilterBase> filters, String packageName)
+    private ArrayList<AccessibilityEvent> cachedEvents = new ArrayList<>();
+    private boolean checkAllEvents;
+    AppFilter(ContentFilterService service, TopicManager topicManager, ArrayList<WordProcessorSmartFilterBase> filters, String packageName, boolean checkAllEvents)
 
     {
         this.service = service;
@@ -32,6 +35,7 @@ public class AppFilter
         this.packageName = packageName;
         this.isMagnificationEnabled = service.isMagnificationEnabled();
         this.specialSmartFilters = new TreeMap<>();
+        this.checkAllEvents = true;
     }
 
 
@@ -104,6 +108,25 @@ public class AppFilter
         return packageName.isEmpty();
     }
 
+    public void processOldCachedEvents()
+    {
+        if(checkAllEvents)
+        {
+            if(!cachedEvents.isEmpty())
+            {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                {
+                    if(!handler.hasCallbacks(searchRunnable))
+                    {
+                        AccessibilityEvent oldEvent = cachedEvents.remove(cachedEvents.size() - 1);
+                        this.processEvent(oldEvent);
+                    }
+                }
+            }
+        }
+
+    }
+
     @SuppressLint("NewApi")
     public void processEvent(AccessibilityEvent event)
     {
@@ -112,12 +135,11 @@ public class AppFilter
         {
             return;
         }
-
-
-        int MAX_DELAYED_CALLS = 3;
+        processOldCachedEvents();
+        int MAX_DELAYED_CALLS = 1;
         switch (event.getEventType())
         {
-            case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
+//            case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
             case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
             case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
@@ -125,7 +147,7 @@ public class AppFilter
                 // Traversing the TreeMap in ascending order of keys
                 for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet())
                 {
-                    System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+//                    System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
                     PipelineResultBase result = entry.getValue().onAccessibilityEvent(event);
                     if (result != null)
                     {
@@ -134,19 +156,28 @@ public class AppFilter
                         // set package name in empty screen
                         resultCopy.setScreen(new ScreenInfoExtractor.Screen(null,null,event.getPackageName().toString()));
                         this.callback.onPipelineResultBackground(resultCopy);
-                        return;
+                        if(resultCopy.isBlockingAction())
+                        {
+
+                            return;
+                        }
                     }
                 }
-            case AccessibilityEvent.TYPE_VIEW_CLICKED:
+//            case AccessibilityEvent.TYPE_VIEW_CLICKED:
                 if (handler.hasCallbacks(searchRunnable))
                 {
+                    if(checkAllEvents)
+                    {
+                        cachedEvents.add(event);
+                    }
+                    Log.d("DEBUG Q","Has callbacks");
                     return;
                 }
                 // We delay an wait for more evens and postpone it at nax maxNumDelays times
                 if (delayCount < MAX_DELAYED_CALLS)
                 {
                     handler.removeCallbacks(searchRunnable);
-                    int SEARCH_DELAY_MS = 500;
+                    int SEARCH_DELAY_MS = this.checkAllEvents ? 50 : 500;
                     handler.postDelayed(searchRunnable, SEARCH_DELAY_MS);
                     delayCount++;
 
@@ -156,8 +187,13 @@ public class AppFilter
                 }
                 break;
             default:
+                if(this.checkAllEvents)
+                {
+
+                }
         }
     }
+
 
     public void cancelAllCallbacks()
     {
