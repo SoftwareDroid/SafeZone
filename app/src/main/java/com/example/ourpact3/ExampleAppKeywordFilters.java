@@ -213,7 +213,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("female_body_parts", 30, 0));
             allScorings.add(new TopicScoring("adult_nudity", 32, 0));
             allScorings.add(new TopicScoring("adult_sex_toys", 32, 0));
-            allScorings.add(new TopicScoring("female_names", 15, 0));
+//            allScorings.add(new TopicScoring("female_names", 15, 0));
             allScorings.add(new TopicScoring("female_clothing", 15, 0));
             allScorings.add(new TopicScoring("patrick_all_merged", 49, 0));
             boolean ignoreCase = true;  // important for porn filter
