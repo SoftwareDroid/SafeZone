@@ -1,7 +1,9 @@
 package com.example.ourpact3.ui.home;
 
-import android.annotation.SuppressLint;
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.admin.DevicePolicyManager;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -16,14 +18,15 @@ import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
-import androidx.core.os.BuildCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.MyDeviceAdminReceiver;
+import com.example.ourpact3.PreferencesKeys;
 import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentHomeBinding;
+import com.example.ourpact3.util.ServiceUtil;
 
 import androidx.activity.result.contract.ActivityResultContracts;
 import android.content.ComponentName;
@@ -116,15 +119,27 @@ public class HomeFragment extends Fragment
     }
     private void updateUIBasedOnPermissions()
     {
-        boolean hasDeviceAdmin = hasDeviceAdmin();
+        // Get the SharedPreferences object
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
+
+// Retrieve the boolean value
+        boolean isPreventDisabling = sharedPreferences.getBoolean(PreferencesKeys.PREVENT_DISABLING, PreferencesKeys.PREVENT_DISABLING_DEFAULT_VALUE);
+        boolean hasDeviceAdmin = ServiceUtil.hasDeviceAdmin(requireActivity());
         boolean hasAccessService = hasAccessibilityServicePermission(getContext());
 
         if (hasAccessService && hasDeviceAdmin)
         {
-            String formattedString = getString(R.string.lock_state_secure, getAppInstallDate());
-
-            binding.lockStatus.setText(formattedString);
-            binding.lockStatus.setTextColor(getResources().getColor(R.color.lime_dark));
+            if(isPreventDisabling)
+            {
+                String formattedString = getString(R.string.lock_state_secure, getAppInstallDate());
+                binding.lockStatus.setText(formattedString);
+                binding.lockStatus.setTextColor(getResources().getColor(R.color.lime_dark));
+            }
+            else
+            {
+                binding.lockStatus.setText(R.string.app_working_but_disablable);
+                binding.lockStatus.setTextColor(getResources().getColor(R.color.lemon_yellow));
+            }
         } else if (hasAccessService && !hasDeviceAdmin)
         {
             binding.lockStatus.setText(getResources().getString(R.string.lock_state_no_admin));
@@ -165,7 +180,7 @@ public class HomeFragment extends Fragment
             updateUIBasedOnPermissions();
         }
     }
-
+/*
     public static boolean isAccessibilityServiceEnabled(Context context, Class<?> accessibilityService)
     {
         ComponentName expectedComponentName = new ComponentName(context, accessibilityService);
@@ -202,10 +217,10 @@ public class HomeFragment extends Fragment
             return devicePolicyManager.isAdminActive(adminComponent);
         }
         return false;
-    }
+    }*/
 
     private boolean hasAccessibilityServicePermission(Context context)
     {
-        return isAccessibilityServiceEnabled(context, ContentFilterService.class);
+        return ServiceUtil.isAccessibilityServiceEnabled(context, ContentFilterService.class);
     }
 }

@@ -117,7 +117,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
         // the a cheat key is used then don't filter
-        if (cheatKeyManager.isServiceIsDisabled())
+        if (cheatKeyManager.isServiceIsDisabled(getBaseContext()))
         {
             return;
         }

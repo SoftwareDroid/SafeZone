@@ -53,7 +53,7 @@ How to prevent uninstall
 1.4.0 fix AI duckduckgo and big text nodes problem => but now suffix search problem
 Ignore Write fields as search aborts
 1.5.0 clean up home fragment and added lock status indicator to it
-
+1.7.0 Now unlock/lock via settings fragment
 # Credits
 App Icon
 https://www.svgrepo.com/svg/530512/lock

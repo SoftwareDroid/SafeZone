@@ -2,7 +2,7 @@
     <string name="app_name">SafeZone</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_settings">Settings</string>
     <string name="app_blocked">This app has been blocked due to a rule.</string>
     <string name="app_killed">The app has been terminated due to a rule</string>
     <string name="force_kill_button">FORCE STOP</string>
@@ -36,9 +36,20 @@
     <string name="home_button">Home Button</string>
     <string name="nothing">Nothing</string>
     <string name="back_button">Back Button</string>
-    <string name="lock_status_title">Locking State</string>
+    <string name="lock_status_title">State</string>
     <string name="lock_state_secure">Locked since: %1$s</string>
+    <string name="app_working_but_disablable">Working (not Locked)</string>
     <string name="lock_state_disabled">Service Disabled</string>
     <string name="lock_state_no_admin">Working (Without Device Admin)</string>
     <string name="app_version_title">App Version</string>
+    <string name="button_disable_locking">Disable Locking</string>
+    <string name="ok">ok\n</string>
+    <string name="enter_master_key">Enter Master Key</string>
+    <string name="enter_master_key_to_proced">Please enter the master key to proceed:</string>
+    <string name="message_incorrect_master_key">Incorrect masterkey. Please try again.</string>
+    <string name="button_enable_lock">Eternal Lock</string>
+    <string name="warning">Warning</string>
+    <string name="warning_enable_app_lock">Enabling this lock will prevent you from disabling or uninstalling the app. Do you want to proceed?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

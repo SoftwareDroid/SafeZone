@@ -1,6 +1,12 @@
 package com.example.ourpact3.model;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.example.ourpact3.PreferencesKeys;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -29,7 +35,8 @@ public class CheatKeyManager {
         return null;
     }
 
-    private String calculateHash(String filePath) {
+    // Method to calculate hash from a file
+    public static String calculateHash(String filePath) {
         try (FileInputStream fis = new FileInputStream(filePath)) {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] buffer = new byte[1024];
@@ -37,23 +44,46 @@ public class CheatKeyManager {
             while ((bytesRead = fis.read(buffer)) != -1) {
                 md.update(buffer, 0, bytesRead);
             }
-            byte[] hashBytes = md.digest();
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashBytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
+            return bytesToHex(md.digest());
         } catch (IOException | NoSuchAlgorithmException e) {
             return null;
         }
     }
 
-    public boolean isServiceIsDisabled() {
+    // Overloaded method to calculate hash from a normal string
+    public static String calculateHashFromString(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(input.getBytes());
+            return bytesToHex(md.digest());
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+    }
+
+    // Helper method to convert byte array to hex string
+    private static String bytesToHex(byte[] hashBytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashBytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
+    public boolean isServiceIsDisabled(Context context) {
         long currentTime = System.currentTimeMillis();
         if (currentTime - cacheTimestamp < cacheExpirationTime) {
             return isFilteringDisabledCache;
         }
-
+        // Access SharedPreferences
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
+        boolean preventDisableing = sharedPreferences.getBoolean(PreferencesKeys.PREVENT_DISABLING, PreferencesKeys.PREVENT_DISABLING_DEFAULT_VALUE);
+        if(!preventDisableing)
+        {
+            isFilteringDisabledCache = true;
+            cacheTimestamp = currentTime;
+            return true;
+        }
         String folder = getFolder();
         if (folder == null) {
             return false;
