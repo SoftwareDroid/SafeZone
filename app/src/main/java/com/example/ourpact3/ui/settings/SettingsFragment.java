@@ -120,6 +120,8 @@ public class SettingsFragment extends Fragment
     {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
         boolean preventDisableing = sharedPreferences.getBoolean(PreferencesKeys.PREVENT_DISABLING, PreferencesKeys.PREVENT_DISABLING_DEFAULT_VALUE);
+        binding.buttonDisableLock.setVisibility(View.VISIBLE);
+        binding.buttonEnableLock.setVisibility(View.VISIBLE);
         if (!preventDisableing)
         {
             binding.buttonDisableLock.setVisibility(View.GONE);
