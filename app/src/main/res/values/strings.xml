@@ -22,7 +22,7 @@
     <string name="learn_mode_label_thumb_up">👍</string>
     <string name="learn_mode_more_options_symbol">…</string>
     <string name="button_request_device_admin">Request Device Admin</string>
-    <string name="button_request_overlay_permission">Request Overlay Permission</string>
+    <string name="button_request_accessabilty_permission">Request Accessibility Permission</string>
     <string name="force_kill">Force Kill</string>
     <string name="pipeline_result_additional_info_label">Trigger Reason:</string>
     <string name="warning_window">Warning Window</string>
@@ -36,4 +36,8 @@
     <string name="home_button">Home Button</string>
     <string name="nothing">Nothing</string>
     <string name="back_button">Back Button</string>
+    <string name="lock_status_title">Locking State</string>
+    <string name="lock_state_secure">Locked since: %1$s</string>
+    <string name="lock_state_disabled">Service Disabled</string>
+    <string name="lock_state_no_admin">Working (Without Device Admin)</string>
 </resources>

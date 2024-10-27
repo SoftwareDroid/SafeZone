@@ -1,13 +1,12 @@
 package com.example.ourpact3.ui.home;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
+import android.annotation.SuppressLint;
 import android.app.admin.DevicePolicyManager;
-import android.os.Build;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.content.Intent;
 import android.content.Context;
-import android.widget.TextView;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,27 +14,29 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ourpact3.ContentFilterService;
-import com.example.ourpact3.MainActivity;
 import com.example.ourpact3.MyDeviceAdminReceiver;
 import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentHomeBinding;
 
+import androidx.activity.result.contract.ActivityResultContracts;
+
 import android.content.ComponentName;
 import android.text.TextUtils;
-import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class HomeFragment extends Fragment
 {
-    private ActivityResultLauncher<Intent> overlayPermissionLauncher;
+    private ActivityResultLauncher<Intent> deviceAdminRequestLauncher;
     private FragmentHomeBinding binding;
-    private Button buttonRequestOverlayPermission;
+    //    private Button buttonRequestOverlayPermission;
     private Button buttonRequestDeviceAdmin;
     private static final int REQUEST_CODE_ENABLE_ADMIN = 1;
     private ComponentName deviceAdminComponent;
@@ -46,82 +47,83 @@ public class HomeFragment extends Fragment
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
-        // Initialize the ActivityResultLauncher
-        overlayPermissionLauncher = registerForActivityResult(
+        deviceAdminRequestLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (Settings.canDrawOverlays(requireActivity()))
-                    {
-                        startOverlayService(); // Start the service if permissi8on is granted
-                        buttonRequestOverlayPermission.setVisibility(View.GONE); // Hide the button
-                    }
+                    updateUIBasedOnPermissions();
                 });
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-
-        buttonRequestOverlayPermission = binding.button; // Assuming this is your button
-        buttonRequestOverlayPermission.setOnClickListener(v -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(requireActivity()))
+        // access button
+        binding.requestAccessButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
             {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-                overlayPermissionLauncher.launch(intent); // Use the launcher to request permission
-            } else
-            {
-                startOverlayService();
+                openAccessibilitySettings();
             }
         });
         binding.buttonRequestDeviceAdmin.setOnClickListener(v -> {
-//            Intent intent = new Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS);
             Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
             intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, new ComponentName(requireContext(), MyDeviceAdminReceiver.class));
             intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
                     "You need to activate Device Administrator to perform phonelost tasks!");
-            overlayPermissionLauncher.launch(intent);
-    });
-
-
-        // Check if overlay permission is already granted and hide the button if it is
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(requireActivity()))
-        {
-            startOverlayService(); // Start the service if permission is granted
-            buttonRequestOverlayPermission.setVisibility(View.GONE); // Hide the button if permission is granted
-        }
-
-        // Add the RequestAccessibilityServiceButton
-        RequestAccessibilityServiceButton(getContext());
+            deviceAdminRequestLauncher.launch(intent);
+        });
+        updateUIBasedOnPermissions();
 
         return root;
     }
+    private String getAppInstallDate() {
+        try {
+            PackageManager packageManager = requireActivity().getPackageManager();;
+            PackageInfo packageInfo = packageManager.getPackageInfo(requireActivity().getPackageName(), 0);
+            long installTime = packageInfo.firstInstallTime; // Returns the install time in milliseconds
 
-    private void startOverlayService()
-    {
-        // Service is part of other servie
-        //        Intent serviceIntent = new Intent(requireActivity(), OverlayService.class);
-//        requireActivity().startService(serviceIntent); // Call startService on the Activity
+            // Convert to Date
+            Date installDate = new Date(installTime);
+
+            // Format the date to get just the date part
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+            return sdf.format(installDate); // Returns the formatted date as a String
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return null; // Return null if the package is not found
+        }
     }
-
-    private void RequestAccessibilityServiceButton(Context context)
+    private void updateUIBasedOnPermissions()
     {
-        if (!hasAccessibilityServicePermission(context))
+        boolean hasDeviceAdmin = hasDeviceAdmin();
+        boolean hasAccessService = hasAccessibilityServicePermission(getContext());
+
+        if (hasAccessService && hasDeviceAdmin)
         {
-            Button button = new Button(context);
-            button.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    openAccessibilitySettings();
-                }
-            });
-            button.setText("Request Accessibility Service");
-            binding.accessibilityButtonContainer.addView(button);
+            String formattedString = getString(R.string.lock_state_secure, getAppInstallDate());
+
+            binding.lockStatus.setText(formattedString);
+            binding.lockStatus.setTextColor(getResources().getColor(R.color.lime_dark));
+        } else if (hasAccessService && !hasDeviceAdmin)
+        {
+            binding.lockStatus.setText(getResources().getString(R.string.lock_state_no_admin));
+            binding.lockStatus.setTextColor(getResources().getColor(R.color.purple_200));
+
         } else
         {
-            binding.accessibilityButtonContainer.setVisibility(View.GONE);
+            binding.lockStatus.setText(getResources().getString(R.string.lock_state_disabled));
+            binding.lockStatus.setTextColor(getResources().getColor(R.color.crimson));
+
+        }
+        binding.buttonRequestDeviceAdmin.setVisibility(View.GONE);
+        binding.requestAccessButton.setVisibility(View.GONE);
+        if (!hasAccessService)
+        {
+            binding.requestAccessButton.setVisibility(View.VISIBLE);
+        }
+        if (!hasDeviceAdmin && !hasAccessService)
+        {
+            binding.buttonRequestDeviceAdmin.setVisibility(View.VISIBLE);
         }
     }
 
@@ -132,7 +134,6 @@ public class HomeFragment extends Fragment
     }
 
     private static final int REQUEST_CODE_ACCESSIBILITY_SETTINGS = 10;
-    private static final int REQUEST_CODE_OVERLAY_PERMISSION = 11;
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -140,15 +141,7 @@ public class HomeFragment extends Fragment
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_ACCESSIBILITY_SETTINGS)
         {
-            // Check if the user has granted the accessibility service permission
-            if (hasAccessibilityServicePermission(requireContext()))
-            {
-                binding.accessibilityButtonContainer.setVisibility(View.GONE);
-            } else
-            {
-                // The user has not granted the permission, keep the button visible
-                binding.accessibilityButtonContainer.setVisibility(View.VISIBLE);
-            }
+            updateUIBasedOnPermissions();
         }
     }
 
@@ -172,6 +165,21 @@ public class HomeFragment extends Fragment
                 return true;
         }
 
+        return false;
+    }
+
+
+    private boolean hasDeviceAdmin()
+    {
+        // Get the DevicePolicyManager
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) requireActivity().getSystemService(Context.DEVICE_POLICY_SERVICE);
+
+        // Check if the DevicePolicyManager is not null
+        if (devicePolicyManager != null)
+        {
+            ComponentName adminComponent = new ComponentName(getActivity(), MyDeviceAdminReceiver.class);
+            return devicePolicyManager.isAdminActive(adminComponent);
+        }
         return false;
     }
 
