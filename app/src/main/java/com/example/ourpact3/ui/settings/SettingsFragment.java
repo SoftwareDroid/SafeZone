@@ -22,6 +22,7 @@ import com.example.ourpact3.PreferencesKeys;
 import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentSettingsBinding;
 import com.example.ourpact3.model.CheatKeyManager;
+import com.example.ourpact3.util.CurrentTimestamp;
 import com.example.ourpact3.util.ServiceUtil;
 
 public class SettingsFragment extends Fragment
@@ -48,17 +49,21 @@ public class SettingsFragment extends Fragment
                 new AlertDialog.Builder(v.getContext())
                         .setTitle(R.string.warning)
                         .setMessage(R.string.warning_enable_app_lock)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+                        {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
                                 // Proceed with enabling the lock
                                 setLockState(true);
                                 updateUI();
                             }
                         })
-                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+                        {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
                                 dialog.cancel(); // Dismiss the dialog
                             }
                         })
@@ -127,7 +132,8 @@ public class SettingsFragment extends Fragment
             binding.buttonDisableLock.setVisibility(View.GONE);
         } else
         {
-            boolean hasAccessService =  ServiceUtil.isAccessibilityServiceEnabled(getContext(), ContentFilterService.class);;
+            boolean hasAccessService = ServiceUtil.isAccessibilityServiceEnabled(getContext(), ContentFilterService.class);
+            ;
             binding.buttonDisableLock.setEnabled(hasAccessService);
             binding.buttonEnableLock.setVisibility(View.GONE);
         }
@@ -148,6 +154,11 @@ public class SettingsFragment extends Fragment
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(PreferencesKeys.PREVENT_DISABLING, preventDisabling);
+        if (preventDisabling)
+        {
+            String lockedSince = CurrentTimestamp.getCurrentTimestamp();
+            editor.putString(PreferencesKeys.LOCKED_SINCE, lockedSince);
+        }
         editor.apply();
     }
 

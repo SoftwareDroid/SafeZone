@@ -17,5 +17,6 @@ public class PreferencesKeys
     public static final String PREVENT_DISABLING = "prevent_disabling";
     public static final boolean PREVENT_DISABLING_DEFAULT_VALUE = true;
     public static final String MASTER_KEY_HASH = "master_key";
+    public static final String LOCKED_SINCE = "locked_since";
     public static final String MASTER_KEY_DEFAULT_VALUE = "507ce4f8b5eade3904fb1695132fe9cc4adae1d89e7f273c106ce80b8a15ed4a";
 }

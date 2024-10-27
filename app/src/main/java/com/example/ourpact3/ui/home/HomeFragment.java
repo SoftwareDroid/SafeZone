@@ -26,6 +26,7 @@ import com.example.ourpact3.MyDeviceAdminReceiver;
 import com.example.ourpact3.PreferencesKeys;
 import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentHomeBinding;
+import com.example.ourpact3.util.CurrentTimestamp;
 import com.example.ourpact3.util.ServiceUtil;
 
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -100,23 +101,7 @@ public class HomeFragment extends Fragment
         }
     }
 
-    private String getAppInstallDate() {
-        try {
-            PackageManager packageManager = requireActivity().getPackageManager();;
-            PackageInfo packageInfo = packageManager.getPackageInfo(requireActivity().getPackageName(), 0);
-            long installTime = packageInfo.firstInstallTime; // Returns the install time in milliseconds
 
-            // Convert to Date
-            Date installDate = new Date(installTime);
-
-            // Format the date to get just the date part
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
-            return sdf.format(installDate); // Returns the formatted date as a String
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return null; // Return null if the package is not found
-        }
-    }
     private void updateUIBasedOnPermissions()
     {
         // Get the SharedPreferences object
@@ -131,7 +116,15 @@ public class HomeFragment extends Fragment
         {
             if(isPreventDisabling)
             {
-                String formattedString = getString(R.string.lock_state_secure, getAppInstallDate());
+                String lockedSince = sharedPreferences.getString(PreferencesKeys.LOCKED_SINCE,"");
+                if(lockedSince.isEmpty())
+                {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    lockedSince =  CurrentTimestamp.getCurrentTimestamp();
+                    editor.putString(PreferencesKeys.LOCKED_SINCE, lockedSince);
+                    editor.apply();
+                }
+                String formattedString = getString(R.string.lock_state_secure, lockedSince);
                 binding.lockStatus.setText(formattedString);
                 binding.lockStatus.setTextColor(getResources().getColor(R.color.lime_dark));
             }
