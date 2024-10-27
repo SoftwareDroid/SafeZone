@@ -2,6 +2,7 @@ package com.example.ourpact3.ui.home;
 
 import android.annotation.SuppressLint;
 import android.app.admin.DevicePolicyManager;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
@@ -15,6 +16,7 @@ import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.core.os.BuildCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -24,7 +26,6 @@ import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentHomeBinding;
 
 import androidx.activity.result.contract.ActivityResultContracts;
-
 import android.content.ComponentName;
 import android.text.TextUtils;
 
@@ -72,10 +73,30 @@ public class HomeFragment extends Fragment
                     "You need to activate Device Administrator to perform phonelost tasks!");
             deviceAdminRequestLauncher.launch(intent);
         });
+        // Set app version
+        binding.appVersion.setText(getAppVersion());
+
         updateUIBasedOnPermissions();
 
         return root;
     }
+    private String getAppVersion() {
+        boolean isDebuggable =  ( 0 != ( requireActivity().getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE ) );
+
+        try {
+            PackageInfo packageInfo = requireActivity().getPackageManager().getPackageInfo(requireActivity().getPackageName(), 0);
+            if(isDebuggable)
+                return packageInfo.versionName + " (Debug)" ;
+            else
+            {
+                return packageInfo.versionName + " (Release)";
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "N/A"; // Return a default value if not found
+        }
+    }
+
     private String getAppInstallDate() {
         try {
             PackageManager packageManager = requireActivity().getPackageManager();;

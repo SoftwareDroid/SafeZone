@@ -40,4 +40,5 @@
     <string name="lock_state_secure">Locked since: %1$s</string>
     <string name="lock_state_disabled">Service Disabled</string>
     <string name="lock_state_no_admin">Working (Without Device Admin)</string>
+    <string name="app_version_title">App Version</string>
 </resources>
