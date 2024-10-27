@@ -74,17 +74,18 @@ public class ExampleAppKeywordFilters
 
     private AppFilter getAndroidSettings() throws CloneNotSupportedException
     {
+        String myAppName = "SafeZone";
         String appName = "com.android.settings";
         ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
         // prevent user for disabling the accessabilty service (only works in english)
         {
             PipelineResultKeywordFilter preventDisabelingAccessabilty = new PipelineResultKeywordFilter("");
             preventDisabelingAccessabilty.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
-            preventDisabelingAccessabilty.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
+            preventDisabelingAccessabilty.setKillState(PipelineResultBase.KillState.DO_NOT_KILL);
             preventDisabelingAccessabilty.setHasExplainableButton(true);
             WordProcessorSmartFilterBase accessibilityOverview = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
-                    new ArrayList<>(List.of("Use OurPact3")),
-                    new ArrayList<>(List.of("Stop OurPact3?")),
+                    new ArrayList<>(List.of("Use " + myAppName)),
+                    new ArrayList<>(List.of("Stop " + myAppName + "?")),
                     new ArrayList<>(List.of("Accessibility"))
 
 //                    ,new ArrayList<>(List.of(new String[]{"Accessibility"}))
@@ -95,12 +96,12 @@ public class ExampleAppKeywordFilters
         {
             PipelineResultKeywordFilter preventTurnOfDeviceAdmin = new PipelineResultKeywordFilter("");
             preventTurnOfDeviceAdmin.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
-            preventTurnOfDeviceAdmin.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
+            preventTurnOfDeviceAdmin.setKillState(PipelineResultBase.KillState.DO_NOT_KILL);
             preventTurnOfDeviceAdmin.setHasExplainableButton(true);
             WordProcessorSmartFilterBase searchForDeviceAdmin = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Device admin apps")),
 
-                    new ArrayList<>(List.of(new String[]{"OurPact3", "Device admin app"}))
+                    new ArrayList<>(List.of(new String[]{myAppName, "Device admin app"}))
             )), false, preventTurnOfDeviceAdmin, false);
             filters.add(searchForDeviceAdmin);
 

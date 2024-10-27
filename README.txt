@@ -54,6 +54,8 @@ How to prevent uninstall
 Ignore Write fields as search aborts
 1.5.0 clean up home fragment and added lock status indicator to it
 1.7.0 Now unlock/lock via settings fragment
+1.7.1 use correct lock timestamp in home fragment
+1.7.2 prevent turning off access service plus device option do not use KILL_BEFORE_WINDOW anymore as this is to slow and allows for errors
 # Credits
 App Icon
 https://www.svgrepo.com/svg/530512/lock

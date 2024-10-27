@@ -55,7 +55,7 @@ public abstract class PipelineResultBase implements Cloneable
     public enum KillState
     {
         DO_NOT_KILL,
-        KILL_BEFORE_WINDOW,
+        KILL_BEFORE_WINDOW, //TODO: this is sometimes to slow e.g accessibily serice preventing turning off
         KILLED // internal usage only
     }
 
