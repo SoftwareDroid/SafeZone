@@ -81,27 +81,28 @@ public class ExampleAppKeywordFilters
         {
             PipelineResultKeywordFilter preventDisabelingAccessabilty = new PipelineResultKeywordFilter("");
             preventDisabelingAccessabilty.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
+            // Killing makes it to slow
             preventDisabelingAccessabilty.setKillState(PipelineResultBase.KillState.DO_NOT_KILL);
             preventDisabelingAccessabilty.setHasExplainableButton(true);
             WordProcessorSmartFilterBase accessibilityOverview = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Use " + myAppName)),
                     new ArrayList<>(List.of("Stop " + myAppName + "?")),
-                    new ArrayList<>(List.of("Accessibility"))
+                    new ArrayList<>(List.of("Accessibility")) // Needed?
 
 //                    ,new ArrayList<>(List.of(new String[]{"Accessibility"}))
             )), false, preventDisabelingAccessabilty, false);
             filters.add(accessibilityOverview);
         }
-
+        // device admin stuff doesn't show up in access service we have to block the way
         {
             PipelineResultKeywordFilter preventTurnOfDeviceAdmin = new PipelineResultKeywordFilter("");
             preventTurnOfDeviceAdmin.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
+            // Killing makes it to slow
             preventTurnOfDeviceAdmin.setKillState(PipelineResultBase.KillState.DO_NOT_KILL);
             preventTurnOfDeviceAdmin.setHasExplainableButton(true);
             WordProcessorSmartFilterBase searchForDeviceAdmin = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Device admin apps")),
-
-                    new ArrayList<>(List.of(new String[]{myAppName, "Device admin app"}))
+                    new ArrayList<>(List.of(new String[]{"OPEN", myAppName}))
             )), false, preventTurnOfDeviceAdmin, false);
             filters.add(searchForDeviceAdmin);
 
