@@ -4,6 +4,8 @@ import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.example.ourpact3.AppFilter;
+import com.example.ourpact3.model.PipelineButtonAction;
+import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 
 import java.util.TreeMap;
@@ -15,7 +17,8 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
     private final OverlayWindowManager overlayWindowManager;
     public TreeMap<String, AppFilter> appFilters = new TreeMap<>();
     private ConcurrentLinkedDeque<PipelineResultBase> pipelineResults = new ConcurrentLinkedDeque<PipelineResultBase>();
-
+    public boolean useWarnWindows;
+    public boolean logBlocking;
     private final AccessibilityService service;
 
     public void destroyGUI()
@@ -33,7 +36,7 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
 
     public void onPipelineResultForeground(PipelineResultBase result)
     {
-        if(iContentFilterService.isPackageIgnoredForNormalMode(result.getTriggerPackage()))
+        if (iContentFilterService.isPackageIgnoredForNormalMode(result.getTriggerPackage()))
         {
             return;
         }
@@ -49,22 +52,25 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
             this.iContentFilterService.activateAppKillMode(result);
             return;
         }
-        switch (result.getWindowAction())
+
+        if (result.getWindowAction() == PipelineWindowAction.WARNING)
         {
-            case WARNING:
-            case PERFORM_HOME_BUTTON_AND_WARNING:
-                overlayWindowManager.showOverlayWindow(result, new int[]{AccessibilityService.GLOBAL_ACTION_BACK, AccessibilityService.GLOBAL_ACTION_HOME});
-                break;
-            case PERFORM_BACK_ACTION_AND_WARNING:
-                overlayWindowManager.showOverlayWindow(result, new int[]{AccessibilityService.GLOBAL_ACTION_BACK});
-                break;
-            case PERFORM_BACK_ACTION:
+            if (this.useWarnWindows)
+            {
+                int[] actions = result.getButtonAction() == PipelineButtonAction.NONE ? new int[0] : new int[]{(result.getButtonAction() == PipelineButtonAction.HOME_BUTTON ? AccessibilityService.GLOBAL_ACTION_HOME : AccessibilityService.GLOBAL_ACTION_BACK)};
+                overlayWindowManager.showOverlayWindow(result, actions);
+            }
+        } else if (result.getWindowAction() != PipelineWindowAction.WARNING)
+        {
+            if (result.getButtonAction() == PipelineButtonAction.BACK_BUTTON)
+            {
                 service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                break;
-            case CONTINUE_PIPELINE:
-                break;
-            case STOP_FURTHER_PROCESSING:
-                break;
+
+            } else if (result.getButtonAction() == PipelineButtonAction.HOME_BUTTON)
+            {
+                service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
+
+            }
         }
     }
 

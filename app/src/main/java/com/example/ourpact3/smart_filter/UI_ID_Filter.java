@@ -2,6 +2,7 @@ package com.example.ourpact3.smart_filter;
 
 import android.view.accessibility.AccessibilityEvent;
 
+import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.pipeline.PipelineResultExpFilter;
@@ -17,10 +18,11 @@ public class UI_ID_Filter extends SpecialSmartFilterBase
 {
     public UI_ID_Filter(PipelineResultBase result, String name, @NotNull Set<String> setOfIDs)
     {
-        super(new PipelineResultExpFilter("", PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING), name);
+        super(new PipelineResultExpFilter("", PipelineWindowAction.WARNING), name);
         this.result = result;
         this.result.setTriggerFilter(name);
         this.name = name;
+        result.setButtonAction(PipelineButtonAction.HOME_BUTTON);
         this.sefOfIDs = Collections.unmodifiableSet(setOfIDs);
     }
     public final String name;

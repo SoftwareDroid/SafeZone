@@ -3,13 +3,15 @@ package com.example.ourpact3.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Buttons moved to own enum
+ */
 public enum PipelineWindowAction implements Parcelable {
-    PERFORM_HOME_BUTTON_AND_WARNING,
+//    PERFORM_HOME_BUTTON_AND_WARNING,
     WARNING,
     CONTINUE_PIPELINE, // Only this action doesn't abort the pipeline
-    PERFORM_BACK_ACTION,
     STOP_FURTHER_PROCESSING,
-    PERFORM_BACK_ACTION_AND_WARNING, // goes back and shows a warning
+//    PERFORM_BACK_ACTION_AND_WARNING, // goes back and shows a warning
     END_OF_PIPE_LINE;
 
     // Parcelable implementation

@@ -52,4 +52,6 @@
     <string name="warning_enable_app_lock">Enabling this lock will prevent you from disabling or uninstalling the app. Do you want to proceed?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="use_warn_windows">Use Block Windows</string>
+    <string name="log_blocking">Log Blocking</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.ourpact3;
 
+import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
@@ -80,7 +81,9 @@ public class ExampleAppKeywordFilters
         // prevent user for disabling the accessabilty service (only works in english)
         {
             PipelineResultKeywordFilter preventDisabelingAccessabilty = new PipelineResultKeywordFilter("");
-            preventDisabelingAccessabilty.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
+            preventDisabelingAccessabilty.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            preventDisabelingAccessabilty.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+
             // Killing makes it to slow
             preventDisabelingAccessabilty.setKillState(PipelineResultBase.KillState.DO_NOT_KILL);
             preventDisabelingAccessabilty.setHasExplainableButton(true);
@@ -96,7 +99,8 @@ public class ExampleAppKeywordFilters
         // device admin stuff doesn't show up in access service we have to block the way
         {
             PipelineResultKeywordFilter preventTurnOfDeviceAdmin = new PipelineResultKeywordFilter("");
-            preventTurnOfDeviceAdmin.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
+            preventTurnOfDeviceAdmin.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            preventTurnOfDeviceAdmin.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             // Killing makes it to slow
             preventTurnOfDeviceAdmin.setKillState(PipelineResultBase.KillState.DO_NOT_KILL);
             preventTurnOfDeviceAdmin.setHasExplainableButton(true);
@@ -109,7 +113,6 @@ public class ExampleAppKeywordFilters
         }
 
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName,true);
-//        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 1, 30, 120,PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING));
         return appFilter;
     }
 
@@ -134,7 +137,8 @@ public class ExampleAppKeywordFilters
         }
         {
             PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
-            pornResult.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            pornResult.setWindowAction(PipelineWindowAction.WARNING);
+            pornResult.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             pornResult.setHasExplainableButton(true);
             pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
@@ -194,7 +198,8 @@ public class ExampleAppKeywordFilters
         {
             //block unsafe search
             PipelineResultKeywordFilter blockUnsafesearch = new PipelineResultKeywordFilter("");
-            blockUnsafesearch.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            blockUnsafesearch.setWindowAction(PipelineWindowAction.WARNING);
+            blockUnsafesearch.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             blockUnsafesearch.setHasExplainableButton(true);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("enforce_safe_search", 100, 0));
@@ -207,7 +212,8 @@ public class ExampleAppKeywordFilters
 
         {
             PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
-            pornResult.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            pornResult.setWindowAction(PipelineWindowAction.WARNING);
+            pornResult.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             pornResult.setHasExplainableButton(true);
             pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
@@ -226,7 +232,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName,true);
-        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5,PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING));
+        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5,PipelineWindowAction.WARNING));
         return appFilter;
 
     }
@@ -241,7 +247,8 @@ public class ExampleAppKeywordFilters
         {
             //block unsafe search
             PipelineResultKeywordFilter blockUnsafesearch = new PipelineResultKeywordFilter("");
-            blockUnsafesearch.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            blockUnsafesearch.setWindowAction(PipelineWindowAction.WARNING);
+            blockUnsafesearch.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             blockUnsafesearch.setHasExplainableButton(true);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("enforce_safe_search", 100, 100));
@@ -254,7 +261,8 @@ public class ExampleAppKeywordFilters
 
         {
             PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
-            pornResult.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            pornResult.setWindowAction(PipelineWindowAction.WARNING);
+            pornResult.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             pornResult.setHasExplainableButton(true);
             pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
@@ -284,7 +292,8 @@ public class ExampleAppKeywordFilters
         ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
         {
             PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
-            resultIgnoreSearch.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION);
+            resultIgnoreSearch.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            resultIgnoreSearch.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             resultIgnoreSearch.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             resultIgnoreSearch.setHasExplainableButton(true);
             // Add test Filter
@@ -325,7 +334,8 @@ public class ExampleAppKeywordFilters
 
         {
             PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
-            pornResult.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+            pornResult.setWindowAction(PipelineWindowAction.WARNING);
+            pornResult.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             pornResult.setHasExplainableButton(true);
             pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();

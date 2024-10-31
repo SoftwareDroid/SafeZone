@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 
 import com.example.ourpact3.AppFilter;
+import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.util.PackageUtil;
@@ -43,7 +44,7 @@ public abstract class PipelineResultBase implements Cloneable
             }
             clone.killState = this.killState; // Enum is immutable
             clone.hasExplainableButton = this.hasExplainableButton;
-
+            clone.buttonAction = this.buttonAction;
             return clone;
         } catch (CloneNotSupportedException e)
         {
@@ -58,8 +59,16 @@ public abstract class PipelineResultBase implements Cloneable
         KILL_BEFORE_WINDOW, //TODO: this is sometimes to slow e.g accessibily serice preventing turning off
         KILLED // internal usage only
     }
-
     //    private PipelineHistory history; //TODO: irgendwie dranhängen usw auf aufbauen
+    public void setButtonAction( PipelineButtonAction buttonAction)
+    {
+        this.buttonAction = buttonAction;
+    }
+    public PipelineButtonAction getButtonAction()
+    {
+        return this.buttonAction;
+    }
+    private PipelineButtonAction buttonAction = PipelineButtonAction.NONE;
     private PipelineWindowAction windowAction; // Changed to private
     //    private String triggerPackage; // Changed to private
     private String triggerFilter; // Changed to private
@@ -116,7 +125,7 @@ public abstract class PipelineResultBase implements Cloneable
 
     public boolean isBlockingAction()
     {
-        if (this.windowAction == PipelineWindowAction.PERFORM_BACK_ACTION || this.windowAction == PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING)
+        if (this.buttonAction == PipelineButtonAction.BACK_BUTTON || this.buttonAction == PipelineButtonAction.HOME_BUTTON)
         {
             return true;
         }

@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import com.example.ourpact3.R;
+import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.pipeline.PipelineResultLearnedMode;
 import com.example.ourpact3.model.PipelineWindowAction;
@@ -408,7 +409,8 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     if (oldBadFilter == null)
                     {
                         PipelineResultLearnedMode defaultBadResult = new PipelineResultLearnedMode(app);
-                        defaultBadResult.setWindowAction(PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING);
+                        defaultBadResult.setWindowAction(PipelineWindowAction.WARNING);
+                        defaultBadResult.setButtonAction(PipelineButtonAction.BACK_BUTTON);
                         defaultBadResult.setHasExplainableButton(false);
                         defaultBadResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
                         UI_ID_Filter newUI_ID_Filter = new UI_ID_Filter(defaultBadResult, this.context.getString(R.string.name_bad_filter), badIds);
@@ -463,27 +465,26 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
 
         switch (result.getWindowAction())
         {
-            case PERFORM_HOME_BUTTON_AND_WARNING:
-                status =  "🏡";
-                break;
             case WARNING:
-                status = "⚠";
                 break;
             case CONTINUE_PIPELINE:
                 break;
-            case PERFORM_BACK_ACTION:
-                status = "⬅";
-                break;
             case STOP_FURTHER_PROCESSING:
                 status = "⛔";
-                break;
-            case PERFORM_BACK_ACTION_AND_WARNING:
-                status = "⚠ + ⬅";
                 break;
             case END_OF_PIPE_LINE:
                 status = "🎌";
                 break;
         }
+        if(result.getButtonAction() == PipelineButtonAction.HOME_BUTTON)
+        {
+            status += " + 🏡";
+        }
+        else if(result.getButtonAction() == PipelineButtonAction.BACK_BUTTON)
+        {
+            status = " + ⬅";
+        }
+
         return status;
     }
 

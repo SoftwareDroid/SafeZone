@@ -94,7 +94,7 @@ public class PipelineResultView extends LinearLayout
             forceKillCheckbox.setChecked(false);
 
         }
-        if (pipelineResult.getWindowAction() == PipelineWindowAction.WARNING || pipelineResult.getWindowAction() == PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING || pipelineResult.getWindowAction() == PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING)
+        if (pipelineResult.getWindowAction() == PipelineWindowAction.WARNING)
         {
             switchCheckboxWindow.setChecked(true);
         } else
@@ -104,15 +104,14 @@ public class PipelineResultView extends LinearLayout
         // Main Window Action
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) this.spinnerMainActionAgainstApp.getAdapter();
         int spinnerIndex = 0;
-        switch (pipelineResult.getWindowAction())
+        switch (pipelineResult.getButtonAction())
         {
-            case PERFORM_HOME_BUTTON_AND_WARNING:
+            case HOME_BUTTON:
             {
                 spinnerIndex = adapter.getPosition(context.getString(R.string.home_button));
                 break;
             }
-            case PERFORM_BACK_ACTION_AND_WARNING:
-            case PERFORM_BACK_ACTION:
+            case BACK_BUTTON:
             {
                 spinnerIndex = adapter.getPosition(context.getString(R.string.back_button));
                 break;

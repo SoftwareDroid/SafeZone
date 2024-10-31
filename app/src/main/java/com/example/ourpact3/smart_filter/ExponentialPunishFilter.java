@@ -2,6 +2,7 @@ package com.example.ourpact3.smart_filter;
 
 import android.view.accessibility.AccessibilityEvent;
 
+import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.pipeline.PipelineResultExpFilter;
 import com.example.ourpact3.model.PipelineWindowAction;
@@ -27,6 +28,7 @@ public class ExponentialPunishFilter extends SpecialSmartFilterBase
     {
         //Default action should be with warning but settings are then triggered to ofen and Warning is not closeable
         super(new PipelineResultExpFilter("",action), name);
+        this.result.setButtonAction(PipelineButtonAction.BACK_BUTTON);
         this.violationExpiringInMin = violationExpiringInMin;
         this.MIN_NEEDED_VIOLATATIONS = MIN_NEEDED_VIOLATATIONS;
         this.MIN_TIME_OF_BLOCKING_IN_SECONDS = MIN_TIME_OF_BLOCKING_IN_SECONDS;
@@ -82,7 +84,7 @@ public class ExponentialPunishFilter extends SpecialSmartFilterBase
     public PipelineResultBase onPipelineResult(PipelineResultBase result)
     {
         long currentTime = System.currentTimeMillis();
-        if (result.getWindowAction() == PipelineWindowAction.PERFORM_BACK_ACTION_AND_WARNING || result.getWindowAction() == PipelineWindowAction.PERFORM_BACK_ACTION)
+        if (result.getWindowAction() == PipelineWindowAction.WARNING || result.getButtonAction() == PipelineButtonAction.BACK_BUTTON || result.getButtonAction() == PipelineButtonAction.HOME_BUTTON)
         {
             if (currentTime - this.lastEventTime > this.minTimeBetweenIncreasingViolationCounterInMS)
             {

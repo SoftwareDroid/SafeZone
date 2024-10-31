@@ -3,8 +3,12 @@ package com.example.ourpact3;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
@@ -38,7 +42,6 @@ import java.util.TreeMap;
 public class ContentFilterService extends AccessibilityService implements IContentFilterService
 {
     private NormalModeComponent normalModeProcessor;
-    ;
     private AppKiller appKillerService;
     private LearnModeComponent learnModeComponent;
     private Mode mode = Mode.NORMAL_MODE;
@@ -46,15 +49,30 @@ public class ContentFilterService extends AccessibilityService implements IConte
     private CrashHandler crashHandler;
     private CheatKeyManager cheatKeyManager;
     private TreeMap<String, AppPermission> usedAppPermissions;
+    private BroadcastReceiver commandReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String command = intent.getStringExtra("command");
+            assert command != null;
+            handleCommand(command);
+        }
+    };
+
     //    private boolean isRunning = false;
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
     public void onServiceConnected()
     {
         // setup crash handler
         crashHandler = new CrashHandler(this, this);
         Thread.setDefaultUncaughtExceptionHandler(crashHandler);
+        // internal broadcast receiver to receive commands e.g reload all settings
+        IntentFilter intentFilter = new IntentFilter("SEND_COMMAND");
+        registerReceiver(commandReceiver, intentFilter);
+
         //
-        learnModeComponent = new LearnModeComponent(this, this,this);
+
+        learnModeComponent = new LearnModeComponent(this, this, this);
         this.setNewMode(Mode.NORMAL_MODE);
         Log.i("FOO", "Stating service");
 
@@ -91,6 +109,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
                 filter.setCallback(normalModeProcessor);
                 normalModeProcessor.appFilters.put(filter.getPackageName(), filter);
             }
+            reload();
             AccessibilityServiceInfo info = new AccessibilityServiceInfo();
             info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
             info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
@@ -112,6 +131,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     private final Handler handler = new Handler(Looper.getMainLooper());
     private Runnable scheduledRunnable;
     private boolean isHandlerScheduled = false;
+
     @SuppressLint("NewApi")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
@@ -126,12 +146,15 @@ public class ContentFilterService extends AccessibilityService implements IConte
         // Create a new runnable to execute in the foreground after 500ms
         // If a handler is already scheduled, remove it
         normalModeProcessor.processPipelineResults();
-        if (isHandlerScheduled) {
+        if (isHandlerScheduled)
+        {
             handler.removeCallbacks(scheduledRunnable);
         }
-        scheduledRunnable = new Runnable() {
+        scheduledRunnable = new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 // Execute the method in the foreground
                 normalModeProcessor.processPipelineResults();
                 isHandlerScheduled = false; // Reset the flag after execution
@@ -148,18 +171,18 @@ public class ContentFilterService extends AccessibilityService implements IConte
         {
             return;
         }
-        if(mode == Mode.LEARN_OVERLAY_MODE)
+        if (mode == Mode.LEARN_OVERLAY_MODE)
         {
             this.normalModeProcessor.onAccessibilityEvent(event);
             this.learnModeComponent.onAccessibilityEvent(event);
-        } else if(mode == Mode.NORMAL_MODE)
+        } else if (mode == Mode.NORMAL_MODE)
         {
-            if(!this.isPackageIgnoredForNormalMode(event.getPackageName().toString()))
+            if (!this.isPackageIgnoredForNormalMode(event.getPackageName().toString()))
             {
                 this.normalModeProcessor.onAccessibilityEvent(event);
             }
 
-        } else if(mode == Mode.APP_KILL_MODE_1)
+        } else if (mode == Mode.APP_KILL_MODE_1)
         {
             try
             {
@@ -179,32 +202,6 @@ public class ContentFilterService extends AccessibilityService implements IConte
     public void onInterrupt()
     {
     }
-
-
-/*
-    public void playSoundAndOverwriteMedia(Context context, String soundFileName) {
-        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        int result = audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE);
-        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            MediaPlayer mediaPlayer = new MediaPlayer();
-            try {
-                AssetFileDescriptor afd = context.getAssets().openFd(soundFileName);
-                mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                mediaPlayer.prepare();
-                mediaPlayer.start();
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        audioManager.abandonAudioFocus(null);
-                        mp.release();
-                    }
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 
     @Override
     public void forwardPipelineResultToLearner(PipelineResultBase result)
@@ -261,11 +258,12 @@ public class ContentFilterService extends AccessibilityService implements IConte
         this.mode = Mode.NORMAL_MODE;
         this.normalModeProcessor.onPipelineResultForeground(lastResult);
     }
+
     @Override
     public boolean isPackageIgnoredForNormalMode(String id)
     {
         AppPermission permission = this.usedAppPermissions.get(id);
-        if(id != null && permission != null)
+        if (id != null && permission != null)
         {
             return permission == AppPermission.USER_IGNORE_LIST;
         }
@@ -276,7 +274,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     public boolean isPackagedIgnoredForLearning(String id)
     {
         AppPermission permission = this.usedAppPermissions.get(id);
-        if(permission != null)
+        if (permission != null)
         {
             return permission != AppPermission.USER_RW;
         }
@@ -323,12 +321,30 @@ public class ContentFilterService extends AccessibilityService implements IConte
         return null;
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
 
-        return START_STICKY;
+
+    public static final String COMMAND_RELOAD_SETTINGS = "reload";
+
+    private void handleCommand(String command)
+    {
+        if (command.equals(COMMAND_RELOAD_SETTINGS))
+        {
+            reload();
+        }
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(commandReceiver);
     }
 
+    private void reload()
+    {
+        SharedPreferences sharedPreferences = getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
+        boolean useWarnWindows = sharedPreferences.getBoolean(PreferencesKeys.OPTION_USE_WARN_WINDOWS, PreferencesKeys.OPTION_USE_WARN_WINDOWS_DEFAULT);
+        boolean useLogging = sharedPreferences.getBoolean(PreferencesKeys.OPTION_LOG_BLOCKING, PreferencesKeys.OPTION_LOG_BLOCKING_DEFAULT);
+        normalModeProcessor.useWarnWindows = useWarnWindows;
+        normalModeProcessor.logBlocking = useLogging;
+    }
 
 }
