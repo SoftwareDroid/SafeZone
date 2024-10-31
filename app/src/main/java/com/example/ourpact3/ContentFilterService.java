@@ -74,9 +74,8 @@ public class ContentFilterService extends AccessibilityService implements IConte
 
         learnModeComponent = new LearnModeComponent(this, this, this);
         this.setNewMode(Mode.NORMAL_MODE);
-        Log.i("FOO", "Stating service");
 
-        normalModeProcessor = new NormalModeComponent(this, this);
+        normalModeProcessor = new NormalModeComponent(this,this, this);
 
         appKillerService = new AppKiller(this, this);
         cheatKeyManager = new CheatKeyManager(this, 45); //TODO: constant
@@ -287,6 +286,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
         if (this.learnModeComponent != null)
         {
             this.learnModeComponent.stopOverlay();
+            this.learnModeComponent.stopOverlay();
         }
         if (this.normalModeProcessor != null)
         {
@@ -344,7 +344,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
         boolean useWarnWindows = sharedPreferences.getBoolean(PreferencesKeys.OPTION_USE_WARN_WINDOWS, PreferencesKeys.OPTION_USE_WARN_WINDOWS_DEFAULT);
         boolean useLogging = sharedPreferences.getBoolean(PreferencesKeys.OPTION_LOG_BLOCKING, PreferencesKeys.OPTION_LOG_BLOCKING_DEFAULT);
         normalModeProcessor.useWarnWindows = useWarnWindows;
-        normalModeProcessor.logBlocking = useLogging;
+        normalModeProcessor.useLogging = useLogging;
     }
 
 }

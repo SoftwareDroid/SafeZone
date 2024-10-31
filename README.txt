@@ -57,6 +57,7 @@ Ignore Write fields as search aborts
 1.7.1 use correct lock timestamp in home fragment
 1.7.2 prevent turning off access service plus device option do not use KILL_BEFORE_WINDOW anymore as this is to slow and allows for errors
 1.8.0 seperate window and button action, introduce boolean settings enable logging (this works already and block windows)
+1.9.0 first logging
 # Credits
 App Icon
 https://www.svgrepo.com/svg/530512/lock

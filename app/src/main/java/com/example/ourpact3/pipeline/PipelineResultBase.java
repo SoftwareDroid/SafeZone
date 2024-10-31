@@ -59,15 +59,18 @@ public abstract class PipelineResultBase implements Cloneable
         KILL_BEFORE_WINDOW, //TODO: this is sometimes to slow e.g accessibily serice preventing turning off
         KILLED // internal usage only
     }
+
     //    private PipelineHistory history; //TODO: irgendwie dranhängen usw auf aufbauen
-    public void setButtonAction( PipelineButtonAction buttonAction)
+    public void setButtonAction(PipelineButtonAction buttonAction)
     {
         this.buttonAction = buttonAction;
     }
+
     public PipelineButtonAction getButtonAction()
     {
         return this.buttonAction;
     }
+
     private PipelineButtonAction buttonAction = PipelineButtonAction.NONE;
     private PipelineWindowAction windowAction; // Changed to private
     //    private String triggerPackage; // Changed to private
@@ -125,7 +128,7 @@ public abstract class PipelineResultBase implements Cloneable
 
     public boolean isBlockingAction()
     {
-        if (this.buttonAction == PipelineButtonAction.BACK_BUTTON || this.buttonAction == PipelineButtonAction.HOME_BUTTON)
+        if (this.buttonAction == PipelineButtonAction.BACK_BUTTON || this.buttonAction == PipelineButtonAction.HOME_BUTTON || this.getWindowAction() == PipelineWindowAction.STOP_FURTHER_PROCESSING)
         {
             return true;
         }
@@ -210,5 +213,12 @@ public abstract class PipelineResultBase implements Cloneable
     public String getAppName(Context ctx)
     {
         return PackageUtil.getAppName(ctx, getTriggerPackage());
+    }
+
+    public String convertToLogEntry(Context ctx)
+    {
+
+        String result = "App: " + getAppName(ctx) + " Warn: " + String.valueOf(this.getWindowAction() == PipelineWindowAction.WARNING) + " Kill: " + this.killState;
+        return result;
     }
 }

@@ -1,12 +1,16 @@
 package com.example.ourpact3.service;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.Context;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.example.ourpact3.AppFilter;
+import com.example.ourpact3.BlockLoggingService;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
+
+import org.json.JSONException;
 
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -18,16 +22,18 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
     public TreeMap<String, AppFilter> appFilters = new TreeMap<>();
     private ConcurrentLinkedDeque<PipelineResultBase> pipelineResults = new ConcurrentLinkedDeque<PipelineResultBase>();
     public boolean useWarnWindows;
-    public boolean logBlocking;
+    public boolean useLogging;
     private final AccessibilityService service;
+    private BlockLoggingService logger;
 
     public void destroyGUI()
     {
         this.overlayWindowManager.hideOverlayWindow();
     }
 
-    public NormalModeComponent(AccessibilityService service, IContentFilterService iContentFilterService)
+    public NormalModeComponent(Context context, AccessibilityService service, IContentFilterService iContentFilterService)
     {
+        this.logger = new BlockLoggingService(context);
         this.service = service;
         this.overlayWindowManager = new OverlayWindowManager(service);
         this.iContentFilterService = iContentFilterService;
@@ -70,6 +76,14 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
             {
                 service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
 
+            }
+        }
+
+        if (useLogging)
+        {
+            if (result.getKillState() == PipelineResultBase.KillState.KILLED || result.getButtonAction() == PipelineButtonAction.BACK_BUTTON || result.getButtonAction() == PipelineButtonAction.HOME_BUTTON)
+            {
+                logger.logScreenBG(result.getScreen(), result);
             }
         }
     }
