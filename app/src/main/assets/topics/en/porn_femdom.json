@@ -4,32 +4,18 @@
   "description": "This is a sample topic",
   "words": [
     "femdom",
-//    "fem dom", femdom comes in search result
-    "female domination",
+    "female lead relationship",
     "dominatrix",
     "mistress",
-//    "goddess",
-//    "queen",
-    "female supremacy",
-//    "male submission",
-//    "bdsm",
     "bondage",
-//    "discipline", in wikipedia text
-    "submission",
-//    "female domination",
     "sadism",
     "masochism",
     "roleplay",
-    "submissive",
     "humiliation",
-    "slave training",
-//    "slavery",
-//    "slave", in histroy text
     "toilet slav",
     "human toilet",
     "foot worship",
     "boot worship",
-//    "high heels",
     "corset",
     "latex",
     "leather",
@@ -41,13 +27,18 @@
     "strap-on",
     "elastrator",
     "domina",
-//    "dominant",
     "edge play",
-    "eat my ",
-    "smell my ",
-    "lick my ",
     "strap on"
   ],
+  "regExpWords" : [
+    // \\s+ => matches spaces beween words
+    "\\b(girl|nurse|female|women|lady|princess|queen|goddess)\\s+(domination|supremacy|worship|control|authority|moaning)",
+    "\\b(hot|sexy|seductive|tempting|spicy|naughty|cheeky|(plus\\ssize)|chubby|plump|curvy|luscious|voluptuous|fat|dominant|controlling|strong|powerful|commanding|decisive|alpha|master|top|dom)\\s+(gf|wife|girl|women|female|lady|teacher|nurse)\\b",
+    "\\b(male|slave|enslaved|submissive|pet|sissy|bottom|restrained|caged|locked|bound|gagged|tamed|trained|subjugated)\\s+(boy|male|sissy|man|training|torture)\\b",
+    "\\b(eat|inhale|taste|smell|sniff|lick)\\s(her|hers|my)\\b",
+    "\\bshit\\b",
+    "\\bcock\\b"
+    ],
   "includedTopics": [
 
   ]

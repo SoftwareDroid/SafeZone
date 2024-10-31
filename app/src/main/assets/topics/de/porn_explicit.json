@@ -43,6 +43,7 @@
 //    "zoophilie"
   ],
   "regExpWords": [
+    "\\beier\\s*(treten|foltern|folter|tritt)\\b",
     "\\barsch\\b",
     "\\bintim\\b"
 //    "\\bpo\\b",

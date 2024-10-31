@@ -104,6 +104,6 @@ public class PipelineResultView extends LinearLayout {
     //    "cock", in cocktail
     //    "moan"
     //    "get off",
-        "twerk", //perhaps adult list?
+        "twerk", //perhaps adult list? => twerking
     //    "grinding",
     //    "sex swing",
