@@ -26,10 +26,10 @@ most others are blocked by the safe search rule
 USEs UI anomation to kill an app only way i found without having System or root permission to stop media (adult content) in an e.g browser
 
 TODO
-FIX Search
-In Recent searches tiggert nicht die Abort Pipeplie zu erst
-FIXEN PocketCasts muss bedienbar bleiben auch bei 100 scoring
 
+FAQ:
+Safe Search block is blocking my search:
+Use the correct search url like: safe.duckduckgo.com/?q=%s
 
 ### Documentation
 words in Topics are scored for their nearest topic (Deep).
@@ -60,6 +60,7 @@ Ignore Write fields as search aborts
 1.9.0 first logging
 1.9.1 update termlist rm clothing block image search duckduckgo not working + OnPause Event (HomeBUtton) for setttings framgment to save settings
 1,9.2 Need draw overlay permission
+1.9.3 rm nude in Reisnudeln
 # Credits
 App Icon
 https://www.svgrepo.com/svg/530512/lock
