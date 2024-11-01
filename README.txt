@@ -18,6 +18,9 @@ Control media not possible
 
 import android.Manifest; // needed to check permissions
 
+Neue Actitäten einfach mit Rechtsklick neu erzeugen. Damit lässt sich viel Boilerplate Quellcode erstelln
+
+
 # For Users:
 Use as Search Engine in e.g. Firefox: safe.duckduckgo.com/?q=%s
 most others are blocked by the safe search rule
