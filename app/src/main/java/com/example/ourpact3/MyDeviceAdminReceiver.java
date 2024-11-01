@@ -14,6 +14,11 @@ public class MyDeviceAdminReceiver extends DeviceAdminReceiver {
     @Override
     public void onDisabled(Context context, Intent intent) {
         Toast.makeText(context, "Device Admin Disabled", Toast.LENGTH_SHORT).show();
+        //TI
+        /*while (true)
+        {
+
+        }*/
     }
 }
 

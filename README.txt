@@ -1,6 +1,6 @@
 # For devs
 Backlog exestiert nur aus Papier in 2 boxen 
-
+Mancmal muss man die App neu installieren insbesonder für Berechtigungen Reset. Draw Overlay Permission wird z.b benötigt
 # grant permission
 adb shell settings put secure enabled_accessibility_services com.example.ourpact3/com.example.ourpact3.ContentFilterService
 
@@ -59,6 +59,7 @@ Ignore Write fields as search aborts
 1.8.0 seperate window and button action, introduce boolean settings enable logging (this works already and block windows)
 1.9.0 first logging
 1.9.1 update termlist rm clothing block image search duckduckgo not working + OnPause Event (HomeBUtton) for setttings framgment to save settings
+1,9.2 Need draw overlay permission
 # Credits
 App Icon
 https://www.svgrepo.com/svg/530512/lock

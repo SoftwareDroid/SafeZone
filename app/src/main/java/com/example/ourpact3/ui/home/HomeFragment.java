@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.provider.Settings;
 import android.content.Intent;
 import android.content.Context;
@@ -51,6 +52,13 @@ public class HomeFragment extends Fragment
     {
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
+
+        if (!Settings.canDrawOverlays(requireContext())) {
+            int REQUEST_CODE = 101;
+            Intent myIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            myIntent.setData(Uri.parse("package:" + requireActivity().getPackageName()));
+            startActivityForResult(myIntent, REQUEST_CODE);
+        }
 
         deviceAdminRequestLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
