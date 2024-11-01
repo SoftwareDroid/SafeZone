@@ -100,7 +100,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
             // check all topics
             topicManager.checkAllTopics();
             // load all example filters
-            ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager);
+            ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager,this.getApplicationContext());
             this.usedAppPermissions = exampleFilters.getAppPermissions();
             exampleFilters.addExampleTopics();
             for (AppFilter filter : exampleFilters.getAllExampleFilters())

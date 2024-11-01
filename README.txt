@@ -58,6 +58,7 @@ Ignore Write fields as search aborts
 1.7.2 prevent turning off access service plus device option do not use KILL_BEFORE_WINDOW anymore as this is to slow and allows for errors
 1.8.0 seperate window and button action, introduce boolean settings enable logging (this works already and block windows)
 1.9.0 first logging
+1.9.1 update termlist rm clothing block image search duckduckgo not working + OnPause Event (HomeBUtton) for setttings framgment to save settings
 # Credits
 App Icon
 https://www.svgrepo.com/svg/530512/lock
@@ -106,6 +107,5 @@ public class PipelineResultView extends LinearLayout {
     //    "cock", in cocktail
     //    "moan"
     //    "get off",
-        "twerk", //perhaps adult list? => twerking
     //    "grinding",
     //    "sex swing",

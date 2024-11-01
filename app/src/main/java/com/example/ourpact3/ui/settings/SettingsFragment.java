@@ -10,7 +10,6 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,7 +22,6 @@ import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.PreferencesKeys;
 import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentSettingsBinding;
-import com.example.ourpact3.learn_mode.AppLearnProgress;
 import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.util.CurrentTimestamp;
 import com.example.ourpact3.util.ServiceUtil;
@@ -53,15 +51,10 @@ public class SettingsFragment extends Fragment
                 new AlertDialog.Builder(v.getContext())
                         .setTitle(R.string.warning)
                         .setMessage(R.string.warning_enable_app_lock)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                // Proceed with enabling the lock
-                                setLockState(true);
-                                updateUI();
-                            }
+                        .setPositiveButton(R.string.yes, (dialog, which) -> {
+                            // Proceed with enabling the lock
+                            setLockState(true);
+                            updateUI();
                         })
                         .setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
                         {
@@ -129,8 +122,6 @@ public class SettingsFragment extends Fragment
             this.dirtySettings = true;
         });
 
-//        final TextView textView = binding.textNotifications;
-//        settingsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
@@ -151,7 +142,6 @@ public class SettingsFragment extends Fragment
         } else
         {
             boolean hasAccessService = ServiceUtil.isAccessibilityServiceEnabled(getContext(), ContentFilterService.class);
-            ;
             binding.buttonDisableLock.setEnabled(hasAccessService);
             binding.buttonEnableLock.setVisibility(View.GONE);
         }
@@ -191,8 +181,9 @@ public class SettingsFragment extends Fragment
             editor.putBoolean(PreferencesKeys.OPTION_USE_WARN_WINDOWS, useWarnWindows);
             editor.putBoolean(PreferencesKeys.OPTION_LOG_BLOCKING, logBlocking);
             editor.apply();
+            this.dirtySettings = false;
+            sendCommandToService(ContentFilterService.COMMAND_RELOAD_SETTINGS);
         }
-        sendCommandToService(ContentFilterService.COMMAND_RELOAD_SETTINGS);
     }
 
 
@@ -201,6 +192,16 @@ public class SettingsFragment extends Fragment
         intent.putExtra("command", command);
         requireActivity().sendBroadcast(intent);
     }
+
+    // When e.g Home button, tab switched is pressed
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Save settings or perform any necessary actions here
+        saveSettings();
+    }
+
+
     @Override
     public void onDestroyView()
     {

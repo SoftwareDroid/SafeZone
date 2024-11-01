@@ -96,12 +96,12 @@ public class BlockLoggingService
     }
     private String getLogFileName() {
         Date currentDate = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy__HH_mm_ss");
         return "app_" +  dateFormat.format(currentDate) + ".txt";
     }
     private String getScreenLogName() {
         Date currentDate = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy__HH_mm_ss");
         return "screen_" + dateFormat.format(currentDate) + ".txt";
     }
 }

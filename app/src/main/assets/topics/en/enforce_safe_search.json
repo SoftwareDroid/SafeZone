@@ -11,7 +11,7 @@
     "^(?!safe\\.)(duckduckgo)\\.[a-zA-Z]{2,3}\/.*$",
     // blocks settings to change to post
     //block image and videos search in duckduckgo and settings for post
-    "^safe\\.duckduckgo\\.[a-zA-Z]{2,3}\/(settings.*|.*(&ia=images|&ia=videos))$",
+//    "^safe\\.duckduckgo\\.[a-zA-Z]{2,3}\/(settings.*|.*(&ia=images|&ia=videos))$",
     // swisscows is safe to use blocks adult stuff by default
     //"^swisscows\\.[a-z]{2,3}.*$",
     /////////////////////// Blocked

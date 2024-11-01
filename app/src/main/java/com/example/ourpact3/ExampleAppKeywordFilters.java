@@ -1,5 +1,10 @@
 package com.example.ourpact3;
 
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
@@ -24,12 +29,17 @@ import java.util.TreeMap;
 
 public class ExampleAppKeywordFilters
 {
-    ExampleAppKeywordFilters(ContentFilterService service, TopicManager topicManager)
+    ExampleAppKeywordFilters(ContentFilterService service, TopicManager topicManager, Context ctx)
     {
         this.service = service;
         this.topicManager = topicManager;
+
+        this.isDebugVersion = (0 != (ctx.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+
+
     }
 
+    private boolean isDebugVersion;
     private final ContentFilterService service;
     private final TopicManager topicManager;
 
@@ -112,7 +122,7 @@ public class ExampleAppKeywordFilters
 
         }
 
-        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName,true);
+        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName, true);
         return appFilter;
     }
 
@@ -147,7 +157,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("adult_nudity", 20, 20));  //NOTE: This is not so dangerous as this is a podcast app
             allScorings.add(new TopicScoring("adult_sex_toys", 32, 45));
 //            allScorings.add(new TopicScoring("female_names", 15, 30));
-            allScorings.add(new TopicScoring("female_clothing", 15, 30));
+//            allScorings.add(new TopicScoring("female_clothing", 15, 30));
             allScorings.add(new TopicScoring("patrick_all_merged", 49, 66));
             boolean ignoreCase = true;  // important for porn filter
 
@@ -155,7 +165,7 @@ public class ExampleAppKeywordFilters
             WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.PORN, allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
-        return new AppFilter(service, topicManager, filters, appName,false);
+        return new AppFilter(service, topicManager, filters, appName, false);
 
     }
 
@@ -170,7 +180,7 @@ public class ExampleAppKeywordFilters
             ignoreHistoryPage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             ignoreHistoryPage.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,new ArrayList<>( List.of(new ArrayList<>(List.of("History", "Recently closed tabs")))), false, ignoreHistoryPage,false);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(new ArrayList<>(List.of("History", "Recently closed tabs")))), false, ignoreHistoryPage, false);
             filters.add(ignoreSearch);
         }
 
@@ -181,7 +191,7 @@ public class ExampleAppKeywordFilters
             resultIgnoreSearch.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             resultIgnoreSearch.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2,new ArrayList<>(List.of( new ArrayList<>(List.of("Firefox Suggest")))), false, resultIgnoreSearch,false);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox Suggest")))), false, resultIgnoreSearch, false);
             filters.add(ignoreSearch);
         }
         {
@@ -190,7 +200,7 @@ public class ExampleAppKeywordFilters
             ignoreStartpage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
             ignoreStartpage.setHasExplainableButton(true);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_3,new ArrayList<>(List.of( new ArrayList<>(List.of("Firefox", "Jump back in")))), false, ignoreStartpage,false);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_3, new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox", "Jump back in")))), false, ignoreStartpage, false);
             ignoreSearch.setCheckOnlyVisibleNodes(false);
             filters.add(ignoreSearch);
         }
@@ -222,7 +232,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("adult_nudity", 32, 0));
             allScorings.add(new TopicScoring("adult_sex_toys", 32, 0));
 //            allScorings.add(new TopicScoring("female_names", 15, 0));
-            allScorings.add(new TopicScoring("female_clothing", 15, 0));
+//            allScorings.add(new TopicScoring("female_clothing", 15, 0));
             allScorings.add(new TopicScoring("patrick_all_merged", 49, 0));
             boolean ignoreCase = true;  // important for porn filter
 
@@ -231,8 +241,11 @@ public class ExampleAppKeywordFilters
             blockAdultStuff.setName("Block NSFW");
             filters.add(blockAdultStuff);
         }
-        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName,true);
-        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5,PipelineWindowAction.WARNING));
+        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName, true);
+        if(!isDebugVersion)
+        {
+            appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5, PipelineWindowAction.WARNING));
+        }
         return appFilter;
 
     }
@@ -271,7 +284,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("adult_nudity", 32, 0));
             allScorings.add(new TopicScoring("adult_sex_toys", 32, 0));
 //            allScorings.add(new TopicScoring("female_names", 15, 30));
-            allScorings.add(new TopicScoring("female_clothing", 15, 0));
+//            allScorings.add(new TopicScoring("female_clothing", 15, 0));
             allScorings.add(new TopicScoring("patrick_all_merged", 49, 0));
             boolean ignoreCase = true;  // important for porn filter
 
@@ -280,7 +293,7 @@ public class ExampleAppKeywordFilters
             blockAdultStuff.setName("Block NSFW");
             filters.add(blockAdultStuff);
         }
-        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName,true);
+        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName, true);
 //        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5));
         return appFilter;
 
@@ -302,7 +315,7 @@ public class ExampleAppKeywordFilters
                             new ArrayList<>(List.of("People Nearby", "Make Myself Visible")))), false, resultIgnoreSearch, false);
             filters.add(ignoreSearch);
         }
-        return new AppFilter(service, topicManager, filters, appName,false);
+        return new AppFilter(service, topicManager, filters, appName, false);
     }
 
     private AppFilter getYoutubeFilter() throws TopicMissingException, CloneNotSupportedException
@@ -344,15 +357,14 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("adult_nudity", 32, 0));
             allScorings.add(new TopicScoring("adult_sex_toys", 32, 0));
 //            allScorings.add(new TopicScoring("female_names", 15, 30));
-            allScorings.add(new TopicScoring("female_clothing", 15, 0));
+//            allScorings.add(new TopicScoring("female_clothing", 15, 0));
             allScorings.add(new TopicScoring("patrick_all_merged", 49, 0));
             boolean ignoreCase = true;  // important for porn filter
 
             WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_3, allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
-        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName,false);
-//        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 10, 15,PipelineWindowAction.PERFORM_HOME_BUTTON_AND_WARNING));
+        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName, false);
         return appFilter;
 
 
