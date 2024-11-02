@@ -86,7 +86,6 @@ public class AppFilter
             delayCount = 0;
             AccessibilityNodeInfo rootNode = service.getRootInActiveWindow();
             ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(rootNode, isMagnificationEnabled);
-            String LOG_TAG = "ContentFiler";
             // First Check generic filters
 
             for (WordProcessorSmartFilterBase processor : keywordFilters)
@@ -187,10 +186,6 @@ public class AppFilter
                 }
                 break;
             default:
-                if(this.checkAllEvents)
-                {
-
-                }
         }
     }
 

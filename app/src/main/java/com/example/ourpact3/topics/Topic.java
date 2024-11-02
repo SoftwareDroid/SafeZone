@@ -133,7 +133,7 @@ public class Topic
         JSONArray wordsArray = new JSONArray(words);
         jsonObject.put("words", wordsArray);
 
-        if (this.compiledPatterns.size() > 0)
+        if (!this.compiledPatterns.isEmpty())
         {
             ArrayList<String> regExpKeys = new ArrayList<>(this.compiledPatterns.keySet());
             JSONArray wordsArray2 = new JSONArray(regExpKeys);

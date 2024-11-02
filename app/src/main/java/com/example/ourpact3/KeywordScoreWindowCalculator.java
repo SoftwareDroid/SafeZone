@@ -5,6 +5,7 @@ import com.example.ourpact3.smart_filter.WordListFilterScored;
 import com.example.ourpact3.smart_filter.WordProcessorSmartFilterBase;
 import com.example.ourpact3.util.SubstringFinder;
 
+import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
 public class KeywordScoreWindowCalculator
@@ -55,20 +56,26 @@ public class KeywordScoreWindowCalculator
     }
     private void addResultLine(int count, String word, int plusScore, boolean read, TreeSet<String> topicTriggers)
     {
-        if (word != null && !topicTriggers.isEmpty())
+        try
         {
-            String shortendString =  SubstringFinder.findSubstringWithContext(word,topicTriggers.first(),5);;
-            if(count > 0 && plusScore != 0)
+            if (word != null && !topicTriggers.isEmpty())
             {
-                String number = count == 1 ? "" : " x " + count + " ";
-                String text = number + "'" + topicTriggers.first() + "'" + " in '" + shortendString + "' (" + (read ? "read" : "write") + ") \t => +" + String.valueOf(plusScore) +"\n";
-                this.filterResultLines.append(text);
+                String shortendString = SubstringFinder.findSubstringWithContext(word, topicTriggers.first(), 5);
+                ;
+                if (count > 0 && plusScore != 0)
+                {
+                    String number = count == 1 ? "" : " x " + count + " ";
+                    String text = number + "'" + topicTriggers.first() + "'" + " in '" + shortendString + "' (" + (read ? "read" : "write") + ") \t => +" + String.valueOf(plusScore) + "\n";
+                    this.filterResultLines.append(text);
+                } else
+                {
+                    String text = word + " (" + (read ? "read" : "write") + ")\n";
+                    this.filterResultLines2.append(text);
+                }
             }
-            else
-            {
-                String text =  word + " (" + (read ? "read" : "write") + ")\n" ;
-                this.filterResultLines2.append(text);
-            }
+        } catch (NoSuchElementException ignored)
+        {
+            // catch case to catch exceptions
         }
     }
 

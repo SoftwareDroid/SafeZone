@@ -39,7 +39,7 @@ public class ExampleAppKeywordFilters
 
     }
 
-    private boolean isDebugVersion;
+    private final boolean isDebugVersion;
     private final ContentFilterService service;
     private final TopicManager topicManager;
 
@@ -122,8 +122,7 @@ public class ExampleAppKeywordFilters
 
         }
 
-        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName, true);
-        return appFilter;
+        return new AppFilter(service, topicManager, filters, appName, true);
     }
 
     private AppFilter getPocketCastsFilter() throws TopicMissingException, CloneNotSupportedException
@@ -293,9 +292,8 @@ public class ExampleAppKeywordFilters
             blockAdultStuff.setName("Block NSFW");
             filters.add(blockAdultStuff);
         }
-        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName, true);
-//        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5));
-        return appFilter;
+        //        appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5));
+        return new AppFilter(service, topicManager, filters, appName, true);
 
     }
 
@@ -364,8 +362,7 @@ public class ExampleAppKeywordFilters
             WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_3, allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
-        AppFilter appFilter = new AppFilter(service, topicManager, filters, appName, false);
-        return appFilter;
+        return new AppFilter(service, topicManager, filters, appName, false);
 
 
     }

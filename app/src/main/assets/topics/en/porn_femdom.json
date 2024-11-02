@@ -17,7 +17,7 @@
     "foot worship",
     "boot worship",
     "corset",
-    "latex",
+//    "latex", naturlatex kommt in kleidung vor
     "leather",
     "chastity",
     "cuckolding",
@@ -37,6 +37,7 @@
     "\\b(male|slave|enslaved|submissive|pet|sissy|bottom|restrained|caged|locked|bound|gagged|tamed|trained|subjugated)\\s+(boy|male|sissy|man|training|torture)\\b",
     "\\b(eat|inhale|taste|smell|sniff|lick)\\s(her|hers|my)\\b",
     "\\bshit\\b",
+    "\\blatex\\b",
     "\\bcock\\b"
     ],
   "includedTopics": [

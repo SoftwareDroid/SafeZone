@@ -59,7 +59,10 @@ public class OverlayWindowManager
                     KeywordScoreWindowCalculator scoreExplainer = new KeywordScoreWindowCalculator();
                     String explaination = scoreExplainer.getDebugFilterState(result2.getScreen(), result2.getCurrentAppFilter());
                     overlayTextView.setText(explaination);
-                    overlayView.findViewById(R.id.explain_button).setEnabled(false);
+                    if(overlayView != null)
+                    {
+                        overlayView.findViewById(R.id.explain_button).setEnabled(false);
+                    }
                 });
 
                 WindowManager.LayoutParams params = new WindowManager.LayoutParams(
