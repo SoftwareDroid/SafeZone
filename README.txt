@@ -64,6 +64,7 @@ Ignore Write fields as search aborts
 1.9.1 update termlist rm clothing block image search duckduckgo not working + OnPause Event (HomeBUtton) for setttings framgment to save settings
 1,9.2 Need draw overlay permission
 1.9.3 rm nude in Reisnudeln
+1.9.4 latex can in Naturlatex (Store) and try catch two possible exceptions in overlay window
 # Credits
 App Icon
 https://www.svgrepo.com/svg/530512/lock
