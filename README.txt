@@ -68,6 +68,7 @@ Ignore Write fields as search aborts
 1.9.5 remove mostly body parts words
 1.10.0 explain text to bg and add \\b to popo term
 1.10.1 add regex for duckduckgo ai chat
+1.10.2 add much more apps to ignore list to save energy
 # Credits
 App Icon
 https://www.svgrepo.com/svg/530512/lock
