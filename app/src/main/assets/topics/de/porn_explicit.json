@@ -3,7 +3,6 @@
   "id": "porn_explicit",
   "description": "Blocks porn content",
   "words": [
-//    "intim",
     "arschloch",
     "vagina",
     "gesichtssitzen",
@@ -12,10 +11,8 @@
     "muschi",
     "scheiße",
     "fotze",
-    "möse",
     "pimmel",
     "schwanz",
-//    "eier", Kochen
     "hintern",
     "popo",
     "kitzler",
@@ -26,28 +23,19 @@
     "vögeln",
     "bumsen",
     "blasen",
-    //    "anal", in english
     "analverkehr",
     "oralverkehr",
-//    "vaginalverkehr", in vagina
     "sodomie",
-//    "päderastie",
-//    "inzest",
     "prostitution",
-//    "zuhälterei",
     "sexuell",
     "pädophilie",
-//    "hebephilie",
-//    "nekrophilie",
     "orgasmus"
-//    "zoophilie"
   ],
   "regExpWords": [
     "\\beier\\s*(treten|foltern|folter|tritt)\\b",
     "\\barsch\\b",
-    "\\bintim\\b"
-//    "\\bpo\\b",
-//    "\\bkot\\b" // in kotlin
+    "\\bintim\\b",
+    "\\bmöse\\b"
   ],
   "includedTopics": [
   ]
