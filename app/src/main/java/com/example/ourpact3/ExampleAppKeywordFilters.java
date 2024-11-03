@@ -51,6 +51,7 @@ public class ExampleAppKeywordFilters
         appPermissions.put("com.android.settings", AppPermission.USER_RO);
         appPermissions.put("com.google.android.inputmethod.latin", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("com.google.android.apps.maps", AppPermission.USER_IGNORE_LIST);
+        appPermissions.put("de.nebenan.app", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("net.tandem", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("org.thoughtcrime.securesms", AppPermission.USER_IGNORE_LIST);
 //        ignoredApps.add("org.telegram.messenger");
