@@ -209,11 +209,6 @@ public class AppFilter
         this.callback.onPipelineResultBackground(endToken);
     }
 
-    /**
-     * @param
-     * @param currentFilter
-     * @return
-     */
     private void processScreen(ScreenInfoExtractor.Screen screen, WordProcessorSmartFilterBase currentFilter)
     {
         for (ScreenInfoExtractor.Screen.TextNode textNode : screen.getTextNodes())

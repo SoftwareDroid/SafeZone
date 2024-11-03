@@ -102,6 +102,8 @@
     "adult only"
   ],
   "regExpWords" : [
+    //punish ai chat so that there is a higher chance of blocking stuff
+    "^safe\\.duckduckgo.*&ia=chat$",
     "\\bcum\\b",
     "\\banal\\b",
     "\\bbbw\\b",
