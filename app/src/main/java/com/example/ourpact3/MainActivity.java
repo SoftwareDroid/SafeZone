@@ -23,6 +23,7 @@ import android.Manifest; // needed to check permissions
 import android.provider.Settings;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity
             this.requestPermission();
         }
         // Start Overlay Service
-
+        // Set up the Toolbar as the ActionBar
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
 
