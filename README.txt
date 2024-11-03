@@ -66,6 +66,7 @@ Ignore Write fields as search aborts
 1.9.3 rm nude in Reisnudeln
 1.9.4 latex can in Naturlatex (Store) and try catch two possible exceptions in overlay window
 1.9.5 remove mostly body parts words
+1.10.0 explain text to bg and add \\b to popo term
 # Credits
 App Icon
 https://www.svgrepo.com/svg/530512/lock

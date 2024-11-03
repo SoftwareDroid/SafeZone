@@ -5,22 +5,33 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.ourpact3.AppFilter;
 import com.example.ourpact3.KeywordScoreWindowCalculator;
 import com.example.ourpact3.R;
 import com.example.ourpact3.pipeline.PipelineResultBase;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class OverlayWindowManager
 {
     private WindowManager windowManager;
     private View overlayView;
     private AccessibilityService service;
-    OverlayWindowManager(AccessibilityService service)
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+
+
+        OverlayWindowManager(AccessibilityService service)
     {
         this.service = service;
         windowManager = (WindowManager)service.getSystemService(Context.WINDOW_SERVICE);
@@ -55,14 +66,26 @@ public class OverlayWindowManager
 
                 overlayView.findViewById(R.id.explain_button).setOnClickListener(v ->
                 {
-                    overlayTitle.setText("Explaination:");
-                    KeywordScoreWindowCalculator scoreExplainer = new KeywordScoreWindowCalculator();
-                    String explaination = scoreExplainer.getDebugFilterState(result2.getScreen(), result2.getCurrentAppFilter());
-                    overlayTextView.setText(explaination);
+                    overlayTitle.setText(R.string.explanation_title);
                     if(overlayView != null)
                     {
                         overlayView.findViewById(R.id.explain_button).setEnabled(false);
                     }
+                    overlayTextView.setText(R.string.waiting_bg_task);
+                    // Run the blocking operation in a background thread
+                    executorService.execute(() -> {
+                        KeywordScoreWindowCalculator scoreExplainer = new KeywordScoreWindowCalculator();
+                        String explanation = scoreExplainer.getDebugFilterState(result2.getScreen(), result2.getCurrentAppFilter());
+
+                        // Update UI on the main thread
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            overlayTextView.setText(explanation);
+                            if (overlayView != null) {
+                                overlayView.findViewById(R.id.explain_button).setEnabled(true);
+                            }
+                        });
+                    });
+//                });
                 });
 
                 WindowManager.LayoutParams params = new WindowManager.LayoutParams(
