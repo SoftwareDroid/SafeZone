@@ -57,6 +57,10 @@ To prevent users from uninstalling the app:
 
 First, grant accessibility permission.
 Then, enable device admin and exit learn mode.
-Credits
+
+License:
+GPL
+
+## Credits
 App Icon: SVG Repo - Lock Icon
 https://www.svgrepo.com/svg/530512/lock
