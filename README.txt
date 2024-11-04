@@ -8,7 +8,7 @@ SafeSearch is a productivity-boosting application designed to help users manage 
 - **UI Automation**: Utilizes UI Automation to navigate back to previous screens and kill apps, providing a seamless user experience.
 
 Initially developed to block NSFW (pornographic) content, SafeSearch aims to expand its capabilities to include blocking social media, gambling, and other user-defined content in future updates.
-
+Time restrictions rules are planned too.
 
 ## For Developers
 Installation and Permissions
