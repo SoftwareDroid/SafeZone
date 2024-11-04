@@ -1,0 +1,6 @@
+## Documentation
+Words in topics are scored based on their relevance to the nearest topic (Deep). Choose the topic that is most directly related; for example, if a topic contains both "porn" and "clothing," we want to count "clothing" with its own score.
+
+## SmartFilter
+Trigger + Action: Implement smart bundling for language X for app Y, which makes sense for sharing.
+
