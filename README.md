@@ -1,14 +1,15 @@
 # SafeSearch
 
-SafeSearch is a productivity-boosting application designed to help users manage their time and focus by restricting access to distracting apps and content. It was created out of the need for a robust solution that can effectively block unwanted applications and screens while ensuring that these restrictions are difficult to bypass once set.
+SafeSearch is a productivity-boosting application designed to help users manage their time and focus by restricting access to distracting apps and content.
+It was created out of the need for a robust solution that can effectively block unwanted applications and screens while ensuring that these restrictions are difficult to bypass once set.
 
 ## Features
 - **Comprehensive App Blocking**: Search for and block any app or screen on your device.
 - **Persistent Locking**: Once locked and installed, the app cannot be easily removed, ensuring that users stay focused.
 - **UI Automation**: Utilizes UI Automation to navigate back to previous screens and kill apps, providing a seamless user experience.
 
-Initially developed to block NSFW (pornographic) content, SafeSearch aims to expand its capabilities to include blocking social media, gambling, and other user-defined content in future updates.
-
+Initially developed to block NSFW, e.g. pornographic content, SafeSearch aims to expand its capabilities to include blocking social media, gambling, and other user-defined content in future updates.
+Time restrictions rules are planned too.
 
 ## For Developers
 Installation and Permissions
@@ -46,17 +47,15 @@ Q: Safe Search block is blocking my search?
 
 A: Ensure you are using the correct search URL: safe.duckduckgo.com/?q=%s.
 
-## Documentation
-Words in topics are scored based on their relevance to the nearest topic (Deep). Choose the topic that is most directly related; for example, if a topic contains both "porn" and "clothing," we want to count "clothing" with its own score.
-
-## SmartFilter
-Trigger + Action: Implement smart bundling for language X for app Y, which makes sense for sharing.
-
 ## Preventing Uninstallation
 To prevent users from uninstalling the app:
 
 First, grant accessibility permission.
 Then, enable device admin and exit learn mode.
-Credits
+
+License:
+GPL
+
+## Credits
 App Icon: SVG Repo - Lock Icon
 https://www.svgrepo.com/svg/530512/lock
