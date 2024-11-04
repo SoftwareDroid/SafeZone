@@ -1,0 +1,25 @@
+# Changelog
+0.* Topic Manager, Regex Support,...
+1.0 App Killing with UI Automation
+1.1 Learn Mode
+1.1.1 Hamburger Button in Learn Mode
+1.2.0 Thump Down => Block Sign + Symbols for Home,
+      Use Idendifier for Word Filter
+1.2.1 fix error reacalcualte expresion
+1.4.0 fix AI duckduckgo and big text nodes problem => but now suffix search problem
+Ignore Write fields as search aborts
+1.5.0 clean up home fragment and added lock status indicator to it
+1.7.0 Now unlock/lock via settings fragment
+1.7.1 use correct lock timestamp in home fragment
+1.7.2 prevent turning off access service plus device option do not use KILL_BEFORE_WINDOW anymore as this is to slow and allows for errors
+1.8.0 seperate window and button action, introduce boolean settings enable logging (this works already and block windows)
+1.9.0 first logging
+1.9.1 update termlist rm clothing block image search duckduckgo not working + OnPause Event (HomeBUtton) for setttings framgment to save settings
+1,9.2 Need draw overlay permission
+1.9.3 rm nude in Reisnudeln
+1.9.4 latex can in Naturlatex (Store) and try catch two possible exceptions in overlay window
+1.9.5 remove mostly body parts words
+1.10.0 explain text to bg and add \\b to popo term
+1.10.1 add regex for duckduckgo ai chat
+1.10.2 add much more apps to ignore list to save energy
+
