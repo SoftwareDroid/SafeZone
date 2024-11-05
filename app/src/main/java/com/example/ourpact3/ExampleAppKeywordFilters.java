@@ -391,9 +391,47 @@ public class ExampleAppKeywordFilters
 
     }
 
+    private AppFilter getArdMediathekFilter() throws TopicMissingException, CloneNotSupportedException
+    {
+        String appName = "de.ard.audiothek";
+        ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
+        {
+            // ignore search suggestions
+            PipelineResultKeywordFilter ignoreSearchSuggestions = new PipelineResultKeywordFilter("");
+            ignoreSearchSuggestions.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            ignoreSearchSuggestions.setHasExplainableButton(true);
+            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
+                    new ArrayList<>(List.of(new ArrayList<>(List.of("Suche nach Episoden und Podcasts")))), false, ignoreSearchSuggestions, true);
+            filters.add(ignoreSearch);
+        }
+
+
+        {
+            PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
+            pornResult.setWindowAction(PipelineWindowAction.WARNING);
+            pornResult.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            pornResult.setHasExplainableButton(true);
+            pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
+            ArrayList<TopicScoring> allScorings = new ArrayList<>();
+            allScorings.add(new TopicScoring("porn_explicit", 33, 0));
+            allScorings.add(new TopicScoring("female_body_parts", 30, 0));
+            allScorings.add(new TopicScoring("adult_nudity", 32, 0));
+            allScorings.add(new TopicScoring("adult_sex_toys", 32, 0));
+            allScorings.add(new TopicScoring("patrick_all_merged", 49, 0));
+            boolean ignoreCase = true;  // important for porn filter
+
+            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_3, allScorings, ignoreCase, topicManager, pornResult);
+            filters.add(blockAdultStuff);
+        }
+        return new AppFilter(service, topicManager, filters, appName, false);
+
+
+    }
+
     public ArrayList<AppFilter> getAllExampleFilters() throws TopicMissingException, CloneNotSupportedException
     {
         ArrayList<AppFilter> list = new ArrayList<>();
+        list.add(getArdMediathekFilter());
         list.add(getFirefoxFilter());
         list.add(getPocketCastsFilter());
         list.add(getTelegramFilter2());

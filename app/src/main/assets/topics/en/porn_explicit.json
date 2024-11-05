@@ -14,7 +14,7 @@
     "masturbate",
 //    "porno", in porn
 //    "sexuality", in sexual
-    "edging",
+//    "",
     "chastity",
 //    "hot girl",
     "hot body",
@@ -116,6 +116,7 @@
     "\\bbutt\\b",
     "\\bhottest\\b",
     "\\bsexy\\b",
+    "\\bedging\\b", //knowleding
     "\\bpee\\b",
     "\\boral\\b", // problem oral in doctoral
     "\\bsex\\b" //allow e.g unisex

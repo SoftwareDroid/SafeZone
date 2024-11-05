@@ -81,7 +81,7 @@ public class OverlayWindowManager
                         new Handler(Looper.getMainLooper()).post(() -> {
                             overlayTextView.setText(explanation);
                             if (overlayView != null) {
-                                overlayView.findViewById(R.id.explain_button).setEnabled(true);
+                                overlayView.findViewById(R.id.explain_button).setEnabled(false);
                             }
                         });
                     });
