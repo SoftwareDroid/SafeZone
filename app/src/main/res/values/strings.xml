@@ -114,4 +114,9 @@
     </string>
     <string name="waiting_bg_task">waiting..</string>
     <string name="explanation_title">"Explanation "</string>
+    <string name="anti_cheat_label">Anti Cheat Options</string>
+    <string name="anti_cheat_pin_status">Password Protection</string>
+    <string name="time_lock_label">Settings Time Lock</string>
+    <string name="debbuging_options">Debugging</string>
+    <string name="settings_view">View</string>
 </resources>
