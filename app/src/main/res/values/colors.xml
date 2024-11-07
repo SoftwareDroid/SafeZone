@@ -7,6 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#80F0FFFF</color>
     <color name="learner_screen_learned">#FF448D9A</color>
     <color name="learner_screen_not_learned">#FFCCCCCC</color>
     <color name="lime_dark">#2E8B57</color>
