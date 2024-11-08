@@ -2,6 +2,7 @@ package com.example.ourpact3.ui.settings;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,9 +23,13 @@ import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.PreferencesKeys;
 import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentSettingsBinding;
-import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.util.CurrentTimestamp;
 import com.example.ourpact3.util.ServiceUtil;
+
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class SettingsFragment extends Fragment
 {
@@ -69,37 +74,41 @@ public class SettingsFragment extends Fragment
             }
 
         });
-
-        binding.buttonDisableLock.setOnClickListener(new View.OnClickListener()
+        // Increase Timelock
+        binding.incrementTimeButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                // Create an EditText to get user input for the license key
-                final EditText input = new EditText(v.getContext());
-                input.setInputType(InputType.TYPE_CLASS_TEXT); // Regular text input for license key
+                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
 
-                // Create an AlertDialog to prompt for the license key
+                String timestampString = sharedPreferences.getString(PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL, PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL_DEFAULT);
+                Instant loadedTimestamp = timestampString.isEmpty() ? Instant.now() : Instant.parse(timestampString);
+
+                final EditText input = new EditText(v.getContext());
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 new AlertDialog.Builder(v.getContext())
-                        .setTitle(R.string.enter_master_key)
-                        .setMessage(R.string.enter_master_key_to_proced)
+                        .setTitle(R.string.enter_duration_h)
+                        .setMessage(R.string.message_enter_duration_h)
                         .setView(input)
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
                         {
                             @Override
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                String enteredKey = input.getText().toString();
-                                // Check if the entered key is correct
-                                if (isMasterKeyCorrect(enteredKey))
+                                int newDurationInH = Integer.parseInt(input.getText().toString());
+                                if (newDurationInH > PreferencesKeys.MAX_NUMBER_TIME_LOCK_INC_IN_H)
                                 {
-                                    setLockState(false);
-                                    updateUI();
-                                } else
-                                {
-                                    // Show a message if the key is incorrect
-                                    Toast.makeText(v.getContext(), R.string.message_incorrect_master_key, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(v.getContext(), R.string.message_time_to_big, Toast.LENGTH_SHORT).show();
+                                    return;
                                 }
+                                // increase time
+                                Instant newLockedTill = loadedTimestamp.plus(newDurationInH, ChronoUnit.HOURS);
+                                // save time back
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString(PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL, newLockedTill.toString());
+                                editor.apply();
+                                updateUI();
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
@@ -111,6 +120,126 @@ public class SettingsFragment extends Fragment
                             }
                         })
                         .show();
+            }
+        });
+
+        // end of increase timelock
+
+
+        //
+        binding.usePin.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                boolean isChecked = binding.usePin.isChecked();
+                {
+                    final EditText input = new EditText(v.getContext());
+                    input.setInputType(InputType.TYPE_CLASS_TEXT); // Regular text input for license key
+
+                    //ask for PIN
+                    new AlertDialog.Builder(v.getContext())
+                            .setTitle(!isChecked ? R.string.enter_pin : R.string.enter_new_pin)
+                            .setMessage(!isChecked ? R.string.enter_pin_to_proced : R.string.set_intial_pin)
+                            .setView(input)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    if (isChecked)
+                                    {
+                                        String enteredKey = input.getText().toString();
+                                        // Check if the entered key is correct
+                                        if (isPinCorrect(enteredKey))
+                                        {
+                                            editor.putString(PreferencesKeys.USED_PIN, PreferencesKeys.USED_PIN_DEFAULT_VALUE);
+                                            Toast.makeText(v.getContext(), R.string.pin_disabled, Toast.LENGTH_SHORT).show();
+
+                                        } else
+                                        {
+                                            binding.usePin.setChecked(true);
+                                            Toast.makeText(v.getContext(), R.string.message_incorrect_master_key, Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else
+                                    {
+                                        editor.putString(PreferencesKeys.USED_PIN, input.getText().toString());
+                                    }
+                                    editor.apply();
+                                    updateUI();
+
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    binding.usePin.setChecked(!isChecked);
+                                    dialog.cancel();
+                                }
+                            })
+                            .show();
+                }
+                // Update UI cares about the rest
+
+            }
+        });
+        ////////////////
+        binding.buttonDisableLock.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // Create an EditText to get user input for the license key
+                final EditText input = new EditText(v.getContext());
+                input.setInputType(InputType.TYPE_CLASS_TEXT); // Regular text input for license key
+
+                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
+
+                String usedPIN = sharedPreferences.getString(PreferencesKeys.USED_PIN, PreferencesKeys.USED_PIN_DEFAULT_VALUE);
+                if (!usedPIN.isEmpty())
+                {
+                    // Create an AlertDialog to prompt for the license key
+                    new AlertDialog.Builder(v.getContext())
+                            .setTitle(R.string.enter_pin)
+                            .setMessage(R.string.enter_pin_to_proced)
+                            .setView(input)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    String enteredKey = input.getText().toString();
+                                    // Check if the entered key is correct
+                                    if (isPinCorrect(enteredKey))
+                                    {
+                                        setLockState(false);
+                                        updateUI();
+                                    } else
+                                    {
+                                        // Show a message if the key is incorrect
+                                        Toast.makeText(v.getContext(), R.string.message_incorrect_master_key, Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    dialog.cancel();
+                                }
+                            })
+                            .show();
+                } else
+                {
+                    // There was no PIN set
+                    setLockState(false);
+                    updateUI();
+                }
             }
         });
         // init checkbox
@@ -125,6 +254,7 @@ public class SettingsFragment extends Fragment
         return root;
     }
 
+    @SuppressLint("SetTextI18n")
     public void updateUI()
     {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
@@ -145,16 +275,35 @@ public class SettingsFragment extends Fragment
             binding.buttonDisableLock.setEnabled(hasAccessService);
             binding.buttonEnableLock.setVisibility(View.GONE);
         }
+        // Update has PINSet
+        boolean hasPINSet = sharedPreferences.getString(PreferencesKeys.USED_PIN, PreferencesKeys.USED_PIN_DEFAULT_VALUE).isEmpty();
+        binding.usePin.setChecked(hasPINSet);
+        // Update time lock
+        String timeLockTil = sharedPreferences.getString(PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL, PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL_DEFAULT);
+        Instant currentTime = Instant.now();
+        Instant lockedTill = timeLockTil.isEmpty() ? currentTime : Instant.parse(timeLockTil); // Default is now Lock
+        if (lockedTill.isAfter(currentTime))
+        {
+            binding.buttonDisableLock.setEnabled(false); // we have a time lock to disable unlock button
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+                    .withZone(ZoneId.systemDefault());
+            String formattedTimestamp = formatter.format(lockedTill);
+            binding.timeLockStatus.setText(formattedTimestamp);
+        } else
+        {
+            binding.timeLockStatus.setText(R.string.no_time_lock);
+        }
+
 
     }
 
-    public boolean isMasterKeyCorrect(String key)
+    public boolean isPinCorrect(String key)
     {
         // Get the SharedPreferences object
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
 
-        String masterKeyHash = sharedPreferences.getString(PreferencesKeys.MASTER_KEY_HASH, PreferencesKeys.MASTER_KEY_DEFAULT_VALUE);
-        return CheatKeyManager.calculateHashFromString(key).equals(masterKeyHash);
+        String usedPIN = sharedPreferences.getString(PreferencesKeys.USED_PIN, PreferencesKeys.USED_PIN_DEFAULT_VALUE);
+        return usedPIN.equals(key);
     }
 
     private void setLockState(boolean preventDisabling)
@@ -172,7 +321,7 @@ public class SettingsFragment extends Fragment
 
     private void saveSettings()
     {
-        if(this.dirtySettings)
+        if (this.dirtySettings)
         {
             boolean useWarnWindows = binding.useWarnWindowsCheckbox.isChecked();
             boolean logBlocking = binding.logBlockingCheckbox.isChecked();
@@ -187,7 +336,8 @@ public class SettingsFragment extends Fragment
     }
 
 
-    private void sendCommandToService(String command) {
+    private void sendCommandToService(String command)
+    {
         Intent intent = new Intent("SEND_COMMAND");
         intent.putExtra("command", command);
         requireActivity().sendBroadcast(intent);
@@ -195,7 +345,8 @@ public class SettingsFragment extends Fragment
 
     // When e.g Home button, tab switched is pressed
     @Override
-    public void onPause() {
+    public void onPause()
+    {
         super.onPause();
         // Save settings or perform any necessary actions here
         saveSettings();

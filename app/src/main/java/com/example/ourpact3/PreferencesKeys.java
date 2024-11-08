@@ -20,8 +20,11 @@ public class PreferencesKeys
     public static final boolean OPTION_LOG_BLOCKING_DEFAULT = true;
     public static final String PREVENT_DISABLING = "prevent_disabling";
     public static final boolean PREVENT_DISABLING_DEFAULT_VALUE = true;
-    public static final String MASTER_KEY_HASH = "master_key";
+    public static final String USED_PIN = "pin";
     public static final String LOCKED_SINCE = "locked_since";
-    public static final String MASTER_KEY_DEFAULT_VALUE = "507ce4f8b5eade3904fb1695132fe9cc4adae1d89e7f273c106ce80b8a15ed4a";
+    public static final String USED_PIN_DEFAULT_VALUE = ""; // "" means no pin
     public static final String STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL = "gtlock";
+    public static final String STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL_DEFAULT = "";
+
+    public static final int MAX_NUMBER_TIME_LOCK_INC_IN_H = 720;
 }

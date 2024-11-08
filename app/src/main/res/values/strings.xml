@@ -44,8 +44,8 @@
     <string name="app_version_title">App Version</string>
     <string name="button_disable_locking">Disable Locking</string>
     <string name="ok">ok\n</string>
-    <string name="enter_master_key">Enter Master Key</string>
-    <string name="enter_master_key_to_proced">Please enter the master key to proceed:</string>
+    <string name="enter_pin">Enter PIN</string>
+    <string name="enter_pin_to_proced">Please enter the PIN to proceed:</string>
     <string name="message_incorrect_master_key">Incorrect masterkey. Please try again.</string>
     <string name="button_enable_lock">Eternal Lock</string>
     <string name="warning">Warning</string>
@@ -115,8 +115,16 @@
     <string name="waiting_bg_task">waiting..</string>
     <string name="explanation_title">"Explanation "</string>
     <string name="anti_cheat_label">Anti Cheat Options</string>
-    <string name="anti_cheat_pin_status">Use Password Protection</string>
+    <string name="anti_cheat_pin_status">Use PIN Protection</string>
     <string name="time_lock_label">Use Time Lock</string>
     <string name="debbuging_options">Debugging</string>
     <string name="settings_view">View</string>
+    <string name="enter_duration_h">Increment Duration in hours</string>
+    <string name="message_enter_duration_h">Enter an additional duration. The app can only be unlocked once the duration is completed.</string>
+    <string name="message_time_to_big">Duration too long</string>
+    <string name="locked_till">Locked Until: </string>
+    <string name="no_time_lock">No Time Lock</string>
+    <string name="pin_disabled">PIN disabled</string>
+    <string name="enter_new_pin">Enter intial PIN</string>
+    <string name="set_intial_pin">Set intial PIN (no recovery):</string>
 </resources>
