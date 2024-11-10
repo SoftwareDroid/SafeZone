@@ -3,6 +3,7 @@ package com.example.ourpact3.ui.settings;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,8 @@ import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.PreferencesKeys;
 import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentSettingsBinding;
+import com.example.ourpact3.ui.AskForPinDialog;
+import com.example.ourpact3.ui.CreatePinDialog;
 import com.example.ourpact3.util.CurrentTimestamp;
 import com.example.ourpact3.util.ServiceUtil;
 
@@ -30,12 +33,14 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 public class SettingsFragment extends Fragment
 {
 
     private FragmentSettingsBinding binding;
     private boolean dirtySettings;
+    private boolean isPINUsed;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
@@ -80,111 +85,29 @@ public class SettingsFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
-
-                String timestampString = sharedPreferences.getString(PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL, PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL_DEFAULT);
-                Instant loadedTimestamp = timestampString.isEmpty() ? Instant.now() : Instant.parse(timestampString);
-
-                final EditText input = new EditText(v.getContext());
-                input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                new AlertDialog.Builder(v.getContext())
-                        .setTitle(R.string.enter_duration_h)
-                        .setMessage(R.string.message_enter_duration_h)
-                        .setView(input)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                int newDurationInH = Integer.parseInt(input.getText().toString());
-                                if (newDurationInH > PreferencesKeys.MAX_NUMBER_TIME_LOCK_INC_IN_H)
-                                {
-                                    Toast.makeText(v.getContext(), R.string.message_time_to_big, Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                // increase time
-                                Instant newLockedTill = loadedTimestamp.plus(newDurationInH, ChronoUnit.HOURS);
-                                // save time back
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString(PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL, newLockedTill.toString());
-                                editor.apply();
-                                updateUI();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                dialog.cancel();
-                            }
-                        })
-                        .show();
+                startIncrementTimeDialog();
             }
         });
 
         // end of increase timelock
-
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
 
         //
-        binding.usePin.setOnClickListener(new View.OnClickListener()
+        binding.buttonManagePIN.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                boolean isChecked = binding.usePin.isChecked();
+                if (!isPINUsed)
                 {
-                    final EditText input = new EditText(v.getContext());
-                    input.setInputType(InputType.TYPE_CLASS_TEXT); // Regular text input for license key
+                    setFirstPIN();
 
-                    //ask for PIN
-                    new AlertDialog.Builder(v.getContext())
-                            .setTitle(!isChecked ? R.string.enter_pin : R.string.enter_new_pin)
-                            .setMessage(!isChecked ? R.string.enter_pin_to_proced : R.string.set_intial_pin)
-                            .setView(input)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                    if (isChecked)
-                                    {
-                                        String enteredKey = input.getText().toString();
-                                        // Check if the entered key is correct
-                                        if (isPinCorrect(enteredKey))
-                                        {
-                                            editor.putString(PreferencesKeys.USED_PIN, PreferencesKeys.USED_PIN_DEFAULT_VALUE);
-                                            Toast.makeText(v.getContext(), R.string.pin_disabled, Toast.LENGTH_SHORT).show();
+                } else
+                {
 
-                                        } else
-                                        {
-                                            binding.usePin.setChecked(true);
-                                            Toast.makeText(v.getContext(), R.string.message_incorrect_master_key, Toast.LENGTH_SHORT).show();
-                                        }
-                                    } else
-                                    {
-                                        editor.putString(PreferencesKeys.USED_PIN, input.getText().toString());
-                                    }
-                                    editor.apply();
-                                    updateUI();
-
-                                }
-                            })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    binding.usePin.setChecked(!isChecked);
-                                    dialog.cancel();
-                                }
-                            })
-                            .show();
+                    setSecondPIN();
+                    //
                 }
-                // Update UI cares about the rest
-
             }
         });
         ////////////////
@@ -193,47 +116,12 @@ public class SettingsFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                // Create an EditText to get user input for the license key
-                final EditText input = new EditText(v.getContext());
-                input.setInputType(InputType.TYPE_CLASS_TEXT); // Regular text input for license key
-
                 SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
 
                 String usedPIN = sharedPreferences.getString(PreferencesKeys.USED_PIN, PreferencesKeys.USED_PIN_DEFAULT_VALUE);
                 if (!usedPIN.isEmpty())
                 {
-                    // Create an AlertDialog to prompt for the license key
-                    new AlertDialog.Builder(v.getContext())
-                            .setTitle(R.string.enter_pin)
-                            .setMessage(R.string.enter_pin_to_proced)
-                            .setView(input)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    String enteredKey = input.getText().toString();
-                                    // Check if the entered key is correct
-                                    if (isPinCorrect(enteredKey))
-                                    {
-                                        setLockState(false);
-                                        updateUI();
-                                    } else
-                                    {
-                                        // Show a message if the key is incorrect
-                                        Toast.makeText(v.getContext(), R.string.message_incorrect_master_key, Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    dialog.cancel();
-                                }
-                            })
-                            .show();
+                    askForPINAndDisableLockIfCorrect();
                 } else
                 {
                     // There was no PIN set
@@ -253,6 +141,99 @@ public class SettingsFragment extends Fragment
 
         return root;
     }
+
+    public void setSecondPIN()
+    {
+        Dialog dialog = AskForPinDialog.showPinInputDialog(getContext(), new AskForPinDialog.PinInputDialogListener()
+        {
+            @Override
+            public void onPinEntered(String pin)
+            {
+                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
+                String currentPIN = sharedPreferences.getString(PreferencesKeys.USED_PIN, PreferencesKeys.USED_PIN_DEFAULT_VALUE);
+                if (currentPIN.isEmpty() || Objects.equals(pin, currentPIN))
+                {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(PreferencesKeys.USED_PIN, pin);
+                    editor.apply();
+                    updateUI();
+                } else
+                {
+                    Toast.makeText(getContext(), R.string.incorrect_pin_message, Toast.LENGTH_SHORT).show();
+                }
+                // Handle PIN entry
+            }
+        });
+        dialog.show();
+    }
+
+    private void startIncrementTimeDialog()
+    {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
+
+        String timestampString = sharedPreferences.getString(PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL, PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL_DEFAULT);
+        Instant loadedTimestamp = timestampString.isEmpty() ? Instant.now() : Instant.parse(timestampString);
+
+        final EditText input = new EditText(getContext());
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.enter_duration_h)
+                .setMessage(R.string.message_enter_duration_h)
+                .setView(input)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        int newDurationInH = Integer.parseInt(input.getText().toString());
+                        if (newDurationInH > PreferencesKeys.MAX_NUMBER_TIME_LOCK_INC_IN_H)
+                        {
+                            Toast.makeText(getContext(), R.string.message_time_to_big, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        // increase time
+                        Instant newLockedTill = loadedTimestamp.plus(newDurationInH, ChronoUnit.HOURS);
+                        // save time back
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString(PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL, newLockedTill.toString());
+                        editor.apply();
+                        updateUI();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.cancel();
+                    }
+                })
+                .show();
+    }
+
+    public void setFirstPIN()
+    {
+        Dialog dialog = CreatePinDialog.showPinDialog(getContext(), new CreatePinDialog.PinDialogListener()
+        {
+            @Override
+            public void onPinConfirmed(String pin)
+            {
+                // Handle PIN confirmation
+                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(PreferencesKeys.USED_PIN, pin);
+                editor.apply();
+            }
+
+            @Override
+            public void onWrongSecondPin(String pin)
+            {
+                Toast.makeText(getContext(), R.string.pin_mismatch, Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialog.show();
+    }
+
 
     @SuppressLint("SetTextI18n")
     public void updateUI()
@@ -276,8 +257,8 @@ public class SettingsFragment extends Fragment
             binding.buttonEnableLock.setVisibility(View.GONE);
         }
         // Update has PINSet
-        boolean hasPINSet = sharedPreferences.getString(PreferencesKeys.USED_PIN, PreferencesKeys.USED_PIN_DEFAULT_VALUE).isEmpty();
-        binding.usePin.setChecked(hasPINSet);
+        isPINUsed = !sharedPreferences.getString(PreferencesKeys.USED_PIN, PreferencesKeys.USED_PIN_DEFAULT_VALUE).isEmpty();
+        binding.buttonManagePIN.setText(isPINUsed ? R.string.disable_pin : R.string.enable_pin);
         // Update time lock
         String timeLockTil = sharedPreferences.getString(PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL, PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL_DEFAULT);
         Instant currentTime = Instant.now();
@@ -295,6 +276,29 @@ public class SettingsFragment extends Fragment
         }
 
 
+    }
+
+    private void askForPINAndDisableLockIfCorrect()
+    {
+        AskForPinDialog.showPinInputDialog(getContext(), new AskForPinDialog.PinInputDialogListener()
+        {
+            @Override
+            public void onPinEntered(String pin)
+            {
+                // Handle PIN entry
+                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
+
+                String usedPIN = sharedPreferences.getString(PreferencesKeys.USED_PIN, PreferencesKeys.USED_PIN_DEFAULT_VALUE);
+                if (usedPIN.isEmpty() || Objects.equals(pin, usedPIN))
+                {
+                    setLockState(false);
+                    updateUI();
+                } else
+                {
+                    Toast.makeText(getContext(), R.string.incorrect_pin_message, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public boolean isPinCorrect(String key)

@@ -46,7 +46,7 @@
     <string name="ok">ok\n</string>
     <string name="enter_pin">Enter PIN</string>
     <string name="enter_pin_to_proced">Please enter the PIN to proceed:</string>
-    <string name="message_incorrect_master_key">Incorrect masterkey. Please try again.</string>
+    <string name="incorrect_pin_message">Incorrect masterkey. Please try again.</string>
     <string name="button_enable_lock">Eternal Lock</string>
     <string name="warning">Warning</string>
     <string name="warning_enable_app_lock">Enabling this lock will prevent you from disabling or uninstalling the app. Do you want to proceed?</string>
@@ -127,4 +127,8 @@
     <string name="pin_disabled">PIN disabled</string>
     <string name="enter_new_pin">Enter intial PIN</string>
     <string name="set_intial_pin">Set intial PIN (no recovery):</string>
+    <string name="pin_mismatch">PIN mismatch</string>
+    <string name="disable_pin">Disable PIN</string>
+    <string name="enable_pin">Enable PIN</string>
+    <string name="cancel">Cancel</string>
 </resources>
