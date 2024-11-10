@@ -154,14 +154,13 @@ public class SettingsFragment extends Fragment
                 if (currentPIN.isEmpty() || Objects.equals(pin, currentPIN))
                 {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(PreferencesKeys.USED_PIN, pin);
+                    editor.putString(PreferencesKeys.USED_PIN, PreferencesKeys.USED_PIN_DEFAULT_VALUE);
                     editor.apply();
                     updateUI();
                 } else
                 {
                     Toast.makeText(getContext(), R.string.incorrect_pin_message, Toast.LENGTH_SHORT).show();
                 }
-                // Handle PIN entry
             }
         });
         dialog.show();
@@ -223,6 +222,7 @@ public class SettingsFragment extends Fragment
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(PreferencesKeys.USED_PIN, pin);
                 editor.apply();
+                updateUI();
             }
 
             @Override
