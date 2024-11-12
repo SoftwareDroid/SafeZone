@@ -24,3 +24,4 @@ Ignore Write fields as search aborts
 1.10.2 add much more apps to ignore list to save energy
 1.10.3 disable explain once after pressing, add exmaple filter ard mediathek and update terms
 1.11.1 Dialogs now in etrax classes, Ask for First PIN twice and add Time Lock with increment Button
+1.11.2 update terms and use proper settings icons for tabs

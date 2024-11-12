@@ -15,6 +15,9 @@ Time restrictions rules are planned too.
 Installation and Permissions
 To reset permissions, you may need to reinstall the app. The Draw Overlay Permission is required for certain functionalities.
 
+### Add new vector from google
+To get Vector icons right click on res folder New>Vector Asset then click on clip art to select from cataloge
+
 ## Grant Permissions via ADB
 To grant the necessary permissions, use the following command:
 adb shell settings put secure enabled_accessibility_services com.example.ourpact3/com.example.ourpact3.ContentFilterService
