@@ -49,6 +49,7 @@ public class ExampleAppKeywordFilters
         // Add the apps to the HashSet
         appPermissions.put(this.service.getApplicationContext().getPackageName(), AppPermission.USER_RO);
         appPermissions.put("com.android.settings", AppPermission.USER_RO);
+        appPermissions.put("com.android.systemui", AppPermission.USER_RO);// Notifications from other apps
         appPermissions.put("com.google.android.inputmethod.latin", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("com.google.android.apps.maps", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("net.osmand.plus", AppPermission.USER_IGNORE_LIST);

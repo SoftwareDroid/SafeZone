@@ -298,6 +298,10 @@ public class ContentFilterService extends AccessibilityService implements IConte
     public void onAppChange(String oldApp, String newApp)
     {
         this.learnModeComponent.onAppChange(oldApp, newApp);
+        if(this.mode == Mode.NORMAL_MODE)
+        {
+            this.normalModeProcessor.onAppChange(oldApp, newApp);
+        }
     }
 
     @Override

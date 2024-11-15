@@ -15,6 +15,7 @@ public abstract class SpecialSmartFilterBase
         LEARNED_GOOD,
         LEARNED_BAD,
         EXP_PUNISH,
+        TIME_LIMIT
     }
     SpecialSmartFilterBase(PipelineResultBase result, String name)
     {
@@ -25,6 +26,7 @@ public abstract class SpecialSmartFilterBase
     protected PipelineResultBase result;
     public final String name;
 
+    public void onAppStateChange(boolean active){}
     /**
      *
      * @param event

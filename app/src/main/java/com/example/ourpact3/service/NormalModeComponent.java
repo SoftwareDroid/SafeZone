@@ -39,8 +39,21 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
         this.iContentFilterService = iContentFilterService;
     }
 
+    public void onAppChange(String oldApp, String newApp)
+    {
+        AppFilter oldApp2 = appFilters.get(oldApp);
+        if(oldApp2 != null)
+        {
+            oldApp2.onStateChange(false);
+        }
+        AppFilter newApp2 = appFilters.get(oldApp);
+        if(newApp2 != null)
+        {
+            newApp2.onStateChange(true);
+        }
+    }
 
-    public void onPipelineResultForeground(PipelineResultBase result)
+        public void onPipelineResultForeground(PipelineResultBase result)
     {
         if (iContentFilterService.isPackageIgnoredForNormalMode(result.getTriggerPackage()))
         {

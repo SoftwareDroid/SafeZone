@@ -49,6 +49,14 @@ public class AppFilter
     private final TreeMap<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> specialSmartFilters;
     private IFilterResultCallback callback;
 
+    public void onStateChange(boolean active)
+    {
+        for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet()) {
+            SpecialSmartFilterBase value = entry.getValue();
+            value.onAppStateChange(active);
+        }
+    }
+
     public ArrayList<WordProcessorSmartFilterBase> getAllFilters()
     {
         return keywordFilters;

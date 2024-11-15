@@ -32,6 +32,7 @@
   ],
   "regExpWords": [
     "\\beier\\s*(treten|foltern|folter|tritt)\\b",
+    "\\b(mädchen|freundin|herrin|schwester|frau)\\s*(lecken|befriedigen)\\b",
     "\\barsch\\b",
     "\\bpopo\\b",
     "\\bintim\\b",
