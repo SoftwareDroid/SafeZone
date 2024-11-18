@@ -46,7 +46,7 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
         {
             oldApp2.onStateChange(false);
         }
-        AppFilter newApp2 = appFilters.get(oldApp);
+        AppFilter newApp2 = appFilters.get(newApp);
         if(newApp2 != null)
         {
             newApp2.onStateChange(true);
@@ -119,8 +119,8 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
     {
         if (appName != null && !appName.equals(lastUsedApp))
         {
-            lastUsedApp = appName;
             this.iContentFilterService.onAppChange(lastUsedApp, appName);
+            lastUsedApp = appName;
         }
     }
 
