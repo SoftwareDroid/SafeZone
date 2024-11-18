@@ -131,4 +131,5 @@
     <string name="disable_pin">Disable PIN</string>
     <string name="enable_pin">Enable PIN</string>
     <string name="cancel">Cancel</string>
+    <string name="add_exception">Add Exception</string>
 </resources>

@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_exceptions"
-        android:name="com.example.ourpact3.ui.dashboard.ExceptionsFragment"
+        android:name="com.example.ourpact3.ui.dashboard.AppExceptionsFragment"
         android:label="@string/title_exceptions"
         tools:layout="@layout/fragment_exceptions" />
 
