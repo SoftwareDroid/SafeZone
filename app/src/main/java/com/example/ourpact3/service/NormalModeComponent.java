@@ -115,6 +115,15 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
 
     private String lastUsedApp = "";
 
+    public void updatePotentialAppChange(String appName)
+    {
+        if (appName != null && !appName.equals(lastUsedApp))
+        {
+            lastUsedApp = appName;
+            this.iContentFilterService.onAppChange(lastUsedApp, appName);
+        }
+    }
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
@@ -135,16 +144,14 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
         switch (event.getEventType())
         {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-                if (event.getPackageName() != null && !appName.equals(lastUsedApp))
-                {
-                    lastUsedApp = appName;
-                    this.iContentFilterService.onAppChange(lastUsedApp, appName);
-                }
+                updatePotentialAppChange(appName);
                 break;
         }
 
 
     }
+
+
 
     public void processPipelineResults()
     {

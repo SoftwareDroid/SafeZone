@@ -49,9 +49,11 @@ public class ContentFilterService extends AccessibilityService implements IConte
     private CrashHandler crashHandler;
     private CheatKeyManager cheatKeyManager;
     private TreeMap<String, AppPermission> usedAppPermissions;
-    private BroadcastReceiver commandReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver commandReceiver = new BroadcastReceiver()
+    {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context context, Intent intent)
+        {
             String command = intent.getStringExtra("command");
             assert command != null;
             handleCommand(command);
@@ -75,7 +77,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
         learnModeComponent = new LearnModeComponent(this, this, this);
         this.setNewMode(Mode.NORMAL_MODE);
 
-        normalModeProcessor = new NormalModeComponent(this,this, this);
+        normalModeProcessor = new NormalModeComponent(this, this, this);
 
         appKillerService = new AppKiller(this, this);
         cheatKeyManager = new CheatKeyManager(this, 45); //TODO: constant
@@ -100,7 +102,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
             // check all topics
             topicManager.checkAllTopics();
             // load all example filters
-            ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager,this.getApplicationContext());
+            ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager, this.getApplicationContext());
             this.usedAppPermissions = exampleFilters.getAppPermissionsFromDB(this.getApplicationContext());
             exampleFilters.addExampleTopics();
             for (AppFilter filter : exampleFilters.getAllExampleFilters())
@@ -176,9 +178,14 @@ public class ContentFilterService extends AccessibilityService implements IConte
             this.learnModeComponent.onAccessibilityEvent(event);
         } else if (mode == Mode.NORMAL_MODE)
         {
-            if (!this.isPackageIgnoredForNormalMode(event.getPackageName().toString()))
+            String appName = event.getPackageName().toString();
+            if (!this.isPackageIgnoredForNormalMode(appName))
             {
                 this.normalModeProcessor.onAccessibilityEvent(event);
+            } else
+            {
+                // we still have to update app changes, to e.g. correctly calculate time and usage blocks
+                this.normalModeProcessor.updatePotentialAppChange(appName);
             }
 
         } else if (mode == Mode.APP_KILL_MODE_1)
@@ -298,7 +305,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     public void onAppChange(String oldApp, String newApp)
     {
         this.learnModeComponent.onAppChange(oldApp, newApp);
-        if(this.mode == Mode.NORMAL_MODE)
+        if (this.mode == Mode.NORMAL_MODE)
         {
             this.normalModeProcessor.onAppChange(oldApp, newApp);
         }
@@ -326,7 +333,6 @@ public class ContentFilterService extends AccessibilityService implements IConte
     }
 
 
-
     public static final String COMMAND_RELOAD_SETTINGS = "reload";
 
     private void handleCommand(String command)
@@ -336,8 +342,10 @@ public class ContentFilterService extends AccessibilityService implements IConte
             reload();
         }
     }
+
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         super.onDestroy();
         unregisterReceiver(commandReceiver);
     }
