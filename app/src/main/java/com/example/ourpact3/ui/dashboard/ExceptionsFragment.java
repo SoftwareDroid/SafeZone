@@ -18,10 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExceptionsFragment extends Fragment {
-
     private ListView listView;
     private ExceptionAdapter adapter;
-//private FragmentDashboardBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,7 +44,5 @@ public class ExceptionsFragment extends Fragment {
         List<DatabaseManager.ExceptionTuple> exceptions = dbManger.getAllExceptions();
         adapter.setExceptions(exceptions);
         dbManger.close();
-        // Update the adapter with the new data
-//        adapter.updateExceptions(exceptions);
     }
 }

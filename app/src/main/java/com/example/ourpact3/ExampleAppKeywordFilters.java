@@ -64,7 +64,7 @@ public class ExampleAppKeywordFilters
             initialExceptions.add(new DatabaseManager.ExceptionTuple("com.google.android.deskclock", true, false));
             initialExceptions.add(new DatabaseManager.ExceptionTuple("de.nebenan.app", true, true));
             initialExceptions.add(new DatabaseManager.ExceptionTuple("de.flixbus.app", true, true));
-            initialExceptions.add(new DatabaseManager.ExceptionTuple("org.fdroid.fddoid", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("org.fdroid.fdroid", true, true));
             initialExceptions.add(new DatabaseManager.ExceptionTuple("net.tandem", true, true));
             initialExceptions.add(new DatabaseManager.ExceptionTuple("com.meetup", true, true));
             initialExceptions.add(new DatabaseManager.ExceptionTuple("ch.protonvpn.android", true, true));

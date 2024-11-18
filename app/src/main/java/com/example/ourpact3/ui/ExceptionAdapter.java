@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.ourpact3.R;
 
 import com.example.ourpact3.db.DatabaseManager;
+import com.example.ourpact3.util.PackageUtil;
 
 import java.util.List;
 
@@ -49,14 +50,18 @@ public class ExceptionAdapter extends BaseAdapter
         View view = LayoutInflater.from(context).inflate(R.layout.exception_list_item, parent, false);
 
         DatabaseManager.ExceptionTuple exception = exceptions.get(position);
-
+        view.setBackgroundColor(context.getResources().getColor(exception.writable? R.color.white: R.color.purple_200));
         TextView textView = view.findViewById(R.id.text);
-        textView.setText(exception.appName);
 
-//        ImageView imageView = view.findViewById(R.id.);
-//        imageView.setImageResource(R.drawable.icon);
+        String fullName = PackageUtil.getAppName(context, exception.appName);
+        textView.setText(fullName);
+
+        ImageView imageView = view.findViewById(R.id.icon);
+        PackageUtil.getAppIcon(context,exception.appName,imageView);
 
         return view;
     }
+
+
 }
 

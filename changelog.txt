@@ -26,3 +26,4 @@ Ignore Write fields as search aborts
 1.11.1 Dialogs now in extra classes, Ask for first PIN twice and add Time Lock with increment Button
 1.11.2 update termlist (rm exposed) and use proper settings icons for tabs
 1.12.0 Add first timelock block
+1.13.0 Ignore List/Exceptions are now coming from db and are shown with icon and name in UI
