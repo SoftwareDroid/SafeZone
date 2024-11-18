@@ -6,9 +6,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 import com.example.ourpact3.model.PipelineButtonAction;
+import com.example.ourpact3.pipeline.PipelineResultTimeBlock;
 import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
+import com.example.ourpact3.smart_filter.TimeLimitFilter;
 import com.example.ourpact3.smart_filter.WordSmartFilterIdentifier;
 import com.example.ourpact3.topics.InvalidTopicIDException;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
@@ -60,7 +62,7 @@ public class ExampleAppKeywordFilters
         appPermissions.put("de.nebenan.app", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("de.flixbus.app", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("org.fdroid.fddoid", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("org.nuclearfog.apollo", AppPermission.USER_IGNORE_LIST);
+//        appPermissions.put("org.nuclearfog.apollo", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("net.tandem", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("com.meetup", AppPermission.USER_IGNORE_LIST);
         appPermissions.put("ch.protonvpn.android", AppPermission.USER_IGNORE_LIST);
@@ -322,6 +324,18 @@ public class ExampleAppKeywordFilters
 
     }
 
+    private AppFilter getAppolo() throws CloneNotSupportedException
+    {
+        String appName = "org.nuclearfog.apollo";
+        ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
+
+        AppFilter filter = new AppFilter(service, topicManager, filters, appName, false);
+        PipelineResultTimeBlock result = new PipelineResultTimeBlock(PipelineWindowAction.WARNING);
+        result.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT,new TimeLimitFilter(result, "Time limit",24,20));
+        return filter;
+    }
+
     private AppFilter getTelegramFilter2() throws CloneNotSupportedException
     {
         String appName = "org.telegram.messenger";
@@ -438,6 +452,7 @@ public class ExampleAppKeywordFilters
         list.add(getTelegramFilter2());
         list.add(getYoutubeFilter());
         list.add(getAndroidSettings());
+        list.add(getAppolo());
         list.add(getDefaultFilter());
 
         return list;
