@@ -2,9 +2,8 @@ package com.example.ourpact3;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 
+import com.example.ourpact3.db.DatabaseManager;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.pipeline.PipelineResultTimeBlock;
 import com.example.ourpact3.service.AppPermission;
@@ -45,6 +44,66 @@ public class ExampleAppKeywordFilters
     private final ContentFilterService service;
     private final TopicManager topicManager;
 
+    public TreeMap<String, AppPermission> getAppPermissionsFromDB(Context context)
+    {
+        TreeMap<String, AppPermission> appPermissions = new TreeMap<>();
+        DatabaseManager dbManager = new DatabaseManager(context);
+        dbManager.open();
+        if(!dbManager.needInitialFilling())
+        {
+            List<DatabaseManager.ExceptionTuple> initialExceptions = new ArrayList<>();
+            initialExceptions.add(new DatabaseManager.ExceptionTuple(this.service.getApplicationContext().getPackageName(), true, false));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.android.settings", true, false));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.android.systemui", true, false));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.google.android.inputmethod.latin", true, false));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.google.android.apps.maps", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("net.osmand.plus", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.simplemobiletools.gallery.pro", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.airbnb.android", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.google.android.contacts", true, false));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.google.android.deskclock", true, false));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("de.nebenan.app", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("de.flixbus.app", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("org.fdroid.fddoid", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("net.tandem", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.meetup", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("ch.protonvpn.android", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.beemdevelopment.aegis", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("io.github.muntashirakon.AppManager", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.governikus.ausweisapp2", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.mediatek.camera", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("org.thoughtcrime.securesms", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("ru.vsms", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.whatsapp", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("capital.scalable.droid", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("splid.teamturtle.com.splid", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.fsck.k9", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.trello", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.maxistar.textpad", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("cz.mobilesoft.appblock", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.standardnotes", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.google.android.calculator", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.getyourguide.android", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("de.c24.bankapp", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("de.hafas.android.db", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("ws.xsoh.etar", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.ichi2.anki", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("net.sourceforge.opencamera", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("com.epson.epsonsmart", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("de.mm20.launcher2", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("de.reimardoeffinger.quickdic", true, true));
+            initialExceptions.add(new DatabaseManager.ExceptionTuple("de.mm20.launcher2.release", true, true));
+            dbManager.insertBatchExceptions(initialExceptions);
+        }
+        for (DatabaseManager.ExceptionTuple exception : dbManager.getAllExceptions())
+        {
+
+            appPermissions.put(exception.appName,exception.writable ? AppPermission.USER_IGNORE_LIST : AppPermission.USER_RW);
+        }
+        dbManager.close();
+        return appPermissions;
+    }
+    /*
     public TreeMap<String, AppPermission> getAppPermissions()
     {
         TreeMap<String, AppPermission> appPermissions = new TreeMap<>();
@@ -95,7 +154,7 @@ public class ExampleAppKeywordFilters
         appPermissions.put("de.mm20.launcher2.release", AppPermission.USER_IGNORE_LIST);
 
         return appPermissions;
-    }
+    }*/
 
     public void addExampleTopics() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
     {

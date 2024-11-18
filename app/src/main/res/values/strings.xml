@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SafeZone</string> <!--Check ExmapleFilter name for settings-->
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_exceptions">Exceptions</string>
     <string name="title_settings">Settings</string>
     <string name="app_blocked">This app has been blocked due to a rule.</string>
     <string name="app_killed">The app has been terminated due to a rule</string>

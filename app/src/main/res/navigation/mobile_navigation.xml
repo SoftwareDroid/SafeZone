@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.ourpact3.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_exceptions"
+        android:name="com.example.ourpact3.ui.dashboard.ExceptionsFragment"
+        android:label="@string/title_exceptions"
+        tools:layout="@layout/fragment_exceptions" />
 
     <fragment
         android:id="@+id/navigation_settings"
