@@ -97,6 +97,7 @@ public class AppExceptionsFragment extends Fragment
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO: fix background thread problem
                 String packageName = packageNames.get(position);
                 // Add the selected app to appsShown
                 unaddableApps.add(packageName);
@@ -125,6 +126,7 @@ public class AppExceptionsFragment extends Fragment
             unaddableApps.add(tuple.appName);
         }
         adapter.setExceptions(exceptions);
+        adapter.notifyDataSetChanged();
         dbManger.close();
     }
 }
