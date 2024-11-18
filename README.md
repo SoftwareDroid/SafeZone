@@ -9,7 +9,7 @@ It was created out of the need for a robust solution that can effectively block 
 - **UI Automation**: Utilizes UI Automation to navigate back to previous screens and kill apps, providing a seamless user experience.
 
 Initially developed to block NSFW, e.g. pornographic content, SafeSearch aims to expand its capabilities to include blocking social media, gambling, and other user-defined content in future updates.
-Time restrictions rules are planned too.
+Time restrictions rules are available too e.g. block an app after 3min usage for every 2 hours.
 
 ## For Developers
 Installation and Permissions
