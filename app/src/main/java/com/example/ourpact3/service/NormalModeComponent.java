@@ -71,15 +71,6 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
             this.iContentFilterService.activateAppKillMode(result);
             return;
         }
-
-        if (result.getWindowAction() == PipelineWindowAction.WARNING)
-        {
-            if (this.useWarnWindows)
-            {
-                int[] actions = result.getButtonAction() == PipelineButtonAction.NONE ? new int[0] : new int[]{(result.getButtonAction() == PipelineButtonAction.HOME_BUTTON ? AccessibilityService.GLOBAL_ACTION_HOME : AccessibilityService.GLOBAL_ACTION_BACK)};
-                overlayWindowManager.showOverlayWindow(result, actions);
-            }
-        } else if (result.getWindowAction() != PipelineWindowAction.WARNING)
         {
             if (result.getButtonAction() == PipelineButtonAction.BACK_BUTTON)
             {
@@ -91,6 +82,15 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
 
             }
         }
+
+        if (result.getWindowAction() == PipelineWindowAction.WARNING)
+        {
+            if (this.useWarnWindows)
+            {
+                int[] actions = result.getButtonAction() == PipelineButtonAction.NONE ? new int[0] : new int[]{(result.getButtonAction() == PipelineButtonAction.HOME_BUTTON ? AccessibilityService.GLOBAL_ACTION_HOME : AccessibilityService.GLOBAL_ACTION_BACK)};
+                overlayWindowManager.showOverlayWindow(result, actions);
+            }
+        } 
 
         if (useLogging)
         {
