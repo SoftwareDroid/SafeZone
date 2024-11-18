@@ -16,7 +16,7 @@ public class TimeLimitFilter extends SpecialSmartFilterBase
     private Instant sessionStart = Instant.now();
     private Instant sessionEnd = Instant.now();
     private long accumulatedSeconds = 0;
-    private int duration;
+    private int resetPeriodInHours;
     private long limitInSeconds;
     private int numberOfAppUses;
 
@@ -24,7 +24,7 @@ public class TimeLimitFilter extends SpecialSmartFilterBase
     public TimeLimitFilter(PipelineResultBase result, String name, int resetPeriod,int limitInSeconds)
     {
         super(result, name);
-        this.duration = resetPeriod;
+        this.resetPeriodInHours = resetPeriod;
         this.limitInSeconds = limitInSeconds;
     }
 
@@ -58,7 +58,7 @@ public class TimeLimitFilter extends SpecialSmartFilterBase
             numberOfAppUses = 0;
             accumulatedSeconds = 0;
             sessionStart = Instant.now();
-            measurementEnd = sessionEnd.plus(duration, ChronoUnit.HOURS);
+            measurementEnd = sessionEnd.plus(resetPeriodInHours, ChronoUnit.HOURS);
         } else
         {
             if (sessionEnd.isAfter(measurementEnd))
@@ -74,6 +74,7 @@ public class TimeLimitFilter extends SpecialSmartFilterBase
             PipelineResultTimeBlock result = (PipelineResultTimeBlock) this.result.clone();
             result.usageLimit = limitInSeconds;
             result.usageTime = timeSpend;
+            result.resetPeriod = resetPeriodInHours;
             return result;
         }
         // Calculate

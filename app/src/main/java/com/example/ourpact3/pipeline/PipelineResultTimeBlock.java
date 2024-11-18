@@ -14,6 +14,7 @@ public class PipelineResultTimeBlock
 
     public long usageTime;
     public long usageLimit;
+    public int resetPeriod;
 
     @Override
     public String getDialogTitle(Context ctx)
@@ -24,6 +25,6 @@ public class PipelineResultTimeBlock
     @Override
     public String getDialogText(Context ctx)
     {
-        return "This app was used too much. Usage time " + usageTime + "s with a limit of " + usageLimit + "s.";
+        return "This app was used too much. Usage time " + usageTime + "s with a limit of " + usageLimit + "s in " + resetPeriod + "hours.";
     }
 }
