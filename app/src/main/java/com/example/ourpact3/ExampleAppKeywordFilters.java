@@ -391,7 +391,7 @@ public class ExampleAppKeywordFilters
         AppFilter filter = new AppFilter(service, topicManager, filters, appName, false);
         PipelineResultTimeBlock result = new PipelineResultTimeBlock(PipelineWindowAction.WARNING);
         result.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT,new TimeLimitFilter(result, "Time limit",24,20));
+        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT,new TimeLimitFilter(result, "Time limit",1,20));
         return filter;
     }
 

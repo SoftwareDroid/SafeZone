@@ -136,11 +136,6 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
             filter.cancelAllCallbacks();
 
         }
-        if (filter != null && !this.iContentFilterService.isPackageIgnoredForNormalMode(appName))
-        {
-            filter.processEvent(event);
-        }
-
         switch (event.getEventType())
         {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
@@ -148,7 +143,10 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
                 break;
         }
 
-
+        if (filter != null && !this.iContentFilterService.isPackageIgnoredForNormalMode(appName))
+        {
+            filter.processEvent(event);
+        }
     }
 
 
