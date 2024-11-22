@@ -3,14 +3,17 @@ package com.example.ourpact3.smart_filter;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.example.ourpact3.pipeline.PipelineResultBase;
-import com.example.ourpact3.pipeline.PipelineResultTimeBlock;
+import com.example.ourpact3.pipeline.PipelineResultProductivityFilter;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-public class TimeLimitFilter extends SpecialSmartFilterBase
+/**
+ * max number of starts and/or time in s every k hours
+ */
+public class ProductivityFilter extends SpecialSmartFilterBase
 {
     private Instant measurementEnd = null;
     private Instant sessionStart = null;
@@ -20,14 +23,15 @@ public class TimeLimitFilter extends SpecialSmartFilterBase
     private long limitInSeconds;
     private int numberOfAppUses;
     private boolean blocked;
+    private Integer maxNumberOfUsages;
 
-
-    public TimeLimitFilter(PipelineResultBase result, String name, int resetPeriod, int limitInSeconds)
+    public ProductivityFilter(PipelineResultBase result, String name, int resetPeriod, int limitInSeconds, Integer maxNumberOfUsages)
     {
         super(result, name);
         this.resetPeriodInHours = resetPeriod;
         this.limitInSeconds = limitInSeconds;
         this.blocked = false;
+        this.maxNumberOfUsages = maxNumberOfUsages;
     }
 
     @Override
@@ -48,7 +52,7 @@ public class TimeLimitFilter extends SpecialSmartFilterBase
 
     private void startSessionIfRequired()
     {
-        // Start new sessio
+        // Start new session
         if (sessionEnd == null && sessionStart == null)
         {
             numberOfAppUses++;
@@ -95,12 +99,21 @@ public class TimeLimitFilter extends SpecialSmartFilterBase
             resetMeasurement();
             return null;
         }
+        // check number of usages first
+        if(blocked || maxNumberOfUsages != null && numberOfAppUses > maxNumberOfUsages)
+        {
+            PipelineResultProductivityFilter result = (PipelineResultProductivityFilter) this.result.clone();
+            result.usageLimit = maxNumberOfUsages;
+            result.numberOfUsages = numberOfAppUses;
+            blocked = true;
+            return result;
+        }
 
         // Check if limit is exceeded
         long timeSpend = Math.abs(Duration.between(sessionEnd, sessionStart).getSeconds()) + accumulatedSeconds;
         if (blocked || timeSpend > this.limitInSeconds)
         {
-            PipelineResultTimeBlock result = (PipelineResultTimeBlock) this.result.clone();
+            PipelineResultProductivityFilter result = (PipelineResultProductivityFilter) this.result.clone();
             result.usageLimit = limitInSeconds;
             result.usageTime = blocked ? limitInSeconds : timeSpend;
             result.resetPeriod = resetPeriodInHours;

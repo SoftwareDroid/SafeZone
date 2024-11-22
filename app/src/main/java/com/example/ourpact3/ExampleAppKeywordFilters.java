@@ -5,11 +5,11 @@ import android.content.pm.ApplicationInfo;
 
 import com.example.ourpact3.db.DatabaseManager;
 import com.example.ourpact3.model.PipelineButtonAction;
-import com.example.ourpact3.pipeline.PipelineResultTimeBlock;
+import com.example.ourpact3.pipeline.PipelineResultProductivityFilter;
 import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
-import com.example.ourpact3.smart_filter.TimeLimitFilter;
+import com.example.ourpact3.smart_filter.ProductivityFilter;
 import com.example.ourpact3.smart_filter.WordSmartFilterIdentifier;
 import com.example.ourpact3.topics.InvalidTopicIDException;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
@@ -389,9 +389,9 @@ public class ExampleAppKeywordFilters
         ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
 
         AppFilter filter = new AppFilter(service, topicManager, filters, appName, false);
-        PipelineResultTimeBlock result = new PipelineResultTimeBlock(PipelineWindowAction.WARNING);
+        PipelineResultProductivityFilter result = new PipelineResultProductivityFilter(PipelineWindowAction.WARNING);
         result.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT,new TimeLimitFilter(result, "Time limit",1,20));
+        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT,new ProductivityFilter(result, "Time limit",1,200,3));
         return filter;
     }
 

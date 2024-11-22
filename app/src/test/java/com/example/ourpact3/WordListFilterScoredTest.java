@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import com.example.ourpact3.smart_filter.WordSmartFilterIdentifier;
 import com.example.ourpact3.topics.InvalidTopicIDException;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
@@ -50,7 +51,7 @@ public class WordListFilterScoredTest {
     {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 10, 100));
-        filter = new WordListFilterScored("test", topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
+        filter = new WordListFilterScored(WordSmartFilterIdentifier.USER_1, topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
         String text = "Apple";
         PipelineResultBase result = filter.feedWord(createSimpleScreen(text,true));
         assertNotNull(result);
@@ -61,7 +62,7 @@ public class WordListFilterScoredTest {
     {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 100, 100));
-        filter = new WordListFilterScored("test", topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
+        filter = new WordListFilterScored(WordSmartFilterIdentifier.USER_1, topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
         String text = "Hello";
         assertNull(filter.feedWord(new ScreenInfoExtractor.Screen.TextNode(true,true,text)));
     }
@@ -71,7 +72,7 @@ public class WordListFilterScoredTest {
     {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 100, 100));
-        filter = new WordListFilterScored("test", topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
+        filter = new WordListFilterScored(WordSmartFilterIdentifier.USER_1, topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
         PipelineResultBase result = filter.feedWord(new ScreenInfoExtractor.Screen.TextNode(true,true,"apple"));
         assertNotNull(result);
     }
@@ -82,7 +83,7 @@ public class WordListFilterScoredTest {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("a", 34, 34));
         topicScorings.add(new WordListFilterScored.TopicScoring("b", 30, 40));
-        filter = new WordListFilterScored("test", topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
+        filter = new WordListFilterScored(WordSmartFilterIdentifier.USER_1, topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
         String text = "apple";
         PipelineResultBase result = filter.feedWord(new ScreenInfoExtractor.Screen.TextNode(true,true,text));
         assertNull(result);
@@ -97,7 +98,7 @@ public class WordListFilterScoredTest {
     {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("b", 100, 200));
-        filter = new WordListFilterScored("test", topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
+        filter = new WordListFilterScored(WordSmartFilterIdentifier.USER_1, topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
         String text = "bear";
         PipelineResultBase result = filter.feedWord(new ScreenInfoExtractor.Screen.TextNode(true,true,text));
         assertNotNull(result);
@@ -110,7 +111,7 @@ public class WordListFilterScoredTest {
     {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("topic1", 10, 20));
-        filter = new WordListFilterScored("test", topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
+        filter = new WordListFilterScored(WordSmartFilterIdentifier.USER_1, topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
         filter.reset();
     }
 
@@ -133,7 +134,7 @@ public class WordListFilterScoredTest {
         ArrayList<WordListFilterScored.TopicScoring> topicScorings = new ArrayList<>();
         topicScorings.add(new WordListFilterScored.TopicScoring("food", 50, 50));
         topicScorings.add(new WordListFilterScored.TopicScoring("fruits", 30, 30));
-        filter = new WordListFilterScored("test", topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
+        filter = new WordListFilterScored(WordSmartFilterIdentifier.USER_1, topicScorings, true, topicManager, (PipelineResultKeywordFilter) result);
         filter.feedWord(new ScreenInfoExtractor.Screen.TextNode(true,true,"apple"));
         assertEquals(filter.getCurrentScore(),30);//addiert 50+30 ist einfach falsch
         filter.reset();
