@@ -25,9 +25,11 @@ import java.util.List;
 
 public class ExceptionAdapter extends RecyclerView.Adapter<ExceptionAdapter.ViewHolder>
 {
-    public interface OnMenuItemClickListener {
+    public interface OnMenuItemClickListener
+    {
         void onMenuItemClick(MenuItem item, int position);
     }
+
     private List<DatabaseManager.ExceptionTuple> exceptions;
     private List<DatabaseManager.ExceptionTuple> filteredExceptions;
     private Context context;
@@ -72,8 +74,12 @@ public class ExceptionAdapter extends RecyclerView.Adapter<ExceptionAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position)
     {
         DatabaseManager.ExceptionTuple exception = filteredExceptions.get(position);
-        holder.view.setBackgroundColor(context.getResources().getColor(exception.writable ? R.color.white : R.color.purple_200));
+
         String fullName = PackageUtil.getAppName(context, exception.packageID);
+        if (exception.writable)
+        {
+            holder.lockImageView.setVisibility(View.INVISIBLE);
+        }
         holder.textView.setText(fullName);
         PackageUtil.getAppIcon(context, exception.packageID, holder.imageView);
         holder.itemView.setTag(position);
@@ -82,25 +88,28 @@ public class ExceptionAdapter extends RecyclerView.Adapter<ExceptionAdapter.View
             @Override
             public void onClick(View v)
             {
-                showPopupMenu(v, position,!exception.writable);
+                showPopupMenu(v, position, !exception.writable);
             }
         });
     }
 
-    private void showPopupMenu(View view, int position,boolean readOnly) {
+    private void showPopupMenu(View view, int position, boolean readOnly)
+    {
         PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
         popupMenu.inflate(R.menu.exception_menu);
         // make some entries Read Only
-        if(readOnly)
+        if (readOnly)
         {
             Menu menu = popupMenu.getMenu();
             MenuItem menuItem = menu.findItem(R.id.menu_delete);
             menuItem.setEnabled(false);
             menuItem.setCheckable(false);
         }
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+        {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
+            public boolean onMenuItemClick(MenuItem item)
+            {
                 listener.onMenuItemClick(item, position);
                 return true;
             }
@@ -167,13 +176,15 @@ public class ExceptionAdapter extends RecyclerView.Adapter<ExceptionAdapter.View
         public View view;
         public TextView textView;
         public ImageView imageView;
+        public ImageView lockImageView;
 
         public ViewHolder(View itemView)
         {
             super(itemView);
             view = itemView;
             textView = itemView.findViewById(R.id.text);
-            imageView = itemView.findViewById(R.id.icon);
+            imageView = itemView.findViewById(R.id.app_icon);
+            lockImageView = itemView.findViewById(R.id.lock_icon);
         }
     }
 }
