@@ -28,9 +28,10 @@ import java.util.TreeSet;
 public class AppExceptionsFragment extends Fragment
 {
     private RecyclerView recyclerView;
-//    private ListView listView;
+    //    private ListView listView;
     private ExceptionAdapter adapter;
     private TreeSet<String> unaddableApps = new TreeSet<>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -39,11 +40,16 @@ public class AppExceptionsFragment extends Fragment
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        //registerForContextMenu(recyclerView);
         final SearchView searchView = view.findViewById(R.id.search_field);
 
         // Initialize the adapter and set it to the list view
-        adapter = new ExceptionAdapter(getActivity(), new ArrayList<>());
+        adapter = new ExceptionAdapter(getActivity(), new ArrayList<>(), (item, position) -> {
+            if (item.getItemId() == R.id.menu_delete)
+            {
+                deleteException(position);
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         view.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener()
@@ -60,14 +66,17 @@ public class AppExceptionsFragment extends Fragment
         loadExceptions();
 
         // setup search
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
+        {
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public boolean onQueryTextSubmit(String query)
+            {
                 return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onQueryTextChange(String newText)
+            {
                 adapter.getFilter().filter(newText);
                 return true;
             }
@@ -76,7 +85,19 @@ public class AppExceptionsFragment extends Fragment
         return view;
     }
 
-    private void showAppListDialog() {
+
+
+    public void deleteException(int position)
+    {
+        DatabaseManager dbManger = new DatabaseManager(getContext());
+        dbManger.open();
+        dbManger.deleteException(adapter.getDBidFromPos(position));
+        dbManger.close();
+        loadExceptions();
+    }
+
+    private void showAppListDialog()
+    {
         final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.dialog_app_list);
 
@@ -89,10 +110,12 @@ public class AppExceptionsFragment extends Fragment
         final List<String> appNames = new ArrayList<>();
         final List<String> packageNames = new ArrayList<>();
 
-        for (PackageInfo packageInfo : packageInfos) {
+        for (PackageInfo packageInfo : packageInfos)
+        {
             String appName = packageInfo.applicationInfo.loadLabel(packageManager).toString();
             String packageName = packageInfo.packageName;
-            if (!this.unaddableApps.contains(packageName)) {
+            if (!this.unaddableApps.contains(packageName))
+            {
                 appNames.add(appName);
                 packageNames.add(packageName);
             }
@@ -101,22 +124,27 @@ public class AppExceptionsFragment extends Fragment
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, appNames);
         listView.setAdapter(adapter);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
+        {
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public boolean onQueryTextSubmit(String query)
+            {
                 return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onQueryTextChange(String newText)
+            {
                 adapter.getFilter().filter(newText);
                 return true;
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
                 //TODO: fix background thread problem
                 String packageName = packageNames.get(position);
                 // Add the selected app to appsShown
@@ -124,7 +152,7 @@ public class AppExceptionsFragment extends Fragment
                 // Add the selected app to the adapter
                 DatabaseManager dbManger = new DatabaseManager(getContext());
                 dbManger.open();
-                dbManger.insertException(packageName,true,true);
+                dbManger.insertException(packageName, true, true);
                 dbManger.close();
                 loadExceptions();
                 dialog.dismiss();
@@ -141,9 +169,10 @@ public class AppExceptionsFragment extends Fragment
         DatabaseManager dbManger = new DatabaseManager(getContext());
         dbManger.open();
         List<DatabaseManager.ExceptionTuple> exceptions = dbManger.getAllExceptions();
-        for(DatabaseManager.ExceptionTuple tuple : exceptions)
+        for (DatabaseManager.ExceptionTuple tuple : exceptions)
         {
-            tuple.appName = PackageUtil.getAppName(getContext(),tuple.packageID);
+            // We have to set the name as it is needed in search
+            tuple.appName = PackageUtil.getAppName(getContext(), tuple.packageID);
             unaddableApps.add(tuple.packageID);
         }
         adapter.setExceptions(exceptions);

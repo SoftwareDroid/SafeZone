@@ -1,15 +1,18 @@
 package com.example.ourpact3.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ourpact3.R;
@@ -22,16 +25,31 @@ import java.util.List;
 
 public class ExceptionAdapter extends RecyclerView.Adapter<ExceptionAdapter.ViewHolder>
 {
-
+    public interface OnMenuItemClickListener {
+        void onMenuItemClick(MenuItem item, int position);
+    }
     private List<DatabaseManager.ExceptionTuple> exceptions;
     private List<DatabaseManager.ExceptionTuple> filteredExceptions;
     private Context context;
+    private OnMenuItemClickListener listener;
 
-    public ExceptionAdapter(Context context, List<DatabaseManager.ExceptionTuple> exceptions)
+    public String getDBidFromPos(int pos)
+    {
+        DatabaseManager.ExceptionTuple t = filteredExceptions.get(pos);
+        if (t != null)
+        {
+            return t.packageID;
+        }
+        return "";
+    }
+
+
+    public ExceptionAdapter(Context context, List<DatabaseManager.ExceptionTuple> exceptions, OnMenuItemClickListener listener)
     {
         this.context = context;
         this.exceptions = exceptions;
         this.filteredExceptions = exceptions;
+        this.listener = listener;
     }
 
     public void setExceptions(List<DatabaseManager.ExceptionTuple> exceptions)
@@ -41,13 +59,15 @@ public class ExceptionAdapter extends RecyclerView.Adapter<ExceptionAdapter.View
         notifyDataSetChanged();
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
         View view = LayoutInflater.from(context).inflate(R.layout.exception_list_item, parent, false);
         return new ViewHolder(view);
     }
 
+    @SuppressLint("RecyclerView")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
@@ -56,6 +76,36 @@ public class ExceptionAdapter extends RecyclerView.Adapter<ExceptionAdapter.View
         String fullName = PackageUtil.getAppName(context, exception.packageID);
         holder.textView.setText(fullName);
         PackageUtil.getAppIcon(context, exception.packageID, holder.imageView);
+        holder.itemView.setTag(position);
+        holder.itemView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                showPopupMenu(v, position,!exception.writable);
+            }
+        });
+    }
+
+    private void showPopupMenu(View view, int position,boolean readOnly) {
+        PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+        popupMenu.inflate(R.menu.exception_menu);
+        // make some entries Read Only
+        if(readOnly)
+        {
+            Menu menu = popupMenu.getMenu();
+            MenuItem menuItem = menu.findItem(R.id.menu_delete);
+            menuItem.setEnabled(false);
+            menuItem.setCheckable(false);
+        }
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                listener.onMenuItemClick(item, position);
+                return true;
+            }
+        });
+        popupMenu.show();
     }
 
     @Override
