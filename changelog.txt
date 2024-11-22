@@ -29,3 +29,4 @@ Ignore Write fields as search aborts
 1.13.0 Ignore List/Exceptions are now coming from db and are shown with icon and name in UI
 1.14.0 TimeLimitFilter can also evaulate number of starts
 1.15.0 Add popup to delete exception app entries also consider writeable flag and add search for id and appname for exception list
+1.15.1 Use Lock icon to indicate to editable exception rules
