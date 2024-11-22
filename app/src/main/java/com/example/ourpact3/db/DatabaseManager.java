@@ -52,13 +52,15 @@ public class DatabaseManager
 
     public static class ExceptionTuple
     {
+        public String packageID;
         public String appName;
         public boolean readable;
         public boolean writable;
 
-        public ExceptionTuple(String appName, boolean readable, boolean writable)
+        public ExceptionTuple(String packageID, boolean readable, boolean writable)
         {
-            this.appName = appName;
+            this.packageID = packageID;
+            this.appName = packageID;
             this.readable = readable;
             this.writable = writable;
         }
@@ -79,7 +81,7 @@ public class DatabaseManager
         db.beginTransaction();
         try {
             for (ExceptionTuple exception : exceptions) {
-                db.execSQL("INSERT INTO exception_list (appName, readable, writable) VALUES ('" + exception.appName + "', " + (exception.readable ? 1 : 0) + ", " + (exception.writable ? 1 : 0) + ")");
+                db.execSQL("INSERT INTO exception_list (appName, readable, writable) VALUES ('" + exception.packageID + "', " + (exception.readable ? 1 : 0) + ", " + (exception.writable ? 1 : 0) + ")");
             }
             db.setTransactionSuccessful();
         } finally {

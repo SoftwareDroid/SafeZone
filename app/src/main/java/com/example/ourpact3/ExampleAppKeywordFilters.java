@@ -98,7 +98,7 @@ public class ExampleAppKeywordFilters
         for (DatabaseManager.ExceptionTuple exception : dbManager.getAllExceptions())
         {
 
-            appPermissions.put(exception.appName,exception.writable ? AppPermission.USER_IGNORE_LIST : AppPermission.USER_RW);
+            appPermissions.put(exception.packageID,exception.writable ? AppPermission.USER_IGNORE_LIST : AppPermission.USER_RW);
         }
         dbManager.close();
         return appPermissions;

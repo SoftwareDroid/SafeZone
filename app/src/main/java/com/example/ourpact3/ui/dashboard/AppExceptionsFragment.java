@@ -1,7 +1,6 @@
 package com.example.ourpact3.ui.dashboard;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -13,12 +12,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 //import com.example.ourpact3.databinding.FragmentDashboardBinding;
 import com.example.ourpact3.db.DatabaseManager;
 import com.example.ourpact3.ui.ExceptionAdapter;
 import com.example.ourpact3.R;
+import com.example.ourpact3.util.PackageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,8 @@ import java.util.TreeSet;
 
 public class AppExceptionsFragment extends Fragment
 {
-    private ListView listView;
+    private RecyclerView recyclerView;
+//    private ListView listView;
     private ExceptionAdapter adapter;
     private TreeSet<String> unaddableApps = new TreeSet<>();
     @Override
@@ -34,11 +36,15 @@ public class AppExceptionsFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_exceptions, container, false);
 
-        listView = view.findViewById(R.id.exception_list);
+
+        recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        final SearchView searchView = view.findViewById(R.id.search_field);
 
         // Initialize the adapter and set it to the list view
         adapter = new ExceptionAdapter(getActivity(), new ArrayList<>());
-        listView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
         view.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener()
         {
@@ -52,6 +58,20 @@ public class AppExceptionsFragment extends Fragment
 
         // Load data from the database
         loadExceptions();
+
+        // setup search
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
 
         return view;
     }
@@ -123,7 +143,8 @@ public class AppExceptionsFragment extends Fragment
         List<DatabaseManager.ExceptionTuple> exceptions = dbManger.getAllExceptions();
         for(DatabaseManager.ExceptionTuple tuple : exceptions)
         {
-            unaddableApps.add(tuple.appName);
+            tuple.appName = PackageUtil.getAppName(getContext(),tuple.packageID);
+            unaddableApps.add(tuple.packageID);
         }
         adapter.setExceptions(exceptions);
         adapter.notifyDataSetChanged();
