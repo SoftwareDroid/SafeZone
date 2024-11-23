@@ -133,4 +133,6 @@
     <string name="cancel">Cancel</string>
     <string name="add_exception">Add Exception</string>
     <string name="delete">Delete</string>
+    <string name="app_not_found">(Not Installed)</string>
+    <string name="search_apps">Search Apps</string>
 </resources>

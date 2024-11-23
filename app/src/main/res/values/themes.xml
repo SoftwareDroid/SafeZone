@@ -12,10 +12,13 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="iconTint">@color/white</item> <!-- Tint for dark mode -->
     </style>
     <!-- Base application theme. -->
     <style name="Base.Theme.OurPact3" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
+        <item name="iconTint">@color/black</item> <!-- Tint for light mode -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
+
 </resources>

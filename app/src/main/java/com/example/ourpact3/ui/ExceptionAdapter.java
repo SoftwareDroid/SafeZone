@@ -76,6 +76,10 @@ public class ExceptionAdapter extends RecyclerView.Adapter<ExceptionAdapter.View
         DatabaseManager.ExceptionTuple exception = filteredExceptions.get(position);
 
         String fullName = PackageUtil.getAppName(context, exception.packageID);
+        if(exception.packageID.equals(fullName))
+        {
+            fullName +=  " " + context.getString(R.string.app_not_found);
+        }
         holder.lockImageView.setVisibility(exception.writable ? View.INVISIBLE : View.VISIBLE);
         holder.textView.setText(fullName);
         PackageUtil.getAppIcon(context, exception.packageID, holder.imageView);
