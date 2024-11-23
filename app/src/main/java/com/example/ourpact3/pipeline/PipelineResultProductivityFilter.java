@@ -14,7 +14,7 @@ public class PipelineResultProductivityFilter
     public Integer maxNumberOfUsages;
     public int numberOfUsages;
     public long usageTime;
-    public long usageLimit;
+    public long usageLimitInSeconds;
     public int resetPeriod;
 
     @Override
@@ -32,7 +32,7 @@ public class PipelineResultProductivityFilter
         }
         else
         {
-            return "This app was used too much. Usage limit reached of " + usageLimit + "s in " + resetPeriod + "hours.";
+            return "This app was used too much. Usage limit reached of " + usageLimitInSeconds + "s in " + resetPeriod + "hours.";
         }
     }
 }

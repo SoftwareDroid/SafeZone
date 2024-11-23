@@ -103,8 +103,10 @@ public class ProductivityFilter extends SpecialSmartFilterBase
         if(blocked || maxNumberOfUsages != null && numberOfAppUses > maxNumberOfUsages)
         {
             PipelineResultProductivityFilter result = (PipelineResultProductivityFilter) this.result.clone();
-            result.usageLimit = maxNumberOfUsages;
             result.numberOfUsages = numberOfAppUses;
+            result.maxNumberOfUsages = maxNumberOfUsages;
+            result.usageTime = 0;
+            result.resetPeriod = 0;
             blocked = true;
             return result;
         }
@@ -114,9 +116,11 @@ public class ProductivityFilter extends SpecialSmartFilterBase
         if (blocked || timeSpend > this.limitInSeconds)
         {
             PipelineResultProductivityFilter result = (PipelineResultProductivityFilter) this.result.clone();
-            result.usageLimit = limitInSeconds;
+            result.usageLimitInSeconds = limitInSeconds;
             result.usageTime = blocked ? limitInSeconds : timeSpend;
             result.resetPeriod = resetPeriodInHours;
+            result.maxNumberOfUsages = null;
+            result.numberOfUsages = 0;
             blocked = true;
             return result;
         }
