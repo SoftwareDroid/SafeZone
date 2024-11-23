@@ -1,6 +1,9 @@
 package com.example.ourpact3.ui.dashboard;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -18,10 +21,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 //import com.example.ourpact3.databinding.FragmentDashboardBinding;
+import com.example.ourpact3.PreferencesKeys;
 import com.example.ourpact3.db.DatabaseManager;
 import com.example.ourpact3.ui.ExceptionAdapter;
 import com.example.ourpact3.R;
 import com.example.ourpact3.util.PackageUtil;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +34,7 @@ import java.util.TreeSet;
 
 public class AppExceptionsFragment extends Fragment
 {
+    private boolean preventDisabling;
     private RecyclerView recyclerView;
     //    private ListView listView;
     private ExceptionAdapter adapter;
@@ -55,7 +61,7 @@ public class AppExceptionsFragment extends Fragment
         });
         recyclerView.setAdapter(adapter);
 
-        view.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener()
+        /*view.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -63,7 +69,7 @@ public class AppExceptionsFragment extends Fragment
                 showAppListDialog();
             }
 
-        });
+        });*/
 
         // Load data from the database
         loadExceptions();
@@ -170,9 +176,13 @@ public class AppExceptionsFragment extends Fragment
         // Create a new thread to load data from the database
         new Thread(new Runnable()
         {
+
             @Override
             public void run()
             {
+                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
+                preventDisabling = sharedPreferences.getBoolean(PreferencesKeys.PREVENT_DISABLING,PreferencesKeys.PREVENT_DISABLING_DEFAULT_VALUE);
+
                 // Get all exceptions from the database
                 unaddableApps.clear();
                 DatabaseManager dbManger = new DatabaseManager(getContext());
@@ -183,6 +193,10 @@ public class AppExceptionsFragment extends Fragment
                     // We have to set the name as it is needed in search
                     tuple.appName = PackageUtil.getAppName(getContext(), tuple.packageID);
                     unaddableApps.add(tuple.packageID);
+                    if(preventDisabling)
+                    {
+                        tuple.writable = false;
+                    }
                 }
                 dbManger.close();
 
@@ -194,6 +208,22 @@ public class AppExceptionsFragment extends Fragment
                     {
                         adapter.setExceptions(exceptions);
                         adapter.notifyDataSetChanged();
+                        // Show or hide the FAB button based on preventDisabling
+                        final FloatingActionButton fab = getView().findViewById(R.id.fab);
+                        if (preventDisabling) {
+                            fab.setVisibility(View.INVISIBLE);
+                        } else {
+                            fab.setVisibility(View.VISIBLE);
+                            fab.setOnClickListener(new View.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(View v)
+                                {
+                                    showAppListDialog();
+                                }
+                            });
+                        }
+
                     }
                 });
             }

@@ -45,6 +45,7 @@
         android:layout_marginBottom="100dp"
         android:contentDescription="@string/add_exception"
         android:src="@drawable/baseline_add_24"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
