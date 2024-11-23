@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +43,7 @@ public class SettingsFragment extends Fragment
     private FragmentSettingsBinding binding;
     private boolean dirtySettings;
     private boolean isPINUsed;
-
+    private Handler handler = new Handler(Looper.getMainLooper());
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
     {
@@ -236,47 +238,64 @@ public class SettingsFragment extends Fragment
 
 
     @SuppressLint("SetTextI18n")
-    public void updateUI()
+    private void updateUI()
     {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
-        boolean preventDisableing = sharedPreferences.getBoolean(PreferencesKeys.PREVENT_DISABLING, PreferencesKeys.PREVENT_DISABLING_DEFAULT_VALUE);
-        boolean useWarnWindows = sharedPreferences.getBoolean(PreferencesKeys.OPTION_USE_WARN_WINDOWS, PreferencesKeys.OPTION_USE_WARN_WINDOWS_DEFAULT);
-        boolean useLogging = sharedPreferences.getBoolean(PreferencesKeys.OPTION_LOG_BLOCKING, PreferencesKeys.OPTION_LOG_BLOCKING_DEFAULT);
-        binding.logBlockingCheckbox.setChecked(useLogging);
-        binding.useWarnWindowsCheckbox.setChecked(useWarnWindows);
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                // Do heavy operations here
+                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
+                boolean preventDisableing = sharedPreferences.getBoolean(PreferencesKeys.PREVENT_DISABLING, PreferencesKeys.PREVENT_DISABLING_DEFAULT_VALUE);
+                boolean useWarnWindows = sharedPreferences.getBoolean(PreferencesKeys.OPTION_USE_WARN_WINDOWS, PreferencesKeys.OPTION_USE_WARN_WINDOWS_DEFAULT);
+                boolean useLogging = sharedPreferences.getBoolean(PreferencesKeys.OPTION_LOG_BLOCKING, PreferencesKeys.OPTION_LOG_BLOCKING_DEFAULT);
+                boolean hasAccessService = ServiceUtil.isAccessibilityServiceEnabled(getContext(), ContentFilterService.class);
+                String usedPIN = sharedPreferences.getString(PreferencesKeys.USED_PIN, PreferencesKeys.USED_PIN_DEFAULT_VALUE);
+                String timeLockTil = sharedPreferences.getString(PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL, PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL_DEFAULT);
+                Instant currentTime = Instant.now();
+                Instant lockedTill = timeLockTil.isEmpty() ? currentTime : Instant.parse(timeLockTil); // Default is now Lock
 
-        binding.buttonDisableLock.setVisibility(View.VISIBLE);
-        binding.buttonEnableLock.setVisibility(View.VISIBLE);
-        if (!preventDisableing)
-        {
-            binding.buttonDisableLock.setVisibility(View.GONE);
-        } else
-        {
-            boolean hasAccessService = ServiceUtil.isAccessibilityServiceEnabled(getContext(), ContentFilterService.class);
-            binding.buttonDisableLock.setEnabled(hasAccessService);
-            binding.buttonEnableLock.setVisibility(View.GONE);
-        }
-        // Update has PINSet
-        isPINUsed = !sharedPreferences.getString(PreferencesKeys.USED_PIN, PreferencesKeys.USED_PIN_DEFAULT_VALUE).isEmpty();
-        binding.buttonManagePIN.setText(isPINUsed ? R.string.disable_pin : R.string.enable_pin);
-        // Update time lock
-        String timeLockTil = sharedPreferences.getString(PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL, PreferencesKeys.STRICT_MODE_GLOBAL_SETTINGS_TIME_LOCK_TIL_DEFAULT);
-        Instant currentTime = Instant.now();
-        Instant lockedTill = timeLockTil.isEmpty() ? currentTime : Instant.parse(timeLockTil); // Default is now Lock
-        if (lockedTill.isAfter(currentTime))
-        {
-            binding.buttonDisableLock.setEnabled(false); // we have a time lock to disable unlock button
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
-                    .withZone(ZoneId.systemDefault());
-            String formattedTimestamp = formatter.format(lockedTill);
-            binding.timeLockStatus.setText(formattedTimestamp);
-        } else
-        {
-            binding.timeLockStatus.setText(R.string.no_time_lock);
-        }
+                // Update the UI on the main thread
+                requireActivity().runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        binding.logBlockingCheckbox.setChecked(useLogging);
+                        binding.useWarnWindowsCheckbox.setChecked(useWarnWindows);
 
-
+                        binding.buttonDisableLock.setVisibility(View.VISIBLE);
+                        binding.buttonEnableLock.setVisibility(View.VISIBLE);
+                        if (!preventDisableing)
+                        {
+                            binding.buttonDisableLock.setVisibility(View.GONE);
+                        } else
+                        {
+                            binding.buttonDisableLock.setEnabled(hasAccessService);
+                            binding.buttonEnableLock.setVisibility(View.GONE);
+                        }
+                        // Update has PINSet
+                        isPINUsed = !usedPIN.isEmpty();
+                        binding.buttonManagePIN.setText(isPINUsed ? R.string.disable_pin : R.string.enable_pin);
+                        // Update time lock
+                        if (lockedTill.isAfter(currentTime))
+                        {
+                            binding.buttonDisableLock.setEnabled(false); // we have a time lock to disable unlock button
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+                                    .withZone(ZoneId.systemDefault());
+                            String formattedTimestamp = formatter.format(lockedTill);
+                            binding.timeLockStatus.setText(formattedTimestamp);
+                        } else
+                        {
+                            binding.timeLockStatus.setText(R.string.no_time_lock);
+                        }
+                    }
+                });
+            }
+        }).start();
     }
+
 
     private void askForPINAndDisableLockIfCorrect()
     {

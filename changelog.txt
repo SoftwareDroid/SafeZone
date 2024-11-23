@@ -32,3 +32,4 @@ Ignore Write fields as search aborts
 1.15.1 Use Lock icon to indicate to editable exception rules
 1.15.2 search hint for exception tabs, add  Not Installed hint for not installed apps and lock icon now supports switching between black and white in theme change
 1.15.3 remove top padding from action bar and fragments to that search is at top
+1.16.0 Load exception tab and settings tab in background to prevent GUI freezes

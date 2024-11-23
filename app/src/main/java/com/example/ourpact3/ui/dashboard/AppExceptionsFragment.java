@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +33,7 @@ public class AppExceptionsFragment extends Fragment
     //    private ListView listView;
     private ExceptionAdapter adapter;
     private TreeSet<String> unaddableApps = new TreeSet<>();
+    private Handler handler = new Handler(Looper.getMainLooper()); // load db in background
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -164,19 +167,36 @@ public class AppExceptionsFragment extends Fragment
 
     private void loadExceptions()
     {
-        // Get all exceptions from the database
-        unaddableApps.clear();
-        DatabaseManager dbManger = new DatabaseManager(getContext());
-        dbManger.open();
-        List<DatabaseManager.ExceptionTuple> exceptions = dbManger.getAllExceptions();
-        for (DatabaseManager.ExceptionTuple tuple : exceptions)
+        // Create a new thread to load data from the database
+        new Thread(new Runnable()
         {
-            // We have to set the name as it is needed in search
-            tuple.appName = PackageUtil.getAppName(getContext(), tuple.packageID);
-            unaddableApps.add(tuple.packageID);
-        }
-        adapter.setExceptions(exceptions);
-        adapter.notifyDataSetChanged();
-        dbManger.close();
+            @Override
+            public void run()
+            {
+                // Get all exceptions from the database
+                unaddableApps.clear();
+                DatabaseManager dbManger = new DatabaseManager(getContext());
+                dbManger.open();
+                List<DatabaseManager.ExceptionTuple> exceptions = dbManger.getAllExceptions();
+                for (DatabaseManager.ExceptionTuple tuple : exceptions)
+                {
+                    // We have to set the name as it is needed in search
+                    tuple.appName = PackageUtil.getAppName(getContext(), tuple.packageID);
+                    unaddableApps.add(tuple.packageID);
+                }
+                dbManger.close();
+
+                // Update the UI on the main thread
+                handler.post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        adapter.setExceptions(exceptions);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        }).start();
     }
 }
