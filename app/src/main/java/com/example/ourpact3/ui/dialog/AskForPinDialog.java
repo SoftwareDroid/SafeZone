@@ -1,4 +1,4 @@
-package com.example.ourpact3.ui;
+package com.example.ourpact3.ui.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

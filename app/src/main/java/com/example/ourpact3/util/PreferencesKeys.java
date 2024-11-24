@@ -1,4 +1,4 @@
-package com.example.ourpact3;
+package com.example.ourpact3.util;
 
 /*
 // Get the SharedPreferences object

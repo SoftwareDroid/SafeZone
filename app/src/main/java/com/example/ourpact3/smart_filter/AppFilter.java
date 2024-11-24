@@ -1,6 +1,6 @@
-package com.example.ourpact3;
+package com.example.ourpact3.smart_filter;
 
-import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
+import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.service.IFilterResultCallback;
 import com.example.ourpact3.pipeline.PipelineResultBase;
@@ -16,7 +16,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.topics.TopicManager;
-import com.example.ourpact3.smart_filter.WordProcessorSmartFilterBase;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -26,7 +25,7 @@ public class AppFilter
 {
     private ArrayList<AccessibilityEvent> cachedEvents = new ArrayList<>();
     private boolean checkAllEvents;
-    AppFilter(ContentFilterService service, TopicManager topicManager, ArrayList<WordProcessorSmartFilterBase> filters, String packageName, boolean checkAllEvents)
+    public AppFilter(ContentFilterService service, TopicManager topicManager, ArrayList<WordProcessorSmartFilterBase> filters, String packageName, boolean checkAllEvents)
 
     {
         this.service = service;

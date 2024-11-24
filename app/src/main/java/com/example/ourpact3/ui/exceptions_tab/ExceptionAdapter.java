@@ -1,4 +1,4 @@
-package com.example.ourpact3.ui;
+package com.example.ourpact3.ui.exceptions_tab;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

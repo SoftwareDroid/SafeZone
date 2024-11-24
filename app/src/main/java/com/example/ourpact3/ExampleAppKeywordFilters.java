@@ -7,6 +7,7 @@ import com.example.ourpact3.db.DatabaseManager;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.pipeline.PipelineResultProductivityFilter;
 import com.example.ourpact3.service.AppPermission;
+import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.smart_filter.ProductivityFilter;

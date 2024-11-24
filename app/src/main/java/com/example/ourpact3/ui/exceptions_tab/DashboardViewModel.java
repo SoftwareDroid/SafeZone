@@ -1,4 +1,4 @@
-package com.example.ourpact3.ui.dashboard;
+package com.example.ourpact3.ui.exceptions_tab;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

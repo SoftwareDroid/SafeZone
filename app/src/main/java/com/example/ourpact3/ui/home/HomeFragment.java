@@ -24,7 +24,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.MyDeviceAdminReceiver;
-import com.example.ourpact3.PreferencesKeys;
+import com.example.ourpact3.util.PreferencesKeys;
 import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentHomeBinding;
 import com.example.ourpact3.util.CurrentTimestamp;
@@ -32,11 +32,6 @@ import com.example.ourpact3.util.ServiceUtil;
 
 import androidx.activity.result.contract.ActivityResultContracts;
 import android.content.ComponentName;
-import android.text.TextUtils;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class HomeFragment extends Fragment
 {

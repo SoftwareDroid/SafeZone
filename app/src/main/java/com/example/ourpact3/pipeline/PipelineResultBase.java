@@ -1,14 +1,10 @@
 package com.example.ourpact3.pipeline;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
 
-import com.example.ourpact3.AppFilter;
+import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.service.ScreenInfoExtractor;

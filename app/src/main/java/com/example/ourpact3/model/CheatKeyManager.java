@@ -5,7 +5,7 @@ import static android.content.Context.MODE_PRIVATE;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.ourpact3.PreferencesKeys;
+import com.example.ourpact3.util.PreferencesKeys;
 
 import java.io.File;
 import java.io.FileInputStream;

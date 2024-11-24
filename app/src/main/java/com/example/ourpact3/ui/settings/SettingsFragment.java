@@ -23,11 +23,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ourpact3.ContentFilterService;
-import com.example.ourpact3.PreferencesKeys;
+import com.example.ourpact3.util.PreferencesKeys;
 import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentSettingsBinding;
-import com.example.ourpact3.ui.AskForPinDialog;
-import com.example.ourpact3.ui.CreatePinDialog;
+import com.example.ourpact3.ui.dialog.AskForPinDialog;
+import com.example.ourpact3.ui.dialog.CreatePinDialog;
 import com.example.ourpact3.util.CurrentTimestamp;
 import com.example.ourpact3.util.ServiceUtil;
 

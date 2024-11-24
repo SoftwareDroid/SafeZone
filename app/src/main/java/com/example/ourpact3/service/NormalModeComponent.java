@@ -4,13 +4,11 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.example.ourpact3.AppFilter;
+import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.BlockLoggingService;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
-
-import org.json.JSONException;
 
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentLinkedDeque;

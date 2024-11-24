@@ -18,6 +18,7 @@ import android.view.accessibility.AccessibilityEvent;
 import com.example.ourpact3.learn_mode.LearnModeComponent;
 import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.service.AppPermission;
+import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.util.CrashHandler;
 import com.example.ourpact3.pipeline.PipelineResultBase;
@@ -27,6 +28,7 @@ import com.example.ourpact3.service.NormalModeComponent;
 import com.example.ourpact3.topics.Topic;
 import com.example.ourpact3.topics.TopicLoader;
 import com.example.ourpact3.topics.TopicManager;
+import com.example.ourpact3.util.PreferencesKeys;
 
 import org.jetbrains.annotations.NotNull;
 

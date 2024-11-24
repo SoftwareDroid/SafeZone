@@ -1,4 +1,4 @@
-package com.example.ourpact3.ui.dashboard;
+package com.example.ourpact3.ui.exceptions_tab;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -21,9 +21,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 //import com.example.ourpact3.databinding.FragmentDashboardBinding;
-import com.example.ourpact3.PreferencesKeys;
+import com.example.ourpact3.util.PreferencesKeys;
 import com.example.ourpact3.db.DatabaseManager;
-import com.example.ourpact3.ui.ExceptionAdapter;
 import com.example.ourpact3.R;
 import com.example.ourpact3.util.PackageUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

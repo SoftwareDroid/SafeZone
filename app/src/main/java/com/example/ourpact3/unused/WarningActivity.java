@@ -1,7 +1,8 @@
-package com.example.ourpact3;
+package com.example.ourpact3.unused;
 
 import android.os.Bundle;
 
+import com.example.ourpact3.R;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;

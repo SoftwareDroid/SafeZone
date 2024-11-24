@@ -30,11 +30,11 @@
         android:theme="@style/Theme.OurPact3"
         tools:targetApi="31">
         <activity
-            android:name=".WarningActivity"
+            android:name=".unused.WarningActivity"
             android:exported="false"
             android:theme="@style/Theme.OurPact3" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".unused.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
         <activity

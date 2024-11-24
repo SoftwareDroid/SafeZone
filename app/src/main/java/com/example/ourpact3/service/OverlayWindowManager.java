@@ -5,7 +5,6 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.graphics.PixelFormat;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.ourpact3.AppFilter;
 import com.example.ourpact3.KeywordScoreWindowCalculator;
 import com.example.ourpact3.R;
 import com.example.ourpact3.pipeline.PipelineResultBase;
