@@ -31,7 +31,7 @@ import java.util.TreeMap;
 
 public class ExampleAppKeywordFilters
 {
-    ExampleAppKeywordFilters(ContentFilterService service, TopicManager topicManager, Context ctx)
+    public ExampleAppKeywordFilters(ContentFilterService service, TopicManager topicManager, Context ctx)
     {
         this.service = service;
         this.topicManager = topicManager;
