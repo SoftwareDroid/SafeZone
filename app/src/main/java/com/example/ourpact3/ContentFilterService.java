@@ -18,6 +18,7 @@ import android.view.accessibility.AccessibilityEvent;
 import com.example.ourpact3.learn_mode.LearnModeComponent;
 import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.service.AppPermission;
+import com.example.ourpact3.service.ExampleAppKeywordFilters;
 import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.util.CrashHandler;

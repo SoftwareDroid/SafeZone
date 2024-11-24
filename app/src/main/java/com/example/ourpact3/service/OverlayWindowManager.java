@@ -13,7 +13,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.ourpact3.KeywordScoreWindowCalculator;
 import com.example.ourpact3.R;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 

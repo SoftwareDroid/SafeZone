@@ -1,12 +1,12 @@
-package com.example.ourpact3;
+package com.example.ourpact3.service;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 
+import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.db.DatabaseManager;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.pipeline.PipelineResultProductivityFilter;
-import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
@@ -104,58 +104,6 @@ public class ExampleAppKeywordFilters
         dbManager.close();
         return appPermissions;
     }
-    /*
-    public TreeMap<String, AppPermission> getAppPermissions()
-    {
-        TreeMap<String, AppPermission> appPermissions = new TreeMap<>();
-        // Add the apps to the HashSet
-        appPermissions.put(this.service.getApplicationContext().getPackageName(), AppPermission.USER_RO);
-        appPermissions.put("com.android.settings", AppPermission.USER_RO);
-        appPermissions.put("com.android.systemui", AppPermission.USER_RO);// Notifications from other apps
-        appPermissions.put("com.google.android.inputmethod.latin", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.google.android.apps.maps", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("net.osmand.plus", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.simplemobiletools.gallery.pro", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.airbnb.android", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.google.android.contacts", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.google.android.deskclock", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("de.nebenan.app", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("de.flixbus.app", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("org.fdroid.fddoid", AppPermission.USER_IGNORE_LIST);
-//        appPermissions.put("org.nuclearfog.apollo", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("net.tandem", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.meetup", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("ch.protonvpn.android", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.beemdevelopment.aegis", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("io.github.muntashirakon.AppManager", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.governikus.ausweisapp2", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.mediatek.camera", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("org.thoughtcrime.securesms", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("ru.vsms", AppPermission.USER_IGNORE_LIST);  //voice dictation editor
-//        ignoredApps.add("org.telegram.messenger");
-        appPermissions.put("com.whatsapp", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("capital.scalable.droid", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("splid.teamturtle.com.splid", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.fsck.k9", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.trello", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.maxistar.textpad", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("cz.mobilesoft.appblock", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.standardnotes", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.google.android.calculator", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.getyourguide.android", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("de.c24.bankapp", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("de.hafas.android.db", AppPermission.USER_IGNORE_LIST); //db navigator
-        appPermissions.put("ws.xsoh.etar", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.example.ourpact3", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.ichi2.anki", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("net.sourceforge.opencamera", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("com.epson.epsonsmart", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("de.mm20.launcher2", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("de.reimardoeffinger.quickdic", AppPermission.USER_IGNORE_LIST);
-        appPermissions.put("de.mm20.launcher2.release", AppPermission.USER_IGNORE_LIST);
-
-        return appPermissions;
-    }*/
 
     public void addExampleTopics() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException
     {
@@ -461,7 +409,14 @@ public class ExampleAppKeywordFilters
             WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_3, allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
-        return new AppFilter(service, topicManager, filters, appName, false);
+        //Productive Filter
+        AppFilter filter = new AppFilter(service, topicManager, filters, appName, false);
+        {
+            PipelineResultProductivityFilter result = new PipelineResultProductivityFilter(PipelineWindowAction.WARNING);
+            result.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT,new ProductivityFilter(result, "Time limit",1,200,3));
+        }
+        return filter;
 
 
     }

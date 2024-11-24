@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.example.ourpact3.smart_filter.AppFilter;
-import com.example.ourpact3.BlockLoggingService;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;

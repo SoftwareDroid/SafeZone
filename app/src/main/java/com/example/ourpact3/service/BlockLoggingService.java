@@ -1,9 +1,8 @@
-package com.example.ourpact3;
+package com.example.ourpact3.service;
 
 import android.content.Context;
 
 import com.example.ourpact3.pipeline.PipelineResultBase;
-import com.example.ourpact3.service.ScreenInfoExtractor;
 
 import org.json.JSONException;
 

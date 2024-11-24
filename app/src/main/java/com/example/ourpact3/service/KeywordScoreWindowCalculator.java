@@ -1,6 +1,5 @@
-package com.example.ourpact3;
+package com.example.ourpact3.service;
 
-import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.WordListFilterScored;
 import com.example.ourpact3.smart_filter.WordProcessorSmartFilterBase;
