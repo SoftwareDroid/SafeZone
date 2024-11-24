@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 //import com.example.ourpact3.databinding.FragmentDashboardBinding;
+import com.example.ourpact3.ui.dialog.AppListDialog;
 import com.example.ourpact3.util.PreferencesKeys;
 import com.example.ourpact3.db.DatabaseManager;
 import com.example.ourpact3.R;
@@ -106,55 +107,9 @@ public class AppExceptionsFragment extends Fragment
 
     private void showAppListDialog()
     {
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.dialog_app_list);
-
-        final ListView listView = dialog.findViewById(R.id.list_view);
-        final SearchView searchView = dialog.findViewById(R.id.search_view);
-
-        PackageManager packageManager = getActivity().getPackageManager();
-        List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
-
-        final List<String> appNames = new ArrayList<>();
-        final List<String> packageNames = new ArrayList<>();
-
-        for (PackageInfo packageInfo : packageInfos)
-        {
-            String appName = packageInfo.applicationInfo.loadLabel(packageManager).toString();
-            String packageName = packageInfo.packageName;
-            if (!this.unaddableApps.contains(packageName))
-            {
-                appNames.add(appName);
-                packageNames.add(packageName);
-            }
-        }
-
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, appNames);
-        listView.setAdapter(adapter);
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
-        {
+        AppListDialog.showAppListDialog(getActivity(), getActivity().getPackageManager(), new AppListDialog.AppListDialogListener() {
             @Override
-            public boolean onQueryTextSubmit(String query)
-            {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText)
-            {
-                adapter.getFilter().filter(newText);
-                return true;
-            }
-        });
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                //TODO: fix background thread problem
-                String packageName = packageNames.get(position);
+            public void onAppSelected(String packageName) {
                 // Add the selected app to appsShown
                 unaddableApps.add(packageName);
                 // Add the selected app to the adapter
@@ -163,11 +118,13 @@ public class AppExceptionsFragment extends Fragment
                 dbManger.insertException(packageName, true, true);
                 dbManger.close();
                 loadExceptions();
-                dialog.dismiss();
+            }
+
+            @Override
+            public TreeSet<String> getAppsToIgnore() {
+                return unaddableApps;
             }
         });
-
-        dialog.show();
     }
 
     private void loadExceptions()
