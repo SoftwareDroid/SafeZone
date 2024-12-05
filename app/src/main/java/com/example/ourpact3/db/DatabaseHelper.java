@@ -39,6 +39,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "filter_id INTEGER, " +
                 "FOREIGN KEY (app_package_name) REFERENCES apps (package_name), " +
                 "FOREIGN KEY (filter_id) REFERENCES smart_filters (id))");
+        // more tables for these special filters in particular word filter need several tables
+        db.execSQL("CREATE TABLE word_lists (" +
+                "id TEXT PRIMARY KEY, " +
+                "language TEXT, " +
+                "description TEXT)");
+
+        db.execSQL("CREATE TABLE word_list_words (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "word_list_id TEXT, " +
+                "word TEXT, " +
+                "FOREIGN KEY (word_list_id) REFERENCES word_lists (id))");
+
+        db.execSQL("CREATE INDEX idx_word_list_words_word_list_id ON word_list_words (word_list_id)");
+        db.execSQL("CREATE INDEX idx_word_list_words_word ON word_list_words (word)");
+
+        db.execSQL("CREATE TABLE word_list_regex (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "word_list_id TEXT, " +
+                "regex TEXT, " +
+                "FOREIGN KEY (word_list_id) REFERENCES word_lists (id))");
+
+        db.execSQL("CREATE INDEX idx_word_list_regex_word_list_id ON word_list_regex (word_list_id)");
+
+        db.execSQL("CREATE TABLE word_list_sublists (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "word_list_word_id INTEGER, " +
+                "sublist_word TEXT, " +
+                "FOREIGN KEY (word_list_word_id) REFERENCES word_list_words (id))");
+
+        db.execSQL("CREATE INDEX idx_word_list_sublists_word_list_word_id ON word_list_sublists (word_list_word_id)");
+        db.execSQL("CREATE INDEX idx_word_list_sublists_sublist_word ON word_list_sublists (sublist_word)");
+
     }
 
     @Override
