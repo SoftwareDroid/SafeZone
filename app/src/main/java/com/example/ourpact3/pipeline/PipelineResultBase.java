@@ -19,12 +19,8 @@ public abstract class PipelineResultBase implements Cloneable
         try
         {
             PipelineResultBase clone = (PipelineResultBase) super.clone();
+            clone.counterAction = this.counterAction.clone();
 
-            // Deep copy mutable fields
-            if (this.windowAction != null)
-            {
-                clone.windowAction = this.windowAction;
-            }
             if (this.triggerFilter != null)
             {
                 clone.triggerFilter = this.triggerFilter; // Strings are immutable, but this is just for clarity
@@ -38,9 +34,6 @@ public abstract class PipelineResultBase implements Cloneable
             {
                 clone.currentAppFilter = this.currentAppFilter; // Shallow ref is OK
             }
-            clone.killState = this.killState; // Enum is immutable
-            clone.hasExplainableButton = this.hasExplainableButton;
-            clone.buttonAction = this.buttonAction;
             return clone;
         } catch (CloneNotSupportedException e)
         {
@@ -49,32 +42,19 @@ public abstract class PipelineResultBase implements Cloneable
     }
 
 
-    public enum KillState
+    public CounterAction getCounterAction()
     {
-        DO_NOT_KILL,
-        KILL_BEFORE_WINDOW, //TODO: this is sometimes to slow e.g accessibily serice preventing turning off
-        KILLED // internal usage only
+        return this.counterAction;
     }
-
-    //    private PipelineHistory history; //TODO: irgendwie dranhängen usw auf aufbauen
-    public void setButtonAction(PipelineButtonAction buttonAction)
+    public void setCounterAction(CounterAction a)
     {
-        this.buttonAction = buttonAction;
+        this.counterAction = a;
     }
-
-    public PipelineButtonAction getButtonAction()
-    {
-        return this.buttonAction;
-    }
-
-    private PipelineButtonAction buttonAction = PipelineButtonAction.NONE;
-    private PipelineWindowAction windowAction; // Changed to private
     //    private String triggerPackage; // Changed to private
+    private CounterAction counterAction = new CounterAction();
     private String triggerFilter; // Changed to private
     private ScreenInfoExtractor.Screen screen; // Changed to private
     private AppFilter currentAppFilter; // Changed to private
-    private KillState killState = KillState.DO_NOT_KILL; // Changed to private
-    private boolean hasExplainableButton; // Changed to private
 
     public PipelineResultBase()
     {
@@ -122,29 +102,6 @@ public abstract class PipelineResultBase implements Cloneable
         }
     };*/
 
-    public boolean isBlockingAction()
-    {
-        if (this.buttonAction == PipelineButtonAction.BACK_BUTTON || this.buttonAction == PipelineButtonAction.HOME_BUTTON || this.getWindowAction() == PipelineWindowAction.STOP_FURTHER_PROCESSING)
-        {
-            return true;
-        }
-        if (this.killState == KillState.KILL_BEFORE_WINDOW)
-        {
-            return true;
-        }
-        return false;
-    }
-
-    // Getters and Setters
-    public PipelineWindowAction getWindowAction()
-    {
-        return windowAction;
-    }
-
-    public void setWindowAction(PipelineWindowAction windowAction)
-    {
-        this.windowAction = windowAction;
-    }
 
     public String getTriggerPackage()
     {
@@ -182,25 +139,6 @@ public abstract class PipelineResultBase implements Cloneable
         this.currentAppFilter = currentAppFilter;
     }
 
-    public KillState getKillState()
-    {
-        return killState;
-    }
-
-    public void setKillState(KillState killState)
-    {
-        this.killState = killState;
-    }
-
-    public boolean isHasExplainableButton()
-    {
-        return hasExplainableButton;
-    }
-
-    public void setHasExplainableButton(boolean hasExplainableButton)
-    {
-        this.hasExplainableButton = hasExplainableButton;
-    }
 
     public abstract String getDialogTitle(Context ctx);
 
@@ -210,11 +148,10 @@ public abstract class PipelineResultBase implements Cloneable
     {
         return PackageUtil.getAppName(ctx, getTriggerPackage());
     }
-
     public String convertToLogEntry(Context ctx)
     {
-
-        String result = "App: " + getAppName(ctx) + " Warn: " + String.valueOf(this.getWindowAction() == PipelineWindowAction.WARNING) + " Kill: " + this.killState;
-        return result;
+        return "App: " + getAppName(ctx) + " Warn: " + String.valueOf(this.getCounterAction().getWindowAction() == PipelineWindowAction.WARNING) + " Kill: " + this.getCounterAction().getKillState();
     }
+
+
 }

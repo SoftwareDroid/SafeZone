@@ -162,7 +162,7 @@ public class AppFilter
                         // set package name in empty screen
                         resultCopy.setScreen(new ScreenInfoExtractor.Screen(null,null,event.getPackageName().toString()));
                         this.callback.onPipelineResultBackground(resultCopy);
-                        if(resultCopy.isBlockingAction())
+                        if(resultCopy.getCounterAction().isBlockingAction())
                         {
 
                             return;
@@ -211,7 +211,7 @@ public class AppFilter
 //        }
         // mismatch of ids packageName != screen name
         PipelineResultBase endToken = new PipelineResultKeywordFilter(screen.appName);
-        endToken.setWindowAction(PipelineWindowAction.END_OF_PIPE_LINE);
+        endToken.getCounterAction().setWindowAction(PipelineWindowAction.END_OF_PIPE_LINE);
         endToken.setScreen(screen);
         this.callback.onPipelineResultBackground(endToken);
     }
@@ -233,7 +233,7 @@ public class AppFilter
                         PipelineResultBase genericResult = entry.getValue().onPipelineResult(result);
                         if (genericResult != null)
                         {
-                            pipelineRunning = genericResult.getWindowAction() == PipelineWindowAction.CONTINUE_PIPELINE;
+                            pipelineRunning = genericResult.getCounterAction().getWindowAction() == PipelineWindowAction.CONTINUE_PIPELINE;
                             return;
                         }
                     }
@@ -243,7 +243,7 @@ public class AppFilter
                     // Forward result to callback
                     this.callback.onPipelineResultBackground(resultCopy);
 
-                    pipelineRunning = resultCopy.getWindowAction() == PipelineWindowAction.CONTINUE_PIPELINE;
+                    pipelineRunning = resultCopy.getCounterAction().getWindowAction() == PipelineWindowAction.CONTINUE_PIPELINE;
                     if (!pipelineRunning)
                     {
                         return;

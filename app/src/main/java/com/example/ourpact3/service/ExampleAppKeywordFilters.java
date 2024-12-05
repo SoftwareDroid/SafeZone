@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.db.DatabaseManager;
 import com.example.ourpact3.model.PipelineButtonAction;
+import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.pipeline.PipelineResultProductivityFilter;
 import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
@@ -126,12 +127,14 @@ public class ExampleAppKeywordFilters
         // prevent user for disabling the accessabilty service (only works in english)
         {
             PipelineResultKeywordFilter preventDisabelingAccessabilty = new PipelineResultKeywordFilter("");
-            preventDisabelingAccessabilty.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-            preventDisabelingAccessabilty.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             // Killing makes it to slow
-            preventDisabelingAccessabilty.setKillState(PipelineResultBase.KillState.DO_NOT_KILL);
-            preventDisabelingAccessabilty.setHasExplainableButton(true);
+            a.setKillState(CounterAction.KillState.DO_NOT_KILL);
+            a.setHasExplainableButton(true);
+            preventDisabelingAccessabilty.setCounterAction(a);
+
             WordProcessorSmartFilterBase accessibilityOverview = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Use " + myAppName)),
                     new ArrayList<>(List.of("Stop " + myAppName + "?")),
@@ -144,11 +147,13 @@ public class ExampleAppKeywordFilters
         // device admin stuff doesn't show up in access service we have to block the way
         {
             PipelineResultKeywordFilter preventTurnOfDeviceAdmin = new PipelineResultKeywordFilter("");
-            preventTurnOfDeviceAdmin.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-            preventTurnOfDeviceAdmin.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             // Killing makes it to slow
-            preventTurnOfDeviceAdmin.setKillState(PipelineResultBase.KillState.DO_NOT_KILL);
-            preventTurnOfDeviceAdmin.setHasExplainableButton(true);
+            a.setKillState(CounterAction.KillState.DO_NOT_KILL);
+            a.setHasExplainableButton(true);
+            preventTurnOfDeviceAdmin.setCounterAction(a);
             WordProcessorSmartFilterBase searchForDeviceAdmin = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Device admin apps")),
                     new ArrayList<>(List.of(new String[]{"OPEN", myAppName}))
@@ -167,8 +172,10 @@ public class ExampleAppKeywordFilters
         ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
         {
             PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
-            resultIgnoreSearch.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-            resultIgnoreSearch.setHasExplainableButton(true);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setHasExplainableButton(true);
+            resultIgnoreSearch.setCounterAction(a);
             // Add test Filter
             // Create the inner ArrayList
             ArrayList<String> innerList = new ArrayList<>(List.of("Recent searches", "CLEAR ALL"));
@@ -181,10 +188,12 @@ public class ExampleAppKeywordFilters
         }
         {
             PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
-            pornResult.setWindowAction(PipelineWindowAction.WARNING);
-            pornResult.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-            pornResult.setHasExplainableButton(true);
-            pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.WARNING);
+            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            a.setHasExplainableButton(true);
+            a.setKillState(CounterAction.KillState.KILL_BEFORE_WINDOW);
+            pornResult.setCounterAction(a);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("porn_explicit", 33, 50));
             allScorings.add(new TopicScoring("female_body_parts", 30, 45));
@@ -211,8 +220,10 @@ public class ExampleAppKeywordFilters
         {
             // ignore start page
             PipelineResultKeywordFilter ignoreHistoryPage = new PipelineResultKeywordFilter("");
-            ignoreHistoryPage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-            ignoreHistoryPage.setHasExplainableButton(true);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setHasExplainableButton(true);
+            ignoreHistoryPage.setCounterAction(a);
             // Add test Filter
             WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(new ArrayList<>(List.of("History", "Recently closed tabs")))), false, ignoreHistoryPage, false);
             filters.add(ignoreSearch);
@@ -222,8 +233,10 @@ public class ExampleAppKeywordFilters
             // note have to run before block search engines as suggestion to bad engies are blocked
             // ignore suggestion screen
             PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
-            resultIgnoreSearch.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-            resultIgnoreSearch.setHasExplainableButton(true);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setHasExplainableButton(true);
+            resultIgnoreSearch.setCounterAction(a);
             // Add test Filter
             WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox Suggest")))), false, resultIgnoreSearch, false);
             filters.add(ignoreSearch);
@@ -231,8 +244,10 @@ public class ExampleAppKeywordFilters
         {
             // ignore history page
             PipelineResultKeywordFilter ignoreStartpage = new PipelineResultKeywordFilter("");
-            ignoreStartpage.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-            ignoreStartpage.setHasExplainableButton(true);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setHasExplainableButton(true);
+            ignoreStartpage.setCounterAction(a);
             // Add test Filter
             WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_3, new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox", "Jump back in")))), false, ignoreStartpage, false);
             ignoreSearch.setCheckOnlyVisibleNodes(false);
@@ -242,9 +257,11 @@ public class ExampleAppKeywordFilters
         {
             //block unsafe search
             PipelineResultKeywordFilter blockUnsafesearch = new PipelineResultKeywordFilter("");
-            blockUnsafesearch.setWindowAction(PipelineWindowAction.WARNING);
-            blockUnsafesearch.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-            blockUnsafesearch.setHasExplainableButton(true);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.WARNING);
+            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            a.setHasExplainableButton(true);
+            blockUnsafesearch.setCounterAction(a);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("enforce_safe_search", 100, 0));
             boolean ignoreCase = false;  // important for porn filter
@@ -256,10 +273,12 @@ public class ExampleAppKeywordFilters
 
         {
             PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
-            pornResult.setWindowAction(PipelineWindowAction.WARNING);
-            pornResult.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-            pornResult.setHasExplainableButton(true);
-            pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.WARNING);
+            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            a.setHasExplainableButton(true);
+            a.setKillState(CounterAction.KillState.KILL_BEFORE_WINDOW);
+            pornResult.setCounterAction(a);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("porn_explicit", 33, 0));
             allScorings.add(new TopicScoring("female_body_parts", 30, 0));
@@ -294,9 +313,11 @@ public class ExampleAppKeywordFilters
         {
             //block unsafe search
             PipelineResultKeywordFilter blockUnsafesearch = new PipelineResultKeywordFilter("");
-            blockUnsafesearch.setWindowAction(PipelineWindowAction.WARNING);
-            blockUnsafesearch.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-            blockUnsafesearch.setHasExplainableButton(true);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.WARNING);
+            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            a.setHasExplainableButton(true);
+            blockUnsafesearch.setCounterAction(a);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("enforce_safe_search", 100, 100));
             boolean ignoreCase = false;  // important for porn filter
@@ -308,10 +329,12 @@ public class ExampleAppKeywordFilters
 
         {
             PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
-            pornResult.setWindowAction(PipelineWindowAction.WARNING);
-            pornResult.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-            pornResult.setHasExplainableButton(true);
-            pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.WARNING);
+            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            a.setHasExplainableButton(true);
+            a.setKillState(CounterAction.KillState.KILL_BEFORE_WINDOW);
+            pornResult.setCounterAction(a);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("porn_explicit", 40, 0));
             allScorings.add(new TopicScoring("female_body_parts", 30, 0));
@@ -339,8 +362,12 @@ public class ExampleAppKeywordFilters
 
         AppFilter filter = new AppFilter(service, topicManager, filters, appName, false);
         PipelineResultProductivityFilter result = new PipelineResultProductivityFilter(PipelineWindowAction.WARNING);
-        result.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT,new ProductivityFilter(result, "Time limit",1,200,3));
+        CounterAction a = new CounterAction();
+
+        a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+        a.setKillState(CounterAction.KillState.KILL_BEFORE_WINDOW);
+        result.setCounterAction(a);
+        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT,new ProductivityFilter(result, "Time limit",6,200,3));
         return filter;
     }
 
@@ -350,10 +377,12 @@ public class ExampleAppKeywordFilters
         ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
         {
             PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
-            resultIgnoreSearch.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-            resultIgnoreSearch.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-            resultIgnoreSearch.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
-            resultIgnoreSearch.setHasExplainableButton(true);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            a.setKillState(CounterAction.KillState.KILL_BEFORE_WINDOW);
+            a.setHasExplainableButton(true);
+            resultIgnoreSearch.setCounterAction(a);
             // Add test Filter
             WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
                     new ArrayList<>(List.of(
@@ -372,8 +401,10 @@ public class ExampleAppKeywordFilters
         {
             // ignore history page
             PipelineResultKeywordFilter ignoreSettings = new PipelineResultKeywordFilter("");
-            ignoreSettings.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-            ignoreSettings.setHasExplainableButton(true);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setHasExplainableButton(true);
+            ignoreSettings.setCounterAction(a);
             // Add test Filter
             WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
                     new ArrayList<>(List.of(new ArrayList<>(List.of("Settings", "Content")))), false, ignoreSettings, false);
@@ -382,8 +413,10 @@ public class ExampleAppKeywordFilters
         {
             // ignore history page
             PipelineResultKeywordFilter ignoreSettings = new PipelineResultKeywordFilter("");
-            ignoreSettings.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-            ignoreSettings.setHasExplainableButton(true);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setHasExplainableButton(true);
+            ignoreSettings.setCounterAction(a);
             // Add test Filter
             WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(new ArrayList<>(List.of("Search")))), false, ignoreSettings, true);
             filters.add(ignoreSearch);
@@ -392,10 +425,12 @@ public class ExampleAppKeywordFilters
 
         {
             PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
-            pornResult.setWindowAction(PipelineWindowAction.WARNING);
-            pornResult.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-            pornResult.setHasExplainableButton(true);
-            pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.WARNING);
+            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            a.setHasExplainableButton(true);
+            a.setKillState(CounterAction.KillState.KILL_BEFORE_WINDOW);
+            pornResult.setCounterAction(a);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("porn_explicit", 33, 0));
             allScorings.add(new TopicScoring("female_body_parts", 30, 0));
@@ -413,7 +448,9 @@ public class ExampleAppKeywordFilters
         AppFilter filter = new AppFilter(service, topicManager, filters, appName, false);
         {
             PipelineResultProductivityFilter result = new PipelineResultProductivityFilter(PipelineWindowAction.WARNING);
-            result.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            CounterAction a = new CounterAction();
+            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            result.setCounterAction(a);
             filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT,new ProductivityFilter(result, "Time limit",1,200,3));
         }
         return filter;
@@ -428,8 +465,10 @@ public class ExampleAppKeywordFilters
         {
             // ignore search suggestions
             PipelineResultKeywordFilter ignoreSearchSuggestions = new PipelineResultKeywordFilter("");
-            ignoreSearchSuggestions.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-            ignoreSearchSuggestions.setHasExplainableButton(true);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setHasExplainableButton(true);
+            ignoreSearchSuggestions.setCounterAction(a);
             WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
                     new ArrayList<>(List.of(new ArrayList<>(List.of("Suche nach Episoden und Podcasts")))), false, ignoreSearchSuggestions, true);
             filters.add(ignoreSearch);
@@ -438,10 +477,12 @@ public class ExampleAppKeywordFilters
 
         {
             PipelineResultKeywordFilter pornResult = new PipelineResultKeywordFilter("");
-            pornResult.setWindowAction(PipelineWindowAction.WARNING);
-            pornResult.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-            pornResult.setHasExplainableButton(true);
-            pornResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.WARNING);
+            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            a.setHasExplainableButton(true);
+            a.setKillState(CounterAction.KillState.KILL_BEFORE_WINDOW);
+            pornResult.setCounterAction(a);
             ArrayList<TopicScoring> allScorings = new ArrayList<>();
             allScorings.add(new TopicScoring("porn_explicit", 33, 0));
             allScorings.add(new TopicScoring("female_body_parts", 30, 0));

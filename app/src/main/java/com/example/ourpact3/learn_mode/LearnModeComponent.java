@@ -23,6 +23,7 @@ import android.widget.Button;
 
 import com.example.ourpact3.R;
 import com.example.ourpact3.model.PipelineButtonAction;
+import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.pipeline.PipelineResultLearnedMode;
 import com.example.ourpact3.model.PipelineWindowAction;
@@ -393,8 +394,8 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     if (oldGoodFilter == null)
                     {
                         PipelineResultLearnedMode defaultGoodResult = new PipelineResultLearnedMode(app);
-                        defaultGoodResult.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-                        defaultGoodResult.setHasExplainableButton(false);
+                        defaultGoodResult.getCounterAction().setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+                        defaultGoodResult.getCounterAction().setHasExplainableButton(false);
                         UI_ID_Filter newUI_ID_Filter = new UI_ID_Filter(defaultGoodResult, this.context.getString(R.string.name_good_filter), goodIds);
                         this.iContentFilterService.setSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_GOOD, newUI_ID_Filter);
                     } else
@@ -409,10 +410,10 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     if (oldBadFilter == null)
                     {
                         PipelineResultLearnedMode defaultBadResult = new PipelineResultLearnedMode(app);
-                        defaultBadResult.setWindowAction(PipelineWindowAction.WARNING);
-                        defaultBadResult.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-                        defaultBadResult.setHasExplainableButton(false);
-                        defaultBadResult.setKillState(PipelineResultBase.KillState.KILL_BEFORE_WINDOW);
+                        defaultBadResult.getCounterAction().setWindowAction(PipelineWindowAction.WARNING);
+                        defaultBadResult.getCounterAction().setButtonAction(PipelineButtonAction.BACK_BUTTON);
+                        defaultBadResult.getCounterAction().setHasExplainableButton(false);
+                        defaultBadResult.getCounterAction().setKillState(CounterAction.KillState.KILL_BEFORE_WINDOW);
                         UI_ID_Filter newUI_ID_Filter = new UI_ID_Filter(defaultBadResult, this.context.getString(R.string.name_bad_filter), badIds);
                         this.iContentFilterService.setSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_BAD, newUI_ID_Filter);
                     } else
@@ -458,12 +459,12 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
     {
         // TODO: UTF chars nehmen ggf. Totenkopf falls KILL_ACTION
         String status = "";
-        if(result.getKillState() == PipelineResultBase.KillState.KILLED || result.getKillState() == PipelineResultBase.KillState.KILL_BEFORE_WINDOW)
+        if(result.getCounterAction().getKillState() == CounterAction.KillState.KILLED || result.getCounterAction().getKillState() == CounterAction.KillState.KILL_BEFORE_WINDOW)
         {
             status = "💀 + ";
         }
 
-        switch (result.getWindowAction())
+        switch (result.getCounterAction().getWindowAction())
         {
             case WARNING:
                 break;
@@ -476,11 +477,11 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                 status = "🎌";
                 break;
         }
-        if(result.getButtonAction() == PipelineButtonAction.HOME_BUTTON)
+        if(result.getCounterAction().getButtonAction() == PipelineButtonAction.HOME_BUTTON)
         {
             status += " + 🏡";
         }
-        else if(result.getButtonAction() == PipelineButtonAction.BACK_BUTTON)
+        else if(result.getCounterAction().getButtonAction() == PipelineButtonAction.BACK_BUTTON)
         {
             status = " + ⬅";
         }

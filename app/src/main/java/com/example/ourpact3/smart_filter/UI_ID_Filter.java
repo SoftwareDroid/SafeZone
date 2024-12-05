@@ -22,7 +22,7 @@ public class UI_ID_Filter extends SpecialSmartFilterBase
         this.result = result;
         this.result.setTriggerFilter(name);
         this.name = name;
-        result.setButtonAction(PipelineButtonAction.HOME_BUTTON);
+        result.getCounterAction().setButtonAction(PipelineButtonAction.HOME_BUTTON);
         this.sefOfIDs = Collections.unmodifiableSet(setOfIDs);
     }
     public final String name;

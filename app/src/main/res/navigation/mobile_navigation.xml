@@ -18,6 +18,13 @@
         tools:layout="@layout/fragment_exceptions" />
 
     <fragment
+        android:id="@+id/navigation_rules"
+        android:name="com.example.ourpact3.ui.exceptions_tab.AppExceptionsFragment"
+        android:label="@string/title_rules"
+        tools:layout="@layout/fragment_exceptions" />
+
+
+    <fragment
         android:id="@+id/navigation_settings"
         android:name="com.example.ourpact3.ui.settings.SettingsFragment"
         android:label="@string/title_settings"

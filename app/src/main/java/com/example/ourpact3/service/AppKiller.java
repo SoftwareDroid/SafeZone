@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 
 import org.jetbrains.annotations.NotNull;
@@ -162,7 +163,7 @@ public class AppKiller implements IServiceEventHandler
         this.service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
         // Callback process completed and change to killed
         Log.d("Killer", "set to killed");
-        this.pipelineResult.setKillState(PipelineResultBase.KillState.KILLED);
+        this.pipelineResult.getCounterAction().setKillState(CounterAction.KillState.KILLED);
         this.iContentFilterService.finishAppKilling(this.pipelineResult);
 
     }

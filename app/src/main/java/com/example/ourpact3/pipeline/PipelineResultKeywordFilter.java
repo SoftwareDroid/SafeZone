@@ -44,7 +44,7 @@ public class PipelineResultKeywordFilter extends PipelineResultBase
     public String getDialogText(Context ctx)
     {
 
-        if (this.getKillState() == KillState.KILLED) {
+        if (this.getCounterAction().getKillState() == CounterAction.KillState.KILLED) {
             return ctx.getString(R.string.app_killed);
         }
         return ctx.getString(R.string.app_blocked);

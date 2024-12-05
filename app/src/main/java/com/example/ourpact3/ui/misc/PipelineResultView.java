@@ -1,6 +1,6 @@
 package com.example.ourpact3.ui.misc;
 
-import static com.example.ourpact3.pipeline.PipelineResultBase.KillState.KILL_BEFORE_WINDOW;
+import static com.example.ourpact3.pipeline.CounterAction.KillState.KILL_BEFORE_WINDOW;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.ourpact3.R;
 import com.example.ourpact3.model.PipelineWindowAction;
+import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 
 import androidx.annotation.NonNull;
@@ -85,8 +86,9 @@ public class PipelineResultView extends LinearLayout
             spinnerMainActionAgainstApp.setEnabled(false);
         }
         // Kill state
-        PipelineResultBase.KillState killState = pipelineResult.getKillState();
-        if (killState == KILL_BEFORE_WINDOW)
+        CounterAction a = pipelineResult.getCounterAction();
+        CounterAction.KillState killState = pipelineResult.getCounterAction().getKillState();
+        if (killState == CounterAction.KillState.KILL_BEFORE_WINDOW)
         {
             forceKillCheckbox.setChecked(true);
         } else
@@ -94,7 +96,7 @@ public class PipelineResultView extends LinearLayout
             forceKillCheckbox.setChecked(false);
 
         }
-        if (pipelineResult.getWindowAction() == PipelineWindowAction.WARNING)
+        if (a.getWindowAction() == PipelineWindowAction.WARNING)
         {
             switchCheckboxWindow.setChecked(true);
         } else
@@ -104,7 +106,7 @@ public class PipelineResultView extends LinearLayout
         // Main Window Action
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) this.spinnerMainActionAgainstApp.getAdapter();
         int spinnerIndex = 0;
-        switch (pipelineResult.getButtonAction())
+        switch (a.getButtonAction())
         {
             case HOME_BUTTON:
             {

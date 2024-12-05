@@ -12,6 +12,11 @@
         android:title="@string/title_exceptions"/>
 
     <item
+        android:id="@+id/navigation_rules"
+        android:icon="@drawable/baseline_rule_24"
+        android:title="@string/title_rules"/>
+
+    <item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/baseline_settings_24"
         android:title="@string/title_settings"/>

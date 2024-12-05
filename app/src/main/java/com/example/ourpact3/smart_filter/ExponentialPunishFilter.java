@@ -3,6 +3,7 @@ package com.example.ourpact3.smart_filter;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.example.ourpact3.model.PipelineButtonAction;
+import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.pipeline.PipelineResultExpFilter;
 import com.example.ourpact3.model.PipelineWindowAction;
@@ -28,7 +29,7 @@ public class ExponentialPunishFilter extends SpecialSmartFilterBase
     {
         //Default action should be with warning but settings are then triggered to ofen and Warning is not closeable
         super(new PipelineResultExpFilter("",action), name);
-        this.result.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+        this.result.getCounterAction().setButtonAction(PipelineButtonAction.BACK_BUTTON);
         this.violationExpiringInMin = violationExpiringInMin;
         this.MIN_NEEDED_VIOLATATIONS = MIN_NEEDED_VIOLATATIONS;
         this.MIN_TIME_OF_BLOCKING_IN_SECONDS = MIN_TIME_OF_BLOCKING_IN_SECONDS;
@@ -59,7 +60,7 @@ public class ExponentialPunishFilter extends SpecialSmartFilterBase
                 {
                     PipelineResultExpFilter copy = (PipelineResultExpFilter) result.clone();
                     // if one violation could have killed then we show same behavior here
-                    copy.setKillState(hasOneKillingViolation() ? PipelineResultBase.KillState.KILL_BEFORE_WINDOW : PipelineResultBase.KillState.DO_NOT_KILL);
+                    copy.getCounterAction().setKillState(hasOneKillingViolation() ? CounterAction.KillState.KILL_BEFORE_WINDOW : CounterAction.KillState.DO_NOT_KILL);
                     copy.blockedTil = blockTil;
                     copy.violationCounter = this.violationList.size();
                     return copy;
@@ -84,7 +85,7 @@ public class ExponentialPunishFilter extends SpecialSmartFilterBase
     public PipelineResultBase onPipelineResult(PipelineResultBase result)
     {
         long currentTime = System.currentTimeMillis();
-        if (result.getWindowAction() == PipelineWindowAction.WARNING || result.getButtonAction() == PipelineButtonAction.BACK_BUTTON || result.getButtonAction() == PipelineButtonAction.HOME_BUTTON)
+        if (result.getCounterAction().getWindowAction() == PipelineWindowAction.WARNING || result.getCounterAction().getButtonAction() == PipelineButtonAction.BACK_BUTTON || result.getCounterAction().getButtonAction() == PipelineButtonAction.HOME_BUTTON)
         {
             if (currentTime - this.lastEventTime > this.minTimeBetweenIncreasingViolationCounterInMS)
             {
@@ -93,7 +94,7 @@ public class ExponentialPunishFilter extends SpecialSmartFilterBase
                 // Add new violation to list
 
                 this.result.setScreen(result.getScreen()); // copy app name
-                boolean haveToKill = result.getKillState() == PipelineResultBase.KillState.KILL_BEFORE_WINDOW;
+                boolean haveToKill = result.getCounterAction().getKillState() == CounterAction.KillState.KILL_BEFORE_WINDOW;
                 violationList.add(new Violation(currentTime, haveToKill));
 
                 // Remove expired violations from list

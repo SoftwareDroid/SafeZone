@@ -9,7 +9,7 @@ public class PipelineResultExpFilter extends PipelineResultBase
     public PipelineResultExpFilter(String app, PipelineWindowAction action)
     {
 //        super(app);
-        this.setWindowAction(action);
+        this.getCounterAction().setWindowAction(action);
     }
     public long blockedTil;
     public long violationCounter;

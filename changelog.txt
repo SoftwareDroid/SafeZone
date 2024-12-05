@@ -36,3 +36,5 @@ Ignore Write fields as search aborts
 1.17.0 lock exception tab if app is locked
 1.17.1 Pick app Dialog in own reusable class
 1.17.2 Add Time Filter to youtube app
+1.17.3 started to add dummy rules tab and make appollo rules more restrict
+1.18.0 refactor code extract CounterAction from piplenresult

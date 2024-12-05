@@ -135,4 +135,5 @@
     <string name="delete">Delete</string>
     <string name="app_not_found">(Not Installed)</string>
     <string name="search_apps">Search Apps</string>
+    <string name="title_rules">Rules</string>
 </resources>

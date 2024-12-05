@@ -9,7 +9,7 @@ public class PipelineResultProductivityFilter
 {
     public PipelineResultProductivityFilter(PipelineWindowAction action)
     {
-        this.setWindowAction(action);
+        this.getCounterAction().setWindowAction(action);
     }
     public Integer maxNumberOfUsages;
     public int numberOfUsages;

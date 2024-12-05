@@ -49,7 +49,7 @@ public class OverlayWindowManager
                 TextView overlayTitle = overlayView.findViewById(R.id.overlay_title);
                 overlayTitle.setText(result2.getDialogTitle(service));
                 Button explainButton = (Button) overlayView.findViewById(R.id.explain_button);
-                explainButton.setVisibility(result2.isHasExplainableButton() ? View.VISIBLE : View.GONE);
+                explainButton.setVisibility(result2.getCounterAction().isHasExplainableButton() ? View.VISIBLE : View.GONE);
 
                 overlayView.findViewById(R.id.close_button).setOnClickListener(v ->
                 {

@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
@@ -61,37 +62,37 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
             iContentFilterService.forwardPipelineResultToLearner(result);
             return;
         }
-
-        if (result.getKillState() == PipelineResultBase.KillState.KILL_BEFORE_WINDOW)
+        CounterAction a = result.getCounterAction();
+        if (a.getKillState() == CounterAction.KillState.KILL_BEFORE_WINDOW)
         {
             // Kill app first we get the result a second time via callback wit state == KILLED
             this.iContentFilterService.activateAppKillMode(result);
             return;
         }
         {
-            if (result.getButtonAction() == PipelineButtonAction.BACK_BUTTON)
+            if (a.getButtonAction() == PipelineButtonAction.BACK_BUTTON)
             {
                 service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
 
-            } else if (result.getButtonAction() == PipelineButtonAction.HOME_BUTTON)
+            } else if (a.getButtonAction() == PipelineButtonAction.HOME_BUTTON)
             {
                 service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
 
             }
         }
 
-        if (result.getWindowAction() == PipelineWindowAction.WARNING)
+        if (a.getWindowAction() == PipelineWindowAction.WARNING)
         {
             if (this.useWarnWindows)
             {
-                int[] actions = result.getButtonAction() == PipelineButtonAction.NONE ? new int[0] : new int[]{(result.getButtonAction() == PipelineButtonAction.HOME_BUTTON ? AccessibilityService.GLOBAL_ACTION_HOME : AccessibilityService.GLOBAL_ACTION_BACK)};
+                int[] actions = a.getButtonAction() == PipelineButtonAction.NONE ? new int[0] : new int[]{(a.getButtonAction() == PipelineButtonAction.HOME_BUTTON ? AccessibilityService.GLOBAL_ACTION_HOME : AccessibilityService.GLOBAL_ACTION_BACK)};
                 overlayWindowManager.showOverlayWindow(result, actions);
             }
         }
 
         if (useLogging)
         {
-            if (result.getKillState() == PipelineResultBase.KillState.KILLED || result.getButtonAction() == PipelineButtonAction.BACK_BUTTON || result.getButtonAction() == PipelineButtonAction.HOME_BUTTON)
+            if (a.getKillState() == CounterAction.KillState.KILLED || a.getButtonAction() == PipelineButtonAction.BACK_BUTTON || a.getButtonAction() == PipelineButtonAction.HOME_BUTTON)
             {
                 logger.logScreenBG(result.getScreen(), result);
             }
