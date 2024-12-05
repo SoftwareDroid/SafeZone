@@ -4,7 +4,9 @@ import android.content.Context;
 
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
-
+/*
+The action if a rules triggers
+ */
 public class CounterAction implements Cloneable
 {
     public enum KillState
