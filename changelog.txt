@@ -38,3 +38,5 @@ Ignore Write fields as search aborts
 1.17.2 Add Time Filter to youtube app
 1.17.3 started to add dummy rules tab and make appollo rules more restrict
 1.18.0 refactor code extract CounterAction from piplenresult
+1.18.1 Update terms nackt could be in knackt
+1.18.2 fix bug that user can disable device admin state over notification

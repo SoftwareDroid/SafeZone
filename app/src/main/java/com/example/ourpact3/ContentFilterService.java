@@ -19,6 +19,7 @@ import com.example.ourpact3.learn_mode.LearnModeComponent;
 import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.service.ExampleAppKeywordFilters;
+import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.util.CrashHandler;
@@ -140,6 +141,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
+        ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(getRootInActiveWindow(),false);
         // the a cheat key is used then don't filter
         if (cheatKeyManager.isServiceIsDisabled(getBaseContext()))
         {

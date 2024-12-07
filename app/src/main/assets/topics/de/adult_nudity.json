@@ -6,15 +6,16 @@
   "words": [
     "oben-ohne",
     "oben ohne",
-    "nackt",
     "unbekleidet",
     "nacktheit",
-    "nackt",
     "entblößt",
     "entkleidet",
     "entblößt",
     "unbedeckt",
     "barbusig"
+  ],
+  "regExpWords": [
+    "\\bnackt\\b"
   ],
   "includedTopics": [
   ]

@@ -46,6 +46,30 @@ public class ExampleAppKeywordFilters
     private final ContentFilterService service;
     private final TopicManager topicManager;
 
+    public void CreateIntialLanguages(Context context)
+    {
+        DatabaseManager dbManager = new DatabaseManager(context);
+        dbManager.open();
+        if (!dbManager.needInitialFilling())
+        {
+            final long en_id = dbManager.addLanguage(new DatabaseManager.Language(1,"english","en"));
+            final long de_id = dbManager.addLanguage(new DatabaseManager.Language(2,"german","de"));
+            // create some list
+            // Id 0 means creates entry
+            final long pornMergedListId = dbManager.addOrUpdateWordList(new DatabaseManager.WordList(0,"porn_block", en_id,true,true,"blocks porn content"));
+            final long pornExplicitId = dbManager.addOrUpdateWordList(new DatabaseManager.WordList(0,"porn_explicit", en_id,true,true,"sub porn list"));
+            dbManager.addOrUpdateWordList(new DatabaseManager.WordList(0,"porn_block", de_id,true,true,"blocks porn content"));
+            dbManager.addOrUpdateWordList(new DatabaseManager.WordList(0,"enforce_safe_search", en_id,true,true,"blocks porn content"));
+            // define relations
+            dbManager.defineAsSublist(pornMergedListId,pornExplicitId);
+            // define some words
+            dbManager.addWordToList(pornExplicitId,"porn",false,"");
+            dbManager.addWordToList(pornExplicitId,"cumshot",false,"");
+            dbManager.addWordToList(pornExplicitId,"escort",false,"");
+
+        }
+    }
+
     public TreeMap<String, AppPermission> getAppPermissionsFromDB(Context context)
     {
         TreeMap<String, AppPermission> appPermissions = new TreeMap<>();
@@ -142,6 +166,8 @@ public class ExampleAppKeywordFilters
 
 //                    ,new ArrayList<>(List.of(new String[]{"Accessibility"}))
             )), false, preventDisabelingAccessabilty, false);
+
+
             filters.add(accessibilityOverview);
         }
         // device admin stuff doesn't show up in access service we have to block the way
@@ -156,8 +182,11 @@ public class ExampleAppKeywordFilters
             preventTurnOfDeviceAdmin.setCounterAction(a);
             WordProcessorSmartFilterBase searchForDeviceAdmin = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Device admin apps")),
+                    new ArrayList<>(List.of("Device admin settings")),  // this is a invisible text
                     new ArrayList<>(List.of(new String[]{"OPEN", myAppName}))
             )), false, preventTurnOfDeviceAdmin, false);
+            searchForDeviceAdmin.setCheckOnlyVisibleNodes(false);
+
             filters.add(searchForDeviceAdmin);
 
         }

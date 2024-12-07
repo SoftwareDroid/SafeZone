@@ -1,4 +1,5 @@
 package com.example.ourpact3.db;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -65,6 +66,91 @@ public class DatabaseManager
             this.writable = writable;
         }
     }
+    public static class Word
+    {
+        public long id;
+        public String word;
+        public boolean isRegex;
+        public String comment;
+
+        public Word(long id, String word, boolean isRegex, String comment)
+        {
+            this.id = id;
+            this.word = word;
+            this.isRegex = isRegex;
+            this.comment = comment;
+        }
+    }
+
+    public static class Language
+    {
+        public long id;
+        public String name;
+        public String code;
+
+        public Language(long id, String name, String code)
+        {
+            this.id = id;
+            this.name = name;
+            this.code = code;
+        }
+    }
+
+    public static class WordList
+    {
+        public long id;
+        public String name;
+        public long languageId;
+        public boolean readable;
+        public boolean writable;
+        public String description;
+
+        public WordList(long id, String name, long languageId, boolean readable, boolean writable, String description)
+        {
+            this.id = id;
+            this.name = name;
+            this.languageId = languageId;
+            this.readable = readable;
+            this.writable = writable;
+            this.description = description;
+        }
+    }
+
+    public static class WordListWord
+    {
+        public long wordListId;
+        public long wordId;
+
+        public WordListWord(long wordListId, long wordId)
+        {
+            this.wordListId = wordListId;
+            this.wordId = wordId;
+        }
+    }
+
+    public static class WordLanguage
+    {
+        public long wordId;
+        public long languageId;
+
+        public WordLanguage(long wordId, long languageId)
+        {
+            this.wordId = wordId;
+            this.languageId = languageId;
+        }
+    }
+
+    public static class WordListSublist
+    {
+        public long parentListId;
+        public long childListId;
+
+        public WordListSublist(long parentListId, long childListId)
+        {
+            this.parentListId = parentListId;
+            this.childListId = childListId;
+        }
+    }
 
     public boolean needInitialFilling() {
         try {
@@ -117,4 +203,117 @@ public class DatabaseManager
     public Cursor getException(String appName) {
         return db.rawQuery("SELECT * FROM exception_list WHERE appName = '" + appName + "'", null);
     }
+
+    //
+    public void addWordToList(long wordListId, String word, boolean isRegex, String comment) {
+        if (wordListId <= 0) {
+            throw new IllegalArgumentException("Word list ID must be greater than 0");
+        }
+        if (word == null || word.isEmpty()) {
+            throw new IllegalArgumentException("Word must not be null or empty");
+        }
+        long wordId = getWordId(word);
+        if (wordId <= 0) {
+            wordId = addWord(word, isRegex, comment);
+        }
+        db.execSQL("INSERT INTO word_list_words (word_list_id, word_id) VALUES (" + wordListId + ", " + wordId + ")");
+    }
+
+    private long getWordId(String word) {
+        Cursor cursor = db.rawQuery("SELECT id FROM words WHERE word = ?", new String[] {word});
+        if (cursor.moveToFirst()) {
+            long wordId = cursor.getLong(0);
+            cursor.close();
+            return wordId;
+        } else {
+            cursor.close();
+            return 0;
+        }
+    }
+
+    private long addWord(String word, boolean isRegex, String comment) {
+        ContentValues values = new ContentValues();
+        values.put("word", word);
+        values.put("is_regex", isRegex ? 1 : 0);
+        values.put("comment", comment != null ? comment : "");
+        return db.insert("words", null, values);
+    }
+    /*
+    public long addWordList(String name, long languageId, boolean readable, boolean writable, String description) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Word list name must not be null or empty");
+        }
+        if (languageId <= 0) {
+            throw new IllegalArgumentException("Language ID must be greater than 0");
+        }
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("language_id", languageId);
+        values.put("readable", readable ? 1 : 0);
+        values.put("writable", writable ? 1 : 0);
+        values.put("description", description != null ? description : "");
+        return db.insert("word_lists", null, values);
+    }*/
+
+    public void defineAsSublist(long parentListId, long childListId) {
+        if (parentListId <= 0 || childListId <= 0) {
+            throw new IllegalArgumentException("Parent list ID and child list ID must be greater than 0");
+        }
+        db.execSQL("INSERT INTO word_list_sublists (parent_list_id, child_list_id) VALUES (" + parentListId + ", " + childListId + ")");
+    }
+
+    public void removeWordFromList(long wordListId, long wordId) {
+        if (wordListId <= 0 || wordId <= 0) {
+            throw new IllegalArgumentException("Word list ID and word ID must be greater than 0");
+        }
+        db.execSQL("DELETE FROM word_list_words WHERE word_list_id = " + wordListId + " AND word_id = " + wordId);
+    }
+
+    public void removeWordList(long wordListId) {
+        if (wordListId <= 0) {
+            throw new IllegalArgumentException("Word list ID must be greater than 0");
+        }
+        db.execSQL("DELETE FROM word_lists WHERE id = " + wordListId);
+    }
+
+    public void removeSublist(long parentListId, long childListId) {
+        if (parentListId <= 0 || childListId <= 0) {
+            throw new IllegalArgumentException("Parent list ID and child list ID must be greater than 0");
+        }
+        db.execSQL("DELETE FROM word_list_sublists WHERE parent_list_id = " + parentListId + " AND child_list_id = " + childListId);
+    }
+    public long addLanguage(Language language) {
+        if (language == null) {
+            throw new IllegalArgumentException("Language must not be null");
+        }
+        ContentValues values = new ContentValues();
+        values.put("name", language.name);
+        values.put("code", language.code);
+        return db.insert("languages", null, values);
+    }
+
+    public long addOrUpdateWordList(WordList wordList) {
+        if (wordList == null) {
+            throw new IllegalArgumentException("Word list must not be null");
+        }
+        if (wordList.name == null || wordList.name.isEmpty()) {
+            throw new IllegalArgumentException("Word list name must not be null or empty");
+        }
+        if (wordList.languageId <= 0) {
+            throw new IllegalArgumentException("Language ID must be greater than 0");
+        }
+        ContentValues values = new ContentValues();
+        values.put("name", wordList.name);
+        values.put("language_id", wordList.languageId);
+        values.put("readable", wordList.readable ? 1 : 0);
+        values.put("writable", wordList.writable ? 1 : 0);
+        values.put("description", wordList.description != null ? wordList.description : "");
+        if (wordList.id > 0) {
+            db.update("word_lists", values, "id = ?", new String[] {String.valueOf(wordList.id)});
+            return wordList.id;
+        } else {
+            return db.insert("word_lists", null, values);
+        }
+    }
+
 }
