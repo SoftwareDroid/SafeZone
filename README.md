@@ -15,6 +15,13 @@ Time restrictions rules are available too e.g. block an app after 3min usage for
 Installation and Permissions
 To reset permissions, you may need to reinstall the app. The Draw Overlay Permission is required for certain functionalities.
 
+##ä Build release variant
+Generate Signed App Bundle/ Apk > select release
+password is in Keepassxs
+
+Reinstalling in Debug revokes the accessibility permission (a way to disable the apps functions).
+It does not in release version. 
+
 ### Add new vector from google
 To get Vector icons right click on res folder New>Vector Asset then click on clip art to select from cataloge
 

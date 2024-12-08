@@ -13,7 +13,9 @@ import java.util.Map;
 
 public class WordListFilterExact extends WordProcessorSmartFilterBase
 {
-
+/*
+listofWords (w and w2) | (w and w2) | (w and w2 and w3 )
+ */
 public WordListFilterExact(WordSmartFilterIdentifier identifier, ArrayList<ArrayList<String>> listOfWords, boolean ignoreCase, PipelineResultKeywordFilter result, boolean searchForEditable) throws CloneNotSupportedException
 {
     super(result, identifier);

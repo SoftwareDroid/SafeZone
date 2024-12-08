@@ -141,8 +141,8 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
-        ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(getRootInActiveWindow(),false);
-        // the a cheat key is used then don't filter
+      //  ScreenInfoExtractor.Screen s =  ScreenInfoExtractor.extractTextElements(getRootInActiveWindow(),false);
+        // the a cheat key is used then don't filte
         if (cheatKeyManager.isServiceIsDisabled(getBaseContext()))
         {
             return;

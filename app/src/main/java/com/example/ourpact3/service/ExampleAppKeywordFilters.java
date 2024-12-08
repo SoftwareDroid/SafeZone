@@ -52,20 +52,20 @@ public class ExampleAppKeywordFilters
         dbManager.open();
         if (!dbManager.needInitialFilling())
         {
-            final long en_id = dbManager.addLanguage(new DatabaseManager.Language(1,"english","en"));
-            final long de_id = dbManager.addLanguage(new DatabaseManager.Language(2,"german","de"));
+            final long en_id = dbManager.addLanguage(new DatabaseManager.Language(1, "english", "en"));
+            final long de_id = dbManager.addLanguage(new DatabaseManager.Language(2, "german", "de"));
             // create some list
             // Id 0 means creates entry
-            final long pornMergedListId = dbManager.addOrUpdateWordList(new DatabaseManager.WordList(0,"porn_block", en_id,true,true,"blocks porn content"));
-            final long pornExplicitId = dbManager.addOrUpdateWordList(new DatabaseManager.WordList(0,"porn_explicit", en_id,true,true,"sub porn list"));
-            dbManager.addOrUpdateWordList(new DatabaseManager.WordList(0,"porn_block", de_id,true,true,"blocks porn content"));
-            dbManager.addOrUpdateWordList(new DatabaseManager.WordList(0,"enforce_safe_search", en_id,true,true,"blocks porn content"));
+            final long pornMergedListId = dbManager.addOrUpdateWordList(new DatabaseManager.WordList(0, "porn_block", en_id, true, true, "blocks porn content"));
+            final long pornExplicitId = dbManager.addOrUpdateWordList(new DatabaseManager.WordList(0, "porn_explicit", en_id, true, true, "sub porn list"));
+            dbManager.addOrUpdateWordList(new DatabaseManager.WordList(0, "porn_block", de_id, true, true, "blocks porn content"));
+            dbManager.addOrUpdateWordList(new DatabaseManager.WordList(0, "enforce_safe_search", en_id, true, true, "blocks porn content"));
             // define relations
-            dbManager.defineAsSublist(pornMergedListId,pornExplicitId);
+            dbManager.defineAsSublist(pornMergedListId, pornExplicitId);
             // define some words
-            dbManager.addWordToList(pornExplicitId,"porn",false,"");
-            dbManager.addWordToList(pornExplicitId,"cumshot",false,"");
-            dbManager.addWordToList(pornExplicitId,"escort",false,"");
+            dbManager.addWordToList(pornExplicitId, "porn", false, "");
+            dbManager.addWordToList(pornExplicitId, "cumshot", false, "");
+            dbManager.addWordToList(pornExplicitId, "escort", false, "");
 
         }
     }
@@ -75,7 +75,7 @@ public class ExampleAppKeywordFilters
         TreeMap<String, AppPermission> appPermissions = new TreeMap<>();
         DatabaseManager dbManager = new DatabaseManager(context);
         dbManager.open();
-        if(!dbManager.needInitialFilling())
+        if (!dbManager.needInitialFilling())
         {
             List<DatabaseManager.ExceptionTuple> initialExceptions = new ArrayList<>();
             initialExceptions.add(new DatabaseManager.ExceptionTuple(this.service.getApplicationContext().getPackageName(), true, false));
@@ -124,7 +124,7 @@ public class ExampleAppKeywordFilters
         for (DatabaseManager.ExceptionTuple exception : dbManager.getAllExceptions())
         {
 
-            appPermissions.put(exception.packageID,exception.writable ? AppPermission.USER_IGNORE_LIST : AppPermission.USER_RW);
+            appPermissions.put(exception.packageID, exception.writable ? AppPermission.USER_IGNORE_LIST : AppPermission.USER_RW);
         }
         dbManager.close();
         return appPermissions;
@@ -192,6 +192,40 @@ public class ExampleAppKeywordFilters
         }
 
         return new AppFilter(service, topicManager, filters, appName, true);
+    }
+
+    private AppFilter getPackageInstallerFilter() throws CloneNotSupportedException
+    {
+        String myAppName = "SafeZone";
+        String appName = "com.google.android.packageinstaller";
+        ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
+        /**
+         * This code is only probaly needed in the debug version To prevent disabling via reinstalling
+         * When you install an app on an Android device, especially in a development environment using Android Studio,
+         * the app is treated as a new installation each time you uninstall
+         * and then reinstall it.
+         * This behavior is particularly relevant for apps that require special permissions, such as accessibility permissions.
+         * Here are a few reasons why you need to request accessibility permission each time you reinstall your debug app
+         */
+        {
+            PipelineResultKeywordFilter preventReinstallingAndLosePermissons = new PipelineResultKeywordFilter("");
+            CounterAction a = new CounterAction();
+            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            // Killing makes it to slow
+            a.setKillState(CounterAction.KillState.DO_NOT_KILL);
+            a.setHasExplainableButton(false);
+            preventReinstallingAndLosePermissons.setCounterAction(a);
+
+            WordProcessorSmartFilterBase reinstallAppPopup = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
+                    new ArrayList<>(List.of(myAppName, "Do you want to install this app?")),
+                    new ArrayList<>(List.of(myAppName, "Do you want to update this app?"))
+            )), false, preventReinstallingAndLosePermissons, false);
+
+            filters.add(reinstallAppPopup);
+        }
+        return new AppFilter(service, topicManager, filters, appName, true);
+
     }
 
     private AppFilter getPocketCastsFilter() throws TopicMissingException, CloneNotSupportedException
@@ -324,7 +358,7 @@ public class ExampleAppKeywordFilters
             filters.add(blockAdultStuff);
         }
         AppFilter appFilter = new AppFilter(service, topicManager, filters, appName, true);
-        if(!isDebugVersion)
+        if (!isDebugVersion)
         {
             appFilter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.EXP_PUNISH, new ExponentialPunishFilter("test", 2, 5, 5, PipelineWindowAction.WARNING));
         }
@@ -396,7 +430,7 @@ public class ExampleAppKeywordFilters
         a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
         a.setKillState(CounterAction.KillState.KILL_BEFORE_WINDOW);
         result.setCounterAction(a);
-        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT,new ProductivityFilter(result, "Time limit",6,200,3));
+        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT, new ProductivityFilter(result, "Time limit", 6, 200, 3));
         return filter;
     }
 
@@ -480,7 +514,7 @@ public class ExampleAppKeywordFilters
             CounterAction a = new CounterAction();
             a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             result.setCounterAction(a);
-            filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT,new ProductivityFilter(result, "Time limit",1,200,3));
+            filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT, new ProductivityFilter(result, "Time limit", 1, 200, 3));
         }
         return filter;
 
@@ -536,6 +570,7 @@ public class ExampleAppKeywordFilters
         list.add(getPocketCastsFilter());
         list.add(getTelegramFilter2());
         list.add(getYoutubeFilter());
+        list.add(getPackageInstallerFilter());
         list.add(getAndroidSettings());
         list.add(getAppolo());
         list.add(getDefaultFilter());
