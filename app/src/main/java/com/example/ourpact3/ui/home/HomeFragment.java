@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.MyDeviceAdminReceiver;
+import com.example.ourpact3.util.BatteryOptimizationChecker;
 import com.example.ourpact3.util.PreferencesKeys;
 import com.example.ourpact3.R;
 import com.example.ourpact3.databinding.FragmentHomeBinding;
@@ -53,6 +54,11 @@ public class HomeFragment extends Fragment
             Intent myIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
             myIntent.setData(Uri.parse("package:" + requireActivity().getPackageName()));
             startActivityForResult(myIntent, REQUEST_CODE);
+        }
+        // We need probably this
+        if(!BatteryOptimizationChecker.isBatteryOptimizationIgnored(getContext()))
+        {
+            BatteryOptimizationChecker.requestIgnoreBatteryOptimization(getActivity());
         }
 
         deviceAdminRequestLauncher = registerForActivityResult(

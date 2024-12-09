@@ -42,7 +42,7 @@ Note that killing foreground apps and controlling media playback is not possible
 
 Create new activities easily with a right-click to generate boilerplate code.
 ## For Users
-
+Changing Language is disabled, as this disables the locking features as they search for text on the screen in english.
 Using SafeSearch
 To use SafeSearch as your search engine in browsers like Firefox, set the search URL to:
 

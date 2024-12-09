@@ -141,12 +141,6 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
-        /*if(event.getPackageName() != null && event.getPackageName().equals("com.android.settings"))
-        {
-            ScreenInfoExtractor.Screen s = ScreenInfoExtractor.extractTextElements(getRootInActiveWindow(), false);
-            Log.d("a",s.toString());
-        }*/
-
       // the a cheat key is used then don't filte
         if (cheatKeyManager.isServiceIsDisabled(getBaseContext()))
         {

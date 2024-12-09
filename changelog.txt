@@ -41,3 +41,4 @@ Ignore Write fields as search aborts
 1.18.1 Update terms nackt could be in knackt
 1.18.2 fix bug that user can disable device admin state over notification
 1.18.3 Prevent reinstalling and therefore revoke permission (needed for debug apk). In release it does not seem to be required.
+1.19.2 Fix Bug Home Settings (blocking), add checking for unrestricted battery, block changing languages (as this can disable the app easiy)
