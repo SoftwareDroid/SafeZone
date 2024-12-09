@@ -162,7 +162,7 @@ public class ExampleAppKeywordFilters
             WordProcessorSmartFilterBase accessibilityOverview = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Use " + myAppName)),
                     new ArrayList<>(List.of("Stop " + myAppName + "?")),
-                    new ArrayList<>(List.of("Accessibility")) // Needed?
+                    new ArrayList<>(List.of("Downloaded apps")) //accessabilty site block
 
 //                    ,new ArrayList<>(List.of(new String[]{"Accessibility"}))
             )), false, preventDisabelingAccessabilty, false);
@@ -182,6 +182,7 @@ public class ExampleAppKeywordFilters
             preventTurnOfDeviceAdmin.setCounterAction(a);
             WordProcessorSmartFilterBase searchForDeviceAdmin = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Device admin apps")),
+                    new ArrayList<>(List.of("Add a language")), // prevent switching language
                     new ArrayList<>(List.of("Device admin settings")),  // this is a invisible text
                     new ArrayList<>(List.of(new String[]{"OPEN", myAppName}))
             )), false, preventTurnOfDeviceAdmin, false);
