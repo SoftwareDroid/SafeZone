@@ -175,7 +175,7 @@ public class ExampleAppKeywordFilters
             PipelineResultKeywordFilter preventTurnOfDeviceAdmin = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
             a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
-            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+            a.setButtonAction(PipelineButtonAction.HOME_BUTTON);
             // Killing makes it to slow
             a.setKillState(CounterAction.KillState.DO_NOT_KILL);
             a.setHasExplainableButton(true);
@@ -183,11 +183,12 @@ public class ExampleAppKeywordFilters
             WordProcessorSmartFilterBase searchForDeviceAdmin = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Device admin apps")),
                     new ArrayList<>(List.of("Add a language")), // prevent switching language
+                    new ArrayList<>(List.of("Debugging")), // prevent switching language
+                    new ArrayList<>(List.of("Package installer")), // prevent turn on package installer notifcations again
                     new ArrayList<>(List.of("Device admin settings")),  // this is a invisible text
                     new ArrayList<>(List.of(new String[]{"OPEN", myAppName}))
             )), false, preventTurnOfDeviceAdmin, false);
             searchForDeviceAdmin.setCheckOnlyVisibleNodes(false);
-
             filters.add(searchForDeviceAdmin);
 
         }

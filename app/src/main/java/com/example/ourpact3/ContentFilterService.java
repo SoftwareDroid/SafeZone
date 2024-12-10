@@ -168,7 +168,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
         isHandlerScheduled = true; // Set the flag to indicate a handler is scheduled
 
         // Schedule the new runnable with a delay of 500ms
-        handler.postDelayed(scheduledRunnable, 750);
+        handler.postDelayed(scheduledRunnable, 200);
 
 
         // never process this for UI control reasons
@@ -211,6 +211,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void onInterrupt()
     {
+        Log.d("a","a");
     }
 
     @Override

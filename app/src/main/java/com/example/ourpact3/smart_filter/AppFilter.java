@@ -183,7 +183,7 @@ public class AppFilter
                 if (delayCount < MAX_DELAYED_CALLS)
                 {
                     handler.removeCallbacks(searchRunnable);
-                    int SEARCH_DELAY_MS = this.checkAllEvents ? 50 : 500;
+                    int SEARCH_DELAY_MS = this.checkAllEvents ? 0 : 500;
                     handler.postDelayed(searchRunnable, SEARCH_DELAY_MS);
                     delayCount++;
 
