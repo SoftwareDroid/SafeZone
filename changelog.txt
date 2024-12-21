@@ -44,3 +44,4 @@ Ignore Write fields as search aborts
 1.19.2 Fix Bug Home Settings (blocking), add checking for unrestricted battery, block changing languages (as this can disable the app easiy)
 1.19.3 USB-Debugging switching is blocked
 1.19.4 block package installer in settings turn on notifications
+1.19.5 update terms

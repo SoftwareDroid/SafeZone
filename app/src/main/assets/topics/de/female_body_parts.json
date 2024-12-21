@@ -28,7 +28,6 @@
     "schamlippen"
   ],
   "regExpWords": [
-//    "\\bpo\\b", // prevents using as prefix
     "\\bscheide\\b"
   ],
   "includedTopics": [

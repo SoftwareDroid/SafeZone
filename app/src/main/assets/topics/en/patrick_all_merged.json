@@ -6,7 +6,7 @@
     "fart",
     "furz",
     "pov ",
-    "scat",
+//    "scat", in scatter
     "kacke",
     "piss",
     "asmr",
@@ -14,6 +14,9 @@
     "pooping",
     "close up",
     "enema"
+  ],
+  "regExpWords": [
+    "\\bscat\\b"
   ],
   "includedTopics": [
     "porn_femdom",
