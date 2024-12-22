@@ -19,6 +19,8 @@
     <uses-permission android:name="android.permission.BIND_DEVICE_ADMIN" /> <!-- permanent device admin -->
     <uses-permission android:name="android.permission.LOCK_DEVICE" />
     <uses-permission  android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <!-- Get screen on/off events for producitvy filter-->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

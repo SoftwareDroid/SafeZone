@@ -2,6 +2,7 @@ package com.example.ourpact3.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
+import android.os.PowerManager;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.example.ourpact3.pipeline.CounterAction;
@@ -23,6 +24,8 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
     public boolean useLogging;
     private final AccessibilityService service;
     private BlockLoggingService logger;
+    private PowerManager powerManager;
+    private boolean isScreenOn = true;
 
     public void destroyGUI()
     {
@@ -35,6 +38,8 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
         this.service = service;
         this.overlayWindowManager = new OverlayWindowManager(service);
         this.iContentFilterService = iContentFilterService;
+
+        powerManager = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
     }
 
     public void onAppChange(String oldApp, String newApp)
@@ -42,23 +47,23 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
         String systemUI_id = "com.android.systemui";
         // ignore changes just to from the system ui
         // interferes with productivity filter
-        if(oldApp.equals(systemUI_id) || newApp.equals(systemUI_id))
+        if (oldApp.equals(systemUI_id) || newApp.equals(systemUI_id))
         {
             return;
         }
         AppFilter oldApp2 = appFilters.get(oldApp);
-        if(oldApp2 != null)
+        if (oldApp2 != null)
         {
             oldApp2.onAppStateChange(false);
         }
         AppFilter newApp2 = appFilters.get(newApp);
-        if(newApp2 != null)
+        if (newApp2 != null)
         {
             newApp2.onAppStateChange(true);
         }
     }
 
-        public void onPipelineResultForeground(PipelineResultBase result)
+    public void onPipelineResultForeground(PipelineResultBase result)
     {
         if (iContentFilterService.isPackageIgnoredForNormalMode(result.getTriggerPackage()))
         {
@@ -129,6 +134,7 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
         }
     }
 
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
@@ -155,7 +161,6 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
     }
 
 
-
     public void processPipelineResults()
     {
         while (!this.pipelineResults.isEmpty())
@@ -170,5 +175,14 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
     public void onPipelineResultBackground(PipelineResultBase result)
     {
         pipelineResults.push(result);
+    }
+
+    public void onScreenStateChange(boolean isScreenOn)
+    {
+        for (String key : appFilters.keySet()) {
+            AppFilter filter = appFilters.get(key);
+            assert filter != null;
+            filter.onScreenStateChanged(isScreenOn);
+        }
     }
 }

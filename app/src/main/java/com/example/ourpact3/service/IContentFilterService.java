@@ -18,6 +18,7 @@ public interface IContentFilterService
     void activateAppKillMode(@NotNull PipelineResultBase lastResult);
     void activateLearnMode();
     void stopLearnMode();
+    void onScreenStateChange(boolean on);
     void finishAppKilling(PipelineResultBase lastResult);
     boolean isPackagedIgnoredForLearning(String id);
     boolean isPackageIgnoredForNormalMode(String id);

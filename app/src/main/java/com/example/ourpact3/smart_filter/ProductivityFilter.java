@@ -43,21 +43,35 @@ public class ProductivityFilter extends SpecialSmartFilterBase
         }
         if (active)
         {
-            startSessionIfRequired();
+            startSessionIfRequired(true);
         } else
         {
             stopSession();
         }
     }
 
-    private void startSessionIfRequired()
+    private void startSessionIfRequired(boolean isCountingAsNewStart)
     {
         // Start new session
         if (sessionEnd == null && sessionStart == null)
         {
-            numberOfAppUses++;
+            if (isCountingAsNewStart)
+            {
+                numberOfAppUses++;
+            }
             sessionStart = Instant.now();
             sessionEnd = null;
+        }
+    }
+
+
+    public void onScreenStateChange(boolean isScreenOn)
+    {
+        // Sessions should automatically be restarted with next ui events
+        if (!isScreenOn)
+        {
+            //pause session if running
+            stopSession();
         }
     }
 
@@ -91,7 +105,7 @@ public class ProductivityFilter extends SpecialSmartFilterBase
     @Override
     public PipelineResultBase onAccessibilityEvent(AccessibilityEvent event)
     {
-        startSessionIfRequired();
+        startSessionIfRequired(true);
         sessionEnd = Instant.now();     //expand session
         if (measurementEnd == null || sessionEnd.isAfter(measurementEnd))
         {
@@ -100,7 +114,7 @@ public class ProductivityFilter extends SpecialSmartFilterBase
             return null;
         }
         // check number of usages first
-        if(blocked || maxNumberOfUsages != null && numberOfAppUses > maxNumberOfUsages)
+        if (blocked || maxNumberOfUsages != null && numberOfAppUses > maxNumberOfUsages)
         {
             PipelineResultProductivityFilter result = (PipelineResultProductivityFilter) this.result.clone();
             result.numberOfUsages = numberOfAppUses;

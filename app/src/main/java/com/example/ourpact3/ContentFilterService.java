@@ -20,6 +20,7 @@ import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.service.ExampleAppKeywordFilters;
 import com.example.ourpact3.service.ScreenInfoExtractor;
+import com.example.ourpact3.service.ScreenReceiver;
 import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.util.CrashHandler;
@@ -45,6 +46,7 @@ import java.util.TreeMap;
  */
 public class ContentFilterService extends AccessibilityService implements IContentFilterService
 {
+    private ScreenReceiver screenReceiver;
     private NormalModeComponent normalModeProcessor;
     private AppKiller appKillerService;
     private LearnModeComponent learnModeComponent;
@@ -75,9 +77,14 @@ public class ContentFilterService extends AccessibilityService implements IConte
         // internal broadcast receiver to receive commands e.g reload all settings
         IntentFilter intentFilter = new IntentFilter("SEND_COMMAND");
         registerReceiver(commandReceiver, intentFilter);
-
         //
-
+        {
+            screenReceiver = new ScreenReceiver(this);
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(Intent.ACTION_SCREEN_ON);
+            filter.addAction(Intent.ACTION_SCREEN_OFF);
+            registerReceiver(screenReceiver, filter);
+        }
         learnModeComponent = new LearnModeComponent(this, this, this);
         this.setNewMode(Mode.NORMAL_MODE);
 
@@ -146,7 +153,10 @@ public class ContentFilterService extends AccessibilityService implements IConte
         {
             return;
         }
+        if(event.getPackageName() != null && event.getPackageName().equals("com.android.system.ui"))
+        {
 
+        }
         // Schedule the execution of processPipelineResults in the foreground after 500ms
         // Create a new runnable to execute in the foreground after 500ms
         // If a handler is already scheduled, remove it
@@ -243,6 +253,15 @@ public class ContentFilterService extends AccessibilityService implements IConte
     public void stopLearnMode()
     {
         setNewMode(Mode.NORMAL_MODE);
+    }
+
+    @Override
+    public void onScreenStateChange(boolean on)
+    {
+        if (this.mode == Mode.NORMAL_MODE)
+        {
+            this.normalModeProcessor.onScreenStateChange(on);
+        }
     }
 
     public void setNewMode(Mode mode)

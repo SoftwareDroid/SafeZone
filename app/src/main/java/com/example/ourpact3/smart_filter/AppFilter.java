@@ -19,6 +19,7 @@ import com.example.ourpact3.topics.TopicManager;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 public class AppFilter
@@ -47,7 +48,13 @@ public class AppFilter
     private final ArrayList<WordProcessorSmartFilterBase> keywordFilters; //TODO: create and sort
     private final TreeMap<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> specialSmartFilters;
     private IFilterResultCallback callback;
-
+    public void onScreenStateChanged(boolean isScreenOn)
+    {
+        for(SpecialSmartFilterBase.Name key : specialSmartFilters.keySet())
+        {
+            Objects.requireNonNull(specialSmartFilters.get(key)).onScreenStateChange(isScreenOn);
+        }
+    }
     public void onAppStateChange(boolean active)
     {
         for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet()) {

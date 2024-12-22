@@ -26,6 +26,8 @@ public abstract class SpecialSmartFilterBase
     protected PipelineResultBase result;
     public final String name;
 
+    public void onScreenStateChange(boolean on) {}
+
     public void onAppStateChange(boolean active){}
     /**
      *
