@@ -48,7 +48,7 @@ public class AppFilter
     private final TreeMap<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> specialSmartFilters;
     private IFilterResultCallback callback;
 
-    public void onStateChange(boolean active)
+    public void onAppStateChange(boolean active)
     {
         for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet()) {
             SpecialSmartFilterBase value = entry.getValue();

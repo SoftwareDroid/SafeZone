@@ -39,15 +39,22 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
 
     public void onAppChange(String oldApp, String newApp)
     {
+        String systemUI_id = "com.android.systemui";
+        // ignore changes just to from the system ui
+        // interferes with productivity filter
+        if(oldApp.equals(systemUI_id) || newApp.equals(systemUI_id))
+        {
+            return;
+        }
         AppFilter oldApp2 = appFilters.get(oldApp);
         if(oldApp2 != null)
         {
-            oldApp2.onStateChange(false);
+            oldApp2.onAppStateChange(false);
         }
         AppFilter newApp2 = appFilters.get(newApp);
         if(newApp2 != null)
         {
-            newApp2.onStateChange(true);
+            newApp2.onAppStateChange(true);
         }
     }
 
