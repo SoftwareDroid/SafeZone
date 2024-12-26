@@ -10,6 +10,7 @@ import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.pipeline.PipelineResultProductivityFilter;
 import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
+import com.example.ourpact3.smart_filter.ProductivityTimeRule;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.smart_filter.ProductivityFilter;
 import com.example.ourpact3.smart_filter.WordSmartFilterIdentifier;
@@ -26,7 +27,10 @@ import com.example.ourpact3.smart_filter.WordListFilterExact;
 import com.example.ourpact3.smart_filter.WordProcessorSmartFilterBase;
 import com.example.ourpact3.smart_filter.WordListFilterScored;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -432,7 +436,10 @@ public class ExampleAppKeywordFilters
         a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
         a.setKillState(CounterAction.KillState.KILL_BEFORE_WINDOW);
         result.setCounterAction(a);
-        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT, new ProductivityFilter(result, "Time limit", 6, 200, 3));
+
+        ArrayList<ProductivityTimeRule> timeRules = new ArrayList<>();
+        timeRules.add(new ProductivityTimeRule(LocalTime.of(11,0),LocalTime.of(12,0),EnumSet.of(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY),true));
+        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT, new ProductivityFilter(result, "Time limit", 6, 200, 3,timeRules));
         return filter;
     }
 
@@ -516,7 +523,8 @@ public class ExampleAppKeywordFilters
             CounterAction a = new CounterAction();
             a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             result.setCounterAction(a);
-            filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT, new ProductivityFilter(result, "Time limit", 1, 200, 3));
+            // No Timerules
+            filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT, new ProductivityFilter(result, "Time limit", 1, 200, 3,new ArrayList<>()));
         }
         return filter;
 

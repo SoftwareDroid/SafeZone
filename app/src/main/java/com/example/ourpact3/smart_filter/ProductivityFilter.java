@@ -9,12 +9,14 @@ import com.example.ourpact3.service.ScreenInfoExtractor;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 
 /**
  * max number of starts and/or time in s every k hours
  */
 public class ProductivityFilter extends SpecialSmartFilterBase
 {
+    private final ArrayList<ProductivityTimeRule> timerules; // White or Blacklist for certain times of the week
     private Instant measurementEnd = null;
     private Instant sessionStart = null;
     private Instant sessionEnd = null;
@@ -24,14 +26,14 @@ public class ProductivityFilter extends SpecialSmartFilterBase
     private int numberOfAppUses;
     private boolean blocked;
     private Integer maxNumberOfUsages;
-
-    public ProductivityFilter(PipelineResultBase result, String name, int resetPeriod, int limitInSeconds, Integer maxNumberOfUsages)
+    public ProductivityFilter(PipelineResultBase result, String name, int resetPeriod, int limitInSeconds, Integer maxNumberOfUsages, ArrayList<ProductivityTimeRule> timeRules)
     {
         super(result, name);
         this.resetPeriodInHours = resetPeriod;
         this.limitInSeconds = limitInSeconds;
         this.blocked = false;
         this.maxNumberOfUsages = maxNumberOfUsages;
+        this.timerules = timeRules;
     }
 
     @Override
@@ -63,6 +65,7 @@ public class ProductivityFilter extends SpecialSmartFilterBase
             sessionEnd = null;
         }
     }
+
 
 
     public void onScreenStateChange(boolean isScreenOn)
@@ -102,11 +105,55 @@ public class ProductivityFilter extends SpecialSmartFilterBase
         measurementEnd = Instant.now().plus(resetPeriodInHours, ChronoUnit.HOURS);
     }
 
+    private PipelineResultBase checkTimeRules(Instant currentTimestamp)
+    {
+        boolean isInWhiteList = false;
+        boolean isWhiteListImportant = false;
+        for(ProductivityTimeRule rule : this.timerules)
+        {
+            boolean isApplying = rule.isRuleApplying(currentTimestamp);
+            if(!rule.isBlackListMode())
+            {
+                isWhiteListImportant = true;
+            }
+            // Block if one blacklist rule applies
+            if(isApplying)
+            {
+                if(rule.isBlackListMode())
+                {
+                    PipelineResultProductivityFilter result = (PipelineResultProductivityFilter) this.result.clone();
+                    result.isTimeRuleBlock = true;
+                    return result;
+                }
+                else
+                {
+                    isInWhiteList = true;
+                }
+            }
+
+        }
+        // if we have whitelists is has to be in one otherwise it is blocked
+        if(isWhiteListImportant && !isInWhiteList)
+        {
+            PipelineResultProductivityFilter result = (PipelineResultProductivityFilter) this.result.clone();
+            result.isTimeRuleBlock = true;
+            return result;
+        }
+        return null;
+    }
+
     @Override
     public PipelineResultBase onAccessibilityEvent(AccessibilityEvent event)
     {
         startSessionIfRequired(true);
         sessionEnd = Instant.now();     //expand session
+        // check time rules
+        PipelineResultBase timeRuleResult = checkTimeRules(sessionEnd);
+        if(timeRuleResult != null)
+        {
+            return timeRuleResult;
+        }
+
         if (measurementEnd == null || sessionEnd.isAfter(measurementEnd))
         {
             // start new session and measurement

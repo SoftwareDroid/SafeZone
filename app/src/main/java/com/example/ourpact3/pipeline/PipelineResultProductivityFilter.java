@@ -16,6 +16,7 @@ public class PipelineResultProductivityFilter
     public long usageTime;
     public long usageLimitInSeconds;
     public int resetPeriod;
+    public boolean isTimeRuleBlock;
 
     @Override
     public String getDialogTitle(Context ctx)
@@ -26,6 +27,11 @@ public class PipelineResultProductivityFilter
     @Override
     public String getDialogText(Context ctx)
     {
+        if(isTimeRuleBlock)
+        {
+            return "This app is blocked due to a time rule";
+        }
+
         if(maxNumberOfUsages != null && numberOfUsages > maxNumberOfUsages)
         {
          return "This app was used too much. Number of starts " + numberOfUsages + " exceeded the limit of " + maxNumberOfUsages;
