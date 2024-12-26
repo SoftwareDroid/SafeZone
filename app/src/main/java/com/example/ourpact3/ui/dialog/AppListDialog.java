@@ -73,7 +73,9 @@ public class AppListDialog {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String packageName = packageNames.get(position);
+                String appName = (String) parent.getItemAtPosition(position);
+                int index = appNames.indexOf(appName);
+                String packageName = packageNames.get(index);
                 listener.onAppSelected(packageName);
                 dialog.dismiss();
             }

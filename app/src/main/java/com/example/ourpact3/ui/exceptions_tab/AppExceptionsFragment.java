@@ -61,16 +61,6 @@ public class AppExceptionsFragment extends Fragment
         });
         recyclerView.setAdapter(adapter);
 
-        /*view.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                showAppListDialog();
-            }
-
-        });*/
-
         // Load data from the database
         loadExceptions();
 

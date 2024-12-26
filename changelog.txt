@@ -47,3 +47,4 @@ Ignore Write fields as search aborts
 1.19.5 update terms
 1.20.1 Detect screen off/on events to pause sessions in productive filters and ignore app changes with android.system.ui to not trigger app start counts for the productive filters
 1.21.0 Add Time rules for Hour, Minute (start + end) and weekdays in black and white list mode for ProductivityFilter
+1.21.1 Fix bug with getting wrong app id in exception tab, when searching
