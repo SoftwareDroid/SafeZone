@@ -2,6 +2,7 @@ package com.example.ourpact3.ui.rules_tab;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ourpact3.R;
 import com.example.ourpact3.db.DatabaseManager;
+import com.example.ourpact3.ui.app_rule_detail.AppRuleDetailActivitiy;
 import com.example.ourpact3.util.PackageUtil;
 
 import java.util.ArrayList;
@@ -29,14 +31,14 @@ public class AppRulesAdapter extends RecyclerView.Adapter<AppRulesAdapter.ViewHo
         void onMenuItemClick(MenuItem item, int position);
     }
 
-    private List<DatabaseManager.ExceptionTuple> exceptions;
-    private List<DatabaseManager.ExceptionTuple> filteredExceptions;
+    private List<DatabaseManager.AppRuleTuple> appRules;
+    private List<DatabaseManager.AppRuleTuple> filteredExceptions;
     private Context context;
     private OnMenuItemClickListener listener;
 
     public String getDBidFromPos(int pos)
     {
-        DatabaseManager.ExceptionTuple t = filteredExceptions.get(pos);
+        DatabaseManager.AppRuleTuple t = filteredExceptions.get(pos);
         if (t != null)
         {
             return t.packageID;
@@ -45,17 +47,17 @@ public class AppRulesAdapter extends RecyclerView.Adapter<AppRulesAdapter.ViewHo
     }
 
 
-    public AppRulesAdapter(Context context, List<DatabaseManager.ExceptionTuple> exceptions, OnMenuItemClickListener listener)
+    public AppRulesAdapter(Context context, List<DatabaseManager.AppRuleTuple> exceptions, OnMenuItemClickListener listener)
     {
         this.context = context;
-        this.exceptions = exceptions;
+        this.appRules = exceptions;
         this.filteredExceptions = exceptions;
         this.listener = listener;
     }
 
-    public void setExceptions(List<DatabaseManager.ExceptionTuple> exceptions)
+    public void setAppRules(List<DatabaseManager.AppRuleTuple> exceptions)
     {
-        this.exceptions = exceptions;
+        this.appRules = exceptions;
         this.filteredExceptions = exceptions;
         notifyDataSetChanged();
     }
@@ -72,23 +74,29 @@ public class AppRulesAdapter extends RecyclerView.Adapter<AppRulesAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
-        DatabaseManager.ExceptionTuple exception = filteredExceptions.get(position);
-
-        String fullName = PackageUtil.getAppName(context, exception.packageID);
-        if(exception.packageID.equals(fullName))
+        DatabaseManager.AppRuleTuple rule = filteredExceptions.get(position);
+        String fullName = PackageUtil.getAppName(context, rule.packageID);
+        if (rule.packageID.equals(fullName))
         {
-            fullName +=  " " + context.getString(R.string.app_not_found);
+            fullName += " " + context.getString(R.string.app_not_found);
         }
-        holder.lockImageView.setVisibility(exception.writable ? View.INVISIBLE : View.VISIBLE);
+        holder.lockImageView.setVisibility(rule.writeable ? View.INVISIBLE : View.VISIBLE);
         holder.textView.setText(fullName);
-        PackageUtil.getAppIcon(context, exception.packageID, holder.imageView);
+        PackageUtil.getAppIcon(context, rule.packageID, holder.imageView);
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                showPopupMenu(v, position, !exception.writable);
+                if(rule.readable)
+                {
+                    Intent intent = new Intent(v.getContext(), AppRuleDetailActivitiy.class);
+                    intent.putExtra("app_id", rule.packageID);
+                    intent.putExtra("app_name", rule.appName);
+                    v.getContext().startActivity(intent);
+                }
+//                showPopupMenu(v, position, !rule.writeable);
             }
         });
     }
@@ -96,7 +104,7 @@ public class AppRulesAdapter extends RecyclerView.Adapter<AppRulesAdapter.ViewHo
     private void showPopupMenu(View view, int position, boolean readOnly)
     {
         PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
-        popupMenu.inflate(R.menu.exception_menu);
+        popupMenu.inflate(R.menu.app_rules_menu);
         // make some entries Read Only
         if (readOnly)
         {
@@ -134,14 +142,14 @@ public class AppRulesAdapter extends RecyclerView.Adapter<AppRulesAdapter.ViewHo
         protected FilterResults performFiltering(CharSequence constraint)
         {
             String query = constraint.toString().toLowerCase();
-            List<DatabaseManager.ExceptionTuple> filtered = new ArrayList<>();
+            List<DatabaseManager.AppRuleTuple> filtered = new ArrayList<>();
 
             if (query.isEmpty())
             {
-                filtered = exceptions;
+                filtered = appRules;
             } else
             {
-                for (DatabaseManager.ExceptionTuple item : exceptions)
+                for (DatabaseManager.AppRuleTuple item : appRules)
                 {
                     if (item.packageID.toLowerCase().contains(query) || item.appName.toLowerCase().contains(query))
                     {
@@ -161,7 +169,7 @@ public class AppRulesAdapter extends RecyclerView.Adapter<AppRulesAdapter.ViewHo
         {
             if (filterResults.count > 0)
             {
-                filteredExceptions = (List<DatabaseManager.ExceptionTuple>) filterResults.values;
+                filteredExceptions = (List<DatabaseManager.AppRuleTuple>) filterResults.values;
                 notifyDataSetChanged();
             } else
             {

@@ -2,6 +2,7 @@ package com.example.ourpact3.ui.rules_tab;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ourpact3.R;
 import com.example.ourpact3.db.DatabaseManager;
 import com.example.ourpact3.ui.dialog.AppListDialog;
-import com.example.ourpact3.ui.exceptions_tab.ExceptionAdapter;
 import com.example.ourpact3.util.PackageUtil;
 import com.example.ourpact3.util.PreferencesKeys;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,32 +32,29 @@ public class AppRulesTabFragment extends Fragment
     private boolean preventDisabling;
     private RecyclerView recyclerView;
     //    private ListView listView;
-    private ExceptionAdapter adapter;
+    private AppRulesAdapter adapter;
     private TreeSet<String> unaddableApps = new TreeSet<>();
     private Handler handler = new Handler(Looper.getMainLooper()); // load db in background
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_exceptions, container, false);
-
-
+        View view = inflater.inflate(R.layout.fragment_app_rules, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        //registerForContextMenu(recyclerView);
         final SearchView searchView = view.findViewById(R.id.search_field);
 
         // Initialize the adapter and set it to the list view
-        adapter = new ExceptionAdapter(getActivity(), new ArrayList<>(), (item, position) -> {
+        adapter = new AppRulesAdapter(getActivity(), new ArrayList<>(), (item, position) -> {
             if (item.getItemId() == R.id.menu_delete)
             {
-                deleteException(position);
+                deleteAppRule(position);
             }
         });
         recyclerView.setAdapter(adapter);
 
         // Load data from the database
-        loadExceptions();
+        loadAppRules();
 
         // setup search
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
@@ -81,13 +78,15 @@ public class AppRulesTabFragment extends Fragment
 
 
 
-    public void deleteException(int position)
+    public void deleteAppRule(int position)
     {
+        //TODO
+        /*
         DatabaseManager dbManger = new DatabaseManager(getContext());
         dbManger.open();
         dbManger.deleteException(adapter.getDBidFromPos(position));
         dbManger.close();
-        loadExceptions();
+        loadExceptions();*/
     }
 
     private void showAppListDialog()
@@ -102,7 +101,7 @@ public class AppRulesTabFragment extends Fragment
                 dbManger.open();
                 dbManger.insertException(packageName, true, true);
                 dbManger.close();
-                loadExceptions();
+                loadAppRules();
             }
 
             @Override
@@ -112,7 +111,7 @@ public class AppRulesTabFragment extends Fragment
         });
     }
 
-    private void loadExceptions()
+    private void loadAppRules()
     {
         // Create a new thread to load data from the database
         new Thread(new Runnable()
@@ -124,19 +123,19 @@ public class AppRulesTabFragment extends Fragment
                 SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
                 preventDisabling = sharedPreferences.getBoolean(PreferencesKeys.PREVENT_DISABLING,PreferencesKeys.PREVENT_DISABLING_DEFAULT_VALUE);
 
-                // Get all exceptions from the database
+                // Get all Rules from the database
                 unaddableApps.clear();
                 DatabaseManager dbManger = new DatabaseManager(getContext());
                 dbManger.open();
-                List<DatabaseManager.ExceptionTuple> exceptions = dbManger.getAllExceptions();
-                for (DatabaseManager.ExceptionTuple tuple : exceptions)
+                List<DatabaseManager.AppRuleTuple> rules = dbManger.getAllAppRules();
+                for (DatabaseManager.AppRuleTuple tuple : rules)
                 {
                     // We have to set the name as it is needed in search
                     tuple.appName = PackageUtil.getAppName(getContext(), tuple.packageID);
                     unaddableApps.add(tuple.packageID);
                     if(preventDisabling)
                     {
-                        tuple.writable = false;
+                        tuple.writeable = false;
                     }
                 }
                 dbManger.close();
@@ -147,15 +146,15 @@ public class AppRulesTabFragment extends Fragment
                     @Override
                     public void run()
                     {
-                        adapter.setExceptions(exceptions);
+                        adapter.setAppRules(rules);
                         adapter.notifyDataSetChanged();
                         // Show or hide the FAB button based on preventDisabling
-                        final FloatingActionButton fab = getView().findViewById(R.id.fab);
+                        final FloatingActionButton floatingActionButton = getView().findViewById(R.id.fab);
                         if (preventDisabling) {
-                            fab.setVisibility(View.INVISIBLE);
+                            floatingActionButton.setVisibility(View.INVISIBLE);
                         } else {
-                            fab.setVisibility(View.VISIBLE);
-                            fab.setOnClickListener(new View.OnClickListener()
+                            floatingActionButton.setVisibility(View.VISIBLE);
+                            floatingActionButton.setOnClickListener(new View.OnClickListener()
                             {
                                 @Override
                                 public void onClick(View v)
@@ -164,7 +163,6 @@ public class AppRulesTabFragment extends Fragment
                                 }
                             });
                         }
-
                     }
                 });
             }

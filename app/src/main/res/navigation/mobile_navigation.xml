@@ -19,9 +19,9 @@
 
     <fragment
         android:id="@+id/navigation_rules"
-        android:name="com.example.ourpact3.ui.exceptions_tab.AppExceptionsFragment"
+        android:name="com.example.ourpact3.ui.rules_tab.AppRulesTabFragment"
         android:label="@string/title_rules"
-        tools:layout="@layout/fragment_exceptions" />
+        tools:layout="@layout/fragment_app_rules" />
 
 
     <fragment

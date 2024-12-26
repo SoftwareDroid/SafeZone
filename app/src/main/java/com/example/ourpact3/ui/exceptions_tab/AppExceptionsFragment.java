@@ -20,7 +20,6 @@ import android.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-//import com.example.ourpact3.databinding.FragmentDashboardBinding;
 import com.example.ourpact3.ui.dialog.AppListDialog;
 import com.example.ourpact3.util.PreferencesKeys;
 import com.example.ourpact3.db.DatabaseManager;

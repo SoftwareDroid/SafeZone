@@ -3,6 +3,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,24 @@ public class DatabaseManager
             this.writable = writable;
         }
     }
+
+    public static class AppRuleTuple
+    {
+        public String packageID;
+        public String appName;
+        public String comment;
+        public boolean readable;
+        public boolean writeable;
+        public boolean enabled;
+        public AppRuleTuple(String packageID, String comment, boolean readable, boolean writeable, boolean enabled) {
+            this.packageID = packageID;
+            this.comment = comment;
+            this.readable = readable;
+            this.writeable = writeable;
+            this.enabled = enabled;
+        }
+    }
+
     public static class Word
     {
         public long id;
@@ -175,6 +194,25 @@ public class DatabaseManager
         }
     }
 
+    public void insertBatchAppRules(List<AppRuleTuple> appRules) {
+        db.beginTransaction();
+        try {
+            SQLiteStatement statement = db.compileStatement("INSERT INTO apps (package_name, writable, readable, comment, enabled) VALUES (?, ?, ?, ?, ?)");
+            for (AppRuleTuple appRule : appRules) {
+                statement.bindString(1, appRule.packageID);
+                statement.bindLong(2, appRule.writeable ? 1 : 0);
+                statement.bindLong(3, appRule.readable ? 1 : 0);
+                statement.bindString(4, appRule.comment);
+                statement.bindLong(5, appRule.enabled ? 1 : 0);
+                statement.executeInsert();
+                statement.clearBindings();
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
     public void insertException(String appName, boolean readable, boolean writable) {
         db.execSQL("INSERT INTO exception_list (appName, readable, writable) VALUES ('" + appName + "', " + (readable ? 1 : 0) + ", " + (writable ? 1 : 0) + ")");
     }
@@ -187,7 +225,7 @@ public class DatabaseManager
         db.execSQL("DELETE FROM exception_list WHERE appName = '" + appName + "'");
     }
 
-        public List<ExceptionTuple> getAllExceptions() {
+    public List<ExceptionTuple> getAllExceptions() {
         List<ExceptionTuple> exceptions = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT * FROM exception_list", null);
         while (cursor.moveToNext()) {
@@ -198,6 +236,21 @@ public class DatabaseManager
         }
         cursor.close();
         return exceptions;
+    }
+
+    public List<AppRuleTuple> getAllAppRules() {
+        List<AppRuleTuple> appRules = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM apps", null);
+        while (cursor.moveToNext()) {
+            String packageName = cursor.getString(0);
+            boolean writable = cursor.getInt(1) == 1;
+            boolean readable = cursor.getInt(2) == 1;
+            String comment = cursor.getString(3);
+            boolean enabled = cursor.getInt(4) == 1;
+            appRules.add(new AppRuleTuple(packageName, comment, readable, writable, enabled));
+        }
+        cursor.close();
+        return appRules;
     }
 
     public Cursor getException(String appName) {

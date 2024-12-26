@@ -49,6 +49,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.app_rule_detail.AppRuleDetailActivitiy"
+            android:label="@string/app_rule_detail_activity">
+        </activity>
         <activity android:name=".learn_mode.HelpDialogLearnMode" />
 
         <service

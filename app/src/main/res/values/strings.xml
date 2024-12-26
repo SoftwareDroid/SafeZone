@@ -136,4 +136,7 @@
     <string name="app_not_found">(Not Installed)</string>
     <string name="search_apps">Search Apps</string>
     <string name="title_rules">Rules</string>
+    <string name="add_app_rule">Add App Rule</string>
+    <string name="app_rule_detail_activity">AppRuleDetailActivity</string>
+    <string name="rules_for">Rules for</string>
 </resources>

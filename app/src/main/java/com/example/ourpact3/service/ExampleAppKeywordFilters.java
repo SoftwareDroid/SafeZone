@@ -21,7 +21,6 @@ import com.example.ourpact3.topics.TopicLoaderCycleDetectedException;
 import com.example.ourpact3.topics.TopicManager;
 import com.example.ourpact3.topics.TopicMissingException;
 import com.example.ourpact3.smart_filter.WordListFilterScored.TopicScoring;
-import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.smart_filter.WordListFilterExact;
 import com.example.ourpact3.smart_filter.WordProcessorSmartFilterBase;
@@ -50,7 +49,7 @@ public class ExampleAppKeywordFilters
     private final ContentFilterService service;
     private final TopicManager topicManager;
 
-    public void CreateIntialLanguages(Context context)
+    public void createInitialLanguages(Context context)
     {
         DatabaseManager dbManager = new DatabaseManager(context);
         dbManager.open();
@@ -73,6 +72,18 @@ public class ExampleAppKeywordFilters
 
         }
     }
+
+    public void setInitialAppRules(DatabaseManager dbManager)
+    {
+        List<DatabaseManager.AppRuleTuple> initialRules = new ArrayList<>();
+        initialRules.add(new DatabaseManager.AppRuleTuple("com.android.settings", "Android System Settings", true,false,true));
+        initialRules.add(new DatabaseManager.AppRuleTuple("org.telegram.messenger", "", true,true,true));
+        initialRules.add(new DatabaseManager.AppRuleTuple("org.schabi.newpipe", "", true,true,true));
+        // fill db
+        dbManager.insertBatchAppRules(initialRules);
+    }
+
+
 
     public TreeMap<String, AppPermission> getAppPermissionsFromDB(Context context)
     {
@@ -123,7 +134,10 @@ public class ExampleAppKeywordFilters
             initialExceptions.add(new DatabaseManager.ExceptionTuple("de.mm20.launcher2", true, true));
             initialExceptions.add(new DatabaseManager.ExceptionTuple("de.reimardoeffinger.quickdic", true, true));
             initialExceptions.add(new DatabaseManager.ExceptionTuple("de.mm20.launcher2.release", true, true));
+
             dbManager.insertBatchExceptions(initialExceptions);
+            // Fill initial app rules
+            setInitialAppRules(dbManager);
         }
         for (DatabaseManager.ExceptionTuple exception : dbManager.getAllExceptions())
         {
