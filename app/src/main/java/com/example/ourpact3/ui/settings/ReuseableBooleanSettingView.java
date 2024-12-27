@@ -14,6 +14,7 @@ public class ReuseableBooleanSettingView extends LinearLayout
 {
 
     private TextView labelTextView;
+    private TextView labelDescription;
     private Switch switchElement;
 
     public ReuseableBooleanSettingView(Context context, AttributeSet attrs)
@@ -26,6 +27,7 @@ public class ReuseableBooleanSettingView extends LinearLayout
     {
         LayoutInflater.from(context).inflate(R.layout.reuseable_settings_boolean_layout, this, true);
         labelTextView = findViewById(R.id.title);
+        labelDescription = findViewById(R.id.description);
         switchElement = findViewById(R.id.is_enabled);
 
         // Obtain custom attributes
@@ -38,9 +40,19 @@ public class ReuseableBooleanSettingView extends LinearLayout
         {
             // Get the title attribute
             String label = a.getString(R.styleable.ReusableSettingsBooleanView_label);
-            if (label != null)
+            String description = a.getString(R.styleable.ReusableSettingsBooleanView_description);
+            if (label != null )
             {
                 labelTextView.setText(label);
+            }
+            if(description != null)
+            {
+                labelDescription.setText(description);
+
+            }
+            else
+            {
+                labelDescription.setText("");
             }
 
             // Get the isEnabled attribute

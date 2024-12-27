@@ -142,6 +142,10 @@
     <string name="usage_restriction">Usage Restricton</string>
     <string name="none">None</string>
     <string name="usage_restriction_for">Usage Restriction for</string>
-    <string name="usage_restriction_activity">UsageRestrictionActivitiy\n</string>
-    <string name="enabled">Enabled\n</string>
+    <string name="usage_restriction_activity">UsageRestrictionActivitiy</string>
+    <string name="enabled">Enabled</string>
+    <string name="usage_restriction_restriction">Enables or disables these settings</string>
+    <string name="log_blocking_description">Writing keyword filter actions to Disk</string>
+    <string name="use_block_windows_description">Displays a dialog when a rule is violated</string>
+    <string name="increment_time">Increase Timelock</string>
 </resources>

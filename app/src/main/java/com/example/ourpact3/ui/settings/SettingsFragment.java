@@ -44,6 +44,7 @@ public class SettingsFragment extends Fragment
     private boolean dirtySettings;
     private boolean isPINUsed;
     private Handler handler = new Handler(Looper.getMainLooper());
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
     {
@@ -134,10 +135,10 @@ public class SettingsFragment extends Fragment
         });
         // init checkbox
 
-        binding.useWarnWindowsCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        binding.useWarnWindowsCheckbox.getSwitchElement().setOnCheckedChangeListener((buttonView, isChecked) -> {
             this.dirtySettings = true;
         });
-        binding.logBlockingCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        binding.logBlockingCheckbox.getSwitchElement().setOnCheckedChangeListener((buttonView, isChecked) -> {
             this.dirtySettings = true;
         });
 
@@ -262,8 +263,8 @@ public class SettingsFragment extends Fragment
                     @Override
                     public void run()
                     {
-                        binding.logBlockingCheckbox.setChecked(useLogging);
-                        binding.useWarnWindowsCheckbox.setChecked(useWarnWindows);
+                        binding.logBlockingCheckbox.getSwitchElement().setChecked(useLogging);
+                        binding.useWarnWindowsCheckbox.getSwitchElement().setChecked(useWarnWindows);
 
                         binding.buttonDisableLock.setVisibility(View.VISIBLE);
                         binding.buttonEnableLock.setVisibility(View.VISIBLE);
@@ -285,10 +286,10 @@ public class SettingsFragment extends Fragment
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
                                     .withZone(ZoneId.systemDefault());
                             String formattedTimestamp = formatter.format(lockedTill);
-                            binding.timeLockStatus.setText(formattedTimestamp);
+                            binding.incrementTimeButton.setSummary(formattedTimestamp);
                         } else
                         {
-                            binding.timeLockStatus.setText(R.string.no_time_lock);
+                            binding.incrementTimeButton.setSummary(getContext().getString(R.string.no_time_lock));
                         }
                     }
                 });
@@ -346,8 +347,8 @@ public class SettingsFragment extends Fragment
     {
         if (this.dirtySettings)
         {
-            boolean useWarnWindows = binding.useWarnWindowsCheckbox.isChecked();
-            boolean logBlocking = binding.logBlockingCheckbox.isChecked();
+            boolean useWarnWindows = binding.useWarnWindowsCheckbox.getSwitchElement().isChecked();
+            boolean logBlocking = binding.logBlockingCheckbox.getSwitchElement().isChecked();
             SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(PreferencesKeys.OPTION_USE_WARN_WINDOWS, useWarnWindows);

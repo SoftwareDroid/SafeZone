@@ -31,16 +31,10 @@
             android:text="@string/button_disable_locking" />
 
         <!--    Options    -->
-        <TextView
-            android:id="@+id/pipeline_result_additional_actions_labels"
+        <com.example.ourpact3.ui.settings.ReusableSettingsHeaderView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:text="@string/anti_cheat_label"
-            android:textColor="@color/lime_dark"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            app:title="@string/anti_cheat_label" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,91 +56,41 @@
             </LinearLayout>
 
             <!--Use Time Lock-->
-            <LinearLayout
+            <com.example.ourpact3.ui.settings.ReusableSettingsItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/incrementTimeButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Increment Time"
-                    android:layout_marginTop="16dp" />
-
-
-
-            </LinearLayout>
-            <!--Time Lock Status -->
-            <TextView
-                android:id="@+id/time_lock_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Time Lock Till 3 Days"
-                android:textSize="12sp" />
+                android:id="@+id/incrementTimeButton"
+                app:title2="@string/increment_time"
+                app:summary=""/>
 
         </LinearLayout>
         <!-- Other Options-->
-        <TextView
+        <com.example.ourpact3.ui.settings.ReusableSettingsHeaderView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:text="@string/settings_view"
-            android:textColor="@color/lime_dark"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            app:title="@string/settings_view" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
+        <com.example.ourpact3.ui.settings.ReuseableBooleanSettingView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/use_warn_windows"
-                android:textSize="14sp" />
-
-            <Switch
+                app:isEnabled="false"
+                app:description="@string/use_block_windows_description"
                 android:id="@+id/use_warn_windows_checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                app:label="@string/use_warn_windows" />
 
-        </LinearLayout>
         <!--Log Blocking-->
-        <TextView
+        <com.example.ourpact3.ui.settings.ReusableSettingsHeaderView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:text="@string/debbuging_options"
-            android:textColor="@color/lime_dark"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            app:title="@string/debbuging_options" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
+            <com.example.ourpact3.ui.settings.ReuseableBooleanSettingView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/log_blocking"
-                android:textSize="14sp" />
-
-            <Switch
+                app:isEnabled="false"
+                app:description="@string/log_blocking_description"
                 android:id="@+id/log_blocking_checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        </LinearLayout>
-
+                app:label="@string/log_blocking" />
 
     </LinearLayout>
 

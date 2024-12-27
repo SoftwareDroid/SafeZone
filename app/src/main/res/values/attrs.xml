@@ -15,5 +15,6 @@
     <declare-styleable name="ReusableSettingsBooleanView">
         <attr name="label" format="string" />
         <attr name="isEnabled" format="boolean" />
+        <attr name="description" format="string" />
     </declare-styleable>
 </resources>
