@@ -150,9 +150,9 @@
     <string name="increment_time">Increase Timelock</string>
     <string name="app_kill_description">Use UI automation to kill the app</string>
     <string name="is_explainable">Explainable</string>
-    <string name="explainable_description">Explains trigger reason of the rule</string>
+    <string name="explainable_description">Makes the trigger reason explainable</string>
     <string name="actions">Action</string>
-    <string name="window_action">App Action</string>
+    <string name="auto_press">Auto-Press</string>
     <string name="window_action_description">An action against app</string>
     <string name="choose_a_option">Choose a option</string>
 </resources>

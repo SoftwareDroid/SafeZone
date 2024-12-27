@@ -30,7 +30,7 @@
         android:id="@+id/setting_window_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title2="@string/window_action"
-        app:summary="@string/window_action_description" />
+        app:title2="@string/auto_press"
+        app:summary="" />
 
 </LinearLayout>
