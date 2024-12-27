@@ -1,6 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="PipelineResultView">
         <attr name="readonly" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ReusableSettingsHeaderView">
+        <attr name="title" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="ReusableSettingsItemView">
+        <attr name="title2" format="string" />
+        <attr name="summary" format="string" />
     </declare-styleable>
 </resources>

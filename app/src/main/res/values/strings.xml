@@ -139,4 +139,6 @@
     <string name="add_app_rule">Add App Rule</string>
     <string name="app_rule_detail_activity">AppRuleDetailActivity</string>
     <string name="rules_for">Rules for</string>
+    <string name="usage_restriction">Usage Restricton</string>
+    <string name="none">None</string>
 </resources>

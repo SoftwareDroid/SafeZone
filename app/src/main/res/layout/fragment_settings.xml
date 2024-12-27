@@ -59,19 +59,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp" />
 
-<!--                <TextView-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:text="@string/anti_cheat_pin_status"-->
-<!--                    android:textSize="14sp" />-->
-
-<!--                <Switch-->
-<!--                    android:id="@+id/use_pin"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    tools:ignore="UseSwitchCompatOrMaterialXml" />-->
-
             </LinearLayout>
 
             <!--Use Time Lock-->

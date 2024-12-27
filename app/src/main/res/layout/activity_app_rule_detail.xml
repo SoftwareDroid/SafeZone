@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -35,13 +36,17 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
+        <com.example.ourpact3.ui.settings.ReusableSettingsHeaderView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="24sp" />
+            app:title="Rules" />
 
+        <com.example.ourpact3.ui.settings.ReusableSettingsItemView
+            android:id="@+id/usage_restriction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title2="@string/usage_restriction"
+            app:summary="@string/none" />
     </LinearLayout>
 
 </LinearLayout>
