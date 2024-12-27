@@ -143,4 +143,5 @@
     <string name="none">None</string>
     <string name="usage_restriction_for">Usage Restriction for</string>
     <string name="usage_restriction_activity">UsageRestrictionActivitiy\n</string>
+    <string name="enabled">Enabled\n</string>
 </resources>

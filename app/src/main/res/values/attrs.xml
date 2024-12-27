@@ -11,4 +11,9 @@
         <attr name="title2" format="string" />
         <attr name="summary" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="ReusableSettingsBooleanView">
+        <attr name="label" format="string" />
+        <attr name="isEnabled" format="boolean" />
+    </declare-styleable>
 </resources>

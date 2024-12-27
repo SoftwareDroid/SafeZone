@@ -40,6 +40,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title="Bla Bla" />
+
+        <com.example.ourpact3.ui.settings.ReuseableBooleanSettingView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:isEnabled="false"
+            app:label="@string/enabled" />
+
     </LinearLayout>
 
 </LinearLayout>
