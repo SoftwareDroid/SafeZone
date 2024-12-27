@@ -141,4 +141,6 @@
     <string name="rules_for">Rules for</string>
     <string name="usage_restriction">Usage Restricton</string>
     <string name="none">None</string>
+    <string name="usage_restriction_for">Usage Restriction for</string>
+    <string name="usage_restriction_activity">UsageRestrictionActivitiy\n</string>
 </resources>

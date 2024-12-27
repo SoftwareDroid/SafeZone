@@ -52,6 +52,10 @@
         <activity android:name=".ui.app_rule_detail.AppRuleDetailActivitiy"
             android:label="@string/app_rule_detail_activity">
         </activity>
+        <activity android:name=".ui.usage_restriction.UsageRestrictionActivity"
+            android:label="@string/usage_restriction_activity">
+        </activity>
+
         <activity android:name=".learn_mode.HelpDialogLearnMode" />
 
         <service
