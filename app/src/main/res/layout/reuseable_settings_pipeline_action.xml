@@ -1,0 +1,36 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <com.example.ourpact3.ui.settings.ReusableSettingsHeaderView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/actions" />
+
+    <com.example.ourpact3.ui.settings.ReuseableBooleanSettingView
+        android:id="@+id/setting_kill_app"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:isEnabled="false"
+        app:description="@string/app_kill_description"
+        app:label="@string/force_kill" />
+
+    <com.example.ourpact3.ui.settings.ReuseableBooleanSettingView
+        android:id="@+id/setting_is_explainable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:isEnabled="false"
+        app:description="@string/explainable_description"
+        app:label="@string/is_explainable" />
+
+    <com.example.ourpact3.ui.settings.ReusableSettingsItemView
+        android:id="@+id/setting_window_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title2="@string/window_action"
+        app:summary="@string/window_action_description" />
+
+</LinearLayout>

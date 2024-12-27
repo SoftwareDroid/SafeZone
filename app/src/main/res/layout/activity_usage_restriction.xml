@@ -36,21 +36,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp">
-        <com.example.ourpact3.ui.settings.ReusableSettingsHeaderView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:title="Bla Bla" />
-        <com.example.ourpact3.ui.settings.ReusableSettingsHeaderView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:title="Bla Bla2" />
-
         <com.example.ourpact3.ui.settings.ReuseableBooleanSettingView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:isEnabled="false"
             app:description="@string/usage_restriction_restriction"
             app:label="@string/enabled" />
+        <com.example.ourpact3.ui.settings.ReusableSettingsCounterActionView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:readonly="false"/>
     </LinearLayout>
 
 </LinearLayout>

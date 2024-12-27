@@ -60,48 +60,6 @@ public abstract class PipelineResultBase implements Cloneable
     {
 
     }
-    /*
-    // Parcelable implementation
-    protected PipelineResultBase(Parcel in) {
-        triggerPackage = in.readString();
-        triggerFilter = in.readString();
-        windowAction = in.readParcelable(PipelineWindowAction.class.getClassLoader());
-        screen = in.readParcelable(ScreenInfoExtractor.Screen.class.getClassLoader());
-        currentAppFilter = in.readParcelable(AppFilter.class.getClassLoader());
-        killState = KillState.valueOf(in.readString());
-        hasExplainableButton = in.readByte() != 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(triggerPackage);
-        dest.writeString(triggerFilter);
-        dest.writeParcelable(windowAction, flags);
-        dest.writeParcelable(screen, flags);
-        dest.writeParcelable(currentAppFilter, flags);
-        dest.writeString(killState.name());
-        dest.writeByte((byte) (hasExplainableButton ? 1 : 0));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<PipelineResultBase> CREATOR = new Creator<PipelineResultBase>() {
-        @Override
-        public PipelineResultBase createFromParcel(Parcel in) {
-            // You need to implement a way to create the specific subclass of PipelineResultBase
-            // For example, if you have a subclass called PipelineResult, you would do:
-            return new PipelineResult(in); // Replace with your actual subclass
-        }
-
-        @Override
-        public PipelineResultBase[] newArray(int size) {
-            return new PipelineResultBase[size];
-        }
-    };*/
-
 
     public String getTriggerPackage()
     {

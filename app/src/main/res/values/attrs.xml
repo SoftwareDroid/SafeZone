@@ -17,4 +17,7 @@
         <attr name="isEnabled" format="boolean" />
         <attr name="description" format="string" />
     </declare-styleable>
+    <declare-styleable name="ReusableSettingsPiplineActionView">
+
+    </declare-styleable>
 </resources>
