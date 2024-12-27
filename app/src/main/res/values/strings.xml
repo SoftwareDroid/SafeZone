@@ -155,4 +155,6 @@
     <string name="auto_press">Auto-Press</string>
     <string name="window_action_description">An action against app</string>
     <string name="choose_a_option">Choose a option</string>
+    <string name="invalid_number">Please enter a valid number</string>
+    <string name="duration_picker">Duration Picker</string>
 </resources>
