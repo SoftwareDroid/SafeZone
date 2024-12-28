@@ -41,7 +41,7 @@ public class UsageRestrictionActivity extends AppCompatActivity
         numberOfStartsInput.setParameters(this.getString(R.string.number_of_possible_starts), "%s", 10);
         //
         timeLimit = new ReusableSettingsDurationInputView(this,findViewById(R.id.setting_input_time_limit));
-        timeLimit.setParameters(this.getString(R.string.set_time_limit),"%d:%d:%d (hh:mm:ss)", TimeUnit.HOURS,TimeUnit.MINUTES,TimeUnit.SECONDS,"");
+        timeLimit.setParameters(this.getString(R.string.set_time_limit),"%d:%d:%d (hh:mm:ss)", TimeUnit.SECONDS,TimeUnit.MINUTES,TimeUnit.HOURS,"");
 
     }
 

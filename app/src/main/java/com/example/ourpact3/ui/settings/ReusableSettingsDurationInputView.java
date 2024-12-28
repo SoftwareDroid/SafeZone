@@ -108,27 +108,27 @@ public class ReusableSettingsDurationInputView
         this.input_1.setText(lastTwoDigits);
         if (lastTwoDigits.isEmpty())
         {
-            number1 = 0;
+            this.number1 = 0;
         } else
         {
-            number1 = Integer.valueOf(lastTwoDigits);
+            this.number1 = Integer.valueOf(lastTwoDigits);
         }
         this.input_2.setText(middleTwoDigits);
         if (middleTwoDigits.isEmpty())
         {
-            number2 = 0;
+            this.number2 = 0;
         } else
         {
-            number2 = Integer.valueOf(middleTwoDigits);
+            this.number2 = Integer.valueOf(middleTwoDigits);
 
         }
         this.input_3.setText(firstTwoDigits);
         if (firstTwoDigits.isEmpty())
         {
-            number1 = 0;
+            this.number3 = 0;
         } else
         {
-            number3 = Integer.valueOf(firstTwoDigits);
+            this.number3 = Integer.valueOf(firstTwoDigits);
         }
     }
 
@@ -229,7 +229,13 @@ public class ReusableSettingsDurationInputView
 
         Button numberDel = dialog.findViewById(R.id.input_number_del);
         numberDel.setOnClickListener(view -> {
-            currentInputAsString = currentInputAsString.substring(currentInputAsString.length() - 1);
+            if (currentInputAsString.length() == 1)
+            {
+                currentInputAsString = "";
+            } else
+            {
+                currentInputAsString = currentInputAsString.substring(currentInputAsString.length() - 1);
+            }
             updateSeperatedInputFields();
         });
         numberDel.setOnLongClickListener(view -> {
@@ -241,6 +247,9 @@ public class ReusableSettingsDurationInputView
         if (currentInputAsString == null)
         {
             reset();
+        } else
+        {
+            updateSeperatedInputFields();
         }
         // Set up the Cancel button click listener
         cancelButton.setOnClickListener(v2 -> {
@@ -248,6 +257,7 @@ public class ReusableSettingsDurationInputView
             dialog.dismiss();
         }); // Close the dialog
         okButton.setOnClickListener(v2 -> {
+            updateSeperatedInputFields();
             this.item.setSummary(String.format(this.summaryFormat, this.number3, this.number2, this.number1));
             dialog.dismiss();
         }); // Close the dialog
