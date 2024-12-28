@@ -56,6 +56,7 @@ public class ReusableSettingsNumberInputView
         // Set up the input
         final EditText input = new EditText(context);
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setText(String.valueOf(currentNumber));
         builder.setView(input);
 
         // Set up the buttons

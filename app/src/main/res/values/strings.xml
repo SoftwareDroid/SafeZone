@@ -171,4 +171,14 @@
     <string name="reset_period">Limits Reset Period</string>
     <string name="set_time_limit">Set Time Limt</string>
     <string name="OK">OK</string>
+    <string name="restricted_times">Restricted Times</string>
+    <string name="week_days">Weekdays</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="black_list">Blocked Period</string>
+    <string name="blocked_period_description">If the this is unchecked all other times except this are blocked</string>
 </resources>

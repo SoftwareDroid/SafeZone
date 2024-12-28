@@ -74,6 +74,16 @@
                 android:layout_height="wrap_content"
                 app:summary="0"
                 app:title2="@string/reset_period" />
+            <com.example.ourpact3.ui.settings.ReusableSettingsHeaderView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:title="@string/restricted_times" />
+            <com.example.ourpact3.ui.settings.ReusableSettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:summary="Bla Bla"
+                app:title2="@string/restricted_times" />
+
 
             <com.example.ourpact3.ui.settings.ReusableSettingsCounterActionView
                 android:layout_width="match_parent"

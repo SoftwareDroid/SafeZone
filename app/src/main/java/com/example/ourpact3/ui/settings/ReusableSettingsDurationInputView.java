@@ -164,7 +164,7 @@ public class ReusableSettingsDurationInputView
     {
         // Create a new dialog
         final Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.layout.stop_watch);
+        dialog.setContentView(R.layout.reusable_duration_picker_layout);
         this.input_3 = dialog.findViewById(R.id.edit_input_3);
         this.input_2 = dialog.findViewById(R.id.edit_input_2);
         this.input_1 = dialog.findViewById(R.id.edit_input_1);
