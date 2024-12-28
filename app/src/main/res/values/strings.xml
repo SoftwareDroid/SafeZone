@@ -43,7 +43,7 @@
     <string name="lock_state_no_admin">Working (Without Device Admin)</string>
     <string name="app_version_title">App Version</string>
     <string name="button_disable_locking">Disable Locking</string>
-    <string name="ok">ok\n</string>
+    <string name="ok">ok</string>
     <string name="enter_pin">Enter PIN</string>
     <string name="enter_pin_to_proced">Please enter the PIN to proceed:</string>
     <string name="incorrect_pin_message">Wrong PIN! Please try again.</string>
@@ -162,4 +162,13 @@
     <string name="usage_limits">Usage Limits</string>
     <string name="number_of_starts">App starts</string>
     <string name="number_of_possible_starts">Enter number of possible starts:</string>
+    <string name="enter_duration">Enter Duration</string>
+    <string name="unit_seconds">s</string>
+    <string name="unit_minutes">m</string>
+    <string name="unit_hours">h</string>
+    <string name="unit_days">days</string>
+    <string name="time_limit">Time Limit</string>
+    <string name="reset_period">Limits Reset Period</string>
+    <string name="set_time_limit">Set Time Limt</string>
+    <string name="OK">OK</string>
 </resources>

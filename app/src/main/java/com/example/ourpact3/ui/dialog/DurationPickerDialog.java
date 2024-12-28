@@ -9,8 +9,6 @@ import android.widget.Toast;
 
 import com.example.ourpact3.R;
 
-import java.util.TreeSet;
-
 public class DurationPickerDialog
 {
 
@@ -28,7 +26,7 @@ public class DurationPickerDialog
         dialog.setContentView(R.layout.dialog_duration_picker);
         dialog.setTitle(context.getString(R.string.duration_picker));
 
-        editTextMinutes = dialog.findViewById(R.id.edit_text_minutes);
+        editTextMinutes = dialog.findViewById(R.id.edit_input_2);
         Button buttonOk = dialog.findViewById(R.id.button_ok);
 
         buttonOk.setOnClickListener(new View.OnClickListener()

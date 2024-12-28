@@ -9,13 +9,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.ourpact3.R;
+import com.example.ourpact3.ui.settings.ReusableSettingsDurationInputView;
 import com.example.ourpact3.ui.settings.ReusableSettingsNumberInputView;
+
+import java.util.concurrent.TimeUnit;
 
 public class UsageRestrictionActivity extends AppCompatActivity
 {
 
     private ReusableSettingsNumberInputView numberOfStartsInput;
-
+    private ReusableSettingsDurationInputView timeLimit;
+    private ReusableSettingsDurationInputView resetPeriod;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -35,6 +39,9 @@ public class UsageRestrictionActivity extends AppCompatActivity
         numberOfStartsInput = new ReusableSettingsNumberInputView(this, findViewById(R.id.setting_input_number_of_start));
         numberOfStartsInput.setLimits(0, 1000);
         numberOfStartsInput.setParameters(this.getString(R.string.number_of_possible_starts), "%s", 10);
+        //
+        timeLimit = new ReusableSettingsDurationInputView(this,findViewById(R.id.setting_input_time_limit));
+        timeLimit.setParameters(this.getString(R.string.set_time_limit),"%d:%d:%d (hh:mm:ss)", TimeUnit.HOURS,TimeUnit.MINUTES,TimeUnit.SECONDS,"");
 
     }
 

@@ -52,6 +52,18 @@
             android:layout_height="wrap_content"
             app:title2="@string/number_of_starts"
             app:summary="0" />
+        <com.example.ourpact3.ui.settings.ReusableSettingsItemView
+            android:id="@+id/setting_input_time_limit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title2="@string/time_limit"
+            app:summary="0" />
+        <com.example.ourpact3.ui.settings.ReusableSettingsItemView
+            android:id="@+id/setting_input_reset_period"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title2="@string/reset_period"
+            app:summary="0" />
 
         <com.example.ourpact3.ui.settings.ReusableSettingsCounterActionView
             android:layout_width="match_parent"
