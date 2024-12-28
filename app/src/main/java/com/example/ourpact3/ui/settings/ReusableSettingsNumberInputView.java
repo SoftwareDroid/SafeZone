@@ -1,82 +1,106 @@
 package com.example.ourpact3.ui.settings;
 
-import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.ourpact3.R;
 
-public class ReusableSettingsNumberInputView extends LinearLayout
+import android.app.AlertDialog;
+import android.text.InputType;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class ReusableSettingsNumberInputView
 {
 
-    private TextView titleTextView;
-    private TextView summaryTextView;
+    private ReusableSettingsItemView item;
+    private Context context;
+    private Integer min;
+    private Integer max;
+    private String title;
+    private int currentNumber;
+    private String summaryFormat = "%s";
 
-    public ReusableSettingsNumberInputView(Context context, AttributeSet attrs)
+    public ReusableSettingsNumberInputView(Context context, ReusableSettingsItemView item)
     {
-        super(context, attrs);
-        init(context, attrs);
+        this.item = item;
+        this.context = context;
+        item.setOnClickListener(this::showDialog);
     }
 
-    private void init(Context context, AttributeSet attrs)
+    /**
+     * @param title
+     * @param summaryFormat use "%s" for input as output
+     */
+    public void setParameters(String title, String summaryFormat, int initialValue)
     {
-        //use same as item layout
-        LayoutInflater.from(context).inflate(R.layout.reuseable_settings_item_layout, this, true);
-        titleTextView = findViewById(R.id.title);
-        summaryTextView = findViewById(R.id.summary);
-
-        this.setOnClickListener();
-        // Obtain custom attributes
-        TypedArray a = context.getTheme().obtainStyledAttributes(
-                attrs,
-                R.styleable.ReusableSettingsItemView,
-                0, 0);
-
-        try
+        this.title = title;
+        if(summaryFormat != null)
         {
-            // Get the title attribute
-            String title = a.getString(R.styleable.ReusableSettingsItemView_title2);
-            String summary = a.getString(R.styleable.ReusableSettingsItemView_summary);
-            if (title != null && summary != null)
-            {
-                titleTextView.setText(title);
-                summaryTextView.setText(summary);
-            }
-        } finally
-        {
-            a.recycle();
+            this.summaryFormat = summaryFormat;
         }
+        setCurrentNumber(initialValue);
     }
 
-    private void showTimePickerDialog() {
-        // Get the current time
-        final Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
+    public void setLimits(Integer min, Integer max)
+    {
+        this.min = min;
+        this.max = max;
+    }
 
-        // Create a TimePickerDialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                (view, selectedHour, selectedMinute) -> {
-                    // Handle the selected duration
-                    String duration = selectedHour + " hours and " + selectedMinute + " minutes";
-                    Toast.makeText(MainActivity.this, "Selected Duration: " + duration, Toast.LENGTH_SHORT).show();
-                }, hour, minute, true);
+    private void showDialog(View v)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
 
-        timePickerDialog.show();
+        // Set up the input
+        final EditText input = new EditText(context);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton(context.getString(R.string.ok), (dialog, which) -> {
+            String userInput = input.getText().toString();
+            if (!userInput.isEmpty())
+            {
+                int number = Integer.parseInt(userInput);
+                if ((min != null && max != null) && (number < min || number > max))
+                {
+                    Toast.makeText(context, R.string.input_number_out_of_range, Toast.LENGTH_SHORT).show();
+                } else
+                {
+                    // Handle the valid number input
+                    setCurrentNumber(number);
+                }
+            } else
+            {
+                Toast.makeText(context, context.getString(R.string.input_cannot_be_empty), Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton(context.getString(R.string.cancel), (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    public void setCurrentNumber(int number)
+    {
+        this.setSummary(String.format(this.summaryFormat, number));
+        this.currentNumber = number;
+    }
+
+    public int getCurrentNumber()
+    {
+        return this.currentNumber;
     }
 
     public void setTitle(String title)
     {
-        titleTextView.setText(title);
+        item.setTitle(title);
     }
 
     public void setSummary(String summary)
     {
-        summaryTextView.setText(summary);
+        item.setSummary(summary);
     }
 }
 

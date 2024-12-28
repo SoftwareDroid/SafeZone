@@ -3,7 +3,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="0dp">
 
     <com.example.ourpact3.ui.settings.ReusableSettingsHeaderView
         android:layout_width="match_parent"

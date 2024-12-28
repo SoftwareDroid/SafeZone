@@ -157,4 +157,9 @@
     <string name="choose_a_option">Choose a option</string>
     <string name="invalid_number">Please enter a valid number</string>
     <string name="duration_picker">Duration Picker</string>
+    <string name="input_cannot_be_empty">Input cannot be empty</string>
+    <string name="input_number_out_of_range">Input number out of range</string>
+    <string name="usage_limits">Usage Limits</string>
+    <string name="number_of_starts">App starts</string>
+    <string name="number_of_possible_starts">Enter number of possible starts:</string>
 </resources>
