@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ReusableSettingsDurationInputView
 {
-    private ReusableSettingsItemView item;
+    private ReusableSettingsItemView settingsItem;
     private Context context;
     private String title;
     private String summaryFormat = "%s";
@@ -32,7 +32,7 @@ public class ReusableSettingsDurationInputView
 
     public ReusableSettingsDurationInputView(Context context, ReusableSettingsItemView item)
     {
-        this.item = item;
+        this.settingsItem = item;
         this.context = context;
         item.setOnClickListener(this::showDialog);
     }
@@ -54,8 +54,8 @@ public class ReusableSettingsDurationInputView
         {
             this.summaryFormat = "%d:%d:%d";
         }
-        this.item.setSummary(String.format(this.summaryFormat, this.number3, this.number2, this.number1));
-
+        this.currentInputAsString = startValue;
+        updateSeperatedInputFields(false);
     }
 
     private void setTimeUnitForInput(TextView unitInUI, TimeUnit unit)
@@ -96,7 +96,7 @@ public class ReusableSettingsDurationInputView
         return groups;
     }
 
-    private void updateSeperatedInputFields()
+    private void updateSeperatedInputFields(boolean updateTextOfInputFields)
     {
         // Split the current input into groups of two
         ArrayList<String> groups = splitIntoGroupsOfTwo(currentInputAsString);
@@ -105,7 +105,6 @@ public class ReusableSettingsDurationInputView
         String lastTwoDigits = groups.size() > 0 ? groups.get(groups.size() - 1) : "";
         String middleTwoDigits = groups.size() > 1 ? groups.get(groups.size() - 2) : "";
         String firstTwoDigits = groups.size() > 2 ? groups.get(0) : "";
-        this.input_1.setText(lastTwoDigits);
         if (lastTwoDigits.isEmpty())
         {
             this.number1 = 0;
@@ -113,7 +112,6 @@ public class ReusableSettingsDurationInputView
         {
             this.number1 = Integer.valueOf(lastTwoDigits);
         }
-        this.input_2.setText(middleTwoDigits);
         if (middleTwoDigits.isEmpty())
         {
             this.number2 = 0;
@@ -122,7 +120,12 @@ public class ReusableSettingsDurationInputView
             this.number2 = Integer.valueOf(middleTwoDigits);
 
         }
-        this.input_3.setText(firstTwoDigits);
+        if (updateTextOfInputFields)
+        {
+            this.input_1.setText(lastTwoDigits);
+            this.input_2.setText(middleTwoDigits);
+            this.input_3.setText(firstTwoDigits);
+        }
         if (firstTwoDigits.isEmpty())
         {
             this.number3 = 0;
@@ -130,6 +133,7 @@ public class ReusableSettingsDurationInputView
         {
             this.number3 = Integer.valueOf(firstTwoDigits);
         }
+        this.settingsItem.setSummary(String.format(this.summaryFormat, this.number3, this.number2, this.number1));
     }
 
     public int getNumber1()
@@ -152,7 +156,7 @@ public class ReusableSettingsDurationInputView
         if (currentInputAsString.length() < 6)
         {
             currentInputAsString = currentInputAsString + c;
-            updateSeperatedInputFields();
+            updateSeperatedInputFields(true);
         }
     }
 
@@ -236,11 +240,11 @@ public class ReusableSettingsDurationInputView
             {
                 currentInputAsString = currentInputAsString.substring(currentInputAsString.length() - 1);
             }
-            updateSeperatedInputFields();
+            updateSeperatedInputFields(true);
         });
         numberDel.setOnLongClickListener(view -> {
             currentInputAsString = "";
-            updateSeperatedInputFields();
+            updateSeperatedInputFields(true);
             return true;
         });
 
@@ -249,7 +253,7 @@ public class ReusableSettingsDurationInputView
             reset();
         } else
         {
-            updateSeperatedInputFields();
+            updateSeperatedInputFields(true);
         }
         // Set up the Cancel button click listener
         cancelButton.setOnClickListener(v2 -> {
@@ -257,8 +261,8 @@ public class ReusableSettingsDurationInputView
             dialog.dismiss();
         }); // Close the dialog
         okButton.setOnClickListener(v2 -> {
-            updateSeperatedInputFields();
-            this.item.setSummary(String.format(this.summaryFormat, this.number3, this.number2, this.number1));
+            updateSeperatedInputFields(true);
+            this.settingsItem.setSummary(String.format(this.summaryFormat, this.number3, this.number2, this.number1));
             dialog.dismiss();
         }); // Close the dialog
         // Show the dialog
@@ -269,19 +273,19 @@ public class ReusableSettingsDurationInputView
     {
         //setup start value, we always need a valid field
         this.currentInputAsString = startValue;
-        updateSeperatedInputFields();
+        updateSeperatedInputFields(true);
 
     }
 
 
     public void setTitle(String title)
     {
-        item.setTitle(title);
+        settingsItem.setTitle(title);
     }
 
     public void setSummary(String summary)
     {
-        item.setSummary(summary);
+        settingsItem.setSummary(summary);
     }
 }
 

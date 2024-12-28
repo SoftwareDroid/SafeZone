@@ -18,8 +18,8 @@ public class UsageRestrictionActivity extends AppCompatActivity
 {
 
     private ReusableSettingsNumberInputView numberOfStartsInput;
-    private ReusableSettingsDurationInputView timeLimit;
-    private ReusableSettingsDurationInputView resetPeriod;
+    private ReusableSettingsDurationInputView timeLimitInput;
+    private ReusableSettingsDurationInputView resetPeriodInput;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -40,9 +40,12 @@ public class UsageRestrictionActivity extends AppCompatActivity
         numberOfStartsInput.setLimits(0, 1000);
         numberOfStartsInput.setParameters(this.getString(R.string.number_of_possible_starts), "%s", 10);
         //
-        timeLimit = new ReusableSettingsDurationInputView(this,findViewById(R.id.setting_input_time_limit));
-        timeLimit.setParameters(this.getString(R.string.set_time_limit),"%d:%d:%d (hh:mm:ss)", TimeUnit.SECONDS,TimeUnit.MINUTES,TimeUnit.HOURS,"");
-
+        timeLimitInput = new ReusableSettingsDurationInputView(this,findViewById(R.id.setting_input_time_limit));
+        timeLimitInput.setParameters(this.getString(R.string.set_time_limit),"%d:%d:%d (hh:mm:ss)", TimeUnit.SECONDS,TimeUnit.MINUTES,TimeUnit.HOURS,"999999");
+        //
+        resetPeriodInput = new ReusableSettingsDurationInputView(this,findViewById(R.id.setting_input_reset_period));
+        // 1 day reset period
+        resetPeriodInput.setParameters(this.getString(R.string.reset_period),"%d:%d:%d (dd:hh:mm)", TimeUnit.MINUTES,TimeUnit.HOURS,TimeUnit.DAYS,"010000");
     }
 
     // Back button in title
