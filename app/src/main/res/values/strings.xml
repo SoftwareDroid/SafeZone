@@ -172,7 +172,7 @@
     <string name="set_time_limit">Set Time Limt</string>
     <string name="OK">OK</string>
     <string name="restricted_times">Restricted Times</string>
-    <string name="week_days">Weekdays</string>
+    <string name="week_days">Applied Weekdays</string>
     <string name="monday">Monday</string>
     <string name="tuesday">Tuesday</string>
     <string name="wednesday">Wednesday</string>
@@ -181,12 +181,21 @@
     <string name="end_time">End Time</string>
     <string name="black_list">Blocked Period</string>
     <string name="blocked_period_description">If the this is unchecked all other times except this are blocked</string>
-    <string name="set_start_time">Begin</string>
-    <string name="set_end_time">End Time</string>
+    <string name="set_start_time">Start</string>
+    <string name="set_end_time">End</string>
     <string name="pick_start_time">Pick Start Time</string>
     <string name="pick_end_time">Pick End Time</string>
     <string name="add_time_rule">+ Add Time Restriction</string>
     <string name="friday">Friday</string>
     <string name="saturday">Saturday</string>
     <string name="sunday">Sunday</string>
+    <string name="week_days_in_rule">Applied at:</string>
+    <string name="short_monday">Mo</string>
+    <string name="short_tuesday">Tu</string>
+    <string name="short_wednesday">We</string>
+    <string name="short_thursday">Th</string>
+    <string name="short_friday">Fr</string>
+    <string name="short_saturday">Sa</string>
+    <string name="short_sunday">Su</string>
+    <string name="all_days">Always</string>
 </resources>

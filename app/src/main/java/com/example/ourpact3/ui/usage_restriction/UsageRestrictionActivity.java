@@ -3,26 +3,23 @@ package com.example.ourpact3.ui.usage_restriction;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.content.Intent;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ourpact3.R;
-import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.ui.settings.ReusableSettingsCheckboxView;
-import com.example.ourpact3.ui.settings.ReusableSettingsComboboxViev;
 import com.example.ourpact3.ui.settings.ReusableSettingsDurationInputView;
-import com.example.ourpact3.ui.settings.ReusableSettingsItemView;
 import com.example.ourpact3.ui.settings.ReusableSettingsNumberInputView;
 import com.example.ourpact3.ui.settings.ReusableSettingsTimePickerInputView;
+import com.example.ourpact3.util.WeekDayToString;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 public class UsageRestrictionActivity extends AppCompatActivity
 {
-
+    private TimeRuleListAdapter adapterTimeRules;
     private ReusableSettingsNumberInputView numberOfStartsInput;
     private ReusableSettingsDurationInputView timeLimitInput;
     private ReusableSettingsDurationInputView resetPeriodInput;
@@ -72,21 +69,31 @@ public class UsageRestrictionActivity extends AppCompatActivity
         // weekday picker
         weekdaySelector = new ReusableSettingsCheckboxView<DayOfWeek>(this, findViewById(R.id.setting_input_weekdays));
         LinkedHashMap<DayOfWeek, String> values = new LinkedHashMap<DayOfWeek, String>();
-        values.put(DayOfWeek.MONDAY, this.getString(R.string.monday));
-        values.put(DayOfWeek.TUESDAY, this.getString(R.string.tuesday));
-        values.put(DayOfWeek.WEDNESDAY, this.getString(R.string.wednesday));
-        values.put(DayOfWeek.THURSDAY, this.getString(R.string.thursday));
-        values.put(DayOfWeek.FRIDAY, this.getString(R.string.friday));
-        values.put(DayOfWeek.SATURDAY, this.getString(R.string.saturday));
-        values.put(DayOfWeek.SUNDAY, this.getString(R.string.sunday));
+        values.put(DayOfWeek.MONDAY, WeekDayToString.getShortForm(DayOfWeek.MONDAY,this));
+        values.put(DayOfWeek.TUESDAY, WeekDayToString.getShortForm(DayOfWeek.TUESDAY,this));
+        values.put(DayOfWeek.WEDNESDAY, WeekDayToString.getShortForm(DayOfWeek.WEDNESDAY,this));
+        values.put(DayOfWeek.THURSDAY, WeekDayToString.getShortForm(DayOfWeek.THURSDAY,this));
+        values.put(DayOfWeek.FRIDAY, WeekDayToString.getShortForm(DayOfWeek.FRIDAY,this));
+        values.put(DayOfWeek.SATURDAY, WeekDayToString.getShortForm(DayOfWeek.SATURDAY,this));
+        values.put(DayOfWeek.SUNDAY, WeekDayToString.getShortForm(DayOfWeek.SUNDAY,this));
         List<DayOfWeek> initialSelection = new ArrayList<DayOfWeek>();
         initialSelection.add(DayOfWeek.MONDAY);
         initialSelection.add(DayOfWeek.TUESDAY);
         initialSelection.add(DayOfWeek.WEDNESDAY);
         initialSelection.add(DayOfWeek.THURSDAY);
         initialSelection.add(DayOfWeek.FRIDAY);
-        weekdaySelector.setParameters(this.getString(R.string.choose_a_option), "Applied on: %s", values, initialSelection);
-
+        weekdaySelector.setParameters(this.getString(R.string.choose_a_option), "%s", values, initialSelection);
+        // setup adding time rules
+        adapterTimeRules = new TimeRuleListAdapter(this);
+        RecyclerView recyclerViewTimeRules = findViewById(R.id.added_time_rules); // Make sure this ID matches your layout
+        recyclerViewTimeRules.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewTimeRules.setAdapter(adapterTimeRules);
+        findViewById(R.id.add_time_rule).setOnClickListener(v -> {
+            // Create a new TimeRule with example text
+            TimeRuleListEntry newTimeRule = new TimeRuleListEntry(this,selectedStartInput.getCurrentTime(), selectedEndInput.getCurrentTime(),weekdaySelector.getSelectedItems(),true);
+            adapterTimeRules.addTimeRule(newTimeRule);
+            recyclerViewTimeRules.scrollToPosition(adapterTimeRules.getItemCount() - 1); // Scroll to the new item
+        });
     }
 
 

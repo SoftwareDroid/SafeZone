@@ -107,6 +107,11 @@
                 android:text="@string/add_time_rule"
                 android:layout_gravity="start" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/added_time_rules"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
             <com.example.ourpact3.ui.settings.ReusableSettingsCounterActionView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
