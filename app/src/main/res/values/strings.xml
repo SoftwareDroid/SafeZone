@@ -185,4 +185,8 @@
     <string name="set_end_time">End Time</string>
     <string name="pick_start_time">Pick Start Time</string>
     <string name="pick_end_time">Pick End Time</string>
+    <string name="add_time_rule">+ Add Time Restriction</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
 </resources>
