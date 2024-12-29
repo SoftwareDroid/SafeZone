@@ -2,12 +2,14 @@ package com.example.ourpact3.ui.usage_restriction;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.widget.TextView;
 import android.content.Intent;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -34,6 +36,7 @@ public class UsageRestrictionActivity extends AppCompatActivity
     private ReusableSettingsTimePickerInputView selectedStartInput;
     private ReusableSettingsTimePickerInputView selectedEndInput;
     private ReusableSettingsCheckboxView<DayOfWeek> weekdaySelector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -69,13 +72,13 @@ public class UsageRestrictionActivity extends AppCompatActivity
         // weekday picker
         weekdaySelector = new ReusableSettingsCheckboxView<DayOfWeek>(this, findViewById(R.id.setting_input_weekdays));
         LinkedHashMap<DayOfWeek, String> values = new LinkedHashMap<DayOfWeek, String>();
-        values.put(DayOfWeek.MONDAY, WeekDayToString.getShortForm(DayOfWeek.MONDAY,this));
-        values.put(DayOfWeek.TUESDAY, WeekDayToString.getShortForm(DayOfWeek.TUESDAY,this));
-        values.put(DayOfWeek.WEDNESDAY, WeekDayToString.getShortForm(DayOfWeek.WEDNESDAY,this));
-        values.put(DayOfWeek.THURSDAY, WeekDayToString.getShortForm(DayOfWeek.THURSDAY,this));
-        values.put(DayOfWeek.FRIDAY, WeekDayToString.getShortForm(DayOfWeek.FRIDAY,this));
-        values.put(DayOfWeek.SATURDAY, WeekDayToString.getShortForm(DayOfWeek.SATURDAY,this));
-        values.put(DayOfWeek.SUNDAY, WeekDayToString.getShortForm(DayOfWeek.SUNDAY,this));
+        values.put(DayOfWeek.MONDAY, WeekDayToString.getShortForm(DayOfWeek.MONDAY, this));
+        values.put(DayOfWeek.TUESDAY, WeekDayToString.getShortForm(DayOfWeek.TUESDAY, this));
+        values.put(DayOfWeek.WEDNESDAY, WeekDayToString.getShortForm(DayOfWeek.WEDNESDAY, this));
+        values.put(DayOfWeek.THURSDAY, WeekDayToString.getShortForm(DayOfWeek.THURSDAY, this));
+        values.put(DayOfWeek.FRIDAY, WeekDayToString.getShortForm(DayOfWeek.FRIDAY, this));
+        values.put(DayOfWeek.SATURDAY, WeekDayToString.getShortForm(DayOfWeek.SATURDAY, this));
+        values.put(DayOfWeek.SUNDAY, WeekDayToString.getShortForm(DayOfWeek.SUNDAY, this));
         List<DayOfWeek> initialSelection = new ArrayList<DayOfWeek>();
         initialSelection.add(DayOfWeek.MONDAY);
         initialSelection.add(DayOfWeek.TUESDAY);
@@ -89,10 +92,28 @@ public class UsageRestrictionActivity extends AppCompatActivity
         recyclerViewTimeRules.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTimeRules.setAdapter(adapterTimeRules);
         findViewById(R.id.add_time_rule).setOnClickListener(v -> {
-            // Create a new TimeRule with example text
-            TimeRuleListEntry newTimeRule = new TimeRuleListEntry(this,selectedStartInput.getCurrentTime(), selectedEndInput.getCurrentTime(),weekdaySelector.getSelectedItems(),true);
-            adapterTimeRules.addTimeRule(newTimeRule);
-            recyclerViewTimeRules.scrollToPosition(adapterTimeRules.getItemCount() - 1); // Scroll to the new item
+            // Get the current start and end times
+            LocalTime startTime = selectedStartInput.getCurrentTime(); // Assuming this returns a LocalTime or similar
+            LocalTime endTime = selectedEndInput.getCurrentTime();
+            List<DayOfWeek> selectedWeekdays = weekdaySelector.getSelectedItems();
+            // Check if the start time is greater than the end time
+            if (startTime.plusMinutes(2).isAfter(endTime))
+            {
+                // Show a toast message for invalid time
+                Toast.makeText(this, getString(R.string.invalid_start_time_bigger_as_end), Toast.LENGTH_SHORT).show();
+            } else
+            {
+                if (selectedWeekdays.isEmpty())
+                {
+                    Toast.makeText(this, getString(R.string.select_at_least_on_weekday), Toast.LENGTH_SHORT).show();
+                } else
+                {
+                    // Create a new TimeRule with example text
+                    TimeRuleListEntry newTimeRule = new TimeRuleListEntry(this, startTime, endTime, selectedWeekdays, true);
+                    adapterTimeRules.addTimeRule(newTimeRule);
+                    recyclerViewTimeRules.scrollToPosition(adapterTimeRules.getItemCount() - 1); // Scroll to the new item
+                }
+            }
         });
     }
 

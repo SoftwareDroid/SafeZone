@@ -198,4 +198,6 @@
     <string name="short_saturday">Sa</string>
     <string name="short_sunday">Su</string>
     <string name="all_days">Always</string>
+    <string name="invalid_start_time_bigger_as_end">Invalid time: Start time cannot be after End time</string>
+    <string name="select_at_least_on_weekday">Select at least one weekday</string>
 </resources>
