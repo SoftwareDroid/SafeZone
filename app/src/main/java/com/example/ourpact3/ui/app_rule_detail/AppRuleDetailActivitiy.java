@@ -44,22 +44,22 @@ public class AppRuleDetailActivitiy extends AppCompatActivity {
 
 
         /////////////////////////////////
-        checkboxView = new ReusableSettingsCheckboxView<String>(this, findViewById(R.id.sample_multi_selection));
-        // Prepare sample data
-        LinkedHashMap<String, String> options = new LinkedHashMap<>();
-        options.put("option1", "Option 1");
-        options.put("option2", "Option 2");
-        options.put("option3", "Option 3");
-        options.put("option4", "Option 4");
-        // Set parameters for the checkbox view
-        List<String> initialSelections = new ArrayList<String>();
-        initialSelections.add("option1"); // Pre-select "Option 1"
-
-        checkboxView.setParameters("Select Options", "Selected: %s", options, initialSelections);
-
-        // Optionally, you can set the title and summary directly
-        checkboxView.setTitle("Choose Your Options");
-        checkboxView.setSummary("Select your preferred options.");
+//        checkboxView = new ReusableSettingsCheckboxView<String>(this, findViewById(R.id.sample_multi_selection));
+//        // Prepare sample data
+//        LinkedHashMap<String, String> options = new LinkedHashMap<>();
+//        options.put("option1", "Option 1");
+//        options.put("option2", "Option 2");
+//        options.put("option3", "Option 3");
+//        options.put("option4", "Option 4");
+//        // Set parameters for the checkbox view
+//        List<String> initialSelections = new ArrayList<String>();
+//        initialSelections.add("option1"); // Pre-select "Option 1"
+//
+//        checkboxView.setParameters("Select Options", "Selected: %s", options, initialSelections);
+//
+//        // Optionally, you can set the title and summary directly
+//        checkboxView.setTitle("Choose Your Options");
+//        checkboxView.setSummary("Select your preferred options.");
 
         // Set up the click listener
         // The usage restriction dialog is quite complex so we start a new activity here

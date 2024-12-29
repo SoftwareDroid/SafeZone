@@ -12,7 +12,6 @@ public class ProductivityTimeRule
     private LocalTime startTime;
     private LocalTime endTime;
     private boolean isBlackListTimeMode; //if false when all
-
     public ProductivityTimeRule(LocalTime startTime, LocalTime endTime, EnumSet<DayOfWeek> weekdays, boolean isBlackListMode)
     {
         this.startTime = startTime;

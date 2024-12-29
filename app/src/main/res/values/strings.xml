@@ -181,4 +181,8 @@
     <string name="end_time">End Time</string>
     <string name="black_list">Blocked Period</string>
     <string name="blocked_period_description">If the this is unchecked all other times except this are blocked</string>
+    <string name="set_start_time">Begin</string>
+    <string name="set_end_time">End Time</string>
+    <string name="pick_start_time">Pick Start Time</string>
+    <string name="pick_end_time">Pick End Time</string>
 </resources>
