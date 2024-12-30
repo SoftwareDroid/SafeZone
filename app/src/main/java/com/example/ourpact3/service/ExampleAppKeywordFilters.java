@@ -53,7 +53,7 @@ public class ExampleAppKeywordFilters
     {
         DatabaseManager dbManager = new DatabaseManager(context);
         dbManager.open();
-        if (!dbManager.needInitialFilling())
+        if (dbManager.needInitialFilling())
         {
             final long en_id = dbManager.addLanguage(new DatabaseManager.Language(1, "english", "en"));
             final long de_id = dbManager.addLanguage(new DatabaseManager.Language(2, "german", "de"));
@@ -90,8 +90,11 @@ public class ExampleAppKeywordFilters
         TreeMap<String, AppPermission> appPermissions = new TreeMap<>();
         DatabaseManager dbManager = new DatabaseManager(context);
         dbManager.open();
-        if (!dbManager.needInitialFilling())
+        if (dbManager.needInitialFilling())
         {
+            // Fill initial app rules
+            setInitialAppRules(dbManager);
+            //
             List<DatabaseManager.ExceptionTuple> initialExceptions = new ArrayList<>();
             initialExceptions.add(new DatabaseManager.ExceptionTuple(this.service.getApplicationContext().getPackageName(), true, false));
             initialExceptions.add(new DatabaseManager.ExceptionTuple("com.android.settings", true, false));
@@ -136,8 +139,7 @@ public class ExampleAppKeywordFilters
             initialExceptions.add(new DatabaseManager.ExceptionTuple("de.mm20.launcher2.release", true, true));
 
             dbManager.insertBatchExceptions(initialExceptions);
-            // Fill initial app rules
-            setInitialAppRules(dbManager);
+
         }
         for (DatabaseManager.ExceptionTuple exception : dbManager.getAllExceptions())
         {

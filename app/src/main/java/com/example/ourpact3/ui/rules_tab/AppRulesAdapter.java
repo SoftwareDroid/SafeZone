@@ -94,6 +94,7 @@ public class AppRulesAdapter extends RecyclerView.Adapter<AppRulesAdapter.ViewHo
                     Intent intent = new Intent(v.getContext(), AppRuleDetailActivitiy.class);
                     intent.putExtra("app_id", rule.packageID);
                     intent.putExtra("app_name", rule.appName);
+                    intent.putExtra("usage_filter_id", rule.usageFilterID);
                     v.getContext().startActivity(intent);
                 }
 //                showPopupMenu(v, position, !rule.writeable);

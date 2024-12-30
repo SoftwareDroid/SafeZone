@@ -5,6 +5,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.example.ourpact3.model.PipelineButtonAction;
+import com.example.ourpact3.model.PipelineWindowAction;
+import com.example.ourpact3.pipeline.CounterAction;
+import com.example.ourpact3.smart_filter.ProductivityFilter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,18 +42,18 @@ import java.util.List;
 
 public class DatabaseManager
 {
-    private DatabaseHelper dbHelper;
-    private SQLiteDatabase db;
+    public static DatabaseHelper dbHelper;
+    public  static SQLiteDatabase db;
 
     public DatabaseManager(Context context) {
         dbHelper = new DatabaseHelper(context);
     }
 
-    public void open() {
+    public static void open() {
         db = dbHelper.getWritableDatabase();
     }
 
-    public void close() {
+    public static void close() {
         dbHelper.close();
     }
 
@@ -178,7 +183,7 @@ public class DatabaseManager
             Cursor cursor = db.rawQuery("SELECT 1 FROM exception_list", null);
             boolean hasEntries = cursor.getCount() > 0;
             cursor.close();
-            return hasEntries;
+            return !hasEntries;
         } catch (Exception e) {
             return false;
         }
@@ -199,14 +204,18 @@ public class DatabaseManager
     public void insertBatchAppRules(List<AppRuleTuple> appRules) {
         db.beginTransaction();
         try {
-            SQLiteStatement statement = db.compileStatement("INSERT INTO apps (package_name, writable, readable, comment, enabled) VALUES (?, ?, ?, ?, ?)");
+            SQLiteStatement statement = db.compileStatement("INSERT INTO apps (package_name, writable, readable, comment, enabled,usage_filter_id) VALUES (?, ?, ?, ?, ?,?)");
             for (AppRuleTuple appRule : appRules) {
                 statement.bindString(1, appRule.packageID);
                 statement.bindLong(2, appRule.writeable ? 1 : 0);
                 statement.bindLong(3, appRule.readable ? 1 : 0);
                 statement.bindString(4, appRule.comment);
                 statement.bindLong(5, appRule.enabled ? 1 : 0);
-                statement.bindNull(6);  // no default use restriction exists
+                CounterAction defaultCounterAction = new CounterAction(PipelineWindowAction.WARNING, PipelineButtonAction.BACK_BUTTON,true);
+                long usageFilterId = UsageSmartFilterManager.addOrUpdateUsageFilter(new ProductivityFilter(defaultCounterAction,"Usage Restriction",60*60,5*60,10,new ArrayList<>()));
+
+                statement.bindLong(6,usageFilterId);  // no default use restriction exists
+
                 statement.executeInsert();
                 statement.clearBindings();
             }
@@ -241,6 +250,10 @@ public class DatabaseManager
         return exceptions;
     }
 
+    /**
+     * retrieves all all rules
+     * @return
+     */
     public List<AppRuleTuple> getAllAppRules() {
         List<AppRuleTuple> appRules = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT * FROM apps", null);
@@ -250,9 +263,8 @@ public class DatabaseManager
             boolean readable = cursor.getInt(2) == 1;
             String comment = cursor.getString(3);
             boolean enabled = cursor.getInt(4) == 1;
-            Integer usageFilterId = cursor.getInt(5);
             AppRuleTuple appRuleTuple = new AppRuleTuple(packageName, comment, readable, writable, enabled);
-
+            appRuleTuple.usageFilterID = cursor.getInt(5);
             appRules.add(appRuleTuple);
         }
         cursor.close();

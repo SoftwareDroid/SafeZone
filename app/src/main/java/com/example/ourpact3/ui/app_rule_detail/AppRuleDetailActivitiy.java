@@ -32,6 +32,7 @@ public class AppRuleDetailActivitiy extends AppCompatActivity {
         Intent intent = getIntent();
         String packageId = intent.getStringExtra("app_id");
         String appName = intent.getStringExtra("app_name");
+        int usageFilterId = intent.getIntExtra("usage_filter_id",-1);
         // set app name in toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -43,24 +44,6 @@ public class AppRuleDetailActivitiy extends AppCompatActivity {
         usageRestriction = findViewById(R.id.usage_restriction);
 
 
-        /////////////////////////////////
-//        checkboxView = new ReusableSettingsCheckboxView<String>(this, findViewById(R.id.sample_multi_selection));
-//        // Prepare sample data
-//        LinkedHashMap<String, String> options = new LinkedHashMap<>();
-//        options.put("option1", "Option 1");
-//        options.put("option2", "Option 2");
-//        options.put("option3", "Option 3");
-//        options.put("option4", "Option 4");
-//        // Set parameters for the checkbox view
-//        List<String> initialSelections = new ArrayList<String>();
-//        initialSelections.add("option1"); // Pre-select "Option 1"
-//
-//        checkboxView.setParameters("Select Options", "Selected: %s", options, initialSelections);
-//
-//        // Optionally, you can set the title and summary directly
-//        checkboxView.setTitle("Choose Your Options");
-//        checkboxView.setSummary("Select your preferred options.");
-
         // Set up the click listener
         // The usage restriction dialog is quite complex so we start a new activity here
         usageRestriction.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +53,7 @@ public class AppRuleDetailActivitiy extends AppCompatActivity {
                 Intent intent = new Intent(v.getContext(), UsageRestrictionActivity.class);
                 intent.putExtra("app_id", packageId);
                 intent.putExtra("app_name", appName);
+                intent.putExtra("usage_filter_id", usageFilterId);
                 startActivity(intent);
             }
         });

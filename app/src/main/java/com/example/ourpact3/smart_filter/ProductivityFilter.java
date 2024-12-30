@@ -28,7 +28,7 @@ public class ProductivityFilter extends SpecialSmartFilterBase
     private int numberOfAppUses;
     private boolean blocked;
     public final Integer maxNumberOfUsages;
-
+    public int getMaxNumberOfUsages(){return maxNumberOfUsages;}
     public int getResetPeriodInSeconds(){return resetPeriodInSeconds;}
     public long getLimitInSeconds(){return limitInSeconds;}
 

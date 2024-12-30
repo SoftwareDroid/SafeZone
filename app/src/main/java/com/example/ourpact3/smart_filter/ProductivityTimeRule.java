@@ -1,10 +1,16 @@
 package com.example.ourpact3.smart_filter;
 
+import android.content.Context;
+
+import com.example.ourpact3.R;
+import com.example.ourpact3.util.WeekDayToString;
+
 import java.time.LocalTime;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.util.EnumSet;
 import java.time.ZonedDateTime;
+import java.util.stream.Collectors;
 
 public class ProductivityTimeRule
 {
@@ -12,7 +18,7 @@ public class ProductivityTimeRule
     private LocalTime startTime;
     private LocalTime endTime;
     private boolean isBlackListTimeMode; //if false when all
-
+    public EnumSet<DayOfWeek> getWeekdays() {return weekdays;}
     public ProductivityTimeRule(LocalTime startTime, LocalTime endTime, EnumSet<DayOfWeek> weekdays, boolean isBlackListMode)
     {
         this.startTime = startTime;
@@ -20,6 +26,28 @@ public class ProductivityTimeRule
         this.weekdays = weekdays;
         this.isBlackListTimeMode = isBlackListMode;
     }
+
+    public String getTimeText() {
+        return String.format("%02d:%02d",startTime.getHour(),startTime.getMinute()) + " - " + String.format("%02d:%02d",endTime.getHour(),endTime.getMinute()) ; // Format as "start - end"
+    }
+
+    public String getWeekdayText(Context context)
+    {
+        String ret;
+        if(weekdays.size() == 7)
+        {
+            ret = context.getString(R.string.always);
+        }
+        else
+        {
+            // Create a string representation of the weekdays
+            ret = weekdays.stream()
+                    .map(day -> WeekDayToString.getShortForm(day, context)) // Use the short form function
+                    .collect(Collectors.joining(", ")); // Join the short forms with a comma
+        }
+        return ret;
+    }
+
     public boolean isBlackListTimeMode(){return isBlackListTimeMode;}
     public LocalTime getStartTime(){return startTime;}
     public LocalTime getEndTime(){return endTime;}

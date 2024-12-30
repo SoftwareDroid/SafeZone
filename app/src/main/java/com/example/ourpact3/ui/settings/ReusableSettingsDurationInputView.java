@@ -30,6 +30,26 @@ public class ReusableSettingsDurationInputView
     private int number3;
     private String startValue;
 
+    public static String formatSecondsToHMS(long totalSeconds) {
+        // Calculate hours, minutes, and seconds
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+
+        // Format the output
+        return String.format("%02d%02d%02d", hours, minutes, seconds);
+    }
+
+    public static String formatSecondsToDHM(long totalSeconds) {
+        // Calculate days, hours, and minutes
+        long days = totalSeconds / 86400; // 86400 seconds in a day
+        long hours = (totalSeconds % 86400) / 3600; // 3600 seconds in an hour
+        long minutes = (totalSeconds % 3600) / 60; // 60 seconds in a minute
+
+        // Format the output
+        return String.format("%02d%02d%02d", days, hours, minutes);
+    }
+
     public ReusableSettingsDurationInputView(Context context, ReusableSettingsItemView item)
     {
         this.settingsItem = item;

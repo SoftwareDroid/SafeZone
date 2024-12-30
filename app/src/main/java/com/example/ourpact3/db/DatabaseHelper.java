@@ -44,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 "readable INTEGER, " +
                 "comment TEXT, " +
                 "enabled INTEGER,"+
-                "usage_filter_id INTEGER, " + // Foreign key column
+                "usage_filter_id INTEGER NOT NULL, " + // Foreign key column
                 "FOREIGN KEY (usage_filter_id) REFERENCES usage_filters(id) ON DELETE CASCADE" // Foreign key constraint
                 +")");
 

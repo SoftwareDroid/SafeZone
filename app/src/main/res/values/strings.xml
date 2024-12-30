@@ -201,4 +201,5 @@
     <string name="invalid_start_time_bigger_as_end">Invalid time: Start time cannot be after End time</string>
     <string name="select_at_least_on_weekday">Select at least one weekday</string>
     <string name="invalid_time_rule_with_similiar_start_times_exists">\"New time rule cannot be added due to overlap with existing rules</string>
+    <string name="always">Always</string>
 </resources>

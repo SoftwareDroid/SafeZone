@@ -19,39 +19,27 @@ import java.util.EnumSet;
 
 public class UsageSmartFilterManager
 {
-    private DatabaseHelper dbHelper;
-    private SQLiteDatabase db;
 
 
     public UsageSmartFilterManager(Context context)
     {
-        dbHelper = new DatabaseHelper(context);
     }
 
-    public void open()
-    {
-        db = dbHelper.getWritableDatabase();
-    }
-
-    public void close()
-    {
-        dbHelper.close();
-    }
 
     /**
      * overwrites all time restrictions for an app which has exactly use usage_filter_id
      */
-    public void setAllTimeRestrictionRules(int usageFilterId, ArrayList<ProductivityTimeRule> timeRules)
+    public static void setAllTimeRestrictionRules(int usageFilterId, ArrayList<ProductivityTimeRule> timeRules)
     {
 
         // Start a transaction for safety
-        db.beginTransaction();
+        DatabaseManager.db.beginTransaction();
         try
         {
             // Step 1: Delete existing rows with the specified usage_filter_id
             String whereClause = "usage_filter_id = ?";
             String[] whereArgs = new String[]{String.valueOf(usageFilterId)};
-            db.delete("time_restriction_rules", whereClause, whereArgs);
+            DatabaseManager.db.delete("time_restriction_rules", whereClause, whereArgs);
             // Step 2: Insert new rows from the array
             for (ProductivityTimeRule rule : timeRules)
             {
@@ -70,18 +58,18 @@ public class UsageSmartFilterManager
                 values.put("end_min", rule.getEndTime().getHour());
                 values.put("black_list", rule.isBlackListMode() ? 1 : 0);
                 // Insert the new row
-                db.insert("time_restriction_rules", null, values);
+                DatabaseManager.db.insert("time_restriction_rules", null, values);
             }
 
             // Mark the transaction as successful
-            db.setTransactionSuccessful();
+            DatabaseManager.db.setTransactionSuccessful();
         } catch (Exception e)
         {
             // Handle any exceptions
         } finally
         {
             // End the transaction
-            db.endTransaction();
+            DatabaseManager.db.endTransaction();
         }
     }
 
@@ -89,7 +77,7 @@ public class UsageSmartFilterManager
      * Retrieves all time restriction rules for an app with the specified usage_filter_id.
      */
     @SuppressLint("Range")  //supress warning of colomn return -1 if they cannot be found by name
-    public ArrayList<ProductivityTimeRule> getAllTimeRestrictionRules(int usageFilterId)
+    public static ArrayList<ProductivityTimeRule> getAllTimeRestrictionRules(int usageFilterId)
     {
         ArrayList<ProductivityTimeRule> timeRules = new ArrayList<>();
         Cursor cursor = null;
@@ -117,7 +105,7 @@ public class UsageSmartFilterManager
             String[] selectionArgs = new String[]{String.valueOf(usageFilterId)};
 
             // Execute the query
-            cursor = db.query("time_restriction_rules", columns, selection, selectionArgs, null, null, null);
+            cursor = DatabaseManager.db.query("time_restriction_rules", columns, selection, selectionArgs, null, null, null);
 
             // Iterate through the results
             if (cursor != null && cursor.moveToFirst())
@@ -179,11 +167,11 @@ public class UsageSmartFilterManager
     /*
     if filterId is null a entry will be created
      */
-    public long addOrUpdateUsageFilter(ProductivityFilter usageFilter)
+    public static long addOrUpdateUsageFilter(ProductivityFilter usageFilter)
     {
         long ret = -1;
         // Start a transaction for safety
-        db.beginTransaction();
+        DatabaseManager.db.beginTransaction();
         try
         {
             CounterAction counterAction = usageFilter.getCounterAction();
@@ -202,29 +190,29 @@ public class UsageSmartFilterManager
                 // Update existing row
                 String whereClause = "id = ?";
                 String[] whereArgs = new String[]{String.valueOf(usageFilter.database_id)};
-                db.update("usage_filters", values, whereClause, whereArgs);
+                DatabaseManager.db.update("usage_filters", values, whereClause, whereArgs);
                 ret = usageFilter.database_id;
             } else
             {
                 // Insert new row
-                ret = db.insert("usage_filters", null, values);
+                ret = DatabaseManager.db.insert("usage_filters", null, values);
             }
 
             // Mark the transaction as successful
-            db.setTransactionSuccessful();
+            DatabaseManager.db.setTransactionSuccessful();
         } catch (Exception e)
         {
             // Handle any exceptions (e.g., log the error)
         } finally
         {
             // End the transaction
-            db.endTransaction();
+            DatabaseManager.db.endTransaction();
         }
         return ret;
     }
 
     @SuppressLint("Range")
-    public ProductivityFilter getUsageFilterById(long filterId)
+    public static ProductivityFilter getUsageFilterById(long filterId)
     {
         ProductivityFilter usageFilter = null; // Initialize to null
         Cursor cursor = null;
@@ -235,7 +223,7 @@ public class UsageSmartFilterManager
             String query = "SELECT * FROM usage_filters WHERE id = ?";
             String[] selectionArgs = new String[]{String.valueOf(filterId)};
 
-            cursor = db.rawQuery(query, selectionArgs);
+            cursor = DatabaseManager.db.rawQuery(query, selectionArgs);
 
             // Check if a result was returned
             if (cursor != null && cursor.moveToFirst())
