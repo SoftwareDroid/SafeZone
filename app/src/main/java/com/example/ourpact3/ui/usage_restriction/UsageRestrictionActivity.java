@@ -98,6 +98,7 @@ public class UsageRestrictionActivity extends AppCompatActivity
             LocalTime startTime = selectedStartInput.getCurrentTime(); // Assuming this returns a LocalTime or similar
             LocalTime endTime = selectedEndInput.getCurrentTime();
             List<DayOfWeek> selectedWeekdays = weekdaySelector.getSelectedItems();
+            //prevents adding the same rule twice
             for (TimeRuleListEntry entry : adapterTimeRules.getAllItems()) {
                 if (entry.weekDays.equals(selectedWeekdays)) {
                     long diffStartTime = Math.abs(Duration.between(startTime, entry.start).toMinutes());

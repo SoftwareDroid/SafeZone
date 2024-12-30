@@ -22,23 +22,64 @@ public class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db)
     {
+        // Create table for which filter
+        /*db.execSQL("CREATE TABLE smart_filters (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "window_action INTEGER, " +
+                "warning INTEGER, " +
+                "kill INTEGER, " +  //boolean
+                "enabled INTEGER, " +
+                "comment TEXT, " +
+                "id_in_one_filter_table INTEGER, " + // can refer do different tables
+                "filter_type INTEGER,"+
+                "package_name TEXT, " + // Add package_name column for foreign key reference
+                "FOREIGN KEY (package_name) REFERENCES apps(package_name) ON DELETE CASCADE"
+                +")");*/
+
         db.execSQL("CREATE TABLE exception_list (appName TEXT PRIMARY KEY, readable INTEGER, writable INTEGER)");
-        //
+        //every app was its rules and one line in this table
         db.execSQL("CREATE TABLE apps (" +
                 "package_name TEXT PRIMARY KEY, " +
                 "writable INTEGER, " +
                 "readable INTEGER, " +
                 "comment TEXT, " +
-                "enabled INTEGER)");
-        // Create table for which filter
-        db.execSQL("CREATE TABLE smart_filters (" +
+                "enabled INTEGER,"+
+                "usage_filter_id INTEGER, " + // Foreign key column
+                "FOREIGN KEY (usage_filter_id) REFERENCES usage_filters(id) ON DELETE CASCADE" // Foreign key constraint
+                +")");
+
+        // special smartfilter can be detected with the special smart filter name and then added differtly
+        // parameters which define the productivity filters
+        db.execSQL("CREATE TABLE usage_filters (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "window_action TEXT, " +
-                "warning INTEGER, " +
-                "kill INTEGER, " +
+                "window_action INTEGER, " +
+                "button_action INTEGER, " +
+                "kill INTEGER, " +  //boolean
                 "enabled INTEGER, " +
-                "comment TEXT, " +
-                "filter_type TEXT)");   // special smartfilter can be detected with the special smart filter name and then added differtly
+                "reset_period INTEGER, "+   //in seconds
+                "time_limit INTEGER,"+       //in seconds
+                "max_starts INTEGER"+       // max starts between rests
+                ")");
+        // Every Usage filter can have n restrictions
+        db.execSQL("CREATE TABLE time_restriction_rules (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "usage_filter_id INTEGER, " +  // Define the column for the foreign key
+                "monday INTEGER, "+   //active on this day
+                "tuesday INTEGER,"+       //active on this day
+                "wednesday INTEGER,"+       // active on this day
+                "thursday INTEGER,"+       // active on this day
+                "friday INTEGER,"+       // active on this day
+                "saturday INTEGER,"+       // active on this day
+                "sunday INTEGER,"+       // active on this day
+                "start_hour INTEGER,"+
+                "start_min INTEGER,"+
+                "end_hour INTEGER,"+
+                "end_min INTEGER,"+
+                "black_list INTEGER,"+
+                "FOREIGN KEY (usage_filter_id) REFERENCES usage_filters(id) ON DELETE CASCADE" + // Foreign key constraint
+                ")");
+
+
         // combination table map n filters to one app
         db.execSQL("CREATE TABLE app_filters (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -93,7 +134,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         onCreate(db);
     }
 
-    public boolean[] isStringInTopicBatch(String[] texts, int topicId, String language, boolean checkAgainstLowerCase)
+    /*public boolean[] isStringInTopicBatch(String[] texts, int topicId, String language, boolean checkAgainstLowerCase)
     {
         boolean[] results = new boolean[texts.length];
         SQLiteDatabase db = getWritableDatabase();
@@ -117,9 +158,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
             results[i] = matchingWords.contains(selectionArgs[i + 2]);
         }
         return results;
-    }
+    }*/
 
-    private String getCommaSeparatedValues(int length)
+    /*private String getCommaSeparatedValues(int length)
     {
         StringBuilder values = new StringBuilder();
         for (int i = 0; i < length; i++)
@@ -131,6 +172,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
             }
         }
         return values.toString();
-    }
+    }*/
 }
 

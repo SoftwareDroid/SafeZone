@@ -7,12 +7,29 @@ import android.os.Parcelable;
  * Buttons moved to own enum
  */
 public enum PipelineWindowAction implements Parcelable {
-//    PERFORM_HOME_BUTTON_AND_WARNING,
-    WARNING,
-    CONTINUE_PIPELINE, // Only this action doesn't abort the pipeline
-    STOP_FURTHER_PROCESSING,
-//    PERFORM_BACK_ACTION_AND_WARNING, // goes back and shows a warning
-    END_OF_PIPE_LINE;
+    WARNING(0),
+    CONTINUE_PIPELINE(1), // Only this action doesn't abort the pipeline
+    STOP_FURTHER_PROCESSING(2),
+    END_OF_PIPE_LINE(3);
+
+    private final int value;
+
+    PipelineWindowAction(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public static PipelineWindowAction fromValue(int value) {
+        for (PipelineWindowAction action : PipelineWindowAction.values()) {
+            if (action.getValue() == value) {
+                return action;
+            }
+        }
+        throw new IllegalArgumentException("Invalid value: " + value);
+    }
 
     // Parcelable implementation
     public static final Creator<PipelineWindowAction> CREATOR = new Creator<PipelineWindowAction>() {

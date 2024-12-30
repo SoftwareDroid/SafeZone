@@ -76,6 +76,7 @@ public class DatabaseManager
         public boolean readable;
         public boolean writeable;
         public boolean enabled;
+        public Integer usageFilterID;
         public AppRuleTuple(String packageID, String comment, boolean readable, boolean writeable, boolean enabled) {
             this.packageID = packageID;
             this.comment = comment;
@@ -83,6 +84,7 @@ public class DatabaseManager
             this.writeable = writeable;
             this.enabled = enabled;
         }
+
     }
 
     public static class Word
@@ -204,6 +206,7 @@ public class DatabaseManager
                 statement.bindLong(3, appRule.readable ? 1 : 0);
                 statement.bindString(4, appRule.comment);
                 statement.bindLong(5, appRule.enabled ? 1 : 0);
+                statement.bindNull(6);  // no default use restriction exists
                 statement.executeInsert();
                 statement.clearBindings();
             }
@@ -247,7 +250,10 @@ public class DatabaseManager
             boolean readable = cursor.getInt(2) == 1;
             String comment = cursor.getString(3);
             boolean enabled = cursor.getInt(4) == 1;
-            appRules.add(new AppRuleTuple(packageName, comment, readable, writable, enabled));
+            Integer usageFilterId = cursor.getInt(5);
+            AppRuleTuple appRuleTuple = new AppRuleTuple(packageName, comment, readable, writable, enabled);
+
+            appRules.add(appRuleTuple);
         }
         cursor.close();
         return appRules;

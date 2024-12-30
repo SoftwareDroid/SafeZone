@@ -2,6 +2,7 @@ package com.example.ourpact3.smart_filter;
 
 import android.view.accessibility.AccessibilityEvent;
 
+import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.pipeline.PipelineResultProductivityFilter;
 import com.example.ourpact3.service.ScreenInfoExtractor;
@@ -16,20 +17,25 @@ import java.util.ArrayList;
  */
 public class ProductivityFilter extends SpecialSmartFilterBase
 {
+    public Long database_id = null;
     private final ArrayList<ProductivityTimeRule> timerules; // White or Blacklist for certain times of the week
     private Instant measurementEnd = null;
     private Instant sessionStart = null;
     private Instant sessionEnd = null;
     private long accumulatedSeconds = 0;
-    private int resetPeriodInHours;
+    private int resetPeriodInSeconds;
     private long limitInSeconds;
     private int numberOfAppUses;
     private boolean blocked;
-    private Integer maxNumberOfUsages;
-    public ProductivityFilter(PipelineResultBase result, String name, int resetPeriod, int limitInSeconds, Integer maxNumberOfUsages, ArrayList<ProductivityTimeRule> timeRules)
+    public final Integer maxNumberOfUsages;
+
+    public int getResetPeriodInSeconds(){return resetPeriodInSeconds;}
+    public long getLimitInSeconds(){return limitInSeconds;}
+
+    public ProductivityFilter(CounterAction counterAction, String name, int resetPeriodInSeconds, int limitInSeconds, Integer maxNumberOfUsages, ArrayList<ProductivityTimeRule> timeRules)
     {
-        super(result, name);
-        this.resetPeriodInHours = resetPeriod;
+        super(new PipelineResultProductivityFilter(counterAction), name);//PipelineResultBase
+        this.resetPeriodInSeconds = resetPeriodInSeconds;
         this.limitInSeconds = limitInSeconds;
         this.blocked = false;
         this.maxNumberOfUsages = maxNumberOfUsages;
@@ -102,7 +108,7 @@ public class ProductivityFilter extends SpecialSmartFilterBase
         accumulatedSeconds = 0;
         sessionStart = null;
         sessionEnd = null;
-        measurementEnd = Instant.now().plus(resetPeriodInHours, ChronoUnit.HOURS);
+        measurementEnd = Instant.now().plus(resetPeriodInSeconds, ChronoUnit.SECONDS);
     }
 
     private PipelineResultBase checkTimeRules(Instant currentTimestamp)
@@ -179,7 +185,7 @@ public class ProductivityFilter extends SpecialSmartFilterBase
             PipelineResultProductivityFilter result = (PipelineResultProductivityFilter) this.result.clone();
             result.usageLimitInSeconds = limitInSeconds;
             result.usageTime = blocked ? limitInSeconds : timeSpend;
-            result.resetPeriod = resetPeriodInHours;
+            result.resetPeriod = resetPeriodInSeconds;
             result.maxNumberOfUsages = null;
             result.numberOfUsages = 0;
             blocked = true;

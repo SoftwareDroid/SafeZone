@@ -444,16 +444,10 @@ public class ExampleAppKeywordFilters
         ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
 
         AppFilter filter = new AppFilter(service, topicManager, filters, appName, false);
-        PipelineResultProductivityFilter result = new PipelineResultProductivityFilter(PipelineWindowAction.WARNING);
-        CounterAction a = new CounterAction();
-
-        a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-        a.setKillState(CounterAction.KillState.KILL_BEFORE_WINDOW);
-        result.setCounterAction(a);
 
         ArrayList<ProductivityTimeRule> timeRules = new ArrayList<>();
         timeRules.add(new ProductivityTimeRule(LocalTime.of(11,0),LocalTime.of(12,0),EnumSet.of(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY),true));
-        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT, new ProductivityFilter(result, "Time limit", 6, 200, 3,timeRules));
+        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT, new ProductivityFilter(new CounterAction(PipelineWindowAction.WARNING,PipelineButtonAction.BACK_BUTTON,true), "Time limit", 6, 200, 3,timeRules));
         return filter;
     }
 
@@ -533,12 +527,8 @@ public class ExampleAppKeywordFilters
         //Productive Filter
         AppFilter filter = new AppFilter(service, topicManager, filters, appName, false);
         {
-            PipelineResultProductivityFilter result = new PipelineResultProductivityFilter(PipelineWindowAction.WARNING);
-            CounterAction a = new CounterAction();
-            a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-            result.setCounterAction(a);
             // No Timerules
-            filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT, new ProductivityFilter(result, "Time limit", 1, 200, 3,new ArrayList<>()));
+            filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.TIME_LIMIT, new ProductivityFilter(new CounterAction(PipelineWindowAction.WARNING,PipelineButtonAction.BACK_BUTTON,true), "Time limit", 1, 200, 3,new ArrayList<>()));
         }
         return filter;
 

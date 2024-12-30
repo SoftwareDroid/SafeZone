@@ -12,6 +12,7 @@ public class ProductivityTimeRule
     private LocalTime startTime;
     private LocalTime endTime;
     private boolean isBlackListTimeMode; //if false when all
+
     public ProductivityTimeRule(LocalTime startTime, LocalTime endTime, EnumSet<DayOfWeek> weekdays, boolean isBlackListMode)
     {
         this.startTime = startTime;
@@ -19,10 +20,18 @@ public class ProductivityTimeRule
         this.weekdays = weekdays;
         this.isBlackListTimeMode = isBlackListMode;
     }
+    public boolean isBlackListTimeMode(){return isBlackListTimeMode;}
+    public LocalTime getStartTime(){return startTime;}
+    public LocalTime getEndTime(){return endTime;}
 
     public boolean isBlackListMode()
     {
         return this.isBlackListTimeMode;
+    }
+
+    public boolean hasWeekday(DayOfWeek day)
+    {
+        return weekdays.contains(day);
     }
 
     public boolean isRuleApplying(Instant timestamp)

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
+
 /*
 The action if a rules triggers
  */
@@ -20,6 +21,20 @@ public class CounterAction implements Cloneable
     private PipelineWindowAction windowAction;
     private KillState killState = KillState.DO_NOT_KILL;
     private boolean hasExplainableButton;
+
+    public CounterAction(PipelineWindowAction windowAction, PipelineButtonAction buttonAction, boolean killApp)
+    {
+        this.buttonAction = buttonAction;
+        this.windowAction = windowAction;
+        this.killState = killApp ? KillState.KILL_BEFORE_WINDOW : KillState.DO_NOT_KILL;
+    }
+
+    public CounterAction()
+    {
+        this.buttonAction = PipelineButtonAction.NONE;
+        this.windowAction = PipelineWindowAction.WARNING;
+        this.killState = KillState.DO_NOT_KILL;
+    }
 
     public PipelineButtonAction getButtonAction()
     {
@@ -40,7 +55,7 @@ public class CounterAction implements Cloneable
     {
         this.windowAction = windowAction;
     }
-
+    public boolean isKillAction() {return killState ==KillState.KILL_BEFORE_WINDOW;}
     public KillState getKillState()
     {
         return killState;

@@ -7,9 +7,9 @@ import com.example.ourpact3.model.PipelineWindowAction;
 public class PipelineResultProductivityFilter
         extends PipelineResultBase
 {
-    public PipelineResultProductivityFilter(PipelineWindowAction action)
+    public PipelineResultProductivityFilter(CounterAction action)
     {
-        this.getCounterAction().setWindowAction(action);
+        this.setCounterAction(action);
     }
     public Integer maxNumberOfUsages;
     public int numberOfUsages;
