@@ -42,7 +42,8 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <com.example.ourpact3.ui.settings.ReuseableBooleanSettingView
+            <com.example.ourpact3.ui.settings.ReuseableSettingsBooleanView
+                android:id="@+id/setting_input_enabled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:description="@string/usage_restriction_restriction"
@@ -125,6 +126,7 @@
                 android:layout_weight="1" />
 
             <com.example.ourpact3.ui.settings.ReusableSettingsCounterActionView
+                android:id="@+id/setting_counter_action"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:readonly="false" />

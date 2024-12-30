@@ -1,24 +1,22 @@
 package com.example.ourpact3.ui.settings;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.LinearLayout;
-
-import androidx.appcompat.app.AlertDialog;
 
 import com.example.ourpact3.R;
 import com.example.ourpact3.model.PipelineButtonAction;
+import com.example.ourpact3.model.PipelineWindowAction;
+import com.example.ourpact3.pipeline.CounterAction;
 
 import java.util.LinkedHashMap;
 
 public class ReusableSettingsCounterActionView extends LinearLayout
 {
-    private ReuseableBooleanSettingView explainableView;
-    private ReuseableBooleanSettingView killAppView;
+    private ReuseableSettingsBooleanView explainableView;
+    private ReuseableSettingsBooleanView killAppView;
     private ReusableSettingsComboboxViev<PipelineButtonAction> windowActionView;
 
     public ReusableSettingsCounterActionView(Context context, AttributeSet attrs)
@@ -44,6 +42,13 @@ public class ReusableSettingsCounterActionView extends LinearLayout
                 attrs,
                 R.styleable.ReusableSettingsPiplineActionView,
                 0, 0);
+    }
+
+    public CounterAction getCounterAction()
+    {
+        //TODO: we need a extended Version some parameters are missing
+        //CounterAction(PipelineWindowAction windowAction, PipelineButtonAction buttonAction, boolean killApp)
+        return new CounterAction(explainableView.getSwitchElement().isChecked()?PipelineWindowAction.WARNING:PipelineWindowAction.CONTINUE_PIPELINE ,windowActionView.getLastSelection(),)
     }
 
     public boolean isExplainable()

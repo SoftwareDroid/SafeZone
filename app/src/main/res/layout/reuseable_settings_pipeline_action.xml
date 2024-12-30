@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         app:title="@string/actions" />
 
-    <com.example.ourpact3.ui.settings.ReuseableBooleanSettingView
+    <com.example.ourpact3.ui.settings.ReuseableSettingsBooleanView
         android:id="@+id/setting_kill_app"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         app:description="@string/app_kill_description"
         app:label="@string/force_kill" />
 
-    <com.example.ourpact3.ui.settings.ReuseableBooleanSettingView
+    <com.example.ourpact3.ui.settings.ReuseableSettingsBooleanView
         android:id="@+id/setting_is_explainable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -22,9 +22,11 @@ import com.example.ourpact3.db.UsageSmartFilterManager;
 import com.example.ourpact3.smart_filter.ProductivityFilter;
 import com.example.ourpact3.smart_filter.ProductivityTimeRule;
 import com.example.ourpact3.ui.settings.ReusableSettingsCheckboxView;
+import com.example.ourpact3.ui.settings.ReusableSettingsCounterActionView;
 import com.example.ourpact3.ui.settings.ReusableSettingsDurationInputView;
 import com.example.ourpact3.ui.settings.ReusableSettingsNumberInputView;
 import com.example.ourpact3.ui.settings.ReusableSettingsTimePickerInputView;
+import com.example.ourpact3.ui.settings.ReuseableSettingsBooleanView;
 import com.example.ourpact3.util.WeekDayToString;
 
 import java.util.EnumSet;
@@ -41,7 +43,8 @@ public class UsageRestrictionActivity extends AppCompatActivity
     private ReusableSettingsTimePickerInputView selectedStartInput;
     private ReusableSettingsTimePickerInputView selectedEndInput;
     private ReusableSettingsCheckboxView<DayOfWeek> weekdaySelector;
-
+    private ReuseableSettingsBooleanView enabledInput;
+    private ReusableSettingsCounterActionView counterActionInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -56,7 +59,7 @@ public class UsageRestrictionActivity extends AppCompatActivity
         // Get default parameters
         DatabaseManager.open();
         ProductivityFilter productivityFilter = UsageSmartFilterManager.getUsageFilterById(usageFilterId);
-
+        enabledInput = findViewById(R.id.setting_input_enabled);
 
         // set app name in toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -65,6 +68,8 @@ public class UsageRestrictionActivity extends AppCompatActivity
         getSupportActionBar().setDisplayShowTitleEnabled(false); // Hide the default title
         TextView titleTextView = findViewById(R.id.title);
         titleTextView.setText(this.getString(R.string.usage_restriction_for) + " " + appName); // Set the title on the custom TextView
+
+        counterActionInput = findViewById(R.id.setting_counter_action);
         // inputs
         numberOfStartsInput = new ReusableSettingsNumberInputView(this, findViewById(R.id.setting_input_number_of_start));
         numberOfStartsInput.setLimits(0, 1000);
@@ -168,6 +173,16 @@ public class UsageRestrictionActivity extends AppCompatActivity
             finish(); // Close the activity when back arrow is clicked
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        List<ProductivityTimeRule> rules = this.adapterTimeRules.getAllItems();
+        boolean enabled = enabledInput.getSwitchElement().isChecked();
+        this.counterActionInput.
+        // Code to release resources or save data
     }
 }
 

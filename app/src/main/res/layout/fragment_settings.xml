@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             app:title="@string/settings_view" />
 
-        <com.example.ourpact3.ui.settings.ReuseableBooleanSettingView
+        <com.example.ourpact3.ui.settings.ReuseableSettingsBooleanView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:isEnabled="false"
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             app:title="@string/debbuging_options" />
 
-            <com.example.ourpact3.ui.settings.ReuseableBooleanSettingView
+            <com.example.ourpact3.ui.settings.ReuseableSettingsBooleanView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:isEnabled="false"

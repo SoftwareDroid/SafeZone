@@ -10,14 +10,14 @@ import android.widget.Switch;
 
 import com.example.ourpact3.R;
 
-public class ReuseableBooleanSettingView extends LinearLayout
+public class ReuseableSettingsBooleanView extends LinearLayout
 {
 
     private TextView labelTextView;
     private TextView labelDescription;
     private Switch switchElement;
 
-    public ReuseableBooleanSettingView(Context context, AttributeSet attrs)
+    public ReuseableSettingsBooleanView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         init(context, attrs);
