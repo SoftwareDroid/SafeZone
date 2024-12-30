@@ -74,44 +74,56 @@
                 android:layout_height="wrap_content"
                 app:summary="0"
                 app:title2="@string/reset_period" />
+
             <com.example.ourpact3.ui.settings.ReusableSettingsHeaderView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:title="@string/restricted_times" />
 
-            <com.example.ourpact3.ui.settings.ReusableSettingsItemView
-                android:id="@+id/setting_input_start_time"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:summary="@string/none"
-                app:title2="@string/set_start_time"/>
+                android:orientation="horizontal">
+                <com.example.ourpact3.ui.settings.ReusableSettingsItemView
+                    android:id="@+id/setting_input_start_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginEnd="20dp"
+                    app:summary="@string/none"
+                    app:title2="@string/set_start_time" />
 
-            <com.example.ourpact3.ui.settings.ReusableSettingsItemView
-                android:id="@+id/setting_input_end_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:summary="@string/none"
-                app:title2="@string/set_end_time"/>
+
+                <com.example.ourpact3.ui.settings.ReusableSettingsItemView
+                    android:id="@+id/setting_input_end_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    app:summary="@string/none"
+                    app:title2="@string/set_end_time" />
+            </LinearLayout>
 
             <com.example.ourpact3.ui.settings.ReusableSettingsItemView
                 android:id="@+id/setting_input_weekdays"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:summary="@string/none"
-                app:title2="@string/week_days"/>
+                app:title2="@string/week_days" />
 
             <Button
                 android:id="@+id/add_time_rule"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/add_time_rule"
-                android:layout_gravity="start" />
+                android:layout_gravity="start"
+                android:text="@string/add_time_rule" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/added_time_rules"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
+
             <com.example.ourpact3.ui.settings.ReusableSettingsCounterActionView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
