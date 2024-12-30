@@ -1,6 +1,7 @@
 package com.example.ourpact3.ui.usage_restriction;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class UsageRestrictionActivity extends AppCompatActivity
     private ReusableSettingsTimePickerInputView selectedStartInput;
     private ReusableSettingsTimePickerInputView selectedEndInput;
     private ReusableSettingsCheckboxView<DayOfWeek> weekdaySelector;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -96,6 +98,18 @@ public class UsageRestrictionActivity extends AppCompatActivity
             LocalTime startTime = selectedStartInput.getCurrentTime(); // Assuming this returns a LocalTime or similar
             LocalTime endTime = selectedEndInput.getCurrentTime();
             List<DayOfWeek> selectedWeekdays = weekdaySelector.getSelectedItems();
+            for (TimeRuleListEntry entry : adapterTimeRules.getAllItems()) {
+                if (entry.weekDays.equals(selectedWeekdays)) {
+                    long diffStartTime = Math.abs(Duration.between(startTime, entry.start).toMinutes());
+                    long diffEndTime = Math.abs(Duration.between(endTime, entry.end).toMinutes());
+                    final long MIN_DIFF_IN_MINUTES = 1;
+                    if (diffStartTime <= MIN_DIFF_IN_MINUTES || diffEndTime <= MIN_DIFF_IN_MINUTES) {
+                        Toast.makeText(this, getString(R.string.invalid_time_rule_with_similiar_start_times_exists), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+            }
+
             // Check if the start time is greater than the end time
             if (startTime.plusMinutes(2).isAfter(endTime))
             {

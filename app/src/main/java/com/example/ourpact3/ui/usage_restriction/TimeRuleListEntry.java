@@ -7,18 +7,22 @@ import com.example.ourpact3.util.WeekDayToString;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TimeRuleListEntry {
-    private LocalTime start; // Start time
-    private LocalTime end;   // End time
+    public final LocalTime start; // Start time
+    public final LocalTime end;   // End time
     private String additionalText; // String representation of weekdays
     private Context context;
+    public List<DayOfWeek> weekDays;
     public TimeRuleListEntry(Context context,LocalTime start, LocalTime end, List<DayOfWeek> days, boolean blackList) {
         this.start = start;
         this.end = end;
         this.context = context;
+        this.weekDays =days;
         // saves space
         if(days.size() == 7)
         {
