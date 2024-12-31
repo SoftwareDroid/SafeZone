@@ -7,7 +7,6 @@ import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.db.DatabaseManager;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.pipeline.CounterAction;
-import com.example.ourpact3.pipeline.PipelineResultProductivityFilter;
 import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
 import com.example.ourpact3.smart_filter.ProductivityTimeRule;
@@ -172,7 +171,7 @@ public class ExampleAppKeywordFilters
         {
             PipelineResultKeywordFilter preventDisabelingAccessabilty = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
-            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             // Killing makes it to slow
             a.setKillState(CounterAction.KillState.DO_NOT_KILL);
@@ -194,7 +193,7 @@ public class ExampleAppKeywordFilters
         {
             PipelineResultKeywordFilter preventTurnOfDeviceAdmin = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
-            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setButtonAction(PipelineButtonAction.HOME_BUTTON);
             // Killing makes it to slow
             a.setKillState(CounterAction.KillState.DO_NOT_KILL);
@@ -232,7 +231,7 @@ public class ExampleAppKeywordFilters
         {
             PipelineResultKeywordFilter preventReinstallingAndLosePermissons = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
-            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             // Killing makes it to slow
             a.setKillState(CounterAction.KillState.DO_NOT_KILL);
@@ -258,7 +257,7 @@ public class ExampleAppKeywordFilters
         {
             PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
-            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setHasExplainableButton(true);
             resultIgnoreSearch.setCounterAction(a);
             // Add test Filter
@@ -306,7 +305,7 @@ public class ExampleAppKeywordFilters
             // ignore start page
             PipelineResultKeywordFilter ignoreHistoryPage = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
-            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setHasExplainableButton(true);
             ignoreHistoryPage.setCounterAction(a);
             // Add test Filter
@@ -319,7 +318,7 @@ public class ExampleAppKeywordFilters
             // ignore suggestion screen
             PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
-            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setHasExplainableButton(true);
             resultIgnoreSearch.setCounterAction(a);
             // Add test Filter
@@ -330,7 +329,7 @@ public class ExampleAppKeywordFilters
             // ignore history page
             PipelineResultKeywordFilter ignoreStartpage = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
-            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setHasExplainableButton(true);
             ignoreStartpage.setCounterAction(a);
             // Add test Filter
@@ -460,7 +459,7 @@ public class ExampleAppKeywordFilters
         {
             PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
-            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setButtonAction(PipelineButtonAction.BACK_BUTTON);
             a.setKillState(CounterAction.KillState.KILL_BEFORE_WINDOW);
             a.setHasExplainableButton(true);
@@ -484,7 +483,7 @@ public class ExampleAppKeywordFilters
             // ignore history page
             PipelineResultKeywordFilter ignoreSettings = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
-            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setHasExplainableButton(true);
             ignoreSettings.setCounterAction(a);
             // Add test Filter
@@ -496,7 +495,7 @@ public class ExampleAppKeywordFilters
             // ignore history page
             PipelineResultKeywordFilter ignoreSettings = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
-            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setHasExplainableButton(true);
             ignoreSettings.setCounterAction(a);
             // Add test Filter
@@ -545,7 +544,7 @@ public class ExampleAppKeywordFilters
             // ignore search suggestions
             PipelineResultKeywordFilter ignoreSearchSuggestions = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
-            a.setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+            a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setHasExplainableButton(true);
             ignoreSearchSuggestions.setCounterAction(a);
             WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,

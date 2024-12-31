@@ -13,10 +13,10 @@ sleep 1
 #adb shell am start -n au.com.shiftyjelly.pocketcasts/.ui.MainActivity
 
 # Start firefox
-adb shell am start -n org.mozilla.firefox/.App
-sleep 2
+#adb shell am start -n org.mozilla.firefox/.App
+#sleep 2
 # touch on the screen to trigger filter
-adb shell input touchscreen tap 300 200
+#adb shell input touchscreen tap 300 200
 
 # Go to home screen
 #adb shell input keyevent 3

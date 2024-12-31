@@ -8,8 +8,8 @@ import android.os.Parcelable;
  */
 public enum PipelineWindowAction implements Parcelable {
     WARNING(0),
-    CONTINUE_PIPELINE(1), // Only this action doesn't abort the pipeline
-    STOP_FURTHER_PROCESSING(2),
+    CONTINUE_PIPELINE(1), // Only this action doesn't abort the pipeline,
+    NO_WARNING_AND_STOP(2), // Use this if you do not want to show a Dialog
     END_OF_PIPE_LINE(3);
 
     private final int value;

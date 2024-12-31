@@ -20,16 +20,10 @@ import java.util.EnumSet;
 public class UsageSmartFilterManager
 {
 
-
-    public UsageSmartFilterManager(Context context)
-    {
-    }
-
-
     /**
      * overwrites all time restrictions for an app which has exactly use usage_filter_id
      */
-    public static void setAllTimeRestrictionRules(int usageFilterId, ArrayList<ProductivityTimeRule> timeRules)
+    public static void setAllTimeRestrictionRules(long usageFilterId, ArrayList<ProductivityTimeRule> timeRules)
     {
 
         // Start a transaction for safety
@@ -169,7 +163,7 @@ public class UsageSmartFilterManager
      */
     public static long addOrUpdateUsageFilter(ProductivityFilter usageFilter)
     {
-        long ret = -1;
+        long filterId = -1;
         // Start a transaction for safety
         DatabaseManager.db.beginTransaction();
         try
@@ -191,12 +185,14 @@ public class UsageSmartFilterManager
                 String whereClause = "id = ?";
                 String[] whereArgs = new String[]{String.valueOf(usageFilter.database_id)};
                 DatabaseManager.db.update("usage_filters", values, whereClause, whereArgs);
-                ret = usageFilter.database_id;
+                filterId = usageFilter.database_id;
             } else
             {
                 // Insert new row
-                ret = DatabaseManager.db.insert("usage_filters", null, values);
+                filterId = DatabaseManager.db.insert("usage_filters", null, values);
             }
+            //update time rules
+            setAllTimeRestrictionRules(filterId,usageFilter.getAllTimeRules());
 
             // Mark the transaction as successful
             DatabaseManager.db.setTransactionSuccessful();
@@ -208,7 +204,7 @@ public class UsageSmartFilterManager
             // End the transaction
             DatabaseManager.db.endTransaction();
         }
-        return ret;
+        return filterId;
     }
 
     @SuppressLint("Range")

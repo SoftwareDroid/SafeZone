@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ourpact3.R;
 import com.example.ourpact3.db.DatabaseManager;
 import com.example.ourpact3.db.UsageSmartFilterManager;
+import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.smart_filter.ProductivityFilter;
 import com.example.ourpact3.smart_filter.ProductivityTimeRule;
 import com.example.ourpact3.ui.settings.ReusableSettingsCheckboxView;
@@ -45,7 +46,7 @@ public class UsageRestrictionActivity extends AppCompatActivity
     private ReusableSettingsCheckboxView<DayOfWeek> weekdaySelector;
     private ReuseableSettingsBooleanView enabledInput;
     private ReusableSettingsCounterActionView counterActionInput;
-
+    private int usageFilterId;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -54,13 +55,13 @@ public class UsageRestrictionActivity extends AppCompatActivity
         Intent intent = getIntent();
         String packageId = intent.getStringExtra("app_id");
         String appName = intent.getStringExtra("app_name");
-        int usageFilterId = intent.getIntExtra("usage_filter_id", -1);
+        usageFilterId = intent.getIntExtra("usage_filter_id", -1);
         assert usageFilterId != -1;
         // Get default parameters
         DatabaseManager.open();
         ProductivityFilter productivityFilter = UsageSmartFilterManager.getUsageFilterById(usageFilterId);
         enabledInput = findViewById(R.id.setting_input_enabled);
-
+        enabledInput.getSwitchElement().setChecked(productivityFilter.isEnabled());
         // set app name in toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -179,10 +180,21 @@ public class UsageRestrictionActivity extends AppCompatActivity
     protected void onStop()
     {
         super.onStop();
+        // read all from UI
         List<ProductivityTimeRule> rules = this.adapterTimeRules.getAllItems();
-        boolean enabled = enabledInput.getSwitchElement().isChecked();
-        this.counterActionInput.
-        // Code to release resources or save data
+        boolean isEnabled = enabledInput.getSwitchElement().isChecked();
+        CounterAction action = this.counterActionInput.getCounterAction();
+        long limitInSeconds = this.timeLimitInput.getAccumulatedTimeInSeconds();
+        long resetPeriod = this.resetPeriodInput.getAccumulatedTimeInSeconds();
+        String name = this.getString(R.string.usage_restriction);
+        int maxNumberOfStarts = this.numberOfStartsInput.getCurrentNumber();
+        ProductivityFilter productivityFilter = new ProductivityFilter(action, name, resetPeriod, limitInSeconds, maxNumberOfStarts, new ArrayList<>(rules));
+        productivityFilter.setDatabaseID(usageFilterId);
+        productivityFilter.setEnabled(isEnabled);
+        // update DB model
+        DatabaseManager.open();
+        UsageSmartFilterManager.addOrUpdateUsageFilter(productivityFilter);
+        DatabaseManager.close();
     }
 }
 

@@ -52,12 +52,23 @@ public class AppFilter
     {
         for(SpecialSmartFilterBase.Name key : specialSmartFilters.keySet())
         {
-            Objects.requireNonNull(specialSmartFilters.get(key)).onScreenStateChange(isScreenOn);
+            SpecialSmartFilterBase filter = specialSmartFilters.get(key);
+            assert filter != null;
+            if(!filter.isEnabled())
+            {
+                continue;
+            }
+            filter.onScreenStateChange(isScreenOn);
         }
     }
+
     public void onAppStateChange(boolean active)
     {
         for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet()) {
+            if(!entry.getValue().isEnabled())
+            {
+                continue;
+            }
             SpecialSmartFilterBase value = entry.getValue();
             value.onAppStateChange(active);
         }
@@ -160,6 +171,11 @@ public class AppFilter
                 // Traversing the TreeMap in ascending order of keys
                 for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet())
                 {
+                    if(!entry.getValue().isEnabled())
+                    {
+                        continue;
+                    }
+
 //                    System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
                     PipelineResultBase result = entry.getValue().onAccessibilityEvent(event);
                     if (result != null)
@@ -237,6 +253,11 @@ public class AppFilter
                     // Feed result to generic event filters
                     for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet())
                     {
+                        if(!entry.getValue().isEnabled())
+                        {
+                            continue;
+                        }
+
                         PipelineResultBase genericResult = entry.getValue().onPipelineResult(result);
                         if (genericResult != null)
                         {

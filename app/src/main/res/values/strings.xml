@@ -202,4 +202,8 @@
     <string name="select_at_least_on_weekday">Select at least one weekday</string>
     <string name="invalid_time_rule_with_similiar_start_times_exists">\"New time rule cannot be added due to overlap with existing rules</string>
     <string name="always">Always</string>
+    <string name="action">Action</string>
+    <string name="show_dialog">Show Dialog</string>
+    <string name="stop_further_processing">Show Nothing</string>
+    <string name="continue_processing">Continue Processing</string>
 </resources>

@@ -11,7 +11,6 @@ import android.graphics.PixelFormat;
 import android.view.MenuItem;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.provider.Settings;
 import android.view.Gravity;
@@ -394,7 +393,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                     if (oldGoodFilter == null)
                     {
                         PipelineResultLearnedMode defaultGoodResult = new PipelineResultLearnedMode(app);
-                        defaultGoodResult.getCounterAction().setWindowAction(PipelineWindowAction.STOP_FURTHER_PROCESSING);
+                        defaultGoodResult.getCounterAction().setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
                         defaultGoodResult.getCounterAction().setHasExplainableButton(false);
                         UI_ID_Filter newUI_ID_Filter = new UI_ID_Filter(defaultGoodResult, this.context.getString(R.string.name_good_filter), goodIds);
                         this.iContentFilterService.setSpecialSmartFilter(app, SpecialSmartFilterBase.Name.LEARNED_GOOD, newUI_ID_Filter);
@@ -470,7 +469,7 @@ public class LearnModeComponent implements HelpDialogLearnMode.OnDialogClosedLis
                 break;
             case CONTINUE_PIPELINE:
                 break;
-            case STOP_FURTHER_PROCESSING:
+            case NO_WARNING_AND_STOP:
                 status = "⛔";
                 break;
             case END_OF_PIPE_LINE:

@@ -15,7 +15,7 @@ public class PipelineResultProductivityFilter
     public int numberOfUsages;
     public long usageTime;
     public long usageLimitInSeconds;
-    public int resetPeriod;
+    public long resetPeriod;
     public boolean isTimeRuleBlock;
 
     @Override

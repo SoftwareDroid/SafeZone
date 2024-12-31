@@ -30,6 +30,14 @@
         android:id="@+id/setting_window_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:title2="@string/action"
+        app:summary="" />
+
+
+    <com.example.ourpact3.ui.settings.ReusableSettingsItemView
+        android:id="@+id/setting_button_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:title2="@string/auto_press"
         app:summary="" />
 

@@ -1,7 +1,5 @@
 package com.example.ourpact3.pipeline;
 
-import android.content.Context;
-
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 
@@ -78,7 +76,7 @@ public class CounterAction implements Cloneable
 
     public boolean isBlockingAction()
     {
-        if (buttonAction == PipelineButtonAction.BACK_BUTTON || buttonAction == PipelineButtonAction.HOME_BUTTON || windowAction == PipelineWindowAction.STOP_FURTHER_PROCESSING)
+        if (buttonAction == PipelineButtonAction.BACK_BUTTON || buttonAction == PipelineButtonAction.HOME_BUTTON || windowAction == PipelineWindowAction.NO_WARNING_AND_STOP)
         {
             return true;
         }

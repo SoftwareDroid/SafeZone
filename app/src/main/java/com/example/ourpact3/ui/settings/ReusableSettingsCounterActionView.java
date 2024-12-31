@@ -17,7 +17,9 @@ public class ReusableSettingsCounterActionView extends LinearLayout
 {
     private ReuseableSettingsBooleanView explainableView;
     private ReuseableSettingsBooleanView killAppView;
-    private ReusableSettingsComboboxViev<PipelineButtonAction> windowActionView;
+    private ReusableSettingsComboboxViev<PipelineButtonAction> buttonActionView;
+    private ReusableSettingsComboboxViev<PipelineWindowAction> windowActionView;
+    private Context context;
 
     public ReusableSettingsCounterActionView(Context context, AttributeSet attrs)
     {
@@ -27,16 +29,21 @@ public class ReusableSettingsCounterActionView extends LinearLayout
 
     private void init(Context context, AttributeSet attrs)
     {
-        LayoutInflater.from(context).inflate(R.layout.reuseable_settings_pipeline_action, this, true);
+        this.context = context;
+        LayoutInflater.from(context).inflate(R.layout.reusable_settings_counter_action, this, true);
         killAppView = findViewById(R.id.setting_kill_app);
         explainableView = findViewById(R.id.setting_is_explainable);
-        ReusableSettingsItemView windowActionItem = findViewById(R.id.setting_window_action);
-        windowActionView = new ReusableSettingsComboboxViev<PipelineButtonAction>(context, windowActionItem);
+        ReusableSettingsItemView buttonActionItem = findViewById(R.id.setting_button_action);
+        buttonActionView = new ReusableSettingsComboboxViev<PipelineButtonAction>(context, buttonActionItem);
         LinkedHashMap<PipelineButtonAction, String> values = new LinkedHashMap<PipelineButtonAction, String>();
         values.put(PipelineButtonAction.HOME_BUTTON, context.getString(R.string.home_button));
         values.put(PipelineButtonAction.BACK_BUTTON, context.getString(R.string.back_button));
         values.put(PipelineButtonAction.NONE, context.getString(R.string.none));
-        windowActionView.setParameters(context.getString(R.string.choose_a_option), "%s", values, PipelineButtonAction.BACK_BUTTON);
+        buttonActionView.setParameters(context.getString(R.string.choose_a_option), "%s", values, PipelineButtonAction.BACK_BUTTON);
+        // Window action
+        windowActionView = new ReusableSettingsComboboxViev<PipelineWindowAction>(context, findViewById(R.id.setting_window_action));
+        // Initial setting is off
+        setExpertMode(false);
         // Obtain custom attributes
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
@@ -44,11 +51,23 @@ public class ReusableSettingsCounterActionView extends LinearLayout
                 0, 0);
     }
 
+    public void setExpertMode(boolean on)
+    {
+        LinkedHashMap<PipelineWindowAction, String> values = new LinkedHashMap<PipelineWindowAction, String>();
+        values.put(PipelineWindowAction.WARNING, context.getString(R.string.show_dialog));
+        values.put(PipelineWindowAction.NO_WARNING_AND_STOP, context.getString(R.string.stop_further_processing));
+        if (on)
+        {
+            values.put(PipelineWindowAction.CONTINUE_PIPELINE, context.getString(R.string.continue_processing));
+        }
+        windowActionView.setParameters(context.getString(R.string.choose_a_option), "%s", values, PipelineWindowAction.WARNING);
+    }
+
     public CounterAction getCounterAction()
     {
-        //TODO: we need a extended Version some parameters are missing
-        //CounterAction(PipelineWindowAction windowAction, PipelineButtonAction buttonAction, boolean killApp)
-        return new CounterAction(explainableView.getSwitchElement().isChecked()?PipelineWindowAction.WARNING:PipelineWindowAction.CONTINUE_PIPELINE ,windowActionView.getLastSelection(),)
+        CounterAction action = new CounterAction(windowActionView.getLastSelection(), buttonActionView.getLastSelection(), this.killAppView.getSwitchElement().isChecked());
+        action.setHasExplainableButton(this.explainableView.getSwitchElement().isChecked());
+        return action;
     }
 
     public boolean isExplainable()
@@ -74,12 +93,12 @@ public class ReusableSettingsCounterActionView extends LinearLayout
 
     public PipelineButtonAction getPipelineButtonAction()
     {
-        return windowActionView.getLastSelection();
+        return buttonActionView.getLastSelection();
     }
 
     public void setPipelineButtonAction(PipelineButtonAction value)
     {
-        this.windowActionView.setLastSelection(value);
+        this.buttonActionView.setLastSelection(value);
     }
 }
 

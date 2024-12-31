@@ -30,7 +30,8 @@ public class ReusableSettingsDurationInputView
     private int number3;
     private String startValue;
 
-    public static String formatSecondsToHMS(long totalSeconds) {
+    public static String formatSecondsToHMS(long totalSeconds)
+    {
         // Calculate hours, minutes, and seconds
         long hours = totalSeconds / 3600;
         long minutes = (totalSeconds % 3600) / 60;
@@ -40,7 +41,8 @@ public class ReusableSettingsDurationInputView
         return String.format("%02d%02d%02d", hours, minutes, seconds);
     }
 
-    public static String formatSecondsToDHM(long totalSeconds) {
+    public static String formatSecondsToDHM(long totalSeconds)
+    {
         // Calculate days, hours, and minutes
         long days = totalSeconds / 86400; // 86400 seconds in a day
         long hours = (totalSeconds % 86400) / 3600; // 3600 seconds in an hour
@@ -114,6 +116,11 @@ public class ReusableSettingsDurationInputView
             }
         }
         return groups;
+    }
+
+    public long getAccumulatedTimeInSeconds()
+    {
+        return this.unitInput1.toSeconds(number1) + this.unitInput2.toSeconds(number2) + this.unitInput3.toSeconds(number3);
     }
 
     private void updateSeperatedInputFields(boolean updateTextOfInputFields)

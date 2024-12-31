@@ -23,16 +23,38 @@ public class ProductivityFilter extends SpecialSmartFilterBase
     private Instant sessionStart = null;
     private Instant sessionEnd = null;
     private long accumulatedSeconds = 0;
-    private int resetPeriodInSeconds;
-    private long limitInSeconds;
+    private final long resetPeriodInSeconds;
+    private final long limitInSeconds;
     private int numberOfAppUses;
     private boolean blocked;
     public final Integer maxNumberOfUsages;
-    public int getMaxNumberOfUsages(){return maxNumberOfUsages;}
-    public int getResetPeriodInSeconds(){return resetPeriodInSeconds;}
-    public long getLimitInSeconds(){return limitInSeconds;}
 
-    public ProductivityFilter(CounterAction counterAction, String name, int resetPeriodInSeconds, int limitInSeconds, Integer maxNumberOfUsages, ArrayList<ProductivityTimeRule> timeRules)
+    public final ArrayList<ProductivityTimeRule> getAllTimeRules()
+    {
+        return timerules;
+    }
+
+    public int getMaxNumberOfUsages()
+    {
+        return maxNumberOfUsages;
+    }
+
+    public long getResetPeriodInSeconds()
+    {
+        return resetPeriodInSeconds;
+    }
+
+    public long getLimitInSeconds()
+    {
+        return limitInSeconds;
+    }
+
+    public void setDatabaseID(long id)
+    {
+        this.database_id = id;
+    }
+
+    public ProductivityFilter(CounterAction counterAction, String name, long resetPeriodInSeconds, long limitInSeconds, Integer maxNumberOfUsages, ArrayList<ProductivityTimeRule> timeRules)
     {
         super(new PipelineResultProductivityFilter(counterAction), name);//PipelineResultBase
         this.resetPeriodInSeconds = resetPeriodInSeconds;
@@ -71,7 +93,6 @@ public class ProductivityFilter extends SpecialSmartFilterBase
             sessionEnd = null;
         }
     }
-
 
 
     public void onScreenStateChange(boolean isScreenOn)
@@ -115,23 +136,22 @@ public class ProductivityFilter extends SpecialSmartFilterBase
     {
         boolean isInWhiteList = false;
         boolean isWhiteListImportant = false;
-        for(ProductivityTimeRule rule : this.timerules)
+        for (ProductivityTimeRule rule : this.timerules)
         {
             boolean isApplying = rule.isRuleApplying(currentTimestamp);
-            if(!rule.isBlackListMode())
+            if (!rule.isBlackListMode())
             {
                 isWhiteListImportant = true;
             }
             // Block if one blacklist rule applies
-            if(isApplying)
+            if (isApplying)
             {
-                if(rule.isBlackListMode())
+                if (rule.isBlackListMode())
                 {
                     PipelineResultProductivityFilter result = (PipelineResultProductivityFilter) this.result.clone();
                     result.isTimeRuleBlock = true;
                     return result;
-                }
-                else
+                } else
                 {
                     isInWhiteList = true;
                 }
@@ -139,7 +159,7 @@ public class ProductivityFilter extends SpecialSmartFilterBase
 
         }
         // if we have whitelists is has to be in one otherwise it is blocked
-        if(isWhiteListImportant && !isInWhiteList)
+        if (isWhiteListImportant && !isInWhiteList)
         {
             PipelineResultProductivityFilter result = (PipelineResultProductivityFilter) this.result.clone();
             result.isTimeRuleBlock = true;
@@ -155,7 +175,7 @@ public class ProductivityFilter extends SpecialSmartFilterBase
         sessionEnd = Instant.now();     //expand session
         // check time rules
         PipelineResultBase timeRuleResult = checkTimeRules(sessionEnd);
-        if(timeRuleResult != null)
+        if (timeRuleResult != null)
         {
             return timeRuleResult;
         }
