@@ -48,8 +48,10 @@ public class UsageRestrictionActivity extends AppCompatActivity
     private ReusableSettingsCheckboxView<DayOfWeek> weekdaySelector;
     private ReuseableSettingsBooleanView enabledInput;
     private ReusableSettingsCounterActionView counterActionInput;
+    private RecyclerView recyclerViewTimeRules;
     private int usageFilterId;
     private String packageId;
+    private boolean writable;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -59,12 +61,13 @@ public class UsageRestrictionActivity extends AppCompatActivity
         packageId = intent.getStringExtra("app_id");
         String appName = intent.getStringExtra("app_name");
         usageFilterId = intent.getIntExtra("usage_filter_id", -1);
-        boolean writable = intent.getBooleanExtra("writeable", true);
+        writable = intent.getBooleanExtra("writeable", true);
         assert usageFilterId != -1;
         // Get default parameters
         DatabaseManager.open();
         ProductivityFilter productivityFilter = UsageSmartFilterManager.getUsageFilterById(usageFilterId);
         enabledInput = findViewById(R.id.setting_input_enabled);
+        enabledInput.getSwitchElement().setEnabled(writable);
         enabledInput.getSwitchElement().setChecked(productivityFilter.isEnabled());
         // set app name in toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -113,12 +116,26 @@ public class UsageRestrictionActivity extends AppCompatActivity
         weekdaySelector.setParameters(this.getString(R.string.choose_a_option), "%s", values, initialSelection);
         // setup adding time rules
         adapterTimeRules = new TimeRuleListAdapter(this);
-        RecyclerView recyclerViewTimeRules = findViewById(R.id.added_time_rules); // Make sure this ID matches your layout
+        recyclerViewTimeRules = findViewById(R.id.added_time_rules); // Make sure this ID matches your layout
         recyclerViewTimeRules.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTimeRules.setAdapter(adapterTimeRules);
         loadInitialTimeRules(usageFilterId);
         DatabaseManager.close();
-        findViewById(R.id.add_time_rule).setOnClickListener(v -> {
+        setupTimeRuleAdding();
+
+        // Setup save Button
+        Button saveButton = findViewById(R.id.save);
+        saveButton.setEnabled(writable);
+        saveButton.setOnClickListener(v -> {
+            save();
+        });
+    }
+
+    private void setupTimeRuleAdding()
+    {
+        Button buttonAddTimeRule = findViewById(R.id.add_time_rule);
+        buttonAddTimeRule.setEnabled(writable);
+        buttonAddTimeRule.setOnClickListener(v -> {
             // Get the current start and end times
             LocalTime startTime = selectedStartInput.getCurrentTime(); // Assuming this returns a LocalTime or similar
             LocalTime endTime = selectedEndInput.getCurrentTime();
@@ -159,12 +176,6 @@ public class UsageRestrictionActivity extends AppCompatActivity
             }
         });
 
-        // Setup save Button
-        Button saveButton = findViewById(R.id.save);
-        saveButton.setEnabled(writable);
-        saveButton.setOnClickListener(v -> {
-            save();
-        });
     }
 
     private void loadInitialTimeRules(int usageFilterID)
