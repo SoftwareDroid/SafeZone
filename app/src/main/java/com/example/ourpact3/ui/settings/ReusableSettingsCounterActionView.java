@@ -70,6 +70,14 @@ public class ReusableSettingsCounterActionView extends LinearLayout
         return action;
     }
 
+    public void setCounterAction(CounterAction action)
+    {
+        this.buttonActionView.setLastSelection(action.getButtonAction());
+        this.windowActionView.setLastSelection(action.getWindowAction());
+        this.explainableView.getSwitchElement().setChecked(action.isHasExplainableButton());
+        this.killAppView.getSwitchElement().setChecked(action.isKillAction());
+    }
+
     public boolean isExplainable()
     {
         return explainableView.getSwitchElement().isChecked();

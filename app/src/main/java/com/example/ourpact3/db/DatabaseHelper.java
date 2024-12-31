@@ -52,6 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         // parameters which define the productivity filters
         db.execSQL("CREATE TABLE usage_filters (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "explainable INTEGER, " +
                 "window_action INTEGER, " +
                 "button_action INTEGER, " +
                 "kill INTEGER, " +  //boolean

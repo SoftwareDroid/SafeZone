@@ -170,6 +170,7 @@ public class UsageSmartFilterManager
         {
             CounterAction counterAction = usageFilter.getCounterAction();
             ContentValues values = new ContentValues();
+            values.put("explainable", counterAction.isHasExplainableButton()? 1: 0);
             values.put("window_action", counterAction.getWindowAction().getValue());
             values.put("button_action", counterAction.getButtonAction().getValue());
             values.put("kill", counterAction.isKillAction() ? 1 : 0); // Assuming kill is a boolean
@@ -228,11 +229,14 @@ public class UsageSmartFilterManager
                 counterAction.setWindowAction(PipelineWindowAction.fromValue(cursor.getInt(cursor.getColumnIndex("window_action"))));
                 counterAction.setButtonAction(PipelineButtonAction.fromValue(cursor.getInt(cursor.getColumnIndex("button_action"))));
                 counterAction.setKillState(cursor.getInt(cursor.getColumnIndex("kill")) == 1 ? CounterAction.KillState.KILL_BEFORE_WINDOW : CounterAction.KillState.DO_NOT_KILL);
+                boolean isExplainable = cursor.getInt(cursor.getColumnIndex("explainable")) == 1;
+                counterAction.setHasExplainableButton(isExplainable);
                 boolean enabled = cursor.getInt(cursor.getColumnIndex("enabled")) == 1;
                 int resetPeriod = cursor.getInt(cursor.getColumnIndex("reset_period"));
                 int timeLimit = cursor.getInt(cursor.getColumnIndex("time_limit"));
                 Integer maxStarts = cursor.getInt(cursor.getColumnIndex("max_starts"));
                 usageFilter = new ProductivityFilter(counterAction, "Usage Limit", resetPeriod, timeLimit, maxStarts, new ArrayList<>());
+                usageFilter.setEnabled(enabled);
                 usageFilter.database_id = cursor.getLong(cursor.getColumnIndex("id"));
             }
             // If no entry is found, usageFilter remains null

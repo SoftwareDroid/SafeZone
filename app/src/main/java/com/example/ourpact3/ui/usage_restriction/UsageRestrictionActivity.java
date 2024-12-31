@@ -71,6 +71,7 @@ public class UsageRestrictionActivity extends AppCompatActivity
         titleTextView.setText(this.getString(R.string.usage_restriction_for) + " " + appName); // Set the title on the custom TextView
 
         counterActionInput = findViewById(R.id.setting_counter_action);
+        counterActionInput.setCounterAction(productivityFilter.getCounterAction());
         // inputs
         numberOfStartsInput = new ReusableSettingsNumberInputView(this, findViewById(R.id.setting_input_number_of_start));
         numberOfStartsInput.setLimits(0, 1000);

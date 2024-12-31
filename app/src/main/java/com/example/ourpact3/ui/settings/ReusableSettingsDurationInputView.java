@@ -260,7 +260,7 @@ public class ReusableSettingsDurationInputView
 
         Button numberDel = dialog.findViewById(R.id.input_number_del);
         numberDel.setOnClickListener(view -> {
-            if (currentInputAsString.length() == 1)
+            if (currentInputAsString.length() <= 1)
             {
                 currentInputAsString = "";
             } else

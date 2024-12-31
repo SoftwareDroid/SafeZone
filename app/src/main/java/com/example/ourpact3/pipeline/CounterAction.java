@@ -53,7 +53,12 @@ public class CounterAction implements Cloneable
     {
         this.windowAction = windowAction;
     }
-    public boolean isKillAction() {return killState ==KillState.KILL_BEFORE_WINDOW;}
+
+    public boolean isKillAction()
+    {
+        return killState == KillState.KILL_BEFORE_WINDOW;
+    }
+
     public KillState getKillState()
     {
         return killState;
