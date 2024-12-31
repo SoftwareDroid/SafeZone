@@ -32,6 +32,7 @@ public class AppRuleDetailActivitiy extends AppCompatActivity {
         Intent intent = getIntent();
         String packageId = intent.getStringExtra("app_id");
         String appName = intent.getStringExtra("app_name");
+        boolean writeable = intent.getBooleanExtra("writeable",true);
         int usageFilterId = intent.getIntExtra("usage_filter_id",-1);
         // set app name in toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -54,6 +55,7 @@ public class AppRuleDetailActivitiy extends AppCompatActivity {
                 intent.putExtra("app_id", packageId);
                 intent.putExtra("app_name", appName);
                 intent.putExtra("usage_filter_id", usageFilterId);
+                intent.putExtra("writeable", writeable);
                 startActivity(intent);
             }
         });

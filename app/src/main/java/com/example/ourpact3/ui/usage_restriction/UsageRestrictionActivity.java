@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 import android.content.Intent;
 import android.view.MenuItem;
@@ -58,6 +59,7 @@ public class UsageRestrictionActivity extends AppCompatActivity
         packageId = intent.getStringExtra("app_id");
         String appName = intent.getStringExtra("app_name");
         usageFilterId = intent.getIntExtra("usage_filter_id", -1);
+        boolean writable = intent.getBooleanExtra("writeable", true);
         assert usageFilterId != -1;
         // Get default parameters
         DatabaseManager.open();
@@ -156,6 +158,13 @@ public class UsageRestrictionActivity extends AppCompatActivity
                 }
             }
         });
+
+        // Setup save Button
+        Button saveButton = findViewById(R.id.save);
+        saveButton.setEnabled(writable);
+        saveButton.setOnClickListener(v -> {
+            save();
+        });
     }
 
     private void loadInitialTimeRules(int usageFilterID)
@@ -179,10 +188,8 @@ public class UsageRestrictionActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onStop()
+    private void save()
     {
-        super.onStop();
         // read all from UI
         List<ProductivityTimeRule> rules = this.adapterTimeRules.getAllItems();
         boolean isEnabled = enabledInput.getSwitchElement().isChecked();
@@ -199,6 +206,13 @@ public class UsageRestrictionActivity extends AppCompatActivity
         UsageSmartFilterManager.addOrUpdateUsageFilter(productivityFilter);
         DatabaseManager.close();
         notifyService();
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+
     }
 
     private void notifyService()
