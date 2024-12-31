@@ -16,7 +16,7 @@ public abstract class SpecialSmartFilterBase
         LEARNED_GOOD,
         LEARNED_BAD,
         EXP_PUNISH,
-        TIME_LIMIT
+        USAGE_RESTRICTION
     }
 
     SpecialSmartFilterBase(PipelineResultBase result, String name)

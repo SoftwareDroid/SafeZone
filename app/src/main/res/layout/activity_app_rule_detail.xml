@@ -46,14 +46,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title2="@string/usage_restriction"
-            app:summary="@string/none" />
+            app:summary="@string/description_go_to_usage_filter" />
 
-        <com.example.ourpact3.ui.settings.ReusableSettingsItemView
-            android:id="@+id/sample_multi_selection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:summary="0"
-            app:title2="Sample Multi selection" />
+
     </LinearLayout>
 
 </LinearLayout>

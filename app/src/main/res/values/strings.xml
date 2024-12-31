@@ -206,4 +206,5 @@
     <string name="show_dialog">Show Dialog</string>
     <string name="stop_further_processing">Show Nothing</string>
     <string name="continue_processing">Continue Processing</string>
+    <string name="description_go_to_usage_filter">Defines various usage limits, such as time, starts, and blocked periods</string>
 </resources>

@@ -49,4 +49,5 @@ Ignore Write fields as search aborts
 1.21.0 Add Time rules for Hour, Minute (start + end) and weekdays in black and white list mode for ProductivityFilter
 1.21.1 Fix bug with getting wrong app id in exception tab, when searching
 1.22.0 Disable Dark Mode (causes UI Problems)
-1.23.0 Make UsageFilter UI + connection with DB loading and writing into DB (Still TODO reload in BG service)
+1.23.0 Make UsageFilter UI + connection with DB loading and writing into DB
+1.24.1 reload Usage Filter in BG service + small UI changes

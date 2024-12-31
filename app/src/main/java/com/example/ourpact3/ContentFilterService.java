@@ -15,13 +15,15 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.example.ourpact3.db.DatabaseManager;
+import com.example.ourpact3.db.UsageSmartFilterManager;
 import com.example.ourpact3.learn_mode.LearnModeComponent;
 import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.service.ExampleAppKeywordFilters;
-import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.service.ScreenReceiver;
 import com.example.ourpact3.smart_filter.AppFilter;
+import com.example.ourpact3.smart_filter.ProductivityFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.util.CrashHandler;
 import com.example.ourpact3.pipeline.PipelineResultBase;
@@ -62,9 +64,32 @@ public class ContentFilterService extends AccessibilityService implements IConte
         {
             String command = intent.getStringExtra("command");
             assert command != null;
-            handleCommand(command);
+            if (command.equals(COMMAND_RELOAD_SETTINGS))
+            {
+                reloadSettings();
+            } else if (command.equals(COMMAND_RELOAD_USAGE_FILTER_FOR_APP))
+            {
+                String packageId = intent.getStringExtra("app");
+                reloadUsageFilterForApp(packageId);
+            }
         }
     };
+
+    private void reloadUsageFilterForApp(String packageId)
+    {
+        if (packageId == null)
+        {
+            return;
+        }
+        // reload changes
+        DatabaseManager.open();
+        DatabaseManager.AppRuleTuple appRuleTuple = DatabaseManager.getAppRuleByPackageId(packageId);
+        assert appRuleTuple != null;
+        ProductivityFilter productivityFilter = UsageSmartFilterManager.getUsageFilterById(appRuleTuple.usageFilterID);
+        assert productivityFilter != null;
+        DatabaseManager.close();
+        normalModeProcessor.appFilters.get(packageId).setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, productivityFilter);
+    }
 
     //    private boolean isRunning = false;
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
@@ -121,7 +146,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
                 filter.setCallback(normalModeProcessor);
                 normalModeProcessor.appFilters.put(filter.getPackageName(), filter);
             }
-            reload();
+            reloadSettings();
             AccessibilityServiceInfo info = new AccessibilityServiceInfo();
             info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
             info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
@@ -148,12 +173,12 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
-      // the a cheat key is used then don't filte
+        // the a cheat key is used then don't filte
         if (cheatKeyManager.isServiceIsDisabled(getBaseContext()))
         {
             return;
         }
-        if(event.getPackageName() != null && event.getPackageName().equals("com.android.system.ui"))
+        if (event.getPackageName() != null && event.getPackageName().equals("com.android.system.ui"))
         {
 
         }
@@ -221,7 +246,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void onInterrupt()
     {
-        Log.d("a","a");
+        Log.d("a", "a");
     }
 
     @Override
@@ -358,13 +383,11 @@ public class ContentFilterService extends AccessibilityService implements IConte
 
 
     public static final String COMMAND_RELOAD_SETTINGS = "reload";
+    public static final String COMMAND_RELOAD_USAGE_FILTER_FOR_APP = "reload_2";
 
     private void handleCommand(String command)
     {
-        if (command.equals(COMMAND_RELOAD_SETTINGS))
-        {
-            reload();
-        }
+
     }
 
     @Override
@@ -374,7 +397,8 @@ public class ContentFilterService extends AccessibilityService implements IConte
         unregisterReceiver(commandReceiver);
     }
 
-    private void reload()
+
+    private void reloadSettings()
     {
         SharedPreferences sharedPreferences = getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
         boolean useWarnWindows = sharedPreferences.getBoolean(PreferencesKeys.OPTION_USE_WARN_WINDOWS, PreferencesKeys.OPTION_USE_WARN_WINDOWS_DEFAULT);

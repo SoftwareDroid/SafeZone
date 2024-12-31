@@ -16,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.R;
 import com.example.ourpact3.db.DatabaseManager;
 import com.example.ourpact3.db.UsageSmartFilterManager;
@@ -47,13 +48,14 @@ public class UsageRestrictionActivity extends AppCompatActivity
     private ReuseableSettingsBooleanView enabledInput;
     private ReusableSettingsCounterActionView counterActionInput;
     private int usageFilterId;
+    private String packageId;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usage_restriction);
         Intent intent = getIntent();
-        String packageId = intent.getStringExtra("app_id");
+        packageId = intent.getStringExtra("app_id");
         String appName = intent.getStringExtra("app_name");
         usageFilterId = intent.getIntExtra("usage_filter_id", -1);
         assert usageFilterId != -1;
@@ -196,6 +198,15 @@ public class UsageRestrictionActivity extends AppCompatActivity
         DatabaseManager.open();
         UsageSmartFilterManager.addOrUpdateUsageFilter(productivityFilter);
         DatabaseManager.close();
+        notifyService();
+    }
+
+    private void notifyService()
+    {
+        Intent intent = new Intent("SEND_COMMAND");
+        intent.putExtra("command", ContentFilterService.COMMAND_RELOAD_USAGE_FILTER_FOR_APP);
+        intent.putExtra("app",packageId);
+        sendBroadcast(intent);
     }
 }
 

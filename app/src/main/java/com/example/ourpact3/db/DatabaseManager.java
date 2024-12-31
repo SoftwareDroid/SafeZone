@@ -271,6 +271,30 @@ public class DatabaseManager
         return appRules;
     }
 
+    /**
+     * return the AppRule for a packageId
+     * @param packageId
+     * @return
+     */
+    public static AppRuleTuple getAppRuleByPackageId(String packageId) {
+        AppRuleTuple appRuleTuple = null;
+        Cursor cursor = db.rawQuery("SELECT * FROM apps WHERE package_name = ?", new String[]{packageId});
+
+        if (cursor.moveToFirst()) { // Check if there is at least one result
+            String packageName = cursor.getString(0);
+            boolean writable = cursor.getInt(1) == 1;
+            boolean readable = cursor.getInt(2) == 1;
+            String comment = cursor.getString(3);
+            boolean enabled = cursor.getInt(4) == 1;
+            appRuleTuple = new AppRuleTuple(packageName, comment, readable, writable, enabled);
+            appRuleTuple.usageFilterID = cursor.getInt(5);
+        }
+
+        cursor.close();
+        return appRuleTuple; // Returns null if no match is found
+    }
+
+
     public Cursor getException(String appName) {
         return db.rawQuery("SELECT * FROM exception_list WHERE appName = '" + appName + "'", null);
     }
