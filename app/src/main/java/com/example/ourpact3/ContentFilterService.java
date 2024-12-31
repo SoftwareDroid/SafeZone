@@ -23,7 +23,7 @@ import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.service.ExampleAppKeywordFilters;
 import com.example.ourpact3.service.ScreenReceiver;
 import com.example.ourpact3.smart_filter.AppFilter;
-import com.example.ourpact3.smart_filter.ProductivityFilter;
+import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.util.CrashHandler;
 import com.example.ourpact3.pipeline.PipelineResultBase;
@@ -85,10 +85,10 @@ public class ContentFilterService extends AccessibilityService implements IConte
         DatabaseManager.open();
         DatabaseManager.AppRuleTuple appRuleTuple = DatabaseManager.getAppRuleByPackageId(packageId);
         assert appRuleTuple != null;
-        ProductivityFilter productivityFilter = UsageSmartFilterManager.getUsageFilterById(appRuleTuple.usageFilterID);
-        assert productivityFilter != null;
+        UsageRestrictionsFilter usageRestrictionsFilter = UsageSmartFilterManager.getUsageFilterById(appRuleTuple.usageFilterID);
+        assert usageRestrictionsFilter != null;
         DatabaseManager.close();
-        normalModeProcessor.appFilters.get(packageId).setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, productivityFilter);
+        normalModeProcessor.appFilters.get(packageId).setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, usageRestrictionsFilter);
     }
 
     //    private boolean isRunning = false;

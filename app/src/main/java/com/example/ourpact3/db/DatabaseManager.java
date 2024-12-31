@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteStatement;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.pipeline.CounterAction;
-import com.example.ourpact3.smart_filter.ProductivityFilter;
+import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -212,7 +212,7 @@ public class DatabaseManager
                 statement.bindString(4, appRule.comment);
                 statement.bindLong(5, appRule.enabled ? 1 : 0);
                 CounterAction defaultCounterAction = new CounterAction(PipelineWindowAction.WARNING, PipelineButtonAction.BACK_BUTTON,true);
-                long usageFilterId = UsageSmartFilterManager.addOrUpdateUsageFilter(new ProductivityFilter(defaultCounterAction,"Usage Restriction",60*60,5*60,10,new ArrayList<>()));
+                long usageFilterId = UsageSmartFilterManager.addOrUpdateUsageFilter(new UsageRestrictionsFilter(defaultCounterAction,"Usage Restriction",60*60,5*60,10,new ArrayList<>()));
 
                 statement.bindLong(6,usageFilterId);  // no default use restriction exists
 

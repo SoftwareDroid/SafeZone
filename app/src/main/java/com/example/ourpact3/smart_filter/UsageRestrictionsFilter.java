@@ -15,7 +15,7 @@ import java.util.ArrayList;
 /**
  * max number of starts and/or time in s every k hours
  */
-public class ProductivityFilter extends SpecialSmartFilterBase
+public class UsageRestrictionsFilter extends SpecialSmartFilterBase
 {
     public Long database_id = null;
     private final ArrayList<ProductivityTimeRule> timerules; // White or Blacklist for certain times of the week
@@ -54,7 +54,7 @@ public class ProductivityFilter extends SpecialSmartFilterBase
         this.database_id = id;
     }
 
-    public ProductivityFilter(CounterAction counterAction, String name, long resetPeriodInSeconds, long limitInSeconds, Integer maxNumberOfUsages, ArrayList<ProductivityTimeRule> timeRules)
+    public UsageRestrictionsFilter(CounterAction counterAction, String name, long resetPeriodInSeconds, long limitInSeconds, Integer maxNumberOfUsages, ArrayList<ProductivityTimeRule> timeRules)
     {
         super(new PipelineResultProductivityFilter(counterAction), name);//PipelineResultBase
         this.resetPeriodInSeconds = resetPeriodInSeconds;

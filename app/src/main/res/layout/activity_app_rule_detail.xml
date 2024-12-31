@@ -48,6 +48,12 @@
             app:title2="@string/usage_restriction"
             app:summary="@string/description_go_to_usage_filter" />
 
+        <com.example.ourpact3.ui.settings.ReusableSettingsItemView
+            android:id="@+id/content_restrictions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title2="@string/content_restrictions"
+            app:summary="@string/description_content_restriction" />
 
     </LinearLayout>
 

@@ -207,4 +207,8 @@
     <string name="stop_further_processing">Show Nothing</string>
     <string name="continue_processing">Continue Processing</string>
     <string name="description_go_to_usage_filter">Defines various usage limits, such as time, starts, and blocked periods</string>
+    <string name="settings_content_restrictions">Content Restrictions:</string>
+    <string name="text_filter_for_app_activity">TextFilterForAppActivity</string>
+    <string name="content_restrictions">Content Restrictions</string>
+    <string name="description_content_restriction">Sets Wordlists, which are use to find and block content</string>
 </resources>

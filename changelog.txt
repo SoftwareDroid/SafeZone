@@ -53,3 +53,4 @@ Ignore Write fields as search aborts
 1.24.1 reload Usage Filter in BG service + small UI changes
 1.25.0 Usage Restriction now has a Save Button, which has to pressed (Cancel option by not pressing it). It is disabled if the Usage Restriction is not writable
 TODO: gray out UI Elements and disable to make it more obvious
+1.26.0 Added empty activity and link for content restriction

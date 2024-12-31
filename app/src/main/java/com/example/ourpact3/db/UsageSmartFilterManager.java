@@ -2,14 +2,12 @@ package com.example.ourpact3.db;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.pipeline.CounterAction;
-import com.example.ourpact3.smart_filter.ProductivityFilter;
+import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
 import com.example.ourpact3.smart_filter.ProductivityTimeRule;
 
 import java.time.DayOfWeek;
@@ -161,7 +159,7 @@ public class UsageSmartFilterManager
     /*
     if filterId is null a entry will be created
      */
-    public static long addOrUpdateUsageFilter(ProductivityFilter usageFilter)
+    public static long addOrUpdateUsageFilter(UsageRestrictionsFilter usageFilter)
     {
         long filterId = -1;
         // Start a transaction for safety
@@ -209,9 +207,9 @@ public class UsageSmartFilterManager
     }
 
     @SuppressLint("Range")
-    public static ProductivityFilter getUsageFilterById(long filterId)
+    public static UsageRestrictionsFilter getUsageFilterById(long filterId)
     {
-        ProductivityFilter usageFilter = null; // Initialize to null
+        UsageRestrictionsFilter usageFilter = null; // Initialize to null
         Cursor cursor = null;
 
         try
@@ -235,7 +233,7 @@ public class UsageSmartFilterManager
                 int resetPeriod = cursor.getInt(cursor.getColumnIndex("reset_period"));
                 int timeLimit = cursor.getInt(cursor.getColumnIndex("time_limit"));
                 Integer maxStarts = cursor.getInt(cursor.getColumnIndex("max_starts"));
-                usageFilter = new ProductivityFilter(counterAction, "Usage Limit", resetPeriod, timeLimit, maxStarts, new ArrayList<>());
+                usageFilter = new UsageRestrictionsFilter(counterAction, "Usage Limit", resetPeriod, timeLimit, maxStarts, new ArrayList<>());
                 usageFilter.setEnabled(enabled);
                 usageFilter.database_id = cursor.getLong(cursor.getColumnIndex("id"));
             }

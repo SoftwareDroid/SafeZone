@@ -22,7 +22,7 @@ import com.example.ourpact3.R;
 import com.example.ourpact3.db.DatabaseManager;
 import com.example.ourpact3.db.UsageSmartFilterManager;
 import com.example.ourpact3.pipeline.CounterAction;
-import com.example.ourpact3.smart_filter.ProductivityFilter;
+import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
 import com.example.ourpact3.smart_filter.ProductivityTimeRule;
 import com.example.ourpact3.ui.settings.ReusableSettingsCheckboxView;
 import com.example.ourpact3.ui.settings.ReusableSettingsCounterActionView;
@@ -65,10 +65,10 @@ public class UsageRestrictionActivity extends AppCompatActivity
         assert usageFilterId != -1;
         // Get default parameters
         DatabaseManager.open();
-        ProductivityFilter productivityFilter = UsageSmartFilterManager.getUsageFilterById(usageFilterId);
+        UsageRestrictionsFilter usageRestrictionsFilter = UsageSmartFilterManager.getUsageFilterById(usageFilterId);
         enabledInput = findViewById(R.id.setting_input_enabled);
         enabledInput.getSwitchElement().setEnabled(writable);
-        enabledInput.getSwitchElement().setChecked(productivityFilter.isEnabled());
+        enabledInput.getSwitchElement().setChecked(usageRestrictionsFilter.isEnabled());
         // set app name in toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -78,18 +78,18 @@ public class UsageRestrictionActivity extends AppCompatActivity
         titleTextView.setText(this.getString(R.string.usage_restriction_for) + " " + appName); // Set the title on the custom TextView
 
         counterActionInput = findViewById(R.id.setting_counter_action);
-        counterActionInput.setCounterAction(productivityFilter.getCounterAction());
+        counterActionInput.setCounterAction(usageRestrictionsFilter.getCounterAction());
         // inputs
         numberOfStartsInput = new ReusableSettingsNumberInputView(this, findViewById(R.id.setting_input_number_of_start));
         numberOfStartsInput.setLimits(0, 1000);
-        numberOfStartsInput.setParameters(this.getString(R.string.number_of_possible_starts), "%s", productivityFilter.getMaxNumberOfUsages());
+        numberOfStartsInput.setParameters(this.getString(R.string.number_of_possible_starts), "%s", usageRestrictionsFilter.getMaxNumberOfUsages());
         //
         timeLimitInput = new ReusableSettingsDurationInputView(this, findViewById(R.id.setting_input_time_limit));
-        timeLimitInput.setParameters(this.getString(R.string.set_time_limit), "%d:%d:%d (hh:mm:ss)", TimeUnit.SECONDS, TimeUnit.MINUTES, TimeUnit.HOURS, ReusableSettingsDurationInputView.formatSecondsToHMS(productivityFilter.getLimitInSeconds()));
+        timeLimitInput.setParameters(this.getString(R.string.set_time_limit), "%d:%d:%d (hh:mm:ss)", TimeUnit.SECONDS, TimeUnit.MINUTES, TimeUnit.HOURS, ReusableSettingsDurationInputView.formatSecondsToHMS(usageRestrictionsFilter.getLimitInSeconds()));
         //
         resetPeriodInput = new ReusableSettingsDurationInputView(this, findViewById(R.id.setting_input_reset_period));
         // 1 day reset period
-        resetPeriodInput.setParameters(this.getString(R.string.reset_period), "%d:%d:%d (dd:hh:mm)", TimeUnit.MINUTES, TimeUnit.HOURS, TimeUnit.DAYS, ReusableSettingsDurationInputView.formatSecondsToDHM(productivityFilter.getResetPeriodInSeconds()));
+        resetPeriodInput.setParameters(this.getString(R.string.reset_period), "%d:%d:%d (dd:hh:mm)", TimeUnit.MINUTES, TimeUnit.HOURS, TimeUnit.DAYS, ReusableSettingsDurationInputView.formatSecondsToDHM(usageRestrictionsFilter.getResetPeriodInSeconds()));
 
         // setup time pickers
         selectedStartInput = new ReusableSettingsTimePickerInputView(this, findViewById(R.id.setting_input_start_time));
@@ -209,12 +209,12 @@ public class UsageRestrictionActivity extends AppCompatActivity
         long resetPeriod = this.resetPeriodInput.getAccumulatedTimeInSeconds();
         String name = this.getString(R.string.usage_restriction);
         int maxNumberOfStarts = this.numberOfStartsInput.getCurrentNumber();
-        ProductivityFilter productivityFilter = new ProductivityFilter(action, name, resetPeriod, limitInSeconds, maxNumberOfStarts, new ArrayList<>(rules));
-        productivityFilter.setDatabaseID(usageFilterId);
-        productivityFilter.setEnabled(isEnabled);
+        UsageRestrictionsFilter usageRestrictionsFilter = new UsageRestrictionsFilter(action, name, resetPeriod, limitInSeconds, maxNumberOfStarts, new ArrayList<>(rules));
+        usageRestrictionsFilter.setDatabaseID(usageFilterId);
+        usageRestrictionsFilter.setEnabled(isEnabled);
         // update DB model
         DatabaseManager.open();
-        UsageSmartFilterManager.addOrUpdateUsageFilter(productivityFilter);
+        UsageSmartFilterManager.addOrUpdateUsageFilter(usageRestrictionsFilter);
         DatabaseManager.close();
         notifyService();
     }

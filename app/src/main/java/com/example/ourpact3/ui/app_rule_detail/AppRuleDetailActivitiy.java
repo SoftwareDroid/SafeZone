@@ -11,11 +11,8 @@ import com.example.ourpact3.ui.settings.ReusableSettingsCheckboxView;
 import com.example.ourpact3.ui.settings.ReusableSettingsItemView;
 
 import com.example.ourpact3.R;
+import com.example.ourpact3.ui.content_restriction_settings_for_app.AppContentRestrictionSettingsActivity;
 import com.example.ourpact3.ui.usage_restriction.UsageRestrictionActivity;
-
-import java.util.LinkedHashMap;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  Intent intent = new Intent(itemView.getContext(), DetailActivity.class);
@@ -24,6 +21,7 @@ import java.util.List;
  */
 public class AppRuleDetailActivitiy extends AppCompatActivity {
     private ReusableSettingsItemView usageRestriction;
+    private ReusableSettingsItemView contentRestrictions;
     private ReusableSettingsCheckboxView<String> checkboxView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +50,19 @@ public class AppRuleDetailActivitiy extends AppCompatActivity {
             public void onClick(View v) {
                 // Start the new Activity
                 Intent intent = new Intent(v.getContext(), UsageRestrictionActivity.class);
+                intent.putExtra("app_id", packageId);
+                intent.putExtra("app_name", appName);
+                intent.putExtra("usage_filter_id", usageFilterId);
+                intent.putExtra("writeable", writeable);
+                startActivity(intent);
+            }
+        });
+        contentRestrictions = findViewById(R.id.content_restrictions);
+        contentRestrictions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start the new Activity
+                Intent intent = new Intent(v.getContext(), AppContentRestrictionSettingsActivity.class);
                 intent.putExtra("app_id", packageId);
                 intent.putExtra("app_name", appName);
                 intent.putExtra("usage_filter_id", usageFilterId);

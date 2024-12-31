@@ -55,6 +55,9 @@
         <activity android:name=".ui.usage_restriction.UsageRestrictionActivity"
             android:label="@string/usage_restriction_activity">
         </activity>
+        <activity android:name=".ui.content_restriction_settings_for_app.AppContentRestrictionSettingsActivity"
+            android:label="@string/text_filter_for_app_activity">
+        </activity>
 
         <activity android:name=".learn_mode.HelpDialogLearnMode" />
 

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
+            app:titleTextColor="@android:color/white">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.example.ourpact3.ui.settings.ReuseableSettingsBooleanView
+                android:id="@+id/setting_input_enabled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:description="@string/usage_restriction_restriction"
+                app:isEnabled="false"
+                app:label="@string/enabled" />
+
+            <com.example.ourpact3.ui.settings.ReusableSettingsHeaderView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:title="@string/usage_limits" />
+
+            <com.example.ourpact3.ui.settings.ReusableSettingsItemView
+                android:id="@+id/setting_input_number_of_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:summary="0"
+                app:title2="@string/number_of_starts" />
+
+            <com.example.ourpact3.ui.settings.ReusableSettingsItemView
+                android:id="@+id/setting_input_time_limit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:summary="0"
+                app:title2="@string/time_limit" />
+
+            <com.example.ourpact3.ui.settings.ReusableSettingsItemView
+                android:id="@+id/setting_input_reset_period"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:summary="0"
+                app:title2="@string/reset_period" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/added_time_rules"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.example.ourpact3.ui.settings.ReusableSettingsCounterActionView
+                android:id="@+id/setting_counter_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:readonly="false" />
+        <Button
+            android:id="@+id/save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

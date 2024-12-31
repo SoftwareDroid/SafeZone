@@ -11,7 +11,7 @@ import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
 import com.example.ourpact3.smart_filter.ProductivityTimeRule;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
-import com.example.ourpact3.smart_filter.ProductivityFilter;
+import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
 import com.example.ourpact3.smart_filter.WordSmartFilterIdentifier;
 import com.example.ourpact3.topics.InvalidTopicIDException;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
@@ -448,7 +448,7 @@ public class ExampleAppKeywordFilters
 
         ArrayList<ProductivityTimeRule> timeRules = new ArrayList<>();
         timeRules.add(new ProductivityTimeRule(LocalTime.of(11,0),LocalTime.of(12,0),EnumSet.of(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY),true));
-        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, new ProductivityFilter(new CounterAction(PipelineWindowAction.WARNING,PipelineButtonAction.BACK_BUTTON,true), "Time limit", 6, 200, 3,timeRules));
+        filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, new UsageRestrictionsFilter(new CounterAction(PipelineWindowAction.WARNING,PipelineButtonAction.BACK_BUTTON,true), "Time limit", 6, 200, 3,timeRules));
         return filter;
     }
 
@@ -529,7 +529,7 @@ public class ExampleAppKeywordFilters
         AppFilter filter = new AppFilter(service, topicManager, filters, appName, false);
         {
             // No Timerules
-            filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, new ProductivityFilter(new CounterAction(PipelineWindowAction.WARNING,PipelineButtonAction.BACK_BUTTON,true), "Time limit", 1, 200, 3,new ArrayList<>()));
+            filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, new UsageRestrictionsFilter(new CounterAction(PipelineWindowAction.WARNING,PipelineButtonAction.BACK_BUTTON,true), "Time limit", 1, 200, 3,new ArrayList<>()));
         }
         return filter;
 
