@@ -1,26 +1,34 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_delete"
         android:title="Delete"
-        android:icon="@drawable/baseline_delete_24"/>
+        app:showAsAction="always"
+        android:icon="@drawable/baseline_delete_24" />
 
     <item
         android:id="@+id/action_open"
-        android:title="Open"
-        android:icon="@drawable/baseline_edit_64"/>
+        app:showAsAction="always"
+        android:icon="@drawable/baseline_edit_64"
+        android:title="@string/open" />
 
     <item
         android:id="@+id/action_move_up"
-        android:title="Move Up"
+        android:title="@string/move_up"
+        app:showAsAction="always"
         android:icon="@drawable/baseline_arrow_circle_up_24" />
 
     <item
         android:id="@+id/action_move_down"
-        android:title="Move Down"
-        android:icon="@drawable/baseline_arrow_circle_down_64" />
+        android:title="@string/move_down"
+        app:showAsAction="always"
+        android:icon="@drawable/baseline_arrow_circle_down_64"
+        tools:ignore="HardcodedText" />
 
     <item
         android:id="@+id/action_words"
-        android:title="Words"
-        android:icon="@drawable/baseline_dataset_64"/>
+        android:icon="@drawable/baseline_dataset_64"
+        android:title="@string/edit_filter_words"
+        app:showAsAction="always" />
 </menu>

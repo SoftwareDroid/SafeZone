@@ -37,7 +37,7 @@ public class ContentFilterRuleAdapter extends RecyclerView.Adapter<ContentFilter
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_entry_time_rule, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.list_entry_content_filter_rule, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         viewHolder.items = items;   // give the view access
         return viewHolder;
@@ -51,7 +51,7 @@ public class ContentFilterRuleAdapter extends RecyclerView.Adapter<ContentFilter
         holder.title.setText(rule.getName());
         holder.shortDescription.setText(rule.getFilterShortDescription());
         // Highlight selected item
-        holder.itemView.setBackgroundColor(position == selectedItemPosition ? context.getColor(R.color.white)  : context.getColor(R.color.purple_200));
+        holder.itemView.setBackgroundColor(position == selectedItemPosition ? context.getColor(R.color.white)  : context.getColor(R.color.gray));
         // Set the OnCheckedChangeListener for the Switch
         holder.isEnabledSwitch.setOnCheckedChangeListener(null); // Clear previous listener to avoid unwanted triggers
         holder.isEnabledSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -116,7 +116,7 @@ public class ContentFilterRuleAdapter extends RecyclerView.Adapter<ContentFilter
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu)
         {
-            mode.setTitle("1 item selected");
+//            mode.setTitle("1 item selected");
             return false;
         }
 
@@ -164,7 +164,7 @@ public class ContentFilterRuleAdapter extends RecyclerView.Adapter<ContentFilter
         {
             if (item.getItemId() == R.id.action_delete)
             {
-//                deleteSelectedItem();
+                //deleteSelectedItem();
                 mode.finish(); // Close the action mode
                 return true;
             } else if (item.getItemId() == R.id.action_open)
