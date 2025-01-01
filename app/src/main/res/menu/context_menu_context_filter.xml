@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_delete"
+        android:title="Delete"
+        android:icon="@drawable/baseline_delete_24"/>
+
+    <item
+        android:id="@+id/action_open"
+        android:title="Open"
+        android:icon="@drawable/baseline_edit_64"/>
+
+    <item
+        android:id="@+id/action_move_up"
+        android:title="Move Up"
+        android:icon="@drawable/baseline_arrow_circle_up_24" />
+
+    <item
+        android:id="@+id/action_move_down"
+        android:title="Move Down"
+        android:icon="@drawable/baseline_arrow_circle_down_64" />
+
+    <item
+        android:id="@+id/action_words"
+        android:title="Words"
+        android:icon="@drawable/baseline_dataset_64"/>
+</menu>

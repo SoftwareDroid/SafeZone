@@ -52,40 +52,14 @@
             <com.example.ourpact3.ui.settings.ReusableSettingsHeaderView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:title="@string/usage_limits" />
-
-            <com.example.ourpact3.ui.settings.ReusableSettingsItemView
-                android:id="@+id/setting_input_number_of_start"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:summary="0"
-                app:title2="@string/number_of_starts" />
-
-            <com.example.ourpact3.ui.settings.ReusableSettingsItemView
-                android:id="@+id/setting_input_time_limit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:summary="0"
-                app:title2="@string/time_limit" />
-
-            <com.example.ourpact3.ui.settings.ReusableSettingsItemView
-                android:id="@+id/setting_input_reset_period"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:summary="0"
-                app:title2="@string/reset_period" />
+                app:title="@string/rules" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/added_time_rules"
+                android:id="@+id/added_filter_rules"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <com.example.ourpact3.ui.settings.ReusableSettingsCounterActionView
-                android:id="@+id/setting_counter_action"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:readonly="false" />
         <Button
             android:id="@+id/save"
             android:layout_width="match_parent"

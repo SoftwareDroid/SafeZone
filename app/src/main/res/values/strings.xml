@@ -211,4 +211,6 @@
     <string name="text_filter_for_app_activity">TextFilterForAppActivity</string>
     <string name="content_restrictions">Content Restrictions</string>
     <string name="description_content_restriction">Sets Wordlists, which are use to find and block content</string>
+    <string name="rules">Rules</string>
+    <string name="filter_type">Filter Type</string>
 </resources>
