@@ -79,16 +79,50 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 "black_list INTEGER,"+
                 "FOREIGN KEY (usage_filter_id) REFERENCES usage_filters(id) ON DELETE CASCADE" + // Foreign key constraint
                 ")");
+        ////////////////////////////////////////////////////////////////////////
+        // Content filters
+        // the priority is defined by the order in row
+        // now its no longer relevant, if a word list is fixed or not this handels the database
+        // by adding a app system rules are automaticlyy included like Enforce SafeSearch and Porn block // different Rules shown in every app
+        db.execSQL("CREATE TABLE content_filters (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                // counter action
+                "explainable INTEGER, " +
+                "window_action INTEGER, " +
+                "button_action INTEGER, " +
+                "kill INTEGER, " +  //boolean
+                // end of counter action
+                "enabled INTEGER, " +
+                "user_created INTEGER, " + // maybe relevant
+                "shared INTEGER, " + //Edit of shared filters can affect multible apps. These are also shown in every app as a option to turn it on
+                "readable INTEGER, " + // maybe relevant
+                "writable INTEGER, " + //maybe relevant. Like Write protection
+                "name TEXT, "+
+                "short_description TEXT,"+
+                "max_starts INTEGER"+
+                // TODO: Link to a scoring table/world list, no parent relation
+                ")");
+        // A app can have n content filters and they can be shared among k apps (if shared attribute is on)
+        // Create the junction table for the many-to-many relationship
+        db.execSQL("CREATE TABLE app_content_filter (" +
+                "app_package_name TEXT, " +
+                "content_filter_id INTEGER, " +
+                "PRIMARY KEY (app_package_name, content_filter_id), " +
+                "FOREIGN KEY (app_package_name) REFERENCES apps(package_name) ON DELETE CASCADE, " +
+                "FOREIGN KEY (content_filter_id) REFERENCES content_filters(id) ON DELETE CASCADE" +
+                ")");
+        /////////////////////////////////////////////////////////////////////////////////////// end of content filters
 
 
         // combination table map n filters to one app
-        db.execSQL("CREATE TABLE app_filters (" +
+        /*db.execSQL("CREATE TABLE app_filters (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "app_package_name TEXT, " +
                 "filter_id INTEGER, " +
                 "FOREIGN KEY (app_package_name) REFERENCES apps (package_name), " +
-                "FOREIGN KEY (filter_id) REFERENCES smart_filters (id))");
-        // more tables for these special filters in particular word filter need several tables
+                "FOREIGN KEY (filter_id) REFERENCES smart_filters (id))");*/
+
+        /*// more tables for these special filters in particular word filter need several tables
 
         db.execSQL("CREATE TABLE word_lists (" +
                 "id INTEGER PRIMARY KEY, " +
@@ -124,7 +158,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 "FOREIGN KEY (parent_list_id) REFERENCES word_lists (id), " +
                 "FOREIGN KEY (child_list_id) REFERENCES word_lists (id))");
 
-
+    */
     }
 
     @Override
