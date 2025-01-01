@@ -2,6 +2,7 @@ package com.example.ourpact3.smart_filter;
 
 import androidx.annotation.NonNull;
 
+import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.service.ScreenInfoExtractor;
@@ -9,25 +10,89 @@ import com.example.ourpact3.service.ScreenInfoExtractor;
 /**
  * Can be of different types const lists or reusable
  */
-public abstract class WordProcessorSmartFilterBase implements Cloneable
+public abstract class ContentSmartFilterBase implements Cloneable
 {
+    protected NodeCheckStrategyType nodeCheckStrategyType;
+    protected boolean ignoreCase;
+    private boolean readable;
+    private boolean writable;
+    private boolean userCreated;
+    private boolean isShared;
     private String shortDescription;
     private boolean enabled;
     private PipelineResultKeywordFilter constResult; // Made private
     private boolean checkOnlyVisibleNodes = true; // Made private
     public final WordSmartFilterIdentifier identifier;
 
-    WordProcessorSmartFilterBase(PipelineResultKeywordFilter constResult, WordSmartFilterIdentifier identifier) throws CloneNotSupportedException
+    ContentSmartFilterBase(PipelineResultKeywordFilter constResult, WordSmartFilterIdentifier identifier) throws CloneNotSupportedException
     {
         this.constResult = (PipelineResultKeywordFilter) constResult.clone();
         this.identifier = identifier;
         this.enabled = true;
         this.shortDescription = "";
+        this.readable = true;
+        this.writable = true;
+        this.nodeCheckStrategyType = NodeCheckStrategyType.BOTH;    //Default check everything
+    }
+
+    public NodeCheckStrategyType getNodeCheckStrategyType()
+    {
+        return nodeCheckStrategyType;
+    }
+
+    public void setNodeCheckStrategyType(NodeCheckStrategyType strategyType)
+    {
+        nodeCheckStrategyType = strategyType;
+    }
+
+    public boolean isIgnoringCase()
+    {
+        return constResult.ign
+    }
+
+    public boolean isSharedBetweenApps()
+    {
+        return isShared;
+    }
+
+    public void setSharedBetweenApps(boolean value)
+    {
+        isShared = value;
+    }
+
+    public boolean isReadable()
+    {
+        return readable;
+    }
+
+    public boolean isWritable()
+    {
+        return writable;
+    }
+
+    public boolean isUserCreated()
+    {
+        return userCreated;
+    }
+
+    public void setUserCreated(boolean value)
+    {
+        userCreated = value;
     }
 
     public void setEnabled(boolean value)
     {
         this.enabled = value;
+    }
+
+    public CounterAction getCounterAction()
+    {
+        return constResult.getCounterAction();
+    }
+
+    public void setCounterAction(CounterAction action)
+    {
+        constResult.setCounterAction(action);
     }
 
     public boolean isEnabled()
@@ -50,7 +115,7 @@ public abstract class WordProcessorSmartFilterBase implements Cloneable
         shortDescription = text;
     }
 
-    public String getFilterShortDescription()
+    public String getShortDescription()
     {
         return shortDescription;
     }
@@ -62,11 +127,11 @@ public abstract class WordProcessorSmartFilterBase implements Cloneable
 
     @NonNull
     @Override
-    public WordProcessorSmartFilterBase clone()
+    public ContentSmartFilterBase clone()
     {
         try
         {
-            WordProcessorSmartFilterBase clone = (WordProcessorSmartFilterBase) super.clone();
+            ContentSmartFilterBase clone = (ContentSmartFilterBase) super.clone();
             // Deep copy the constResult
             clone.constResult = (PipelineResultKeywordFilter) this.constResult.clone();
             // Note: name is final and immutable, so no need to clone it

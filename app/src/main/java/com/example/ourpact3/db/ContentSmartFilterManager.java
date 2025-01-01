@@ -9,7 +9,7 @@ import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.smart_filter.ProductivityTimeRule;
 import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
-import com.example.ourpact3.smart_filter.WordProcessorSmartFilterBase;
+import com.example.ourpact3.smart_filter.ContentSmartFilterBase;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -66,7 +66,7 @@ public class ContentSmartFilterManager
         }
     }
 
-    public static ArrayList<WordProcessorSmartFilterBase> getAllContentFiltersForApp(String package_name)
+    public static ArrayList<ContentSmartFilterBase> getAllContentFiltersForApp(String package_name)
     {
         //TODO:
     }
@@ -162,42 +162,56 @@ public class ContentSmartFilterManager
         return timeRules;
     }
 
+    
     /*
     if filterId is null a entry will be created
      */
-    public static long addOrUpdateUsageFilter(UsageRestrictionsFilter usageFilter)
+    public static long addContentFilter(ContentSmartFilterBase contentFilter)
     {
         long filterId = -1;
         // Start a transaction for safety
         DatabaseManager.db.beginTransaction();
         try
         {
-            CounterAction counterAction = usageFilter.getCounterAction();
+            /*
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "readable INTEGER, " + // maybe relevant
+                "writable INTEGER, " + //maybe relevant. Like Write protection
+                "name TEXT, "+
+                "short_description TEXT,"+
+                "max_starts INTEGER"+
+
+             */
+            CounterAction counterAction = contentFilter.getCounterAction();
             ContentValues values = new ContentValues();
             values.put("explainable", counterAction.isHasExplainableButton()? 1: 0);
             values.put("window_action", counterAction.getWindowAction().getValue());
             values.put("button_action", counterAction.getButtonAction().getValue());
             values.put("kill", counterAction.isKillAction() ? 1 : 0); // Assuming kill is a boolean
-            values.put("enabled", usageFilter.isEnabled() ? 1 : 0); // Assuming enabled is a boolean
-            values.put("reset_period", usageFilter.getResetPeriodInSeconds());
-            values.put("time_limit", usageFilter.getLimitInSeconds());
-            values.put("max_starts", usageFilter.maxNumberOfUsages);
+            values.put("enabled", contentFilter.isEnabled() ? 1 : 0); // Assuming enabled is a boolean
+            values.put("user_created", contentFilter.isUserCreated());
+            values.put("readable", contentFilter.isReadable());
+            values.put("writable", contentFilter.isWritable());
+            values.put("name", contentFilter.getName());
+            values.put("short_description", contentFilter.getShortDescription());
+            values.put("checks_only_visible", contentFilter.isCheckOnlyVisibleNodes());
+            values.put("ignore_case", contentFilter.isIgnoringCase());
 
             // Check if the usage filter already exists
-            if (usageFilter.database_id != null)
+            if (contentFilter.database_id != null)
             {
                 // Update existing row
                 String whereClause = "id = ?";
-                String[] whereArgs = new String[]{String.valueOf(usageFilter.database_id)};
+                String[] whereArgs = new String[]{String.valueOf(contentFilter.database_id)};
                 DatabaseManager.db.update("usage_filters", values, whereClause, whereArgs);
-                filterId = usageFilter.database_id;
+                filterId = contentFilter.database_id;
             } else
             {
                 // Insert new row
                 filterId = DatabaseManager.db.insert("usage_filters", null, values);
             }
             //update time rules
-            setAllTimeRestrictionRules(filterId,usageFilter.getAllTimeRules());
+            setAllTimeRestrictionRules(filterId,contentFilter.getAllTimeRules());
 
             // Mark the transaction as successful
             DatabaseManager.db.setTransactionSuccessful();

@@ -1,4 +1,5 @@
 package com.example.ourpact3.db;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.content.Context;
@@ -13,47 +14,51 @@ import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**example usage
- *     @Override
- *     protected void onCreate(Bundle savedInstanceState) {
- *         super.onCreate(savedInstanceState);
- *         setContentView(R.layout.activity_main);
+/**
+ * example usage
  *
- *         dbHelper = new DatabaseHelper(this);
- *         dbManager = new DatabaseManager(this);
- *
- *         dbManager.open();
- *
- *         dbManager.insertException("com.example.app", true, false);
- *
- *         Cursor cursor = dbManager.getException("com.example.app");
- *         if (cursor.moveToFirst()) {
- *             String appName = cursor.getString(0);
- *             boolean readable = cursor.getInt(1) == 1;
- *             boolean writable = cursor.getInt(2) == 1;
- *             Log.d("MainActivity", "appName: " + appName + ", readable: " + readable + ", writable: " + writable);
- *             Toast.makeText(this, "appName: " + appName + ", readable: " + readable + ", writable: " + writable, Toast.LENGTH_SHORT).show();
- *         }
- *
- *         dbManager.close();
- *     }
+ * @Override protected void onCreate(Bundle savedInstanceState) {
+ * super.onCreate(savedInstanceState);
+ * setContentView(R.layout.activity_main);
+ * <p>
+ * dbHelper = new DatabaseHelper(this);
+ * dbManager = new DatabaseManager(this);
+ * <p>
+ * dbManager.open();
+ * <p>
+ * dbManager.insertException("com.example.app", true, false);
+ * <p>
+ * Cursor cursor = dbManager.getException("com.example.app");
+ * if (cursor.moveToFirst()) {
+ * String appName = cursor.getString(0);
+ * boolean readable = cursor.getInt(1) == 1;
+ * boolean writable = cursor.getInt(2) == 1;
+ * Log.d("MainActivity", "appName: " + appName + ", readable: " + readable + ", writable: " + writable);
+ * Toast.makeText(this, "appName: " + appName + ", readable: " + readable + ", writable: " + writable, Toast.LENGTH_SHORT).show();
+ * }
+ * <p>
+ * dbManager.close();
+ * }
  * }
  */
 
 public class DatabaseManager
 {
     public static DatabaseHelper dbHelper;
-    public  static SQLiteDatabase db;
+    public static SQLiteDatabase db;
 
-    public DatabaseManager(Context context) {
+    public DatabaseManager(Context context)
+    {
         dbHelper = new DatabaseHelper(context);
     }
 
-    public static void open() {
+    public static void open()
+    {
         db = dbHelper.getWritableDatabase();
     }
 
-    public static void close() {
+    public static void close()
+    {
         dbHelper.close();
     }
 
@@ -78,16 +83,20 @@ public class DatabaseManager
         public String packageID;
         public String appName;
         public String comment;
+        public boolean checkAllEvents;
         public boolean readable;
         public boolean writeable;
         public boolean enabled;
         public Integer usageFilterID;
-        public AppRuleTuple(String packageID, String comment, boolean readable, boolean writeable, boolean enabled) {
+
+        public AppRuleTuple(String packageID, String comment, boolean readable, boolean writeable, boolean enabled, boolean checkAllEvents)
+        {
             this.packageID = packageID;
             this.comment = comment;
             this.readable = readable;
             this.writeable = writeable;
             this.enabled = enabled;
+            this.checkAllEvents = checkAllEvents;
         }
 
     }
@@ -178,69 +187,85 @@ public class DatabaseManager
         }
     }
 
-    public boolean needInitialFilling() {
-        try {
+    public boolean needInitialFilling()
+    {
+        try
+        {
             Cursor cursor = db.rawQuery("SELECT 1 FROM exception_list", null);
             boolean hasEntries = cursor.getCount() > 0;
             cursor.close();
             return !hasEntries;
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             return false;
         }
     }
 
-    public void insertBatchExceptions(List<ExceptionTuple> exceptions) {
+    public void insertBatchExceptions(List<ExceptionTuple> exceptions)
+    {
         db.beginTransaction();
-        try {
-            for (ExceptionTuple exception : exceptions) {
+        try
+        {
+            for (ExceptionTuple exception : exceptions)
+            {
                 db.execSQL("INSERT INTO exception_list (appName, readable, writable) VALUES ('" + exception.packageID + "', " + (exception.readable ? 1 : 0) + ", " + (exception.writable ? 1 : 0) + ")");
             }
             db.setTransactionSuccessful();
-        } finally {
+        } finally
+        {
             db.endTransaction();
         }
     }
 
-    public void insertBatchAppRules(List<AppRuleTuple> appRules) {
+    public void insertBatchAppRules(List<AppRuleTuple> appRules)
+    {
         db.beginTransaction();
-        try {
-            SQLiteStatement statement = db.compileStatement("INSERT INTO apps (package_name, writable, readable, comment, enabled,usage_filter_id) VALUES (?, ?, ?, ?, ?,?)");
-            for (AppRuleTuple appRule : appRules) {
+        try
+        {
+            SQLiteStatement statement = db.compileStatement("INSERT INTO apps (package_name, writable, readable, comment, enabled,check_all_events,usage_filter_id) VALUES (?, ?, ?, ?, ?,?)");
+            for (AppRuleTuple appRule : appRules)
+            {
                 statement.bindString(1, appRule.packageID);
                 statement.bindLong(2, appRule.writeable ? 1 : 0);
                 statement.bindLong(3, appRule.readable ? 1 : 0);
                 statement.bindString(4, appRule.comment);
                 statement.bindLong(5, appRule.enabled ? 1 : 0);
-                CounterAction defaultCounterAction = new CounterAction(PipelineWindowAction.WARNING, PipelineButtonAction.BACK_BUTTON,true);
-                long usageFilterId = UsageSmartFilterManager.addOrUpdateUsageFilter(new UsageRestrictionsFilter(defaultCounterAction,"Usage Restriction",60*60,5*60,10,new ArrayList<>()));
-
-                statement.bindLong(6,usageFilterId);  // no default use restriction exists
+                CounterAction defaultCounterAction = new CounterAction(PipelineWindowAction.WARNING, PipelineButtonAction.BACK_BUTTON, true);
+                long usageFilterId = UsageSmartFilterManager.addOrUpdateUsageFilter(new UsageRestrictionsFilter(defaultCounterAction, "Usage Restriction", 60 * 60, 5 * 60, 10, new ArrayList<>()));
+                statement.bindLong(5, appRule.checkAllEvents ? 1 : 0);
+                statement.bindLong(6, usageFilterId);  // no default use restriction exists
 
                 statement.executeInsert();
                 statement.clearBindings();
             }
             db.setTransactionSuccessful();
-        } finally {
+        } finally
+        {
             db.endTransaction();
         }
     }
 
-    public void insertException(String appName, boolean readable, boolean writable) {
+    public void insertException(String appName, boolean readable, boolean writable)
+    {
         db.execSQL("INSERT INTO exception_list (appName, readable, writable) VALUES ('" + appName + "', " + (readable ? 1 : 0) + ", " + (writable ? 1 : 0) + ")");
     }
 
-    public void updateException(String appName, boolean readable, boolean writable) {
+    public void updateException(String appName, boolean readable, boolean writable)
+    {
         db.execSQL("UPDATE exception_list SET readable = " + (readable ? 1 : 0) + ", writable = " + (writable ? 1 : 0) + " WHERE appName = '" + appName + "'");
     }
 
-    public void deleteException(String appName) {
+    public void deleteException(String appName)
+    {
         db.execSQL("DELETE FROM exception_list WHERE appName = '" + appName + "'");
     }
 
-    public List<ExceptionTuple> getAllExceptions() {
+    public List<ExceptionTuple> getAllExceptions()
+    {
         List<ExceptionTuple> exceptions = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT * FROM exception_list", null);
-        while (cursor.moveToNext()) {
+        while (cursor.moveToNext())
+        {
             String appName = cursor.getString(0);
             boolean readable = cursor.getInt(1) == 1;
             boolean writable = cursor.getInt(2) == 1;
@@ -252,19 +277,23 @@ public class DatabaseManager
 
     /**
      * retrieves all all rules
+     *
      * @return
      */
-    public List<AppRuleTuple> getAllAppRules() {
+    public List<AppRuleTuple> getAllAppRules()
+    {
         List<AppRuleTuple> appRules = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT * FROM apps", null);
-        while (cursor.moveToNext()) {
+        while (cursor.moveToNext())
+        {
             String packageName = cursor.getString(0);
             boolean writable = cursor.getInt(1) == 1;
             boolean readable = cursor.getInt(2) == 1;
             String comment = cursor.getString(3);
             boolean enabled = cursor.getInt(4) == 1;
-            AppRuleTuple appRuleTuple = new AppRuleTuple(packageName, comment, readable, writable, enabled);
-            appRuleTuple.usageFilterID = cursor.getInt(5);
+            boolean checkAllEvents = cursor.getInt(5) == 1;
+            AppRuleTuple appRuleTuple = new AppRuleTuple(packageName, comment, readable, writable, enabled, checkAllEvents);
+            appRuleTuple.usageFilterID = cursor.getInt(6);
             appRules.add(appRuleTuple);
         }
         cursor.close();
@@ -273,21 +302,25 @@ public class DatabaseManager
 
     /**
      * return the AppRule for a packageId
+     *
      * @param packageId
      * @return
      */
-    public static AppRuleTuple getAppRuleByPackageId(String packageId) {
+    public static AppRuleTuple getAppRuleByPackageId(String packageId)
+    {
         AppRuleTuple appRuleTuple = null;
         Cursor cursor = db.rawQuery("SELECT * FROM apps WHERE package_name = ?", new String[]{packageId});
 
-        if (cursor.moveToFirst()) { // Check if there is at least one result
+        if (cursor.moveToFirst())
+        { // Check if there is at least one result
             String packageName = cursor.getString(0);
             boolean writable = cursor.getInt(1) == 1;
             boolean readable = cursor.getInt(2) == 1;
             String comment = cursor.getString(3);
             boolean enabled = cursor.getInt(4) == 1;
-            appRuleTuple = new AppRuleTuple(packageName, comment, readable, writable, enabled);
-            appRuleTuple.usageFilterID = cursor.getInt(5);
+            boolean checkAllEvents = cursor.getInt(5) == 1;
+            appRuleTuple = new AppRuleTuple(packageName, comment, readable, writable, enabled, checkAllEvents);
+            appRuleTuple.usageFilterID = cursor.getInt(6);
         }
 
         cursor.close();
@@ -295,38 +328,47 @@ public class DatabaseManager
     }
 
 
-    public Cursor getException(String appName) {
+    public Cursor getException(String appName)
+    {
         return db.rawQuery("SELECT * FROM exception_list WHERE appName = '" + appName + "'", null);
     }
 
     //
-    public void addWordToList(long wordListId, String word, boolean isRegex, String comment) {
-        if (wordListId <= 0) {
+    public void addWordToList(long wordListId, String word, boolean isRegex, String comment)
+    {
+        if (wordListId <= 0)
+        {
             throw new IllegalArgumentException("Word list ID must be greater than 0");
         }
-        if (word == null || word.isEmpty()) {
+        if (word == null || word.isEmpty())
+        {
             throw new IllegalArgumentException("Word must not be null or empty");
         }
         long wordId = getWordId(word);
-        if (wordId <= 0) {
+        if (wordId <= 0)
+        {
             wordId = addWord(word, isRegex, comment);
         }
         db.execSQL("INSERT INTO word_list_words (word_list_id, word_id) VALUES (" + wordListId + ", " + wordId + ")");
     }
 
-    private long getWordId(String word) {
-        Cursor cursor = db.rawQuery("SELECT id FROM words WHERE word = ?", new String[] {word});
-        if (cursor.moveToFirst()) {
+    private long getWordId(String word)
+    {
+        Cursor cursor = db.rawQuery("SELECT id FROM words WHERE word = ?", new String[]{word});
+        if (cursor.moveToFirst())
+        {
             long wordId = cursor.getLong(0);
             cursor.close();
             return wordId;
-        } else {
+        } else
+        {
             cursor.close();
             return 0;
         }
     }
 
-    private long addWord(String word, boolean isRegex, String comment) {
+    private long addWord(String word, boolean isRegex, String comment)
+    {
         ContentValues values = new ContentValues();
         values.put("word", word);
         values.put("is_regex", isRegex ? 1 : 0);
@@ -350,35 +392,46 @@ public class DatabaseManager
         return db.insert("word_lists", null, values);
     }*/
 
-    public void defineAsSublist(long parentListId, long childListId) {
-        if (parentListId <= 0 || childListId <= 0) {
+    public void defineAsSublist(long parentListId, long childListId)
+    {
+        if (parentListId <= 0 || childListId <= 0)
+        {
             throw new IllegalArgumentException("Parent list ID and child list ID must be greater than 0");
         }
         db.execSQL("INSERT INTO word_list_sublists (parent_list_id, child_list_id) VALUES (" + parentListId + ", " + childListId + ")");
     }
 
-    public void removeWordFromList(long wordListId, long wordId) {
-        if (wordListId <= 0 || wordId <= 0) {
+    public void removeWordFromList(long wordListId, long wordId)
+    {
+        if (wordListId <= 0 || wordId <= 0)
+        {
             throw new IllegalArgumentException("Word list ID and word ID must be greater than 0");
         }
         db.execSQL("DELETE FROM word_list_words WHERE word_list_id = " + wordListId + " AND word_id = " + wordId);
     }
 
-    public void removeWordList(long wordListId) {
-        if (wordListId <= 0) {
+    public void removeWordList(long wordListId)
+    {
+        if (wordListId <= 0)
+        {
             throw new IllegalArgumentException("Word list ID must be greater than 0");
         }
         db.execSQL("DELETE FROM word_lists WHERE id = " + wordListId);
     }
 
-    public void removeSublist(long parentListId, long childListId) {
-        if (parentListId <= 0 || childListId <= 0) {
+    public void removeSublist(long parentListId, long childListId)
+    {
+        if (parentListId <= 0 || childListId <= 0)
+        {
             throw new IllegalArgumentException("Parent list ID and child list ID must be greater than 0");
         }
         db.execSQL("DELETE FROM word_list_sublists WHERE parent_list_id = " + parentListId + " AND child_list_id = " + childListId);
     }
-    public long addLanguage(Language language) {
-        if (language == null) {
+
+    public long addLanguage(Language language)
+    {
+        if (language == null)
+        {
             throw new IllegalArgumentException("Language must not be null");
         }
         ContentValues values = new ContentValues();
@@ -387,14 +440,18 @@ public class DatabaseManager
         return db.insert("languages", null, values);
     }
 
-    public long addOrUpdateWordList(WordList wordList) {
-        if (wordList == null) {
+    public long addOrUpdateWordList(WordList wordList)
+    {
+        if (wordList == null)
+        {
             throw new IllegalArgumentException("Word list must not be null");
         }
-        if (wordList.name == null || wordList.name.isEmpty()) {
+        if (wordList.name == null || wordList.name.isEmpty())
+        {
             throw new IllegalArgumentException("Word list name must not be null or empty");
         }
-        if (wordList.languageId <= 0) {
+        if (wordList.languageId <= 0)
+        {
             throw new IllegalArgumentException("Language ID must be greater than 0");
         }
         ContentValues values = new ContentValues();
@@ -403,10 +460,12 @@ public class DatabaseManager
         values.put("readable", wordList.readable ? 1 : 0);
         values.put("writable", wordList.writable ? 1 : 0);
         values.put("description", wordList.description != null ? wordList.description : "");
-        if (wordList.id > 0) {
-            db.update("word_lists", values, "id = ?", new String[] {String.valueOf(wordList.id)});
+        if (wordList.id > 0)
+        {
+            db.update("word_lists", values, "id = ?", new String[]{String.valueOf(wordList.id)});
             return wordList.id;
-        } else {
+        } else
+        {
             return db.insert("word_lists", null, values);
         }
     }

@@ -45,6 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 "comment TEXT, " +
                 "enabled INTEGER,"+
                 "usage_filter_id INTEGER NOT NULL, " + // Foreign key column
+                "check_all_events INTEGER,"+
                 "FOREIGN KEY (usage_filter_id) REFERENCES usage_filters(id) ON DELETE CASCADE" // Foreign key constraint
                 +")");
 
@@ -99,7 +100,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 "writable INTEGER, " + //maybe relevant. Like Write protection
                 "name TEXT, "+
                 "short_description TEXT,"+
-                "max_starts INTEGER"+
+                "checks_only_visible INTEGER," + // boolean
+                "what_to_check INTEGER," + // Only Editable, Only none editable, both, TODO
+                "ignore_case INTEGER"+ //TODO
                 // TODO: Link to a scoring table/world list, no parent relation
                 ")");
         // A app can have n content filters and they can be shared among k apps (if shared attribute is on)

@@ -2,7 +2,7 @@ package com.example.ourpact3.service;
 
 import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.WordListFilterScored;
-import com.example.ourpact3.smart_filter.WordProcessorSmartFilterBase;
+import com.example.ourpact3.smart_filter.ContentSmartFilterBase;
 import com.example.ourpact3.util.SubstringFinder;
 
 import java.util.NoSuchElementException;
@@ -25,7 +25,7 @@ public class KeywordScoreWindowCalculator
         // collect all words
         StringBuilder combinedDebugState = new StringBuilder("Found in Screen\n");
         int sumScore = 0;
-        for (WordProcessorSmartFilterBase filter : appRule.getAllFilters())
+        for (ContentSmartFilterBase filter : appRule.getAllFilters())
         {
             if (filter instanceof WordListFilterScored)
             {

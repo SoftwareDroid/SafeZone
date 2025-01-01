@@ -22,7 +22,7 @@ import com.example.ourpact3.topics.TopicMissingException;
 import com.example.ourpact3.smart_filter.WordListFilterScored.TopicScoring;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.smart_filter.WordListFilterExact;
-import com.example.ourpact3.smart_filter.WordProcessorSmartFilterBase;
+import com.example.ourpact3.smart_filter.ContentSmartFilterBase;
 import com.example.ourpact3.smart_filter.WordListFilterScored;
 
 import java.time.DayOfWeek;
@@ -75,9 +75,9 @@ public class ExampleAppKeywordFilters
     public void setInitialAppRules(DatabaseManager dbManager)
     {
         List<DatabaseManager.AppRuleTuple> initialRules = new ArrayList<>();
-        initialRules.add(new DatabaseManager.AppRuleTuple("com.android.settings", "Android System Settings", true,false,true));
-        initialRules.add(new DatabaseManager.AppRuleTuple("org.telegram.messenger", "", true,true,true));
-        initialRules.add(new DatabaseManager.AppRuleTuple("org.schabi.newpipe", "", true,true,true));
+        initialRules.add(new DatabaseManager.AppRuleTuple("com.android.settings", "Android System Settings", true,false,true,true));
+        initialRules.add(new DatabaseManager.AppRuleTuple("org.telegram.messenger", "", true,true,true,true));
+        initialRules.add(new DatabaseManager.AppRuleTuple("org.schabi.newpipe", "", true,true,true,true));
         // fill db
         dbManager.insertBatchAppRules(initialRules);
     }
@@ -166,7 +166,7 @@ public class ExampleAppKeywordFilters
     {
         String myAppName = "SafeZone";
         String appName = "com.android.settings";
-        ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
+        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
         // prevent user for disabling the accessabilty service (only works in english)
         {
             PipelineResultKeywordFilter preventDisabelingAccessabilty = new PipelineResultKeywordFilter("");
@@ -178,7 +178,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             preventDisabelingAccessabilty.setCounterAction(a);
 
-            WordProcessorSmartFilterBase accessibilityOverview = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
+            ContentSmartFilterBase accessibilityOverview = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Use " + myAppName)),
                     new ArrayList<>(List.of("Stop " + myAppName + "?")),
                     new ArrayList<>(List.of("Downloaded apps")) //accessabilty site block
@@ -199,7 +199,7 @@ public class ExampleAppKeywordFilters
             a.setKillState(CounterAction.KillState.DO_NOT_KILL);
             a.setHasExplainableButton(true);
             preventTurnOfDeviceAdmin.setCounterAction(a);
-            WordProcessorSmartFilterBase searchForDeviceAdmin = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(
+            ContentSmartFilterBase searchForDeviceAdmin = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Device admin apps")),
                     new ArrayList<>(List.of("Add a language")), // prevent switching language
                     new ArrayList<>(List.of("Debugging")), // prevent switching language
@@ -219,7 +219,7 @@ public class ExampleAppKeywordFilters
     {
         String myAppName = "SafeZone";
         String appName = "com.google.android.packageinstaller";
-        ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
+        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
         /**
          * This code is only probaly needed in the debug version To prevent disabling via reinstalling
          * When you install an app on an Android device, especially in a development environment using Android Studio,
@@ -238,7 +238,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(false);
             preventReinstallingAndLosePermissons.setCounterAction(a);
 
-            WordProcessorSmartFilterBase reinstallAppPopup = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
+            ContentSmartFilterBase reinstallAppPopup = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
                     new ArrayList<>(List.of(myAppName, "Do you want to install this app?")),
                     new ArrayList<>(List.of(myAppName, "Do you want to update this app?"))
             )), false, preventReinstallingAndLosePermissons, false);
@@ -253,7 +253,7 @@ public class ExampleAppKeywordFilters
     {
 
         String appName = "au.com.shiftyjelly.pocketcasts";
-        ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
+        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
         {
             PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
@@ -267,7 +267,7 @@ public class ExampleAppKeywordFilters
 // Create the outer ArrayList and add the inner list to it
             ArrayList<ArrayList<String>> outerList = new ArrayList<>();
             outerList.add(innerList);
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_4, outerList, false, resultIgnoreSearch, false);
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_4, outerList, false, resultIgnoreSearch, false);
             filters.add(ignoreSearch);
         }
         {
@@ -300,7 +300,7 @@ public class ExampleAppKeywordFilters
     private AppFilter getFirefoxFilter() throws TopicMissingException, CloneNotSupportedException
     {
         String appName = "org.mozilla.firefox";
-        ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
+        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
         {
             // ignore start page
             PipelineResultKeywordFilter ignoreHistoryPage = new PipelineResultKeywordFilter("");
@@ -309,7 +309,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             ignoreHistoryPage.setCounterAction(a);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(new ArrayList<>(List.of("History", "Recently closed tabs")))), false, ignoreHistoryPage, false);
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(new ArrayList<>(List.of("History", "Recently closed tabs")))), false, ignoreHistoryPage, false);
             filters.add(ignoreSearch);
         }
 
@@ -322,7 +322,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             resultIgnoreSearch.setCounterAction(a);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox Suggest")))), false, resultIgnoreSearch, false);
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox Suggest")))), false, resultIgnoreSearch, false);
             filters.add(ignoreSearch);
         }
         {
@@ -333,7 +333,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             ignoreStartpage.setCounterAction(a);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_3, new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox", "Jump back in")))), false, ignoreStartpage, false);
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_3, new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox", "Jump back in")))), false, ignoreStartpage, false);
             ignoreSearch.setCheckOnlyVisibleNodes(false);
             filters.add(ignoreSearch);
         }
@@ -390,7 +390,7 @@ public class ExampleAppKeywordFilters
     private AppFilter getDefaultFilter() throws TopicMissingException, CloneNotSupportedException
     {
         String appName = "";
-        ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
+        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
 
 
         // Block stuff
@@ -442,7 +442,7 @@ public class ExampleAppKeywordFilters
     private AppFilter getAppolo() throws CloneNotSupportedException
     {
         String appName = "org.nuclearfog.apollo";
-        ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
+        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
 
         AppFilter filter = new AppFilter(service, topicManager, filters, appName, false);
 
@@ -455,7 +455,7 @@ public class ExampleAppKeywordFilters
     private AppFilter getTelegramFilter2() throws CloneNotSupportedException
     {
         String appName = "org.telegram.messenger";
-        ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
+        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
         {
             PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
@@ -465,7 +465,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             resultIgnoreSearch.setCounterAction(a);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
                     new ArrayList<>(List.of(
                             new ArrayList<>(List.of("People Nearby", "Make Myself Visible")))), false, resultIgnoreSearch, false);
             filters.add(ignoreSearch);
@@ -476,7 +476,7 @@ public class ExampleAppKeywordFilters
     private AppFilter getYoutubeFilter() throws TopicMissingException, CloneNotSupportedException
     {
         String appName = "org.schabi.newpipe";
-        ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
+        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
 
 
         {
@@ -487,7 +487,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             ignoreSettings.setCounterAction(a);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
                     new ArrayList<>(List.of(new ArrayList<>(List.of("Settings", "Content")))), false, ignoreSettings, false);
             filters.add(ignoreSearch);
         }
@@ -499,7 +499,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             ignoreSettings.setCounterAction(a);
             // Add test Filter
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(new ArrayList<>(List.of("Search")))), false, ignoreSettings, true);
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(new ArrayList<>(List.of("Search")))), false, ignoreSettings, true);
             filters.add(ignoreSearch);
         }
 
@@ -539,7 +539,7 @@ public class ExampleAppKeywordFilters
     private AppFilter getArdMediathekFilter() throws TopicMissingException, CloneNotSupportedException
     {
         String appName = "de.ard.audiothek";
-        ArrayList<WordProcessorSmartFilterBase> filters = new ArrayList<WordProcessorSmartFilterBase>();
+        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
         {
             // ignore search suggestions
             PipelineResultKeywordFilter ignoreSearchSuggestions = new PipelineResultKeywordFilter("");
@@ -547,7 +547,7 @@ public class ExampleAppKeywordFilters
             a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setHasExplainableButton(true);
             ignoreSearchSuggestions.setCounterAction(a);
-            WordProcessorSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
                     new ArrayList<>(List.of(new ArrayList<>(List.of("Suche nach Episoden und Podcasts")))), false, ignoreSearchSuggestions, true);
             filters.add(ignoreSearch);
         }

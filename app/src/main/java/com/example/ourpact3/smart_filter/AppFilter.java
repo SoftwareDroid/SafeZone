@@ -19,14 +19,13 @@ import com.example.ourpact3.topics.TopicManager;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
 
 public class AppFilter
 {
     private ArrayList<AccessibilityEvent> cachedEvents = new ArrayList<>();
     private boolean checkAllEvents;
-    public AppFilter(ContentFilterService service, TopicManager topicManager, ArrayList<WordProcessorSmartFilterBase> filters, String packageName, boolean checkAllEvents)
+    public AppFilter(ContentFilterService service, TopicManager topicManager, ArrayList<ContentSmartFilterBase> filters, String packageName, boolean checkAllEvents)
 
     {
         this.service = service;
@@ -45,7 +44,7 @@ public class AppFilter
     private boolean pipelineRunning = false;
     private TopicManager topicManager;
     private int delayCount = 0;
-    private final ArrayList<WordProcessorSmartFilterBase> keywordFilters; //TODO: create and sort
+    private final ArrayList<ContentSmartFilterBase> keywordFilters; //TODO: create and sort
     private final TreeMap<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> specialSmartFilters;
     private IFilterResultCallback callback;
     public void onScreenStateChanged(boolean isScreenOn)
@@ -74,7 +73,7 @@ public class AppFilter
         }
     }
 
-    public ArrayList<WordProcessorSmartFilterBase> getAllFilters()
+    public ArrayList<ContentSmartFilterBase> getAllFilters()
     {
         return keywordFilters;
     }
@@ -113,7 +112,7 @@ public class AppFilter
             ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(rootNode, isMagnificationEnabled);
             // First Check generic filters
 
-            for (WordProcessorSmartFilterBase processor : keywordFilters)
+            for (ContentSmartFilterBase processor : keywordFilters)
             {
                 processor.reset();
                 processScreen(screen, processor);
@@ -239,7 +238,7 @@ public class AppFilter
         this.callback.onPipelineResultBackground(endToken);
     }
 
-    private void processScreen(ScreenInfoExtractor.Screen screen, WordProcessorSmartFilterBase currentFilter)
+    private void processScreen(ScreenInfoExtractor.Screen screen, ContentSmartFilterBase currentFilter)
     {
         for (ScreenInfoExtractor.Screen.TextNode textNode : screen.getTextNodes())
         {

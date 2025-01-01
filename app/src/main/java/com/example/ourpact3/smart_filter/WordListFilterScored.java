@@ -9,7 +9,7 @@ import com.example.ourpact3.topics.TopicMissingException;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
-public class WordListFilterScored extends WordProcessorSmartFilterBase
+public class WordListFilterScored extends ContentSmartFilterBase
 {
     public static class TopicScoring
     {
