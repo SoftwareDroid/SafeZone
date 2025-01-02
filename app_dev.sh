@@ -9,6 +9,7 @@ adb shell pm grant com.example.ourpact3 android.permission.SYSTEM_ALERT_WINDOW
 adb shell settings put secure android_permission_system_alert_window 1
 adb shell settings put secure enabled_accessibility_services com.example.ourpact3/com.example.ourpact3.ContentFilterService
 sleep 1
+adb shell settings put secure enabled_accessibility_services com.softwaredroid.dictationmaster/com.softwaredroid.dictationmaster.DictationService
 # Start other app for testing
 #adb shell am start -n au.com.shiftyjelly.pocketcasts/.ui.MainActivity
 

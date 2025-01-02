@@ -9,10 +9,10 @@ import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
+import com.example.ourpact3.smart_filter.NodeCheckStrategyType;
 import com.example.ourpact3.smart_filter.ProductivityTimeRule;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
-import com.example.ourpact3.smart_filter.WordSmartFilterIdentifier;
 import com.example.ourpact3.topics.InvalidTopicIDException;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.topics.TopicAlreadyExistsException;
@@ -178,13 +178,13 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             preventDisabelingAccessabilty.setCounterAction(a);
 
-            ContentSmartFilterBase accessibilityOverview = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
+            ContentSmartFilterBase accessibilityOverview = new WordListFilterExact( new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Use " + myAppName)),
                     new ArrayList<>(List.of("Stop " + myAppName + "?")),
                     new ArrayList<>(List.of("Downloaded apps")) //accessabilty site block
 
 //                    ,new ArrayList<>(List.of(new String[]{"Accessibility"}))
-            )), false, preventDisabelingAccessabilty, false);
+            )),  preventDisabelingAccessabilty);
 
 
             filters.add(accessibilityOverview);
@@ -199,14 +199,14 @@ public class ExampleAppKeywordFilters
             a.setKillState(CounterAction.KillState.DO_NOT_KILL);
             a.setHasExplainableButton(true);
             preventTurnOfDeviceAdmin.setCounterAction(a);
-            ContentSmartFilterBase searchForDeviceAdmin = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(
+            ContentSmartFilterBase searchForDeviceAdmin = new WordListFilterExact( new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Device admin apps")),
                     new ArrayList<>(List.of("Add a language")), // prevent switching language
                     new ArrayList<>(List.of("Debugging")), // prevent switching language
                     new ArrayList<>(List.of("Package installer")), // prevent turn on package installer notifcations again
                     new ArrayList<>(List.of("Device admin settings")),  // this is a invisible text
                     new ArrayList<>(List.of(new String[]{"OPEN", myAppName}))
-            )), false, preventTurnOfDeviceAdmin, false);
+            )), preventTurnOfDeviceAdmin);
             searchForDeviceAdmin.setCheckOnlyVisibleNodes(false);
             filters.add(searchForDeviceAdmin);
 
@@ -238,10 +238,10 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(false);
             preventReinstallingAndLosePermissons.setCounterAction(a);
 
-            ContentSmartFilterBase reinstallAppPopup = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
+            ContentSmartFilterBase reinstallAppPopup = new WordListFilterExact( new ArrayList<>(List.of(
                     new ArrayList<>(List.of(myAppName, "Do you want to install this app?")),
                     new ArrayList<>(List.of(myAppName, "Do you want to update this app?"))
-            )), false, preventReinstallingAndLosePermissons, false);
+            )),  preventReinstallingAndLosePermissons);
 
             filters.add(reinstallAppPopup);
         }
@@ -267,7 +267,7 @@ public class ExampleAppKeywordFilters
 // Create the outer ArrayList and add the inner list to it
             ArrayList<ArrayList<String>> outerList = new ArrayList<>();
             outerList.add(innerList);
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_4, outerList, false, resultIgnoreSearch, false);
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact( outerList,  resultIgnoreSearch);
             filters.add(ignoreSearch);
         }
         {
@@ -289,7 +289,7 @@ public class ExampleAppKeywordFilters
             boolean ignoreCase = true;  // important for porn filter
 
 //            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
-            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.PORN, allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
         return new AppFilter(service, topicManager, filters, appName, false);
@@ -309,7 +309,8 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             ignoreHistoryPage.setCounterAction(a);
             // Add test Filter
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(new ArrayList<>(List.of("History", "Recently closed tabs")))), false, ignoreHistoryPage, false);
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("History", "Recently closed tabs")))),  ignoreHistoryPage);
+            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.NONE_EDITABLE_ONLY);
             filters.add(ignoreSearch);
         }
 
@@ -322,7 +323,8 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             resultIgnoreSearch.setCounterAction(a);
             // Add test Filter
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox Suggest")))), false, resultIgnoreSearch, false);
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox Suggest")))),  resultIgnoreSearch);
+            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.NONE_EDITABLE_ONLY);
             filters.add(ignoreSearch);
         }
         {
@@ -333,7 +335,8 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             ignoreStartpage.setCounterAction(a);
             // Add test Filter
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_3, new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox", "Jump back in")))), false, ignoreStartpage, false);
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox", "Jump back in")))),  ignoreStartpage);
+            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.NONE_EDITABLE_ONLY);
             ignoreSearch.setCheckOnlyVisibleNodes(false);
             filters.add(ignoreSearch);
         }
@@ -350,7 +353,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("enforce_safe_search", 100, 0));
             boolean ignoreCase = false;  // important for porn filter
 
-            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.ENFORCE_SAFE_SEARCH, allScorings, ignoreCase, topicManager, blockUnsafesearch);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, blockUnsafesearch);
             filters.add(blockAdultStuff);
         }
 
@@ -374,7 +377,7 @@ public class ExampleAppKeywordFilters
             boolean ignoreCase = true;  // important for porn filter
 
 //            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
-            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_1, allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, pornResult);
             blockAdultStuff.setName("Block NSFW");
             filters.add(blockAdultStuff);
         }
@@ -406,7 +409,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("enforce_safe_search", 100, 100));
             boolean ignoreCase = false;  // important for porn filter
 
-            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.ENFORCE_SAFE_SEARCH, allScorings, ignoreCase, topicManager, blockUnsafesearch);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, blockUnsafesearch);
             filters.add(blockAdultStuff);
         }
 
@@ -430,7 +433,7 @@ public class ExampleAppKeywordFilters
             boolean ignoreCase = true;  // important for porn filter
 
 //            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
-            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_4, allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, pornResult);
             blockAdultStuff.setName("Block NSFW");
             filters.add(blockAdultStuff);
         }
@@ -465,9 +468,9 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             resultIgnoreSearch.setCounterAction(a);
             // Add test Filter
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(
                     new ArrayList<>(List.of(
-                            new ArrayList<>(List.of("People Nearby", "Make Myself Visible")))), false, resultIgnoreSearch, false);
+                            new ArrayList<>(List.of("People Nearby", "Make Myself Visible")))),  resultIgnoreSearch);
             filters.add(ignoreSearch);
         }
         return new AppFilter(service, topicManager, filters, appName, false);
@@ -487,8 +490,9 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             ignoreSettings.setCounterAction(a);
             // Add test Filter
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
-                    new ArrayList<>(List.of(new ArrayList<>(List.of("Settings", "Content")))), false, ignoreSettings, false);
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(
+                    new ArrayList<>(List.of(new ArrayList<>(List.of("Settings", "Content")))),  ignoreSettings);
+            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.NONE_EDITABLE_ONLY);
             filters.add(ignoreSearch);
         }
         {
@@ -499,7 +503,8 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             ignoreSettings.setCounterAction(a);
             // Add test Filter
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_2, new ArrayList<>(List.of(new ArrayList<>(List.of("Search")))), false, ignoreSettings, true);
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("Search")))), ignoreSettings);
+            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.NONE_EDITABLE_ONLY);
             filters.add(ignoreSearch);
         }
 
@@ -522,7 +527,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("patrick_all_merged", 49, 0));
             boolean ignoreCase = true;  // important for porn filter
 
-            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_3, allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
         //Productive Filter
@@ -547,8 +552,8 @@ public class ExampleAppKeywordFilters
             a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setHasExplainableButton(true);
             ignoreSearchSuggestions.setCounterAction(a);
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(WordSmartFilterIdentifier.USER_1,
-                    new ArrayList<>(List.of(new ArrayList<>(List.of("Suche nach Episoden und Podcasts")))), false, ignoreSearchSuggestions, true);
+            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(
+                    new ArrayList<>(List.of(new ArrayList<>(List.of("Suche nach Episoden und Podcasts")))),  ignoreSearchSuggestions);
             filters.add(ignoreSearch);
         }
 
@@ -569,7 +574,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("patrick_all_merged", 49, 0));
             boolean ignoreCase = true;  // important for porn filter
 
-            WordListFilterScored blockAdultStuff = new WordListFilterScored(WordSmartFilterIdentifier.USER_3, allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
         return new AppFilter(service, topicManager, filters, appName, false);

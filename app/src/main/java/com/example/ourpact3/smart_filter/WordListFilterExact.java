@@ -15,9 +15,9 @@ public class WordListFilterExact extends ContentSmartFilterBase
     /*
     listofWords (w and w2) | (w and w2) | (w and w2 and w3 )
      */
-    public WordListFilterExact(WordSmartFilterIdentifier identifier, ArrayList<ArrayList<String>> listOfWords, PipelineResultKeywordFilter result) throws CloneNotSupportedException
+    public WordListFilterExact(ArrayList<ArrayList<String>> listOfWords, PipelineResultKeywordFilter result) throws CloneNotSupportedException
     {
-        super(result, identifier);
+        super(result);
 //    this.editable = searchForEditable;
         for (ArrayList<String> wordGroup : listOfWords)
         {

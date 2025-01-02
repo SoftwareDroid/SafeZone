@@ -2,7 +2,7 @@ package com.example.ourpact3.smart_filter;
 
 /**
  * Just a unique name but no priority, Still changeble by user
- */
+
 public enum WordSmartFilterIdentifier
 {
     PORN,
@@ -12,4 +12,4 @@ public enum WordSmartFilterIdentifier
     USER_2,
     USER_3,
     USER_4,
-}
+}*/

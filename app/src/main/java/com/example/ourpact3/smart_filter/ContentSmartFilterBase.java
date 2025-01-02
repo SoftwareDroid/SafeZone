@@ -12,6 +12,7 @@ import com.example.ourpact3.service.ScreenInfoExtractor;
  */
 public abstract class ContentSmartFilterBase implements Cloneable
 {
+    public Long database_id;
     protected NodeCheckStrategyType nodeCheckStrategyType;
     protected boolean ignoreCase;
     private boolean readable;
@@ -21,18 +22,17 @@ public abstract class ContentSmartFilterBase implements Cloneable
     private String shortDescription;
     private boolean enabled;
     private PipelineResultKeywordFilter constResult; // Made private
-    private boolean checkOnlyVisibleNodes = true; // Made private
-    public final WordSmartFilterIdentifier identifier;
+    private boolean checkOnlyVisibleNodes; // Made private
 
-    ContentSmartFilterBase(PipelineResultKeywordFilter constResult, WordSmartFilterIdentifier identifier) throws CloneNotSupportedException
+    ContentSmartFilterBase(PipelineResultKeywordFilter constResult) throws CloneNotSupportedException
     {
         this.constResult = (PipelineResultKeywordFilter) constResult.clone();
-        this.identifier = identifier;
         this.enabled = true;
         this.shortDescription = "";
         this.readable = true;
         this.writable = true;
         this.nodeCheckStrategyType = NodeCheckStrategyType.BOTH;    //Default check everything
+        this.checkOnlyVisibleNodes = true;
     }
 
     public NodeCheckStrategyType getNodeCheckStrategyType()
@@ -47,7 +47,7 @@ public abstract class ContentSmartFilterBase implements Cloneable
 
     public boolean isIgnoringCase()
     {
-        return constResult.ign
+        return ignoreCase;
     }
 
     public boolean isSharedBetweenApps()

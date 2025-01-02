@@ -222,7 +222,7 @@ public class DatabaseManager
         db.beginTransaction();
         try
         {
-            SQLiteStatement statement = db.compileStatement("INSERT INTO apps (package_name, writable, readable, comment, enabled,check_all_events,usage_filter_id) VALUES (?, ?, ?, ?, ?,?)");
+            SQLiteStatement statement = db.compileStatement("INSERT INTO apps (package_name, writable, readable, comment, enabled,check_all_events,usage_filter_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
             for (AppRuleTuple appRule : appRules)
             {
                 statement.bindString(1, appRule.packageID);
@@ -232,8 +232,8 @@ public class DatabaseManager
                 statement.bindLong(5, appRule.enabled ? 1 : 0);
                 CounterAction defaultCounterAction = new CounterAction(PipelineWindowAction.WARNING, PipelineButtonAction.BACK_BUTTON, true);
                 long usageFilterId = UsageSmartFilterManager.addOrUpdateUsageFilter(new UsageRestrictionsFilter(defaultCounterAction, "Usage Restriction", 60 * 60, 5 * 60, 10, new ArrayList<>()));
-                statement.bindLong(5, appRule.checkAllEvents ? 1 : 0);
-                statement.bindLong(6, usageFilterId);  // no default use restriction exists
+                statement.bindLong(6, appRule.checkAllEvents ? 1 : 0);
+                statement.bindLong(7, usageFilterId);
 
                 statement.executeInsert();
                 statement.clearBindings();

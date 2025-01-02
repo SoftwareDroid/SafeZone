@@ -17,7 +17,6 @@ import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.smart_filter.WordListFilterExact;
 import com.example.ourpact3.smart_filter.ContentSmartFilterBase;
-import com.example.ourpact3.smart_filter.WordSmartFilterIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,10 +67,10 @@ public class AppContentRestrictionSettingsActivity extends AppCompatActivity
         a.setHasExplainableButton(false);
         preventReinstallingAndLosePermissons.setCounterAction(a);
 
-        ContentSmartFilterBase reinstallAppPopup = new WordListFilterExact(WordSmartFilterIdentifier.USER_1, new ArrayList<>(List.of(
+        ContentSmartFilterBase reinstallAppPopup = new WordListFilterExact( new ArrayList<>(List.of(
                 new ArrayList<>(List.of(appName, "Do you want to install this app?")),
                 new ArrayList<>(List.of(appName, "Do you want to update this app?"))
-        )), false, preventReinstallingAndLosePermissons, false);
+        )),  preventReinstallingAndLosePermissons);
         reinstallAppPopup.setName("Block Something");
         reinstallAppPopup.setFilterShortDescription("This is a short text");
         adapterContentFilters.addEntry(reinstallAppPopup);

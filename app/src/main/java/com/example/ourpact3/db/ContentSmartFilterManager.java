@@ -69,6 +69,7 @@ public class ContentSmartFilterManager
     public static ArrayList<ContentSmartFilterBase> getAllContentFiltersForApp(String package_name)
     {
         //TODO:
+        return null;
     }
 
     /**
@@ -211,7 +212,7 @@ public class ContentSmartFilterManager
                 filterId = DatabaseManager.db.insert("usage_filters", null, values);
             }
             //update time rules
-            setAllTimeRestrictionRules(filterId,contentFilter.getAllTimeRules());
+//            setAllTimeRestrictionRules(filterId,contentFilter.getAllTimeRules());
 
             // Mark the transaction as successful
             DatabaseManager.db.setTransactionSuccessful();
