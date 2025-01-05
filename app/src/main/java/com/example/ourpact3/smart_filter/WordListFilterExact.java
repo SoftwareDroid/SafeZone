@@ -18,6 +18,8 @@ public class WordListFilterExact extends ContentSmartFilterBase
     public WordListFilterExact(ArrayList<ArrayList<String>> listOfWords, PipelineResultKeywordFilter result) throws CloneNotSupportedException
     {
         super(result);
+        this.nodeCheckStrategyType = NodeCheckStrategyType.BOTH; // check both by default
+
 //    this.editable = searchForEditable;
         for (ArrayList<String> wordGroup : listOfWords)
         {

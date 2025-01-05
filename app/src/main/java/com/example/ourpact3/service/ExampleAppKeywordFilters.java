@@ -534,7 +534,7 @@ public class ExampleAppKeywordFilters
         AppFilter filter = new AppFilter(service, topicManager, filters, appName, false);
         {
             // No Timerules
-            filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, new UsageRestrictionsFilter(new CounterAction(PipelineWindowAction.WARNING,PipelineButtonAction.BACK_BUTTON,true), "Time limit", 1, 200, 3,new ArrayList<>()));
+//            filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, new UsageRestrictionsFilter(new CounterAction(PipelineWindowAction.WARNING,PipelineButtonAction.BACK_BUTTON,true), "Time limit", 1, 200, 3,new ArrayList<>()));
         }
         return filter;
 
@@ -554,6 +554,7 @@ public class ExampleAppKeywordFilters
             ignoreSearchSuggestions.setCounterAction(a);
             ContentSmartFilterBase ignoreSearch = new WordListFilterExact(
                     new ArrayList<>(List.of(new ArrayList<>(List.of("Suche nach Episoden und Podcasts")))),  ignoreSearchSuggestions);
+            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.NONE_EDITABLE_ONLY);
             filters.add(ignoreSearch);
         }
 
@@ -587,13 +588,13 @@ public class ExampleAppKeywordFilters
         ArrayList<AppFilter> list = new ArrayList<>();
         list.add(getArdMediathekFilter());
         list.add(getFirefoxFilter());
-        list.add(getPocketCastsFilter());
-        list.add(getTelegramFilter2());
-        list.add(getYoutubeFilter());
-        list.add(getPackageInstallerFilter());
-        list.add(getAndroidSettings());
-        list.add(getAppolo());
-        list.add(getDefaultFilter());
+//        list.add(getPocketCastsFilter());
+//        list.add(getTelegramFilter2());
+//        list.add(getYoutubeFilter());
+//        list.add(getPackageInstallerFilter());
+//        list.add(getAndroidSettings());
+//        list.add(getAppolo());
+//        list.add(getDefaultFilter());
 
         return list;
     }

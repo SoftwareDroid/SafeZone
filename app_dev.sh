@@ -5,6 +5,7 @@ echo "hallo welt"
 adb shell appops get com.example.ourpact3
 adb shell appops set com.example.ourpact3 SYSTEM_ALERT_WINDOW allow
 adb shell pm grant com.example.ourpact3 android.permission.SYSTEM_ALERT_WINDOW
+adb shell pm grant com.softwaredroid.dictationmaster android.permission.SYSTEM_ALERT_WINDOW
 #adb shell dumpsys com.example.ourpact3
 adb shell settings put secure android_permission_system_alert_window 1
 adb shell settings put secure enabled_accessibility_services com.example.ourpact3/com.example.ourpact3.ContentFilterService
