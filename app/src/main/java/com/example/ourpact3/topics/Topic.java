@@ -19,7 +19,7 @@ public class Topic
     }
 
 
-    private String name;
+    private final String name;
     private String description;
     private Map<ScoredWordEntry, Pattern> compiledPatterns = new HashMap<>();
     private ArrayList<ScoredWordEntry> scoredWords;

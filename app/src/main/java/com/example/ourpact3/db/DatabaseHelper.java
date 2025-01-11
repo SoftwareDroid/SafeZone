@@ -108,8 +108,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         // scored topics
         db.execSQL("CREATE TABLE topic_scored (" +
                 "id INTEGER PRIMARY KEY, " +
-                "lower_case_topic INTEGER, " +
-                "name TEXT)");
+                "name TEXT," +
+                "lower_case_topic INTEGER) ");
         // exact list topics
         db.execSQL("CREATE TABLE topic_exact (" +
                 "id INTEGER PRIMARY KEY, " +

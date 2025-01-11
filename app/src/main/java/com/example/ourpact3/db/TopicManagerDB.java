@@ -79,20 +79,20 @@ public class TopicManagerDB
     {
         return getAllTopics(TOPIC_TYPE_SCORED);
     }
-
+    @SuppressLint("Range")
     private static ArrayList<Topic> getAllTopics(int topicType) {
         ArrayList<Topic> topics = new ArrayList<>();
-        String tableName = topicType == TOPIC_TYPE_SCORED ? topicTabcleScored : topicTableExact;
+        String tableName = topicType == TOPIC_TYPE_SCORED ? topicTableScored : topicTableExact;
         String query = "SELECT * FROM " + tableName;
         Cursor cursor = DatabaseManager.db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
             do {
-                long id = cursor.getInt(0);
-                String name = cursor.getString(1);
+                long id = cursor.getInt(cursor.getColumnIndex("id"));
+                String name = cursor.getString(cursor.getColumnIndex("name"));
                 Topic topic = new Topic(name);
                 topic.database_id = id;
                 if (topicType == TOPIC_TYPE_SCORED) {
-                    topic.setLowerCaseTopic(cursor.getInt(2) == 1);
+                    topic.setLowerCaseTopic(cursor.getInt(cursor.getColumnIndex("lower_case_topic")) == 1);
                 }
                 // Get words for this topic
                 ArrayList<Topic.ScoredWordEntry> words = getWordsForTopic(topic.getDatabase_id(), topicType);

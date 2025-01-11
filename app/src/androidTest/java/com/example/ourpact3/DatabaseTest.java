@@ -73,8 +73,8 @@ public class DatabaseTest
         TopicManagerDB.setScoredTopics(manyTopics);
         ArrayList<Topic> topicsFromDB = TopicManagerDB.getAllScoredTopics();
         assertEquals(topicsFromDB.size(),2);
-        Topic nsfwTopic = topicsFromDB.get(0);
-        assertEquals(nsfwTopic.getTopicName(),"NSFW");
+        Topic nsfwTopic = topicsFromDB.get(1);
+        assertEquals("NSFW",nsfwTopic.getTopicName());
 
         assertEquals(nsfwTopic.getScoredWords().size(),2);
         DatabaseManager.close();
