@@ -52,6 +52,7 @@ public class WordListFilterScored extends ContentSmartFilterBase
     public int getTopicId(){return topicId;}
     public PipelineResultBase feedWord(ScreenInfoExtractor.Screen.TextNode textNode)
     {
+        /*
         String text = ignoreCase ? textNode.textInLowerCase : textNode.text;
         TopicManager.SearchResult bestSearchResult = null;
         int scoringChange = 0;
@@ -86,7 +87,7 @@ public class WordListFilterScored extends ContentSmartFilterBase
                 PipelineResultBase copy = this.getConstResult();
                 return copy;
             }
-        }
+        }*/
 
         return null;
     }

@@ -75,9 +75,14 @@ public class TopicManagerDB
         }
     }
     //
-    public static ArrayList<Topic> getAllTopics(int topicType) {
+    public static ArrayList<Topic> getAllScoredTopics()
+    {
+        return getAllTopics(TOPIC_TYPE_SCORED);
+    }
+
+    private static ArrayList<Topic> getAllTopics(int topicType) {
         ArrayList<Topic> topics = new ArrayList<>();
-        String tableName = topicType == TOPIC_TYPE_SCORED ? topicTableScored : topicTableExact;
+        String tableName = topicType == TOPIC_TYPE_SCORED ? topicTabcleScored : topicTableExact;
         String query = "SELECT * FROM " + tableName;
         Cursor cursor = DatabaseManager.db.rawQuery(query, null);
         if (cursor.moveToFirst()) {

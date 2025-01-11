@@ -19,12 +19,10 @@ public class Topic
     }
 
 
-    private boolean ignoreLoading;
     private String name;
     private String description;
     private Map<ScoredWordEntry, Pattern> compiledPatterns = new HashMap<>();
     private ArrayList<ScoredWordEntry> scoredWords;
-//    private ArrayList<String> includedTopics;   //List of topics ids
     private boolean allWordsInLowerCase;
 
     public Map<ScoredWordEntry, Pattern> getCompiledPatterns()
@@ -51,14 +49,9 @@ public class Topic
 //        this.includedTopics = new ArrayList<>();
         this.compiledPatterns = new HashMap<>();
         this.description = "";
-        this.ignoreLoading = false;
         this.allWordsInLowerCase = false;
     }
 
-    public boolean isIgnoreLoading()
-    {
-        return this.ignoreLoading;
-    }
 
     // Public getters for id and lang
     public String getTopicName()
@@ -82,10 +75,6 @@ public class Topic
         return scoredWords;
     }
 
-//    public ArrayList<String> getIncludedTopics()
-//    {
-//        return includedTopics;
-//    }
 
     // Setter for words
     public void setScoredWords(ArrayList<ScoredWordEntry> words)

@@ -31,7 +31,6 @@ import com.example.ourpact3.service.AppKiller;
 import com.example.ourpact3.service.IContentFilterService;
 import com.example.ourpact3.service.NormalModeComponent;
 import com.example.ourpact3.topics.Topic;
-import com.example.ourpact3.topics.TopicLoader;
 import com.example.ourpact3.topics.TopicManager;
 import com.example.ourpact3.util.PreferencesKeys;
 
@@ -120,23 +119,12 @@ public class ContentFilterService extends AccessibilityService implements IConte
 
 // get WindowManager needed for creating overlay window
 // Load all system topics
-        TopicLoader topicLoader = new TopicLoader();
-        String[] usedLanguages = {"de", "en"};
-        ArrayList<TopicLoader.TopicDescriptor> allAvailableTopics = null;
+
         try
         {
-            allAvailableTopics = topicLoader.getAllLoadableTopics(getApplicationContext(), Set.of(usedLanguages));
-            // Check if all topics are not null
-            for (TopicLoader.TopicDescriptor descriptor : allAvailableTopics)
-            {
-                Topic topic = topicLoader.loadTopicFile(getApplicationContext(), descriptor);
-                if (topic != null)
-                {
-                    topicManager.addTopic(topic);
-                }
-            }
+            //TODO: load all topics
             // check all topics
-            topicManager.checkAllTopics();
+//            topicManager.checkAllTopics();
             // load all example filters
             ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager, this.getApplicationContext());
             this.usedAppPermissions = exampleFilters.getAppPermissionsFromDB(this.getApplicationContext());

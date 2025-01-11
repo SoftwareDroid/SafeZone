@@ -289,7 +289,7 @@ public class ExampleAppKeywordFilters
             boolean ignoreCase = true;  // important for porn filter
 
 //            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
-            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( 0, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
         return new AppFilter(service, topicManager, filters, appName, false);
@@ -353,7 +353,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("enforce_safe_search", 100, 0));
             boolean ignoreCase = false;  // important for porn filter
 
-            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, blockUnsafesearch);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( 0, ignoreCase, topicManager, blockUnsafesearch);
             filters.add(blockAdultStuff);
         }
 
@@ -377,7 +377,7 @@ public class ExampleAppKeywordFilters
             boolean ignoreCase = true;  // important for porn filter
 
 //            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
-            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( 0, ignoreCase, topicManager, pornResult);
             blockAdultStuff.setName("Block NSFW");
             filters.add(blockAdultStuff);
         }
@@ -409,7 +409,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("enforce_safe_search", 100, 100));
             boolean ignoreCase = false;  // important for porn filter
 
-            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, blockUnsafesearch);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( 0, ignoreCase, topicManager, blockUnsafesearch);
             filters.add(blockAdultStuff);
         }
 
@@ -433,7 +433,7 @@ public class ExampleAppKeywordFilters
             boolean ignoreCase = true;  // important for porn filter
 
 //            WordListFilterScored blockAdultStuff = new WordListFilterScored("Patricks block list", new ArrayList<>(List.of(myTerms,scoringFemaleClothing,scoringFemaleNames,scoringPorn,scoringFemaleBodyParts,scoringAdultNudity,scoringSexToys)), false, topicManager, pornResult);
-            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( 0, ignoreCase, topicManager, pornResult);
             blockAdultStuff.setName("Block NSFW");
             filters.add(blockAdultStuff);
         }
@@ -527,7 +527,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("patrick_all_merged", 49, 0));
             boolean ignoreCase = true;  // important for porn filter
 
-            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( 0, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
         //Productive Filter
@@ -575,7 +575,7 @@ public class ExampleAppKeywordFilters
             allScorings.add(new TopicScoring("patrick_all_merged", 49, 0));
             boolean ignoreCase = true;  // important for porn filter
 
-            WordListFilterScored blockAdultStuff = new WordListFilterScored( allScorings, ignoreCase, topicManager, pornResult);
+            WordListFilterScored blockAdultStuff = new WordListFilterScored( 0, ignoreCase, topicManager, pornResult);
             filters.add(blockAdultStuff);
         }
         return new AppFilter(service, topicManager, filters, appName, false);

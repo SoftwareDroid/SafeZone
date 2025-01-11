@@ -51,7 +51,9 @@ public class TopicManager
 
     public SearchResult isStringInTopic(String text, String topicId, TopicMatchMode mode, boolean checkAgainstLowerCase, String language, int currentDeepness)
     {
-        SearchResult searchResult = new SearchResult(false, currentDeepness);
+        //TODO: fix
+        return null;
+        /*SearchResult searchResult = new SearchResult(false, currentDeepness);
         ArrayList<Topic> topicsInAllLanguages = topics.get(topicId);
         if (topicsInAllLanguages == null || language == null)
         {
@@ -93,9 +95,9 @@ public class TopicManager
             }
 
         }
-        return searchResult;
+        return searchResult;*/
     }
-
+/*
     private boolean checkAgainstRegExp(String text, SearchResult searchResult, Topic topicInOneLang)
     {
         // Check against patterns
@@ -110,7 +112,7 @@ public class TopicManager
             }
         }
         return false;
-    }
+    }*/
 
     private boolean checkAgainstWords(String text, SearchResult searchResult, Topic topicInOneLang, ArrayList<String> words, boolean checkAgainstLowerCase, TopicMatchMode mode)
     {
