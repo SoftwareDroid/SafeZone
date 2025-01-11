@@ -1,15 +1,21 @@
 # SafeSearch
 
 SafeSearch is a productivity-boosting application designed to help users manage their time and focus by restricting access to distracting apps and content.
-It was created out of the need for a robust solution that can effectively block unwanted applications and screens while ensuring that these restrictions are difficult to bypass once set.
+It was created out of the need for a robust solution that can effectively block unwanted applications and screens, including those with NSFW content, while ensuring that these restrictions are difficult to bypass once set, and also addressing gaps in traditional filtering methods, such as content scoring, multi-language support, and compatibility beyond browser-based applications, with customizable exception screens for settings and other essential areas.
 
-## Features
-- **Comprehensive App Blocking**: Search for and block any app or screen on your device.
-- **Persistent Locking**: Once locked and installed, the app cannot be easily removed, ensuring that users stay focused.
-- **UI Automation**: Utilizes UI Automation to navigate back to previous screens and kill apps, providing a seamless user experience.
+## Content Blocking Features
+- **Advanced Content Blocking**: Unlike other apps that only filter blacklisted keywords, SafeSearch offers a robust content blocking system that supports regular expressions (regex) and multi-language support.
+- **Scoring**: To prevent false negatives, SafeSearch scores found terms, allowing them to appear a specified number of times before blocking.
+- **All app support**: SafeSearch works seamlessly across all apps on all screens, including YouTube, and not just limited to browsers.
+- **Customizable Exceptions**: Allow specific screens, such as search history or settings, to be exempt from blocking.
+- **Rule Management**: Easily expand, export, and import content block rules to suit your needs.
+- **Anti Cheat Mode**: Once locked and installed, the app cannot be easily removed, ensuring that users stay focused.
+- **UI Automation**: Employs UI Automation to automatically close unwanted apps, particularly those playing NSFW audio or video content that may bypass traditional filtering methods.
+
+## Other Features
+- **Usage Restrictions**:  limits apps in time and usage, e.g. block an app after 3min usage for every 2 hours.
 
 Initially developed to block NSFW, e.g. pornographic content, SafeSearch aims to expand its capabilities to include blocking social media, gambling, and other user-defined content in future updates.
-Time restrictions rules are available too e.g. block an app after 3min usage for every 2 hours.
 
 ## For Developers
 Installation and Permissions
