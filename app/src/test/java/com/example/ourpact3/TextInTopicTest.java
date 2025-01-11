@@ -21,7 +21,7 @@ public class TextInTopicTest {
         String topicId = "topic1";
 
         Topic topic = new Topic(topicId, "en");
-        topic.addWord("test");
+        topic.addScoredWord("test");
         topicManager.addTopic(topic);
 
         // Initialize topics and other necessary data for the test
@@ -127,7 +127,7 @@ public class TextInTopicTest {
         String language = "en";
 
         Topic topic = new Topic(topicId, language);
-        topic.addWord("test");
+        topic.addScoredWord("test");
         topic.addRegExpWord ("\\bass\\b");
         topicManager.addTopic(topic);
         TopicManager.TopicMatchMode mode = TopicManager.TopicMatchMode.TOPIC_WORD_IS_INFIX;
@@ -161,10 +161,10 @@ public class TextInTopicTest {
 
         // Add topic with words and included topics to the topic manager
         Topic topic = new Topic(topicId, language);
-        topic.addWord("test");
+        topic.addScoredWord("test");
         topic.addIncludedTopic("topic2");
         Topic childTopic = new Topic("topic2", language);
-        childTopic.addWord("test");
+        childTopic.addScoredWord("test");
         topicManager.addTopic(topic);
         topicManager.addTopic(childTopic);
 

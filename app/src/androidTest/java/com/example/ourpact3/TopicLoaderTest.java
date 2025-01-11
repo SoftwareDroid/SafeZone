@@ -39,21 +39,21 @@ public class TopicLoaderTest
     @Test
     public void testSerialization() throws JSONException
     {
-        Topic topicOld = new Topic("a", "b");
+        Topic topicOld = new Topic("a");
         topicOld.setDescription("cd");
         ArrayList<String> words = new ArrayList<>();
         words.add("foo");
         words.add("bar");
         ArrayList<String> includes = new ArrayList<>();
         includes.add("hallo");
-        topicOld.setWords(words);
+        topicOld.setScoredWords(words);
         topicOld.setIncludedTopics(includes);
         JSONObject obj = topicOld.toJson();
         Topic topicNew = Topic.fromJson(obj);
-        assertEquals(topicOld.getTopicId(), topicNew.getTopicId());
+        assertEquals(topicOld.getTopicName(), topicNew.getTopicName());
         assertEquals(topicOld.getLanguage(), topicNew.getLanguage());
         assertEquals(topicOld.getDescription(), topicNew.getDescription());
-        assertEquals(topicOld.getWords(), topicNew.getWords());
+        assertEquals(topicOld.getScoredWords(), topicNew.getScoredWords());
         assertEquals(topicOld.getIncludedTopics(), topicNew.getIncludedTopics());
     }
 
@@ -63,10 +63,10 @@ public class TopicLoaderTest
         Topic topicOld = new Topic("a", "b");
         JSONObject obj = topicOld.toJson();
         Topic topicNew = Topic.fromJson(obj);
-        assertEquals(topicOld.getTopicId(), topicNew.getTopicId());
+        assertEquals(topicOld.getTopicName(), topicNew.getTopicName());
         assertEquals(topicOld.getLanguage(), topicNew.getLanguage());
         assertEquals(topicOld.getDescription(), topicNew.getDescription());
-        assertEquals(topicOld.getWords(), topicNew.getWords());
+        assertEquals(topicOld.getScoredWords(), topicNew.getScoredWords());
         assertEquals(topicOld.getIncludedTopics(), topicNew.getIncludedTopics());
     }
 
@@ -91,7 +91,7 @@ public class TopicLoaderTest
             Topic topic = topicLoader.loadTopicFile(appContext, descriptor);
             String uid = topic.getTopicUID();
             boolean isLowerCaseTopic = topic.isLowerCaseTopic();
-            if (topic.getTopicId().equals("patrick_all_merged"))
+            if (topic.getTopicName().equals("patrick_all_merged"))
             {
                 sampleTopic = topic;
             }
@@ -123,7 +123,7 @@ public class TopicLoaderTest
         for (TopicLoader.TopicDescriptor descriptor : allAvailableTopics)
         {
             Topic topic = topicLoader.loadTopicFile(appContext, descriptor);
-            if (topic.getTopicId().equals("sample_topic"))
+            if (topic.getTopicName().equals("sample_topic"))
             {
                 sampleTopic = topic;
             }
@@ -136,16 +136,16 @@ public class TopicLoaderTest
         assertEquals("de", sampleTopic.getLanguage());
 
         // Check the ID
-        assertEquals("sample_topic", sampleTopic.getTopicId());
+        assertEquals("sample_topic", sampleTopic.getTopicName());
 
         // Check the description
         assertEquals("This is a sample topic", sampleTopic.getDescription());
 
         // Check the words
-        assertEquals(3, sampleTopic.getWords().size());
-        assertTrue(sampleTopic.getWords().contains("word1"));
-        assertTrue(sampleTopic.getWords().contains("word2"));
-        assertTrue(sampleTopic.getWords().contains("word3"));
+        assertEquals(3, sampleTopic.getScoredWords().size());
+        assertTrue(sampleTopic.getScoredWords().contains("word1"));
+        assertTrue(sampleTopic.getScoredWords().contains("word2"));
+        assertTrue(sampleTopic.getScoredWords().contains("word3"));
 
         // Check the included topics
         assertEquals(3, sampleTopic.getIncludedTopics().size());

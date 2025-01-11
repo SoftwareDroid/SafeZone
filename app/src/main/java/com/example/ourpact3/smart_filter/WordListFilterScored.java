@@ -25,24 +25,16 @@ public class WordListFilterScored extends ContentSmartFilterBase
         final int writeScore;
     }
 
-    public WordListFilterScored( ArrayList<TopicScoring> topicScorings, boolean ignoreCase, TopicManager topicManager, PipelineResultKeywordFilter result) throws TopicMissingException, CloneNotSupportedException
+    public WordListFilterScored(int topicId, boolean ignoreCase, TopicManager topicManager, PipelineResultKeywordFilter result) throws TopicMissingException, CloneNotSupportedException
     {
         super(result);
         this.ignoreCase = ignoreCase;
         this.topicManager = topicManager;
-        this.topicScorings = topicScorings;
+        this.topicId = topicId;
         assert topicManager != null;
-        // catch typos in scorings ids
-        for (TopicScoring scoring : topicScorings)
-        {
-            if (!topicManager.isTopicIdLoaded(scoring.topicId))
-            {
-                throw new TopicMissingException("scoring " + getName() + " need topic" + scoring.topicId + " but it is missing");
-            }
-        }
     }
 
-    private final ArrayList<TopicScoring> topicScorings;
+    private int topicId;
     public TopicManager topicManager;
     private final boolean ignoreCase;
     private int currentScore;
@@ -57,7 +49,7 @@ public class WordListFilterScored extends ContentSmartFilterBase
     {
         return currentScore;
     }
-
+    public int getTopicId(){return topicId;}
     public PipelineResultBase feedWord(ScreenInfoExtractor.Screen.TextNode textNode)
     {
         String text = ignoreCase ? textNode.textInLowerCase : textNode.text;

@@ -588,13 +588,13 @@ public class ExampleAppKeywordFilters
         ArrayList<AppFilter> list = new ArrayList<>();
         list.add(getArdMediathekFilter());
         list.add(getFirefoxFilter());
-//        list.add(getPocketCastsFilter());
-//        list.add(getTelegramFilter2());
-//        list.add(getYoutubeFilter());
-//        list.add(getPackageInstallerFilter());
-//        list.add(getAndroidSettings());
-//        list.add(getAppolo());
-//        list.add(getDefaultFilter());
+        list.add(getPocketCastsFilter());
+        list.add(getTelegramFilter2());
+        list.add(getYoutubeFilter());
+        list.add(getPackageInstallerFilter());
+        list.add(getAndroidSettings());
+        list.add(getAppolo());
+        list.add(getDefaultFilter());
 
         return list;
     }

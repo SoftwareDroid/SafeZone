@@ -23,19 +23,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db)
     {
         // Create table for which filter
-        /*db.execSQL("CREATE TABLE smart_filters (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "window_action INTEGER, " +
-                "warning INTEGER, " +
-                "kill INTEGER, " +  //boolean
-                "enabled INTEGER, " +
-                "comment TEXT, " +
-                "id_in_one_filter_table INTEGER, " + // can refer do different tables
-                "filter_type INTEGER,"+
-                "package_name TEXT, " + // Add package_name column for foreign key reference
-                "FOREIGN KEY (package_name) REFERENCES apps(package_name) ON DELETE CASCADE"
-                +")");*/
-
         db.execSQL("CREATE TABLE exception_list (appName TEXT PRIMARY KEY, readable INTEGER, writable INTEGER)");
         //every app was its rules and one line in this table
         db.execSQL("CREATE TABLE apps (" +
@@ -95,15 +82,16 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 // end of counter action
                 "enabled INTEGER, " +
                 "user_created INTEGER, " + // maybe relevant
-                "shared INTEGER, " + //Edit of shared filters can affect multible apps. These are also shown in every app as a option to turn it on
+                "app_group INTEGER, " + //Edit of shared filters can affect multible apps also between differn groups like 0=All, 1=Browsers, 2= Non_browsers
                 "readable INTEGER, " + // maybe relevant
                 "writable INTEGER, " + //maybe relevant. Like Write protection
                 "name TEXT, "+
                 "short_description TEXT,"+
                 "checks_only_visible INTEGER," + // boolean
                 "what_to_check INTEGER," + // Only Editable, Only none editable, both, TODO
-                "ignore_case INTEGER"+ //TODO
-                // TODO: Link to a scoring table/world list, no parent relation
+                "ignore_case INTEGER,"+ //TODO
+                "type_of_list INTEGER,"+ // extact,scoring
+                "id_for_list INTEGER" +
                 ")");
         // A app can have n content filters and they can be shared among k apps (if shared attribute is on)
         // Create the junction table for the many-to-many relationship
@@ -117,6 +105,42 @@ public class DatabaseHelper extends SQLiteOpenHelper
         /////////////////////////////////////////////////////////////////////////////////////// end of content filters
 
 
+        // scored topics
+        db.execSQL("CREATE TABLE topic_scored (" +
+                "id INTEGER PRIMARY KEY, " +
+                "lower_case_topic INTEGER, " +
+                "name TEXT)");
+        // exact list topics
+        db.execSQL("CREATE TABLE topic_exact (" +
+                "id INTEGER PRIMARY KEY, " +
+                "name TEXT)");
+
+
+        db.execSQL("CREATE TABLE word_list (" +
+                "id INTEGER PRIMARY KEY, " +
+                "text TEXT, " +
+                "language_id INTEGER, " +
+                "is_regex INTEGER, " +
+                "topic_type INTEGER, " +    // either scored of exact more info are then word_scores or word groups
+                "topic_id INTEGER, " + // this is either topic 1 (scored or topic two"
+                "FOREIGN KEY (language_id) REFERENCES languages (id))");   // every word belongs to a topic, scoring  and word groups is save in a different table
+
+        // seperate scoring from word entries
+        db.execSQL("CREATE TABLE word_scores (" +
+                "id INTEGER PRIMARY KEY, " +
+                "word_id INTEGER, " +
+                "read INTEGER, " +
+                "write INTEGER, " +
+                "FOREIGN KEY (word_id) REFERENCES word_list (id))");
+
+        // for exact filter
+        db.execSQL("CREATE TABLE word_groups (" +
+                "id INTEGER PRIMARY KEY, " +
+                "word_id INTEGER, " +
+                "group_nr INTEGER, " +  // for or/and expression ame group is and
+                "FOREIGN KEY (word_id) REFERENCES word_list (id))");
+
+
         // combination table map n filters to one app
         /*db.execSQL("CREATE TABLE app_filters (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -127,14 +151,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         /*// more tables for these special filters in particular word filter need several tables
 
-        db.execSQL("CREATE TABLE word_lists (" +
-                "id INTEGER PRIMARY KEY, " +
-                "name TEXT, " +
-                "language_id INTEGER, " +
-                "readable INTEGER, " +
-                "writable INTEGER, " +
-                "description TEXT, " +
-                "FOREIGN KEY (language_id) REFERENCES languages (id))");
 
         db.execSQL("CREATE TABLE words (" +
                 "id INTEGER PRIMARY KEY, " +

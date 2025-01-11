@@ -86,7 +86,7 @@ public class TopicLoader
             String fileWithoutComments = JSONCommentRemover.removeComments(fileContent);
             JSONObject jsonObject = new JSONObject(fileWithoutComments);
             Topic topic = Topic.fromJson(jsonObject);
-            if (!descriptor.file_name.contains(topic.getTopicId()) || !Objects.equals(topic.getLanguage(), descriptor.language))
+            if (!descriptor.file_name.contains(topic.getTopicName()) || !Objects.equals(topic.getLanguage(), descriptor.language))
             {
                 throw new TopicLoaderException("topic descriptor " + descriptor.file_name + " in folder "+ descriptor.language + " mismatch with loaded topic " + topic.getTopicUID());
             }

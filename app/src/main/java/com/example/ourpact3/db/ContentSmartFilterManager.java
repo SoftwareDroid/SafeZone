@@ -1,20 +1,16 @@
 package com.example.ourpact3.db;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
-import android.database.Cursor;
 
-import com.example.ourpact3.model.PipelineButtonAction;
-import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.pipeline.CounterAction;
-import com.example.ourpact3.smart_filter.ProductivityTimeRule;
-import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
 import com.example.ourpact3.smart_filter.ContentSmartFilterBase;
+import com.example.ourpact3.smart_filter.WordListFilterExact;
+import com.example.ourpact3.smart_filter.WordListFilterScored;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.EnumSet;
+
+import
 
 public class ContentSmartFilterManager
 {
@@ -22,34 +18,51 @@ public class ContentSmartFilterManager
     /**
      * overwrites all time restrictions for an app which has exactly use usage_filter_id
      */
-    public static void setAllTimeRestrictionRules(long usageFilterId, ArrayList<ProductivityTimeRule> timeRules)
+    public static void setAllContentFilterRules(String packageId, ArrayList<ContentSmartFilterBase> contentFilters)
     {
-
         // Start a transaction for safety
         DatabaseManager.db.beginTransaction();
         try
         {
-            // Step 1: Delete existing rows with the specified usage_filter_id
-            String whereClause = "usage_filter_id = ?";
-            String[] whereArgs = new String[]{String.valueOf(usageFilterId)};
-            DatabaseManager.db.delete("time_restriction_rules", whereClause, whereArgs);
+            // Step 1: Delete existing rows
+            String whereClause = "app_package_name = ?";
+            String[] whereArgs = new String[]{String.valueOf(packageId)};
+            DatabaseManager.db.delete("app_content_filter", whereClause, whereArgs);
             // Step 2: Insert new rows from the array
-            for (ProductivityTimeRule rule : timeRules)
+            for (ContentSmartFilterBase rule : contentFilters)
             {
                 ContentValues values = new ContentValues();
-                values.put("usage_filter_id", usageFilterId);
-                values.put("monday", rule.hasWeekday(DayOfWeek.MONDAY) ? 1 : 0);
-                values.put("tuesday", rule.hasWeekday(DayOfWeek.TUESDAY) ? 1 : 0);
-                values.put("wednesday", rule.hasWeekday(DayOfWeek.WEDNESDAY) ? 1 : 0);
-                values.put("thursday", rule.hasWeekday(DayOfWeek.THURSDAY) ? 1 : 0);
-                values.put("friday", rule.hasWeekday(DayOfWeek.FRIDAY) ? 1 : 0);
-                values.put("saturday", rule.hasWeekday(DayOfWeek.SATURDAY) ? 1 : 0);
-                values.put("sunday", rule.hasWeekday(DayOfWeek.SUNDAY) ? 1 : 0);
-                values.put("start_hour", rule.getStartTime().getHour());
-                values.put("start_min", rule.getStartTime().getMinute());
-                values.put("end_hour", rule.getEndTime().getHour());
-                values.put("end_min", rule.getEndTime().getHour());
-                values.put("black_list", rule.isBlackListMode() ? 1 : 0);
+                // Counter action
+                CounterAction counterAction = rule.getCounterAction();
+                values.put("explainable", counterAction.isHasExplainableButton() ? 1 : 0);
+                values.put("window_action", counterAction.getWindowAction().getValue());
+                values.put("button_action", counterAction.getButtonAction().getValue());
+                values.put("kill", counterAction.isKillAction() ? 1 : 0); // Assuming kill is a boolean
+                values.put("enabled", rule.isEnabled() ? 1 : 0); // Assuming enabled is a boolean
+                //
+                values.put("user_created", rule.isUserCreated() ? 1 : 0); // Assuming enabled is a boolean
+                values.put("app_group", rule.getAppGroup().getValue());
+                values.put("readable", rule.isReadable() ? 1 : 0);
+                values.put("writable", rule.isWritable() ? 1 : 0);
+                values.put("name", rule.getName());
+                values.put("short_description", rule.getShortDescription());
+                values.put("checks_only_visible", rule.isCheckOnlyVisibleNodes() ? 1 : 0);
+                values.put("what_to_check", rule.getNodeCheckStrategyType().getValue());
+                values.put("ignore_case", rule.isIgnoringCase() ? 1 : 0);
+                int type = 0;
+                if (rule instanceof WordListFilterScored)
+                {
+                    type = ContentSmartFilterBase.TYPE_SCORED;
+                    // cast to class
+                    WordListFilterScored scoredFilter = (WordListFilterScored) rule;
+                    scoredFilter.
+                } else if (rule instanceof WordListFilterExact)
+                {
+                    type = ContentSmartFilterBase.TYPE_EXACT;
+                }
+                values.put("type_of_list", type);
+
+                values.put("id_for_list", 1);
                 // Insert the new row
                 DatabaseManager.db.insert("time_restriction_rules", null, values);
             }
@@ -66,15 +79,7 @@ public class ContentSmartFilterManager
         }
     }
 
-    public static ArrayList<ContentSmartFilterBase> getAllContentFiltersForApp(String package_name)
-    {
-        //TODO:
-        return null;
-    }
-
-    /**
-     * Retrieves all time restriction rules for an app with the specified usage_filter_id.
-     */
+    /*
     @SuppressLint("Range")  //supress warning of colomn return -1 if they cannot be found by name
     public static ArrayList<ProductivityTimeRule> getAllTimeRestrictionRules(int usageFilterId)
     {
@@ -163,56 +168,40 @@ public class ContentSmartFilterManager
         return timeRules;
     }
 
-    
-    /*
-    if filterId is null a entry will be created
-     */
-    public static long addContentFilter(ContentSmartFilterBase contentFilter)
+
+    public static long addOrUpdateUsageFilter(UsageRestrictionsFilter usageFilter)
     {
         long filterId = -1;
         // Start a transaction for safety
         DatabaseManager.db.beginTransaction();
         try
         {
-            /*
-            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "readable INTEGER, " + // maybe relevant
-                "writable INTEGER, " + //maybe relevant. Like Write protection
-                "name TEXT, "+
-                "short_description TEXT,"+
-                "max_starts INTEGER"+
-
-             */
-            CounterAction counterAction = contentFilter.getCounterAction();
+            CounterAction counterAction = usageFilter.getCounterAction();
             ContentValues values = new ContentValues();
             values.put("explainable", counterAction.isHasExplainableButton()? 1: 0);
             values.put("window_action", counterAction.getWindowAction().getValue());
             values.put("button_action", counterAction.getButtonAction().getValue());
             values.put("kill", counterAction.isKillAction() ? 1 : 0); // Assuming kill is a boolean
-            values.put("enabled", contentFilter.isEnabled() ? 1 : 0); // Assuming enabled is a boolean
-            values.put("user_created", contentFilter.isUserCreated());
-            values.put("readable", contentFilter.isReadable());
-            values.put("writable", contentFilter.isWritable());
-            values.put("name", contentFilter.getName());
-            values.put("short_description", contentFilter.getShortDescription());
-            values.put("checks_only_visible", contentFilter.isCheckOnlyVisibleNodes());
-            values.put("ignore_case", contentFilter.isIgnoringCase());
+            values.put("enabled", usageFilter.isEnabled() ? 1 : 0); // Assuming enabled is a boolean
+            values.put("reset_period", usageFilter.getResetPeriodInSeconds());
+            values.put("time_limit", usageFilter.getLimitInSeconds());
+            values.put("max_starts", usageFilter.maxNumberOfUsages);
 
             // Check if the usage filter already exists
-            if (contentFilter.database_id != null)
+            if (usageFilter.database_id != null)
             {
                 // Update existing row
                 String whereClause = "id = ?";
-                String[] whereArgs = new String[]{String.valueOf(contentFilter.database_id)};
+                String[] whereArgs = new String[]{String.valueOf(usageFilter.database_id)};
                 DatabaseManager.db.update("usage_filters", values, whereClause, whereArgs);
-                filterId = contentFilter.database_id;
+                filterId = usageFilter.database_id;
             } else
             {
                 // Insert new row
                 filterId = DatabaseManager.db.insert("usage_filters", null, values);
             }
             //update time rules
-//            setAllTimeRestrictionRules(filterId,contentFilter.getAllTimeRules());
+            setAllContentFilterRules(filterId,usageFilter.getAllTimeRules());
 
             // Mark the transaction as successful
             DatabaseManager.db.setTransactionSuccessful();
@@ -271,6 +260,6 @@ public class ContentSmartFilterManager
             }
         }
         return usageFilter; // Returns null if no entry was found
-    }
+    }*/
 
 }

@@ -36,11 +36,11 @@ public class WordListFilterScoredTest {
     {
         topicManager = new TopicManager(); // assume this is a mock or a test implementation
         Topic a = new Topic("a","de");
-        a.addWord("apple");
-        a.addWord("an");
+        a.addScoredWord("apple");
+        a.addScoredWord("an");
         Topic b = new Topic("b","de");
-        b.addWord("banana");
-        b.addWord("bear");
+        b.addScoredWord("banana");
+        b.addScoredWord("bear");
         topicManager.addTopic(a);
         topicManager.addTopic(b);
     }
@@ -119,14 +119,14 @@ public class WordListFilterScoredTest {
     public void testNestedTopic() throws TopicLoaderCycleDetectedException, TopicAlreadyExistsException, InvalidTopicIDException, TopicMissingException, CloneNotSupportedException
     {
         Topic foodTopic = new Topic("food", "en");
-        foodTopic.setWords(new ArrayList<String>(List.of("food")));
+        foodTopic.setScoredWords(new ArrayList<String>(List.of("food")));
         foodTopic.setIncludedTopics(new ArrayList<String>(List.of("fruits","desserts")));
 
         Topic foodChildTopic = new Topic("fruits", "en");
-        foodChildTopic.setWords(new ArrayList<String>(List.of("apple")));
+        foodChildTopic.setScoredWords(new ArrayList<String>(List.of("apple")));
 
         Topic foodChildTopic2 = new Topic("desserts", "en");
-        foodChildTopic2.setWords(new ArrayList<String>(List.of("cake")));
+        foodChildTopic2.setScoredWords(new ArrayList<String>(List.of("cake")));
         topicManager.addTopic(foodTopic);
         topicManager.addTopic(foodChildTopic2);
         topicManager.addTopic(foodChildTopic);

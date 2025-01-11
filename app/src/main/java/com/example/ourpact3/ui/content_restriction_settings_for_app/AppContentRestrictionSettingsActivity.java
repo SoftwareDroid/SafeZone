@@ -67,13 +67,13 @@ public class AppContentRestrictionSettingsActivity extends AppCompatActivity
         a.setHasExplainableButton(false);
         preventReinstallingAndLosePermissons.setCounterAction(a);
 
-        ContentSmartFilterBase reinstallAppPopup = new WordListFilterExact( new ArrayList<>(List.of(
+        ContentSmartFilterBase nsfwBlockRule = new WordListFilterExact( new ArrayList<>(List.of(
                 new ArrayList<>(List.of(appName, "Do you want to install this app?")),
                 new ArrayList<>(List.of(appName, "Do you want to update this app?"))
         )),  preventReinstallingAndLosePermissons);
-        reinstallAppPopup.setName("Block Something");
-        reinstallAppPopup.setFilterShortDescription("This is a short text");
-        adapterContentFilters.addEntry(reinstallAppPopup);
+        nsfwBlockRule.setName("Block Something");
+        nsfwBlockRule.setFilterShortDescription("This is a short text");
+        adapterContentFilters.addEntry(nsfwBlockRule);
     }
 
     @Override

@@ -1,9 +1,5 @@
 package com.example.ourpact3.topics;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,16 +7,27 @@ import java.util.regex.Pattern;
 
 public class Topic
 {
+    public static class ScoredWordEntry
+    {
+        public long id;
+        public String word;
+        public int read;
+        public int write;
+//        public int group;
+        public int languageId;
+        public boolean isRegex;
+    }
+
+
     private boolean ignoreLoading;
-    private final String lang;
-    private final String id;
+    private String name;
     private String description;
-    private Map<String, Pattern> compiledPatterns = new HashMap<>();
-    private ArrayList<String> words;
-    private ArrayList<String> includedTopics;   //List of topics ids
+    private Map<ScoredWordEntry, Pattern> compiledPatterns = new HashMap<>();
+    private ArrayList<ScoredWordEntry> scoredWords;
+//    private ArrayList<String> includedTopics;   //List of topics ids
     private boolean allWordsInLowerCase;
 
-    public Map<String, Pattern> getCompiledPatterns()
+    public Map<ScoredWordEntry, Pattern> getCompiledPatterns()
     {
         return compiledPatterns;
     }
@@ -34,14 +41,14 @@ public class Topic
     {
         return allWordsInLowerCase;
     }
-
+    public long database_id;
+    public long getDatabase_id(){return database_id;}
     // Constructor with id and language
-    public Topic(String id, String lang)
+    public Topic(String name)
     {
-        this.id = id;
-        this.lang = lang;
-        this.words = new ArrayList<>();
-        this.includedTopics = new ArrayList<>();
+        this.name = name;
+        this.scoredWords = new ArrayList<>();
+//        this.includedTopics = new ArrayList<>();
         this.compiledPatterns = new HashMap<>();
         this.description = "";
         this.ignoreLoading = false;
@@ -54,20 +61,11 @@ public class Topic
     }
 
     // Public getters for id and lang
-    public String getTopicId()
+    public String getTopicName()
     {
-        return id;
+        return name;
     }
 
-    public String getTopicUID()
-    {
-        return id + "#" + getLanguage();
-    }
-
-    public String getLanguage()
-    {
-        return lang;
-    }
 
     public String getDescription()
     {
@@ -79,50 +77,50 @@ public class Topic
         this.description = description;
     }
 
-    public ArrayList<String> getWords()
+    public ArrayList<ScoredWordEntry> getScoredWords()
     {
-        return words;
+        return scoredWords;
     }
 
-    public ArrayList<String> getIncludedTopics()
-    {
-        return includedTopics;
-    }
+//    public ArrayList<String> getIncludedTopics()
+//    {
+//        return includedTopics;
+//    }
 
     // Setter for words
-    public void setWords(ArrayList<String> words)
+    public void setScoredWords(ArrayList<ScoredWordEntry> words)
     {
-        this.words = words;
+        this.scoredWords = words;
     }
 
     // Method to add a single word
-    public void addWord(String word)
+    public void addScoredWord(ScoredWordEntry word)
     {
-        this.words.add(word);
+        this.scoredWords.add(word);
     }
-    public void addRegExpWord(String regExp)
+    public void addRegExpWord(ScoredWordEntry regExp)
     {
         if (!this.compiledPatterns.containsKey(regExp))
         {
-            Pattern pattern = Pattern.compile(regExp);
+            Pattern pattern = Pattern.compile(regExp.word);
             this.compiledPatterns.put(regExp, pattern);
         }
     }
 
     // Setter for includedTopics
-    public void setIncludedTopics(ArrayList<String> includedTopics)
-    {
-        this.includedTopics = includedTopics;
-    }
+//    public void setIncludedTopics(ArrayList<String> includedTopics)
+//    {
+//        this.includedTopics = includedTopics;
+//    }
 
     // Method to add a single included topic
-    public void addIncludedTopic(String topic)
-    {
-        this.includedTopics.add(topic);
-    }
+//    public void addIncludedTopic(String topic)
+//    {
+//        this.includedTopics.add(topic);
+//    }
 
     // Method to convert Topic object to JSON
-    public JSONObject toJson() throws JSONException
+    /*public JSONObject toJson() throws JSONException
     {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("lang", lang);
@@ -135,7 +133,7 @@ public class Topic
 
         if (!this.compiledPatterns.isEmpty())
         {
-            ArrayList<String> regExpKeys = new ArrayList<>(this.compiledPatterns.keySet());
+            ArrayList<TopicEntry> regExpKeys = new ArrayList<>(this.compiledPatterns.keySet());
             JSONArray wordsArray2 = new JSONArray(regExpKeys);
             jsonObject.put("regExpWords", wordsArray2);
         }
@@ -143,10 +141,10 @@ public class Topic
         jsonObject.put("includedTopics", includedTopicsArray);
 
         return jsonObject;
-    }
+    }*/
 
     // Static method to create Topic object from JSON
-    public static Topic fromJson(JSONObject jsonObject) throws JSONException
+    /*public static Topic fromJson(JSONObject jsonObject) throws JSONException
     {
         String id = jsonObject.getString("id");
         String lang = jsonObject.getString("lang");
@@ -192,5 +190,5 @@ public class Topic
         }
 
         return topic;
-    }
+    }*/
 }

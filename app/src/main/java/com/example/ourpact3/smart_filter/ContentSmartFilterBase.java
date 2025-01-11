@@ -12,13 +12,15 @@ import com.example.ourpact3.service.ScreenInfoExtractor;
  */
 public abstract class ContentSmartFilterBase implements Cloneable
 {
+    public static final int TYPE_SCORED = 5;
+    public static final int TYPE_EXACT = 10;
     public Long database_id;
     protected NodeCheckStrategyType nodeCheckStrategyType;
     protected boolean ignoreCase;
     private boolean readable;
     private boolean writable;
     private boolean userCreated;
-    private boolean isShared;
+    private AppGroup appGroup;
     private String shortDescription;
     private boolean enabled;
     private PipelineResultKeywordFilter constResult; // Made private
@@ -50,14 +52,14 @@ public abstract class ContentSmartFilterBase implements Cloneable
         return ignoreCase;
     }
 
-    public boolean isSharedBetweenApps()
+    public AppGroup getAppGroup()
     {
-        return isShared;
+        return appGroup;
     }
 
-    public void setSharedBetweenApps(boolean value)
+    public void setAppGroup(AppGroup value)
     {
-        isShared = value;
+        appGroup = value;
     }
 
     public boolean isReadable()
