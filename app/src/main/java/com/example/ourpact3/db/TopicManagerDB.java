@@ -22,6 +22,56 @@ public class TopicManagerDB
     public static final int TOPIC_TYPE_EXACT = 0;
     public static final String topicTableScored = "topic_scored";
     public static final String topicTableExact = "topic_exact";
+
+    /**
+     * Add or updates a topic
+     * @param topic
+     */
+    public static void createOrUpdateTopic(Topic topic) {
+        // Start a transaction for safety
+        DatabaseManager.db.beginTransaction();
+        try {
+            // Step 1: clear existing topic
+            DatabaseManager.db.delete(topicTableScored, "name = ?", new String[]{topic.getTopicName()});
+
+            // Insert new topic row
+            ContentValues values = new ContentValues();
+            values.put("name", topic.getTopicName());
+            values.put("lower_case_topic", topic.isLowerCaseTopic());
+            long newTopicID = DatabaseManager.db.insert(topicTableScored, null, values);
+
+            // Delete existing word entries for the topic
+            DatabaseManager.db.delete("word_list", "topic_id = (SELECT id FROM " + topicTableScored + " WHERE name = ?)", new String[]{topic.getTopicName()});
+
+            // Insert new word entries
+            for (Topic.ScoredWordEntry entry : topic.getScoredWords()) {
+                ContentValues valuesForWord = new ContentValues();
+                valuesForWord.put("text", entry.word);
+                valuesForWord.put("language_id", entry.languageId);
+                valuesForWord.put("is_regex", entry.isRegex ? 1 : 0);
+                valuesForWord.put("topic_id", newTopicID);
+                valuesForWord.put("topic_type", TOPIC_TYPE_SCORED);
+                long newWordId = DatabaseManager.db.insert("word_list", null, valuesForWord);
+
+                // Insert scoring
+                ContentValues valuesForScoring = new ContentValues();
+                valuesForScoring.put("word_id", newWordId);
+                valuesForScoring.put("read", entry.read);
+                valuesForScoring.put("write", entry.write);
+                long scoringID = DatabaseManager.db.insert("word_scores", null, valuesForScoring);
+            }
+
+            // Mark the transaction as successful
+            DatabaseManager.db.setTransactionSuccessful();
+        } catch (Exception e) {
+            // Handle any exceptions
+        } finally {
+            // End the transaction
+            DatabaseManager.db.endTransaction();
+        }
+    }
+
+
     /**
      * overwrites all time restrictions for an app which has exactly use usage_filter_id
      */
@@ -46,19 +96,21 @@ public class TopicManagerDB
                 for (Topic.ScoredWordEntry entry : topic.getScoredWords())
                 {
                     ContentValues valuesForWord = new ContentValues();
-                    values.put("text", entry.word);
-                    values.put("language_id", entry.languageId);
-                    values.put("is_regex", entry.isRegex ? 1 : 0);
-                    values.put("language_id", entry.languageId);
-                    values.put("topic_id", newTopicID);
-                    values.put("topic_type",TOPIC_TYPE_SCORED);
+                    valuesForWord.put("text", entry.word);
+                    valuesForWord.put("language_id", entry.languageId);
+                    valuesForWord.put("is_regex", entry.isRegex ? 1 : 0);
+                    valuesForWord.put("language_id", entry.languageId);
+                    valuesForWord.put("topic_id", newTopicID);
+                    valuesForWord.put("topic_type",TOPIC_TYPE_SCORED);
                     long newWordId = DatabaseManager.db.insert("word_list", null, valuesForWord);
                     // add scoring
-                    ContentValues valuesForScoring = new ContentValues();
-                    values.put("word_id", newWordId);
-                    values.put("read", entry.read);
-                    values.put("write", entry.write);
-                    long scoringID = DatabaseManager.db.insert("word_scores", null, valuesForScoring);
+                    {
+                        ContentValues valuesForScoring = new ContentValues();
+                        valuesForScoring.put("word_id", newWordId);
+                        valuesForScoring.put("read", entry.read);
+                        valuesForScoring.put("write", entry.write);
+                        long scoringID = DatabaseManager.db.insert("word_scores", null, valuesForScoring);
+                    }
 
                 }
             }
@@ -103,18 +155,18 @@ public class TopicManagerDB
         cursor.close();
         return topics;
     }
-
+    @SuppressLint("Range")
     public static Topic getTopicById(int topicId, int topicType) {
         String tableName = topicType == TOPIC_TYPE_SCORED ? topicTableScored : topicTableExact;
         String query = "SELECT * FROM " + tableName + " WHERE id = ?";
         Cursor cursor = DatabaseManager.db.rawQuery(query, new String[]{String.valueOf(topicId)});
         if (cursor.moveToFirst()) {
-            long id = cursor.getInt(0);
-            String name = cursor.getString(1);
+            long id = cursor.getInt(cursor.getColumnIndex("id"));
+            String name = cursor.getString(cursor.getColumnIndex("name"));
             Topic topic = new Topic(name);
             topic.database_id = id;
             if (topicType == TOPIC_TYPE_SCORED) {
-                topic.setLowerCaseTopic(cursor.getInt(2) == 1);
+                topic.setLowerCaseTopic(cursor.getInt(cursor.getColumnIndex("lower_case_topic")) == 1);
             }
             // Get words for this topic
             ArrayList<Topic.ScoredWordEntry> words = getWordsForTopic(topic.getDatabase_id(), topicType);

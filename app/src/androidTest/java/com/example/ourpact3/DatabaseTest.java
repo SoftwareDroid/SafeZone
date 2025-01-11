@@ -70,7 +70,9 @@ public class DatabaseTest
         manyTopics.add(testTopic1);
         DatabaseManager.dbHelper = new DatabaseHelper(appContext);
         DatabaseManager.open();
-        TopicManagerDB.setScoredTopics(manyTopics);
+        TopicManagerDB.createOrUpdateTopic(testTopic2);
+        TopicManagerDB.createOrUpdateTopic(testTopic1);
+//        TopicManagerDB.setScoredTopics(manyTopics);
         ArrayList<Topic> topicsFromDB = TopicManagerDB.getAllScoredTopics();
         assertEquals(topicsFromDB.size(),2);
         Topic nsfwTopic = topicsFromDB.get(1);
@@ -78,6 +80,12 @@ public class DatabaseTest
 
         assertEquals(nsfwTopic.getScoredWords().size(),2);
         DatabaseManager.close();
+        // CRUD , CreateOrUpdate a single Topic, Read, Update, Delete
+        //TODO: test get Single Topic by id
+        //TODO: delete topic by id
+
+        //TODO: change scored topic word list// it is enough to overwrite exising topic and use code from add topics
+
     }
 
 
