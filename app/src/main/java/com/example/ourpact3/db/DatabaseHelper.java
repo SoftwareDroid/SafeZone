@@ -123,7 +123,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 "is_regex INTEGER, " +
                 "topic_type INTEGER, " +    // either scored of exact more info are then word_scores or word groups
                 "topic_id INTEGER, " + // this is either topic 1 (scored or topic two"
-                "FOREIGN KEY (language_id) REFERENCES languages (id))");   // every word belongs to a topic, scoring  and word groups is save in a different table
+                "FOREIGN KEY (language_id) REFERENCES languages (id) ON DELETE CASCADE)");   // every word belongs to a topic, scoring  and word groups is save in a different table
 
         // seperate scoring from word entries
         db.execSQL("CREATE TABLE word_scores (" +
@@ -131,14 +131,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 "word_id INTEGER, " +
                 "read INTEGER, " +
                 "write INTEGER, " +
-                "FOREIGN KEY (word_id) REFERENCES word_list (id))");
+                "FOREIGN KEY (word_id) REFERENCES word_list (id) ON DELETE CASCADE)");
 
         // for exact filter
         db.execSQL("CREATE TABLE word_groups (" +
                 "id INTEGER PRIMARY KEY, " +
                 "word_id INTEGER, " +
                 "group_nr INTEGER, " +  // for or/and expression ame group is and
-                "FOREIGN KEY (word_id) REFERENCES word_list (id))");
+                "FOREIGN KEY (word_id) REFERENCES word_list (id) ON DELETE CASCADE)");
 
 
         // combination table map n filters to one app

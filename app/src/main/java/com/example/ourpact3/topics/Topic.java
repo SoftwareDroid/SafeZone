@@ -1,5 +1,7 @@
 package com.example.ourpact3.topics;
 
+import com.example.ourpact3.db.TopicManagerDB;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +20,7 @@ public class Topic
         public boolean isRegex;
     }
 
-
+    private int topicType = TopicManagerDB.TOPIC_TYPE_SCORED;
     private final String name;
     private String description;
     private Map<ScoredWordEntry, Pattern> compiledPatterns = new HashMap<>();
@@ -34,12 +36,15 @@ public class Topic
     {
         this.allWordsInLowerCase = allWordsLowerCase;
     }
-
+    public int getTopicType()
+    {
+        return topicType;
+    }
     public boolean isLowerCaseTopic()
     {
         return allWordsInLowerCase;
     }
-    public long database_id;
+    public Long database_id;
     public long getDatabase_id(){return database_id;}
     // Constructor with id and language
     public Topic(String name)
@@ -79,6 +84,7 @@ public class Topic
     // Setter for words
     public void setScoredWords(ArrayList<ScoredWordEntry> words)
     {
+        this.topicType = TopicManagerDB.TOPIC_TYPE_SCORED;
         this.scoredWords = words;
     }
 
