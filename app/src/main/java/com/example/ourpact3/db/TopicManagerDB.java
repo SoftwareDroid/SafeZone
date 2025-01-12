@@ -25,76 +25,19 @@ public class TopicManagerDB
 
     public static void deleteTopic(Topic topic)
     {
-        if (topic.database_id != null)
-        {
-            DatabaseManager.db.beginTransaction();
-
-            long topicType = topic.getTopicType();
-            String tableName = topicType == TOPIC_TYPE_SCORED ? topicTableScored : topicTableExact;
-            DatabaseManager.db.delete(tableName, "id = ?", new String[]{String.valueOf(topic.database_id)});
-            long deletedRows = DatabaseManager.db.delete("word_list", "topic_id = ? AND topic_type = ?", new String[]{String.valueOf(topic.database_id), String.valueOf(topic.getTopicType())});
-            DatabaseManager.db.endTransaction();
-
-        }
-
-    }
-
-    /**
-     * Add or updates a topic
-     *
-     * @param topic
-     */
-    public static void createOrUpdateTopic(Topic topic)
-    {
-        // Start a transaction for safety
         DatabaseManager.db.beginTransaction();
         try
         {
-            // Step 1: clear existing topic if it has a database id
-            deleteTopic(topic);
-            // Insert new topic row
-            ContentValues values = new ContentValues();
-            values.put("name", topic.getTopicName());
-            if (topic.getTopicType() == TOPIC_TYPE_SCORED)
+            if (topic.database_id != null)
             {
-                values.put("lower_case_topic", topic.isLowerCaseTopic());
-            }
-            String tableName = topic.getTopicType() == TOPIC_TYPE_SCORED ? topicTableScored : topicTableExact;
-            long newTopicID = DatabaseManager.db.insert(tableName, null, values);
-            // reflect new id out
-            topic.database_id = newTopicID;
-
-            // Delete existing word entries for the topic
-            DatabaseManager.db.delete("word_list", "topic_id = ? AND topic_type = ?", new String[]{String.valueOf(topic.database_id), String.valueOf(topic.getTopicType())});
-            String query = "SELECT COUNT(*) FROM word_list";
-            Cursor cursor = DatabaseManager.db.rawQuery(query, null);
-            cursor.moveToFirst();
-            int rowCount = cursor.getInt(0);
-            // Insert new word entries
-
-            for (Topic.ScoredWordEntry entry : topic.getScoredWords())
-            {
-                ContentValues valuesForWord = new ContentValues();
-                valuesForWord.put("text", entry.word);
-                valuesForWord.put("language_id", entry.languageId);
-                valuesForWord.put("is_regex", entry.isRegex ? 1 : 0);
-                valuesForWord.put("topic_id", newTopicID);
-                valuesForWord.put("topic_type", topic.getTopicType());
-                long newWordId = DatabaseManager.db.insert("word_list", null, valuesForWord);
-
-                if (topic.getTopicType() == TOPIC_TYPE_SCORED)
-                {
-                    // Insert scoring
-                    ContentValues valuesForScoring = new ContentValues();
-                    valuesForScoring.put("word_id", newWordId);
-                    valuesForScoring.put("read", entry.read);
-                    valuesForScoring.put("write", entry.write);
-                    long scoringID = DatabaseManager.db.insert("word_scores", null, valuesForScoring);
-                }
+                long topicType = topic.getTopicType();
+                String tableName = getTableName((int) topicType);
+                DatabaseManager.db.delete(tableName, "id = ?", new String[]{String.valueOf(topic.database_id)});
+                long topicID = topic.database_id;
+                long deletedRows = DatabaseManager.db.delete("word_list", "topic_id = ? AND topic_type = ?", new String[]{String.valueOf(topicID), String.valueOf(topic.getTopicType())});
+                DatabaseManager.db.setTransactionSuccessful();
             }
 
-            // Mark the transaction as successful
-            DatabaseManager.db.setTransactionSuccessful();
         } catch (Exception e)
         {
             // Handle any exceptions
@@ -103,6 +46,100 @@ public class TopicManagerDB
             // End the transaction
             DatabaseManager.db.endTransaction();
         }
+
+    }
+
+    public static void createOrUpdateTopic(Topic topic)
+    {
+        if (topic == null)
+        {
+            throw new NullPointerException("Topic cannot be null");
+        }
+
+        DatabaseManager.db.beginTransaction();
+        try
+        {
+            if (topic.database_id != null)
+            {
+                // Update the topic if it already exists
+                updateTopic(topic);
+            }
+            else
+            {
+                // Insert the topic if it doesn't exist
+                insertTopic(topic);
+            }
+            DatabaseManager.db.setTransactionSuccessful();
+        } catch (Exception e)
+        {
+//            Log.e("TopicManagerDB", "Error creating or updating topic", e);
+        } finally
+        {
+            DatabaseManager.db.endTransaction();
+        }
+    }
+
+    private static void updateTopic(Topic topic)
+    {
+        ContentValues values = new ContentValues();
+        values.put("name", topic.getTopicName());
+        if (topic.getTopicType() == TOPIC_TYPE_SCORED)
+        {
+            values.put("lower_case_topic", topic.isLowerCaseTopic());
+        }
+        String tableName = getTableName(topic.getTopicType());
+        DatabaseManager.db.update(tableName, values, "id = ?", new String[]{String.valueOf(topic.database_id)});
+
+        deleteExistingWordEntries(topic);
+        insertNewWordEntries(topic);
+    }
+
+    private static void insertTopic(Topic topic)
+    {
+        ContentValues values = new ContentValues();
+        values.put("name", topic.getTopicName());
+        if (topic.getTopicType() == TOPIC_TYPE_SCORED)
+        {
+            values.put("lower_case_topic", topic.isLowerCaseTopic());
+        }
+        String tableName = getTableName(topic.getTopicType());
+        long newTopicID = DatabaseManager.db.insert(tableName, null, values);
+        topic.database_id = newTopicID;
+
+        insertNewWordEntries(topic);
+    }
+
+    private static String getTableName(int topicType)
+    {
+        return topicType == TOPIC_TYPE_SCORED ? topicTableScored : topicTableExact;
+    }
+
+    private static void deleteExistingWordEntries(Topic topic)
+    {
+        DatabaseManager.db.delete("word_list", "topic_id = ? AND topic_type = ?", new String[]{String.valueOf(topic.database_id), String.valueOf(topic.getTopicType())});
+    }
+
+    private static void insertNewWordEntries(Topic topic)
+    {
+        for (Topic.ScoredWordEntry entry : topic.getScoredWords())
+        {
+            ContentValues valuesForWord = new ContentValues();
+            valuesForWord.put("text", entry.word);
+            valuesForWord.put("language_id", entry.languageId);
+            valuesForWord.put("is_regex", entry.isRegex ? 1 : 0);
+            valuesForWord.put("topic_id", topic.database_id);
+            valuesForWord.put("topic_type", topic.getTopicType());
+            long newWordId = DatabaseManager.db.insert("word_list", null, valuesForWord);
+
+            if (topic.getTopicType() == TOPIC_TYPE_SCORED)
+            {
+                ContentValues valuesForScoring = new ContentValues();
+                valuesForScoring.put("word_id", newWordId);
+                valuesForScoring.put("read", entry.read);
+                valuesForScoring.put("write", entry.write);
+                long scoringID = DatabaseManager.db.insert("word_scores", null, valuesForScoring);
+            }
+        }
     }
 
 
@@ -110,35 +147,6 @@ public class TopicManagerDB
     public static ArrayList<Topic> getAllScoredTopics()
     {
         return getAllTopics(TOPIC_TYPE_SCORED);
-    }
-
-    @SuppressLint("Range")
-    private static ArrayList<Topic> getAllTopics(int topicType)
-    {
-        ArrayList<Topic> topics = new ArrayList<>();
-        String tableName = topicType == TOPIC_TYPE_SCORED ? topicTableScored : topicTableExact;
-        String query = "SELECT * FROM " + tableName;
-        Cursor cursor = DatabaseManager.db.rawQuery(query, null);
-        if (cursor.moveToFirst())
-        {
-            do
-            {
-                long id = cursor.getInt(cursor.getColumnIndex("id"));
-                String name = cursor.getString(cursor.getColumnIndex("name"));
-                Topic topic = new Topic(name);
-                topic.database_id = id;
-                if (topicType == TOPIC_TYPE_SCORED)
-                {
-                    topic.setLowerCaseTopic(cursor.getInt(cursor.getColumnIndex("lower_case_topic")) == 1);
-                }
-                // Get words for this topic
-                ArrayList<Topic.ScoredWordEntry> words = getWordsForTopic(topic.getDatabase_id(), topicType);
-                topic.setScoredWords(words);
-                topics.add(topic);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return topics;
     }
 
     public static Topic getScoredTopicById(long topicId)
@@ -151,35 +159,6 @@ public class TopicManagerDB
         return getTopicById(topicId, TOPIC_TYPE_EXACT);
     }
 
-    @SuppressLint("Range")
-    private static Topic getTopicById(long topicId, int topicType)
-    {
-        String tableName = topicType == TOPIC_TYPE_SCORED ? topicTableScored : topicTableExact;
-        String query = "SELECT * FROM " + tableName + " WHERE id = ?";
-        Cursor cursor = DatabaseManager.db.rawQuery(query, new String[]{String.valueOf(topicId)});
-        if (cursor.moveToFirst())
-        {
-            long id = cursor.getInt(cursor.getColumnIndex("id"));
-            String name = cursor.getString(cursor.getColumnIndex("name"));
-            Topic topic = new Topic(name);
-            topic.database_id = id;
-            if (topicType == TOPIC_TYPE_SCORED)
-            {
-                topic.setLowerCaseTopic(cursor.getInt(cursor.getColumnIndex("lower_case_topic")) == 1);
-                // Get words for this topic
-                ArrayList<Topic.ScoredWordEntry> words = getWordsForTopic(topic.getDatabase_id(), topicType);
-                topic.setScoredWords(words);
-            } else
-            {
-                //TODO:
-            }
-
-            cursor.close();
-            return topic;
-        }
-        cursor.close();
-        return null;
-    }
 
     @SuppressLint("Range")
     public static ArrayList<Topic.ScoredWordEntry> getWordsForTopic(long topicId, int topicType)
@@ -208,5 +187,66 @@ public class TopicManagerDB
         return words;
     }
 
+    @SuppressLint("Range")
+    private static Topic getTopicFromCursor(Cursor cursor, int topicType)
+    {
+        long id = cursor.getInt(cursor.getColumnIndex("id"));
+        String name = cursor.getString(cursor.getColumnIndex("name"));
+        Topic topic = new Topic(name);
+        topic.database_id = id;
+        if (topicType == TOPIC_TYPE_SCORED)
+        {
+            topic.setLowerCaseTopic(cursor.getInt(cursor.getColumnIndex("lower_case_topic")) == 1);
+        }
+        return topic;
+    }
+
+    public static ArrayList<Topic> getAllTopics(int topicType)
+    {
+        ArrayList<Topic> topics = new ArrayList<>();
+        String tableName = getTableName(topicType);
+        String query = "SELECT * FROM " + tableName;
+        Cursor cursor = DatabaseManager.db.rawQuery(query, null);
+        try
+        {
+            if (cursor.moveToFirst())
+            {
+                do
+                {
+                    Topic topic = getTopicFromCursor(cursor, topicType);
+                    // Get words for this topic
+                    ArrayList<Topic.ScoredWordEntry> words = getWordsForTopic(topic.getDatabase_id(), topicType);
+                    topic.setScoredWords(words);
+                    topics.add(topic);
+                } while (cursor.moveToNext());
+            }
+        } finally
+        {
+            cursor.close();
+        }
+        return topics;
+    }
+
+    public static Topic getTopicById(long topicId, int topicType)
+    {
+        String tableName = getTableName(topicType);
+        String query = "SELECT * FROM " + tableName + " WHERE id = ?";
+        Cursor cursor = DatabaseManager.db.rawQuery(query, new String[]{String.valueOf(topicId)});
+        try
+        {
+            if (cursor.moveToFirst())
+            {
+                Topic topic = getTopicFromCursor(cursor, topicType);
+                // Get words for this topic
+                ArrayList<Topic.ScoredWordEntry> words = getWordsForTopic(topic.getDatabase_id(), topicType);
+                topic.setScoredWords(words);
+                return topic;
+            }
+        } finally
+        {
+            cursor.close();
+        }
+        return null;
+    }
 
 }

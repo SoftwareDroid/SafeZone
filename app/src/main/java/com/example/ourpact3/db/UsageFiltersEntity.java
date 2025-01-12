@@ -1,0 +1,109 @@
+package com.example.ourpact3.db;
+
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "usage_filters")
+public class UsageFiltersEntity {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    private int id;
+
+    @ColumnInfo(name = "explainable")
+    private int explainable;
+
+    @ColumnInfo(name = "window_action")
+    private int windowAction;
+
+    @ColumnInfo(name = "button_action")
+    private int buttonAction;
+
+    @ColumnInfo(name = "kill")
+    private int kill;
+
+    @ColumnInfo(name = "enabled")
+    private int enabled;
+
+    @ColumnInfo(name = "reset_period")
+    private int resetPeriod;
+
+    @ColumnInfo(name = "time_limit")
+    private int timeLimit;
+
+    @ColumnInfo(name = "max_starts")
+    private int maxStarts;
+
+    // getters and setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getExplainable() {
+        return explainable;
+    }
+
+    public void setExplainable(int explainable) {
+        this.explainable = explainable;
+    }
+
+    public int getWindowAction() {
+        return windowAction;
+    }
+
+    public void setWindowAction(int windowAction) {
+        this.windowAction = windowAction;
+    }
+
+    public int getButtonAction() {
+        return buttonAction;
+    }
+
+    public void setButtonAction(int buttonAction) {
+        this.buttonAction = buttonAction;
+    }
+
+    public int getKill() {
+        return kill;
+    }
+
+    public void setKill(int kill) {
+        this.kill = kill;
+    }
+
+    public int getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(int enabled) {
+        this.enabled = enabled;
+    }
+
+    public int getResetPeriod() {
+        return resetPeriod;
+    }
+
+    public void setResetPeriod(int resetPeriod) {
+        this.resetPeriod = resetPeriod;
+    }
+
+    public int getTimeLimit() {
+        return timeLimit;
+    }
+
+    public void setTimeLimit(int timeLimit) {
+        this.timeLimit = timeLimit;
+    }
+
+    public int getMaxStarts() {
+        return maxStarts;
+    }
+
+    public void setMaxStarts(int maxStarts) {
+        this.maxStarts = maxStarts;
+    }
+}

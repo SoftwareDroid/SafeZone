@@ -63,6 +63,7 @@ public class DatabaseTest
         TopicManagerDB.createOrUpdateTopic(testTopic1);
 
         Topic testTopicFromDb = TopicManagerDB.getScoredTopicById(testTopic1.getDatabase_id());
+        assertNotNull(testTopicFromDb);
         assertEquals(testTopicFromDb.getScoredWords().size(),2);
         // update topic
         ArrayList<Topic.ScoredWordEntry> words2 = new ArrayList<>();
@@ -71,17 +72,19 @@ public class DatabaseTest
         testTopic1.setScoredWords(words2);
         assertEquals(1,testTopic1.getScoredWords().size());
         assertEquals(testTopic1.getDatabase_id(),1);
-        TopicManagerDB.deleteTopic(testTopic1);
-        // delete does not work
-        ArrayList<Topic.ScoredWordEntry> words3 = TopicManagerDB.getWordsForTopic(1l, TopicManagerDB.TOPIC_TYPE_SCORED);
-        assertEquals(0,words3.size());
+
         TopicManagerDB.createOrUpdateTopic(testTopic1);
         //
         {
             Topic testTopicFromDb2 = TopicManagerDB.getScoredTopicById(testTopic1.getDatabase_id());
+            assertNotNull(testTopicFromDb2);
             assertEquals(1, testTopicFromDb2.getScoredWords().size());
-//            assertEquals("cat", testTopicFromDb2.getScoredWords().get(0).word);
+            assertEquals("cat", testTopicFromDb2.getScoredWords().get(0).word);
         }
+        TopicManagerDB.deleteTopic(testTopic1);
+        // delete does not work
+        ArrayList<Topic.ScoredWordEntry> words3 = TopicManagerDB.getWordsForTopic(1l, TopicManagerDB.TOPIC_TYPE_SCORED);
+        assertEquals(0,words3.size());
         DatabaseManager.close();
 
     }
