@@ -11,7 +11,7 @@ import java.util.Set;
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 
-    private static final String DATABASE_NAME = "mydatabase.db";
+    public static final String DATABASE_NAME = "mydatabase.db";
     private static final int DATABASE_VERSION = 1;
 
     public DatabaseHelper(Context context)
@@ -30,11 +30,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 "writable INTEGER, " +
                 "readable INTEGER, " +
                 "comment TEXT, " +
-                "enabled INTEGER,"+
-                "check_all_events INTEGER,"+
+                "enabled INTEGER," +
+                "check_all_events INTEGER," +
                 "usage_filter_id INTEGER NOT NULL, " + // Foreign key column
                 "FOREIGN KEY (usage_filter_id) REFERENCES usage_filters(id) ON DELETE CASCADE" // Foreign key constraint
-                +")");
+                + ")");
 
         // special smartfilter can be detected with the special smart filter name and then added differtly
         // parameters which define the productivity filters
@@ -45,26 +45,26 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 "button_action INTEGER, " +
                 "kill INTEGER, " +  //boolean
                 "enabled INTEGER, " +
-                "reset_period INTEGER, "+   //in seconds
-                "time_limit INTEGER,"+       //in seconds
-                "max_starts INTEGER"+       // max starts between rests
+                "reset_period INTEGER, " +   //in seconds
+                "time_limit INTEGER," +       //in seconds
+                "max_starts INTEGER" +       // max starts between rests
                 ")");
         // Every Usage filter can have n restrictions
         db.execSQL("CREATE TABLE time_restriction_rules (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "usage_filter_id INTEGER, " +  // Define the column for the foreign key
-                "monday INTEGER, "+   //active on this day
-                "tuesday INTEGER,"+       //active on this day
-                "wednesday INTEGER,"+       // active on this day
-                "thursday INTEGER,"+       // active on this day
-                "friday INTEGER,"+       // active on this day
-                "saturday INTEGER,"+       // active on this day
-                "sunday INTEGER,"+       // active on this day
-                "start_hour INTEGER,"+
-                "start_min INTEGER,"+
-                "end_hour INTEGER,"+
-                "end_min INTEGER,"+
-                "black_list INTEGER,"+
+                "monday INTEGER, " +   //active on this day
+                "tuesday INTEGER," +       //active on this day
+                "wednesday INTEGER," +       // active on this day
+                "thursday INTEGER," +       // active on this day
+                "friday INTEGER," +       // active on this day
+                "saturday INTEGER," +       // active on this day
+                "sunday INTEGER," +       // active on this day
+                "start_hour INTEGER," +
+                "start_min INTEGER," +
+                "end_hour INTEGER," +
+                "end_min INTEGER," +
+                "black_list INTEGER," +
                 "FOREIGN KEY (usage_filter_id) REFERENCES usage_filters(id) ON DELETE CASCADE" + // Foreign key constraint
                 ")");
         ////////////////////////////////////////////////////////////////////////
@@ -85,12 +85,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 "app_group INTEGER, " + //Edit of shared filters can affect multible apps also between differn groups like 0=All, 1=Browsers, 2= Non_browsers
                 "readable INTEGER, " + // maybe relevant
                 "writable INTEGER, " + //maybe relevant. Like Write protection
-                "name TEXT, "+
-                "short_description TEXT,"+
+                "name TEXT, " +
+                "short_description TEXT," +
                 "checks_only_visible INTEGER," + // boolean
                 "what_to_check INTEGER," + // Only Editable, Only none editable, both, TODO
-                "ignore_case INTEGER,"+ //TODO
-                "type_of_list INTEGER,"+ // extact,scoring
+                "ignore_case INTEGER," + //TODO
+                "type_of_list INTEGER," + // extact,scoring
                 "id_for_list INTEGER" +
                 ")");
         // A app can have n content filters and they can be shared among k apps (if shared attribute is on)
@@ -188,44 +188,5 @@ public class DatabaseHelper extends SQLiteOpenHelper
         onCreate(db);
     }
 
-    /*public boolean[] isStringInTopicBatch(String[] texts, int topicId, String language, boolean checkAgainstLowerCase)
-    {
-        boolean[] results = new boolean[texts.length];
-        SQLiteDatabase db = getWritableDatabase();
-        String[] selectionArgs = new String[texts.length + 2];
-        selectionArgs[0] = String.valueOf(topicId);
-        selectionArgs[1] = language;
-        for (int i = 0; i < texts.length; i++)
-        {
-            selectionArgs[i + 2] = checkAgainstLowerCase ? texts[i].toLowerCase() : texts[i];
-        }
-        String query = "SELECT w.word FROM word_lists wl JOIN word_list_words wlw ON wl.id = wlw.word_list_id JOIN words w ON wlw.word_id = w.id JOIN languages l ON wl.language_id = l.id WHERE wl.id = ? AND l.code = ? AND w.word IN (" + getCommaSeparatedValues(texts.length) + ")";
-        Cursor cursor = db.rawQuery(query, selectionArgs);
-        Set<String> matchingWords = new HashSet<>();
-        while (cursor.moveToNext())
-        {
-            matchingWords.add(cursor.getString(0));
-        }
-        cursor.close();
-        for (int i = 0; i < texts.length; i++)
-        {
-            results[i] = matchingWords.contains(selectionArgs[i + 2]);
-        }
-        return results;
-    }*/
-
-    /*private String getCommaSeparatedValues(int length)
-    {
-        StringBuilder values = new StringBuilder();
-        for (int i = 0; i < length; i++)
-        {
-            values.append("?");
-            if (i < length - 1)
-            {
-                values.append(",");
-            }
-        }
-        return values.toString();
-    }*/
 }
 

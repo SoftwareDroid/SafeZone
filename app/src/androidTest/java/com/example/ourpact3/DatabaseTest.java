@@ -35,9 +35,9 @@ public class DatabaseTest
     {
         Topic.ScoredWordEntry entry = new Topic.ScoredWordEntry();
         entry.read = 10;
-        entry.write = 10;
+        entry.write = 15;
         entry.word = word;
-        entry.languageId = 0;
+        entry.languageId = 3;
         entry.isRegex = false;
         return entry;
 
@@ -47,12 +47,12 @@ public class DatabaseTest
     public void testSetManyTopics() throws JSONException
     {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-
+        appContext.deleteDatabase(DatabaseHelper.DATABASE_NAME);
         Topic testTopic1 = new Topic("NSFW");
         ArrayList<Topic.ScoredWordEntry> words = new ArrayList<>();
         // Create word
 
-        words.add(createSampleScoredWord("girl"));
+        words.add(createSampleScoredWord("boobs"));
         words.add(createSampleScoredWord("ass"));
         testTopic1.setScoredWords(words);
 
@@ -69,6 +69,7 @@ public class DatabaseTest
         manyTopics.add(testTopic2);
         manyTopics.add(testTopic1);
         DatabaseManager.dbHelper = new DatabaseHelper(appContext);
+
         DatabaseManager.open();
         TopicManagerDB.createOrUpdateTopic(testTopic2);
         TopicManagerDB.createOrUpdateTopic(testTopic1);
@@ -77,11 +78,17 @@ public class DatabaseTest
         assertEquals(topicsFromDB.size(),2);
         Topic nsfwTopic = topicsFromDB.get(1);
         assertEquals("NSFW",nsfwTopic.getTopicName());
+        ArrayList<Topic.ScoredWordEntry> scoredWords = nsfwTopic.getScoredWords();
+        // Check one word
+        assertEquals(scoredWords.size(),2);
+        assertEquals(scoredWords.get(0).word,"boobs");
+        assertEquals(scoredWords.get(0).read,10);
+        assertEquals(scoredWords.get(0).write,15);
+        assertEquals(scoredWords.get(0).languageId,3);
+        assertFalse(scoredWords.get(0).isRegex);
 
-        assertEquals(nsfwTopic.getScoredWords().size(),2);
         DatabaseManager.close();
         // CRUD , CreateOrUpdate a single Topic, Read, Update, Delete
-        //TODO: test get Single Topic by id
         //TODO: delete topic by id
 
         //TODO: change scored topic word list// it is enough to overwrite exising topic and use code from add topics
