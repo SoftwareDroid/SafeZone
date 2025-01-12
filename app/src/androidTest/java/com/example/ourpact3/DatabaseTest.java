@@ -70,7 +70,9 @@ public class DatabaseTest
         assertEquals(1,words2.size());
         testTopic1.setScoredWords(words2);
         assertEquals(1,testTopic1.getScoredWords().size());
+        assertEquals(testTopic1.getDatabase_id(),1);
         TopicManagerDB.deleteTopic(testTopic1);
+        // delete does not work
         ArrayList<Topic.ScoredWordEntry> words3 = TopicManagerDB.getWordsForTopic(1l, TopicManagerDB.TOPIC_TYPE_SCORED);
         assertEquals(0,words3.size());
         TopicManagerDB.createOrUpdateTopic(testTopic1);
