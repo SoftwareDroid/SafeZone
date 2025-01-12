@@ -182,7 +182,7 @@ public class TopicManagerDB
     }
 
     @SuppressLint("Range")
-    private static ArrayList<Topic.ScoredWordEntry> getWordsForTopic(long topicId, int topicType)
+    public static ArrayList<Topic.ScoredWordEntry> getWordsForTopic(long topicId, int topicType)
     {
         ArrayList<Topic.ScoredWordEntry> words = new ArrayList<>();
         String query = "SELECT wl.id, wl.text, wl.language_id, wl.is_regex, ws.read, ws.write " +
