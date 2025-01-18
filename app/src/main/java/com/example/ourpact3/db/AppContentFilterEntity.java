@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,8 +23,9 @@ import org.jetbrains.annotations.NotNull;
                         parentColumns = "id",
                         childColumns = "content_filter_id",
                         onDelete = ForeignKey.CASCADE
-                )
-        }
+                ),
+        },
+        indices = @Index(value = {"content_filter_id"})
 )
 public class AppContentFilterEntity {
     @ColumnInfo(name = "app_package_name")

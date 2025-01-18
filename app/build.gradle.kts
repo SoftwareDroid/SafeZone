@@ -14,6 +14,7 @@ android {
         versionName = "1.23.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {

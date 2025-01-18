@@ -11,7 +11,6 @@ import java.util.List;
 
 @Dao
 public interface WordListDao {
-
     // Insert a single WordListEntity
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertWordList(WordListEntity wordListEntity);

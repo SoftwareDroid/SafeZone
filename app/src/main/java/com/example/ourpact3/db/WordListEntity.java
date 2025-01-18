@@ -3,6 +3,7 @@ package com.example.ourpact3.db;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 import com.example.ourpact3.db.LanguageEntity;
@@ -14,7 +15,8 @@ import com.example.ourpact3.db.LanguageEntity;
                 parentColumns = "id",
                 childColumns = "language_id",
                 onDelete = ForeignKey.CASCADE
-        )
+        ),
+        indices = @Index(value = {"language_id"})
 )
 @TypeConverters({BooleanConverter.class})
 public class WordListEntity {

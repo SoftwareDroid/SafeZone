@@ -3,6 +3,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Database;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -17,7 +18,8 @@ import org.jetbrains.annotations.NotNull;
                 parentColumns = "id",
                 childColumns = "usage_filter_id",
                 onDelete = ForeignKey.CASCADE
-        )
+        ),
+        indices = @Index(value = {"usage_filter_id"})
 )
 @TypeConverters({BooleanConverter.class})
 public class AppsEntity {
