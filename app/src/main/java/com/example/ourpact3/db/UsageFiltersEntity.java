@@ -3,8 +3,10 @@ package com.example.ourpact3.db;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 @Entity(tableName = "usage_filters")
+@TypeConverters({BooleanConverter.class})
 public class UsageFiltersEntity {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -20,10 +22,10 @@ public class UsageFiltersEntity {
     private int buttonAction;
 
     @ColumnInfo(name = "kill")
-    private int kill;
+    private boolean kill;
 
     @ColumnInfo(name = "enabled")
-    private int enabled;
+    private boolean enabled;
 
     @ColumnInfo(name = "reset_period")
     private int resetPeriod;
@@ -67,19 +69,20 @@ public class UsageFiltersEntity {
         this.buttonAction = buttonAction;
     }
 
-    public int getKill() {
+    public boolean getKill() {
         return kill;
     }
 
-    public void setKill(int kill) {
+    public void
+    setKill(boolean kill) {
         this.kill = kill;
     }
 
-    public int getEnabled() {
+    public boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(int enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 

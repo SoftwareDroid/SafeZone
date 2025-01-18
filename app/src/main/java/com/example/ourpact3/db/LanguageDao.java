@@ -10,7 +10,8 @@ import androidx.room.Update;
 import java.util.List;
 
 @Dao
-public interface LanguageEntityDao {
+public interface LanguageDao
+{
     @Insert
     void insertLanguage(LanguageEntity language);
 

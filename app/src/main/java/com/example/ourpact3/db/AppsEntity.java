@@ -6,6 +6,7 @@ import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
 @Entity(
         tableName = "apps",
@@ -16,25 +17,26 @@ import androidx.room.RoomDatabase;
                 onDelete = ForeignKey.CASCADE
         )
 )
+@TypeConverters({BooleanConverter.class})
 public class AppsEntity {
     @PrimaryKey
     @ColumnInfo(name = "package_name")
     private String packageName;
 
     @ColumnInfo(name = "writable")
-    private int writable;
+    private boolean writable;
 
     @ColumnInfo(name = "readable")
-    private int readable;
+    private boolean readable;
 
     @ColumnInfo(name = "comment")
     private String comment;
 
     @ColumnInfo(name = "enabled")
-    private int enabled;
+    private boolean enabled;
 
     @ColumnInfo(name = "check_all_events")
-    private int checkAllEvents;
+    private boolean checkAllEvents;
 
     @ColumnInfo(name = "usage_filter_id")
     private int usageFilterId;
@@ -48,19 +50,19 @@ public class AppsEntity {
         this.packageName = packageName;
     }
 
-    public int getWritable() {
+    public boolean getWritable() {
         return writable;
     }
 
-    public void setWritable(int writable) {
+    public void setWritable(boolean writable) {
         this.writable = writable;
     }
 
-    public int getReadable() {
+    public boolean getReadable() {
         return readable;
     }
 
-    public void setReadable(int readable) {
+    public void setReadable(boolean readable) {
         this.readable = readable;
     }
 
@@ -72,19 +74,19 @@ public class AppsEntity {
         this.comment = comment;
     }
 
-    public int getEnabled() {
+    public boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(int enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    public int getCheckAllEvents() {
+    public boolean getCheckAllEvents() {
         return checkAllEvents;
     }
 
-    public void setCheckAllEvents(int checkAllEvents) {
+    public void setCheckAllEvents(boolean checkAllEvents) {
         this.checkAllEvents = checkAllEvents;
     }
 

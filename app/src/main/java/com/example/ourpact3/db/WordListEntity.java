@@ -9,7 +9,7 @@ import androidx.room.TypeConverters;
 @Entity(
         tableName = "word_list",
         foreignKeys = @ForeignKey(
-                entity = LanguagesEntity.class,
+                entity = LanguageEntity.class,
                 parentColumns = "id",
                 childColumns = "language_id",
                 onDelete = ForeignKey.CASCADE
