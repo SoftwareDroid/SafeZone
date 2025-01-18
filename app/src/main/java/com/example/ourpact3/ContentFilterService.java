@@ -15,8 +15,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.example.ourpact3.db.DatabaseManager;
-import com.example.ourpact3.db.UsageSmartFilterManager;
+import com.example.ourpact3.unused.DatabaseManager;
+import com.example.ourpact3.unused.UsageSmartFilterManager;
 import com.example.ourpact3.learn_mode.LearnModeComponent;
 import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.service.AppPermission;
@@ -30,14 +30,11 @@ import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.service.AppKiller;
 import com.example.ourpact3.service.IContentFilterService;
 import com.example.ourpact3.service.NormalModeComponent;
-import com.example.ourpact3.topics.Topic;
 import com.example.ourpact3.topics.TopicManager;
 import com.example.ourpact3.util.PreferencesKeys;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Set;
 import java.util.TreeMap;
 
 // https://developer.android.com/guide/topics/ui/accessibility/service

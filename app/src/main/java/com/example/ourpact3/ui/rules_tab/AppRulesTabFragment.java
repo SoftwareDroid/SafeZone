@@ -2,7 +2,6 @@ package com.example.ourpact3.ui.rules_tab;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ourpact3.R;
-import com.example.ourpact3.db.DatabaseManager;
+import com.example.ourpact3.unused.DatabaseManager;
 import com.example.ourpact3.ui.dialog.AppListDialog;
 import com.example.ourpact3.util.PackageUtil;
 import com.example.ourpact3.util.PreferencesKeys;

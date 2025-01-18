@@ -3,9 +3,12 @@ package com.example.ourpact3.db;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.Relation;
 import androidx.room.TypeConverters;
 
 import com.example.ourpact3.model.PipelineButtonAction;
+
+import java.util.List;
 
 @Entity(tableName = "usage_filters")
 @TypeConverters({BooleanConverter.class, PipelineButtonActionConverter.class})
@@ -37,6 +40,9 @@ public class UsageFiltersEntity {
 
     @ColumnInfo(name = "max_starts")
     private int maxStarts;
+
+    @Relation(parentColumn = "id", entityColumn = "usage_filter_id")
+    public List<TimeRestrictionRulesEntity> timeRestrictions;
 
     // getters and setters
     public int getId() {

@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ourpact3.R;
 
-import com.example.ourpact3.db.DatabaseManager;
+import com.example.ourpact3.unused.DatabaseManager;
 import com.example.ourpact3.util.PackageUtil;
 
 import java.util.ArrayList;

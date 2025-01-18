@@ -10,9 +10,9 @@ import android.content.Context;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.example.ourpact3.db.DatabaseHelper;
-import com.example.ourpact3.db.DatabaseManager;
-import com.example.ourpact3.db.TopicManagerDB;
+import com.example.ourpact3.unused.DatabaseHelper;
+import com.example.ourpact3.unused.DatabaseManager;
+import com.example.ourpact3.unused.TopicManagerDB;
 import com.example.ourpact3.topics.Topic;
 
 import org.json.JSONException;

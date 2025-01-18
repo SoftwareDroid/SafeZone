@@ -2,19 +2,13 @@ package com.example.ourpact3.ui.exceptions_tab;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.app.Dialog;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.SearchView;
 
 import androidx.fragment.app.Fragment;
@@ -22,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.ourpact3.ui.dialog.AppListDialog;
 import com.example.ourpact3.util.PreferencesKeys;
-import com.example.ourpact3.db.DatabaseManager;
+import com.example.ourpact3.unused.DatabaseManager;
 import com.example.ourpact3.R;
 import com.example.ourpact3.util.PackageUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

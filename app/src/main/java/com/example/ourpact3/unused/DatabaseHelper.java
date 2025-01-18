@@ -1,12 +1,8 @@
-package com.example.ourpact3.db;
+package com.example.ourpact3.unused;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class DatabaseHelper extends SQLiteOpenHelper
 {

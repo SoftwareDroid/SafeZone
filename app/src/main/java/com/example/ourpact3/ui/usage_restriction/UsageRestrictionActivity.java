@@ -19,8 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.R;
-import com.example.ourpact3.db.DatabaseManager;
-import com.example.ourpact3.db.UsageSmartFilterManager;
+import com.example.ourpact3.unused.DatabaseManager;
+import com.example.ourpact3.unused.UsageSmartFilterManager;
 import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
 import com.example.ourpact3.smart_filter.ProductivityTimeRule;

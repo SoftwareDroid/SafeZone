@@ -1,4 +1,4 @@
-package com.example.ourpact3.db;
+package com.example.ourpact3.unused;
 
 import android.content.ContentValues;
 
@@ -7,7 +7,6 @@ import com.example.ourpact3.smart_filter.ContentSmartFilterBase;
 import com.example.ourpact3.smart_filter.WordListFilterExact;
 import com.example.ourpact3.smart_filter.WordListFilterScored;
 
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 
 

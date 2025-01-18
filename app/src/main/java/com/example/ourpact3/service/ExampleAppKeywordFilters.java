@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 
 import com.example.ourpact3.ContentFilterService;
-import com.example.ourpact3.db.DatabaseManager;
+import com.example.ourpact3.unused.DatabaseManager;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.smart_filter.AppFilter;

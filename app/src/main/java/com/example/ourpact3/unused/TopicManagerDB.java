@@ -1,20 +1,12 @@
-package com.example.ourpact3.db;
+package com.example.ourpact3.unused;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.example.ourpact3.model.PipelineButtonAction;
-import com.example.ourpact3.model.PipelineWindowAction;
-import com.example.ourpact3.pipeline.CounterAction;
-import com.example.ourpact3.smart_filter.ProductivityTimeRule;
-import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
 import com.example.ourpact3.topics.Topic;
 
-import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 public class TopicManagerDB
 {
