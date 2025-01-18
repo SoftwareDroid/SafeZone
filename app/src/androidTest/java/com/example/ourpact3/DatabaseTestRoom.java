@@ -3,6 +3,7 @@ package com.example.ourpact3;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
 
@@ -37,7 +38,7 @@ public class DatabaseTestRoom
         dao.insert(exceptionList);
 
         // Retrieve the ExceptionList entity from the database
-        ExceptionListEntity retrievedExceptionList = dao.getByAppName("example");
+        ExceptionListEntity retrievedExceptionList = dao.getExceptionListByAppName("example");
 
         // Assert that the retrieved data is not null
         assertNotNull(retrievedExceptionList);
@@ -51,8 +52,7 @@ public class DatabaseTestRoom
         dao.delete(exceptionList);
 
         // Retrieve the ExceptionList entity from the database again
-        ExceptionListEntity deletedExceptionList = dao.getByAppName("example");
-
+        ExceptionListEntity deletedExceptionList = dao.getExceptionListByAppName("example");
         // Assert that the retrieved data is null
         assertNull(deletedExceptionList);
     }

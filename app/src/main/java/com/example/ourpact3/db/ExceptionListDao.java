@@ -7,33 +7,18 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import java.util.List;
+
 @Dao
 public interface ExceptionListDao {
-
     @Insert
-    void insert(ExceptionListEntity exceptionList);
+    void insert(ExceptionListEntity... users);
 
-    @Insert
-    void insertAll(List<ExceptionListEntity> exceptionLists);
+    @Delete
+    void delete(ExceptionListEntity user);
+
+    @Query("SELECT * FROM exception_list WHERE appName = :appName")
+    ExceptionListEntity getExceptionListByAppName(String appName);
 
     @Query("SELECT * FROM exception_list")
     List<ExceptionListEntity> getAll();
-
-    @Query("SELECT * FROM exception_list WHERE appName = :appName LIMIT 1")
-    ExceptionListEntity getByAppName(String appName);
-
-    @Update
-    void update(ExceptionListEntity exceptionList);
-
-    @Delete
-    void delete(ExceptionListEntity exceptionList);
-
-    @Query("DELETE FROM exception_list WHERE appName = :appName")
-    void deleteByAppName(String appName);
-
-    @Query("SELECT * FROM exception_list WHERE readable = :readable")
-    List<ExceptionListEntity> getAllByReadable(boolean readable);
-
-    // Add more queries as needed
 }
-

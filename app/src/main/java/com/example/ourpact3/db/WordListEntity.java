@@ -6,7 +6,9 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
+
 import com.example.ourpact3.db.LanguageEntity;
+
 
 @Entity(
         tableName = "word_list",
@@ -19,7 +21,8 @@ import com.example.ourpact3.db.LanguageEntity;
         indices = @Index(value = {"language_id"})
 )
 @TypeConverters({BooleanConverter.class})
-public class WordListEntity {
+public class WordListEntity
+{
     @PrimaryKey
     @ColumnInfo(name = "id")
     private int id;
@@ -40,51 +43,63 @@ public class WordListEntity {
     private int topicId;
 
     // getters and setters
-    public int getId() {
+    public int getId()
+    {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(int id)
+    {
         this.id = id;
     }
 
-    public String getText() {
+    public String getText()
+    {
         return text;
     }
 
-    public void setText(String text) {
+    public void setText(String text)
+    {
         this.text = text;
     }
 
-    public int getLanguageId() {
+    public int getLanguageId()
+    {
         return languageId;
     }
 
-    public void setLanguageId(int languageId) {
+    public void setLanguageId(int languageId)
+    {
         this.languageId = languageId;
     }
 
-    public boolean isRegex() {
+    public boolean isRegex()
+    {
         return isRegex;
     }
 
-    public void setRegex(boolean regex) {
+    public void setRegex(boolean regex)
+    {
         isRegex = regex;
     }
 
-    public int getTopicType() {
+    public int getTopicType()
+    {
         return topicType;
     }
 
-    public void setTopicType(int topicType) {
+    public void setTopicType(int topicType)
+    {
         this.topicType = topicType;
     }
 
-    public int getTopicId() {
+    public int getTopicId()
+    {
         return topicId;
     }
 
-    public void setTopicId(int topicId) {
+    public void setTopicId(int topicId)
+    {
         this.topicId = topicId;
     }
 }

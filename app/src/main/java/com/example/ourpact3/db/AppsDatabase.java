@@ -3,9 +3,15 @@ package com.example.ourpact3.db;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {AppsEntity.class, UsageFiltersEntity.class, ContentFiltersEntity.class, AppContentFilterEntity.class, WordListDao.class,LanguageEntity.class, ExceptionListDao.class}, version = 1)
+/**
+ * List here all Entities and no DAOs
+ */
+@Database(entities = {AppsEntity.class, UsageFiltersEntity.class, ContentFiltersEntity.class, AppContentFilterEntity.class, WordListEntity.class,LanguageEntity.class, ExceptionListEntity.class}, version = 1)
 public abstract class AppsDatabase extends RoomDatabase
 {
+    /*
+    List here only DAOs
+     */
     public abstract AppsDao appsDao();
     public abstract UsageFiltersDao usageFiltersDao();
     public abstract ContentFiltersDao contentFiltersDao();
