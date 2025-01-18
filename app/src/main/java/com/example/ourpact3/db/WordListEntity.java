@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
+import com.example.ourpact3.db.LanguageEntity;
 
 @Entity(
         tableName = "word_list",

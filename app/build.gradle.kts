@@ -17,7 +17,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Use a different id for release so that we can have both installed
+            android.defaultConfig.applicationIdSuffix = ".debug"
+            resValue("string", "app_name", "SafeZone (Debug)")
+        }
         release {
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

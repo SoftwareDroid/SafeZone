@@ -9,7 +9,7 @@ import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 
 @Entity(tableName = "content_filters")
-@TypeConverters({WindowActionConverter.class,PipelineButtonAction.class,BooleanConverter.class})
+@TypeConverters({WindowActionConverter.class, PipelineButtonActionConverter.class,BooleanConverter.class})
 public class ContentFiltersEntity {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

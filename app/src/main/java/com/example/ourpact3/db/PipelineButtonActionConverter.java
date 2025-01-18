@@ -3,9 +3,8 @@ package com.example.ourpact3.db;
 import androidx.room.TypeConverter;
 
 import com.example.ourpact3.model.PipelineButtonAction;
-import com.example.ourpact3.model.PipelineWindowAction;
 
-public class ButtonActionConverter
+public class PipelineButtonActionConverter
 {
     @TypeConverter
     public static PipelineButtonAction fromInteger(int value)

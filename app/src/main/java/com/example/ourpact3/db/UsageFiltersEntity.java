@@ -5,8 +5,10 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import com.example.ourpact3.model.PipelineButtonAction;
+
 @Entity(tableName = "usage_filters")
-@TypeConverters({BooleanConverter.class})
+@TypeConverters({BooleanConverter.class, PipelineButtonActionConverter.class})
 public class UsageFiltersEntity {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -19,7 +21,7 @@ public class UsageFiltersEntity {
     private int windowAction;
 
     @ColumnInfo(name = "button_action")
-    private int buttonAction;
+    private PipelineButtonAction buttonAction;
 
     @ColumnInfo(name = "kill")
     private boolean kill;
@@ -61,11 +63,11 @@ public class UsageFiltersEntity {
         this.windowAction = windowAction;
     }
 
-    public int getButtonAction() {
+    public PipelineButtonAction getButtonAction() {
         return buttonAction;
     }
 
-    public void setButtonAction(int buttonAction) {
+    public void setButtonAction(PipelineButtonAction buttonAction) {
         this.buttonAction = buttonAction;
     }
 

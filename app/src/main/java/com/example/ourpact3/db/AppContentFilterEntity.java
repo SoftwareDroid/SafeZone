@@ -1,8 +1,11 @@
 package com.example.ourpact3.db;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+
+import org.jetbrains.annotations.NotNull;
 
 @Entity(
         tableName = "app_content_filter",
@@ -24,12 +27,14 @@ import androidx.room.ForeignKey;
 )
 public class AppContentFilterEntity {
     @ColumnInfo(name = "app_package_name")
+    @NotNull
     private String appPackageName;
 
     @ColumnInfo(name = "content_filter_id")
     private int contentFilterId;
 
     // getters and setters
+    @NonNull
     public String getAppPackageName() {
         return appPackageName;
     }

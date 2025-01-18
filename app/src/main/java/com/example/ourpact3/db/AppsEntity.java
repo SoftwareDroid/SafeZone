@@ -8,6 +8,8 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+import org.jetbrains.annotations.NotNull;
+
 @Entity(
         tableName = "apps",
         foreignKeys = @ForeignKey(
@@ -21,6 +23,7 @@ import androidx.room.TypeConverters;
 public class AppsEntity {
     @PrimaryKey
     @ColumnInfo(name = "package_name")
+    @NotNull
     private String packageName;
 
     @ColumnInfo(name = "writable")
