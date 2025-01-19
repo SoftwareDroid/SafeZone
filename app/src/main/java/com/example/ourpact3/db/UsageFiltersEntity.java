@@ -24,7 +24,7 @@ public class UsageFiltersEntity {
     private int windowAction;
 
     @ColumnInfo(name = "button_action")
-    private PipelineButtonAction buttonAction;
+    private PipelineButtonAction buttonAction = PipelineButtonAction.NONE;
 
     @ColumnInfo(name = "kill")
     private boolean kill;

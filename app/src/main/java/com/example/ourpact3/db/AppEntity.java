@@ -1,18 +1,15 @@
 package com.example.ourpact3.db;
 import androidx.room.ColumnInfo;
-import androidx.room.Database;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import org.jetbrains.annotations.NotNull;
 
 @Entity(
-        tableName = "apps",
+        tableName = "AppEntity",
         foreignKeys = @ForeignKey(
                 entity = UsageFiltersEntity.class,
                 parentColumns = "id",
@@ -22,7 +19,8 @@ import org.jetbrains.annotations.NotNull;
         indices = @Index(value = {"usage_filter_id"})
 )
 @TypeConverters({BooleanConverter.class})
-public class AppsEntity {
+public class AppEntity
+{
     @PrimaryKey
     @ColumnInfo(name = "package_name")
     @NotNull

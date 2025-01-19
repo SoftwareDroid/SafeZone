@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
         primaryKeys = {"app_package_name", "content_filter_id"},
         foreignKeys = {
                 @ForeignKey(
-                        entity = AppsEntity.class,
+                        entity = AppEntity.class,
                         parentColumns = "package_name",
                         childColumns = "app_package_name",
                         onDelete = ForeignKey.CASCADE
