@@ -13,7 +13,7 @@ import java.util.List;
 public interface WordListDao {
     // Insert a single WordListEntity
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertWordList(WordListEntity wordListEntity);
+    long insert(WordListEntity wordListEntity);
 
     // Insert multiple WordListEntity
     @Insert(onConflict = OnConflictStrategy.REPLACE)

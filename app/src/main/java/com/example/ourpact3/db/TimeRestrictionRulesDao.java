@@ -10,7 +10,7 @@ import java.util.List;
 @Dao
 public interface TimeRestrictionRulesDao {
     @Insert
-    void insert(TimeRestrictionRulesEntity... rules);
+    long insert(TimeRestrictionRulesEntity... rules);
 
     @Delete
     void delete(TimeRestrictionRulesEntity rule);

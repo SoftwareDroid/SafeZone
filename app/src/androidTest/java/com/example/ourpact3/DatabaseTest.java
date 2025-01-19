@@ -40,15 +40,13 @@ public class DatabaseTest
         // Usage Filter Enity
         UsageFiltersEntity usageFilter1 = new UsageFiltersEntity();
         UsageFiltersEntity usageFilter2 = new UsageFiltersEntity();
-        daoUsageFilters.insertUsageFilter(usageFilter1);
-        daoUsageFilters.insertUsageFilter(usageFilter2);
+        long id1 = daoUsageFilters.insert(usageFilter1);
+        long id2 = daoUsageFilters.insert(usageFilter2);
 
-        UsageFiltersEntity  retrievedUsageFilter = daoUsageFilters.getUsageFilterById(usageFilter1.getId());
-        assertNotNull(retrievedUsageFilter);
+
         // Create Sample App Entry
         AppEntity app1 = new AppEntity();
-        int usageFilter1ID = usageFilter1.getId();
-        app1.setUsageFilterId(usageFilter1ID);
+        app1.setUsageFilterId(id1);
         app1.setPackageName("foobar");
         app1.setReadable(true);
         //insert

@@ -42,7 +42,7 @@ public class AppEntity
     private boolean checkAllEvents;
 
     @ColumnInfo(name = "usage_filter_id")
-    private int usageFilterId;
+    private long usageFilterId;
 
     // getters and setters
     public String getPackageName() {
@@ -93,11 +93,11 @@ public class AppEntity
         this.checkAllEvents = checkAllEvents;
     }
 
-    public int getUsageFilterId() {
+    public long getUsageFilterId() {
         return usageFilterId;
     }
 
-    public void setUsageFilterId(int usageFilterId) {
+    public void setUsageFilterId(long usageFilterId) {
         this.usageFilterId = usageFilterId;
     }
 }

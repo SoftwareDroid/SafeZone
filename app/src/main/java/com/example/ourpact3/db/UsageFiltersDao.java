@@ -10,8 +10,13 @@ import java.util.List;
 
 @Dao
 public interface UsageFiltersDao {
+    /**
+     *
+     * @param usageFilters
+     * @return the inserted id (the code is automatically generated
+     */
     @Insert
-    void insertUsageFilter(UsageFiltersEntity usageFilter);
+    long insert(UsageFiltersEntity usageFilters);
 
     @Query("SELECT * FROM usage_filters")
     List<UsageFiltersEntity> getAllUsageFilters();
