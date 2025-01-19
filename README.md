@@ -78,3 +78,6 @@ GPL
 ## Credits
 App Icon: SVG Repo - Lock Icon
 https://www.svgrepo.com/svg/530512/lock
+
+# Acknowledgments
+This project uses the Room persistence library for managing local databases. Room is part of Android Jetpack, developed by Google. For more information, visit the official documentation: [Room Documentation](https://developer.android.com/training/data-storage/room).

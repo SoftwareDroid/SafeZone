@@ -41,9 +41,6 @@ public class UsageFiltersEntity {
     @ColumnInfo(name = "max_starts")
     private int maxStarts;
 
-    @Relation(parentColumn = "id", entityColumn = "usage_filter_id")
-    public List<TimeRestrictionRulesEntity> timeRestrictions;
-
     // getters and setters
     public int getId() {
         return id;
