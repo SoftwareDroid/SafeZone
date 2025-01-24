@@ -59,7 +59,7 @@
     "blowjob",
     "handjob",
     "fingering",
-    "rimming",
+    //"rimming", in trimming
     "rimjob",
     "rim job",
     "quickie",
@@ -105,6 +105,7 @@
     //punish ai chat so that there is a higher chance of blocking stuff
     "^safe\\.duckduckgo.*&ia=chat$",
     "\\bcum\\b",
+    "\\brimming\\b",
     "\\banal\\b",
     "\\bbbw\\b",
     "\\bcock\\b",
