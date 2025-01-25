@@ -2,13 +2,20 @@ package com.example.ourpact3.db;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 
-@Entity(tableName = "content_filters")
+@Entity(tableName = "content_filters",
+        foreignKeys = @ForeignKey(
+                entity = WordListEntity.class,
+                parentColumns = "id",
+                childColumns = "word_list_id",
+                onDelete = ForeignKey.CASCADE
+        ))
 @TypeConverters({WindowActionConverter.class, PipelineButtonActionConverter.class,BooleanConverter.class})
 public class ContentFiltersEntity {
     @PrimaryKey(autoGenerate = true)
@@ -60,11 +67,8 @@ public class ContentFiltersEntity {
     @ColumnInfo(name = "ignore_case")
     private boolean ignoreCase;
 
-    @ColumnInfo(name = "type_of_list")
-    private int typeOfList;
-
-    @ColumnInfo(name = "id_for_list")
-    private int idForList;
+    @ColumnInfo(name = "word_list_id")
+    private long wordListID;
 
     // getters and setters
     public int getId() {
@@ -187,20 +191,12 @@ public class ContentFiltersEntity {
         this.ignoreCase = ignoreCase;
     }
 
-    public int getTypeOfList() {
-        return typeOfList;
+    public long getWordListID() {
+        return wordListID;
     }
 
-    public void setTypeOfList(int typeOfList) {
-        this.typeOfList = typeOfList;
-    }
-
-    public int getIdForList() {
-        return idForList;
-    }
-
-    public void setIdForList(int idForList) {
-        this.idForList = idForList;
+    public void setWordListID(long wordListID) {
+        this.wordListID = wordListID;
     }
 }
 

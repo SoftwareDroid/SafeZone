@@ -12,13 +12,19 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.ourpact3.db.AppDao;
 import com.example.ourpact3.db.AppEntity;
+import com.example.ourpact3.db.ContentFiltersEntity;
 import com.example.ourpact3.db.ExceptionListEntity;
 import com.example.ourpact3.db.ExceptionListDao;
 import com.example.ourpact3.db.AppsDatabase;
+import com.example.ourpact3.db.LanguageEntity;
 import com.example.ourpact3.db.TimeRestrictionRuleEntity;
 import com.example.ourpact3.db.TimeRestrictionRulesDao;
 import com.example.ourpact3.db.UsageFiltersDao;
 import com.example.ourpact3.db.UsageFiltersEntity;
+import com.example.ourpact3.db.WordDao;
+import com.example.ourpact3.db.WordEntity;
+import com.example.ourpact3.db.WordListEntity;
+import com.example.ourpact3.model.PipelineButtonAction;
 
 import org.junit.Test;
 
@@ -26,6 +32,61 @@ import java.util.List;
 
 public class DatabaseTest
 {
+    @Test
+    public void testContentFilters()
+    {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+
+        // Create a new instance of the AppsDatabase
+        AppsDatabase db = Room.databaseBuilder(context, AppsDatabase.class, "apps-database")
+                .allowMainThreadQueries()
+                .build();
+        //TODO: an app can have serveral content filters
+        // Create a new instance of the AppsDatabase
+
+        //create langauge first
+        LanguageEntity l1 = new LanguageEntity();
+        l1.setLongLanguageCode("en");
+        l1.setLongLanguageCode("English");
+        long firstLanguage = db.languageDao().insertLanguage(l1);
+        assertNotNull(db.languageDao().getLanguageById(firstLanguage));
+        // create list
+        WordListEntity animalList = new WordListEntity();
+        animalList.setName("Animals_Block_List");
+        long animalListID = db.wordListDao().insert(animalList);
+
+        WordEntity w1 = new WordEntity();
+        w1.setLanguageId(firstLanguage);
+        w1.setText("cat");
+        w1.setTopicType(WordEntity.TOPIC_SCORED);
+        w1.setReadScore(50);
+        w1.setWriteScore(50);
+        w1.setWordListID(animalListID);
+        WordEntity w2 = new WordEntity();
+        w2.setText("mouse");
+        w2.setLanguageId(firstLanguage);
+        w2.setTopicType(WordEntity.TOPIC_SCORED);
+        w2.setReadScore(50);
+        w2.setWriteScore(50);
+        w2.setWordListID(animalListID);
+        WordDao wordDao = db.wordDao();
+        wordDao.insert(w1);
+        wordDao.insert(w2);
+        List<WordEntity> wordsInList = wordDao.getAllWordsInList(animalListID);
+
+        assertEquals(2,wordsInList.size());
+
+        // create one content filter
+        ContentFiltersEntity contentFilter1 = new ContentFiltersEntity();
+        contentFilter1.setEnabled(true);
+        contentFilter1.setKill(true);
+        contentFilter1.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+        contentFilter1.setExplainable(true);
+        contentFilter1.setIgnoreCase(true);
+        contentFilter1.setReadable(true);
+        contentFilter1.setWordListID(animalListID);
+    }
+
     @Test
     public void testAppInfoDao()
     {

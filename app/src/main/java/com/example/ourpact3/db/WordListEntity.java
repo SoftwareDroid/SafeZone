@@ -2,47 +2,17 @@ package com.example.ourpact3.db;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
-import androidx.room.Index;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
 
-import com.example.ourpact3.db.LanguageEntity;
-
-
-@Entity(
-        tableName = "word_list",
-        foreignKeys = @ForeignKey(
-                entity = LanguageEntity.class,
-                parentColumns = "id",
-                childColumns = "language_id",
-                onDelete = ForeignKey.CASCADE
-        ),
-        indices = @Index(value = {"language_id"})
-)
-@TypeConverters({BooleanConverter.class})
+@Entity
 public class WordListEntity
 {
-    @PrimaryKey
-    @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true)
     private int id;
+    @ColumnInfo(name = "name")
+    private String name;
 
-    @ColumnInfo(name = "text")
-    private String text;
-
-    @ColumnInfo(name = "language_id")
-    private int languageId;
-
-    @ColumnInfo(name = "is_regex")
-    private boolean isRegex;
-
-    @ColumnInfo(name = "topic_type")
-    private int topicType;
-
-    @ColumnInfo(name = "topic_id")
-    private int topicId;
-
-    // getters and setters
+    // Getters and setters
     public int getId()
     {
         return id;
@@ -53,54 +23,13 @@ public class WordListEntity
         this.id = id;
     }
 
-    public String getText()
+    public String getName()
     {
-        return text;
+        return name;
     }
 
-    public void setText(String text)
+    public void setName(String name)
     {
-        this.text = text;
-    }
-
-    public int getLanguageId()
-    {
-        return languageId;
-    }
-
-    public void setLanguageId(int languageId)
-    {
-        this.languageId = languageId;
-    }
-
-    public boolean isRegex()
-    {
-        return isRegex;
-    }
-
-    public void setRegex(boolean regex)
-    {
-        isRegex = regex;
-    }
-
-    public int getTopicType()
-    {
-        return topicType;
-    }
-
-    public void setTopicType(int topicType)
-    {
-        this.topicType = topicType;
-    }
-
-    public int getTopicId()
-    {
-        return topicId;
-    }
-
-    public void setTopicId(int topicId)
-    {
-        this.topicId = topicId;
+        this.name = name;
     }
 }
-

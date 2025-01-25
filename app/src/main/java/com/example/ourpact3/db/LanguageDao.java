@@ -13,16 +13,13 @@ import java.util.List;
 public interface LanguageDao
 {
     @Insert
-    void insertLanguage(LanguageEntity language);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertLanguages(List<LanguageEntity> languages);
+    long insertLanguage(LanguageEntity language);
 
     @Query("SELECT * FROM LanguageEntity")
     List<LanguageEntity> getAllLanguages();
 
     @Query("SELECT * FROM LanguageEntity WHERE id = :id")
-    LanguageEntity getLanguageById(int id);
+    LanguageEntity getLanguageById(long id);
 
     @Query("SELECT * FROM LanguageEntity WHERE longLanguageCode = :longLanguageCode")
     LanguageEntity getLanguageByLongCode(String longLanguageCode);
