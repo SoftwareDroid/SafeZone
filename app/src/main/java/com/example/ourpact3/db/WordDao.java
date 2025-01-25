@@ -36,6 +36,10 @@ public interface WordDao
     @Query("SELECT * FROM WordEntity WHERE word_list_id = :word_list_id")
     List<WordEntity> getAllWordsInList(long word_list_id);
 
+    @Query("SELECT * FROM WordEntity")
+    List<WordEntity> getAllWords();
+
+
     // Get a WordListEntity by id
     @Query("SELECT * FROM WordEntity WHERE id = :id")
     WordEntity getWordListById(int id);

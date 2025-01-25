@@ -97,7 +97,6 @@ public class WordEntity
 
     public void setReadScore(Integer readScore)
     {
-        assert this.topicType == TOPIC_SCORED;
         this.readScore = readScore;
     }
 
@@ -108,7 +107,6 @@ public class WordEntity
 
     public void setWriteScore(int writeScore)
     {
-        assert this.topicType == TOPIC_SCORED;
         this.writeScore = writeScore;
     }
 
