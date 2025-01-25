@@ -30,6 +30,4 @@ public interface UsageFiltersDao {
     @Delete
     void deleteUsageFilter(UsageFiltersEntity usageFilter);
 
-    @Query("DELETE FROM time_restriction_rules WHERE usage_filter_id = :id")
-    void deleteTimeRestrictionsByUsageFilterId(int id);
 }

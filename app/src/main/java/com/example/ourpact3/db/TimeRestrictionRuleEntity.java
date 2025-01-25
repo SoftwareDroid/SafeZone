@@ -17,12 +17,13 @@ import androidx.room.TypeConverters;
         )
 )
 @TypeConverters({BooleanConverter.class})
-public class TimeRestrictionRulesEntity {
+public class TimeRestrictionRuleEntity
+{
     @PrimaryKey(autoGenerate = true)
     private int id;
 
     @ColumnInfo(name = "usage_filter_id")
-    private int usageFilterId;
+    private long usageFilterId;
 
     @ColumnInfo(name = "monday")
     private boolean monday;
@@ -69,11 +70,11 @@ public class TimeRestrictionRulesEntity {
         this.id = id;
     }
 
-    public int getUsageFilterId() {
+    public long getUsageFilterId() {
         return usageFilterId;
     }
 
-    public void setUsageFilterId(int usageFilterId) {
+    public void setUsageFilterId(long usageFilterId) {
         this.usageFilterId = usageFilterId;
     }
 

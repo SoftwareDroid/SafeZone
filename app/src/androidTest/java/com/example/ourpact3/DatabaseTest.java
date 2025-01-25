@@ -15,6 +15,8 @@ import com.example.ourpact3.db.AppEntity;
 import com.example.ourpact3.db.ExceptionListEntity;
 import com.example.ourpact3.db.ExceptionListDao;
 import com.example.ourpact3.db.AppsDatabase;
+import com.example.ourpact3.db.TimeRestrictionRuleEntity;
+import com.example.ourpact3.db.TimeRestrictionRulesDao;
 import com.example.ourpact3.db.UsageFiltersDao;
 import com.example.ourpact3.db.UsageFiltersEntity;
 
@@ -42,8 +44,6 @@ public class DatabaseTest
         UsageFiltersEntity usageFilter2 = new UsageFiltersEntity();
         long id1 = daoUsageFilters.insert(usageFilter1);
         long id2 = daoUsageFilters.insert(usageFilter2);
-
-
         // Create Sample App Entry
         AppEntity app1 = new AppEntity();
         app1.setUsageFilterId(id1);
@@ -59,6 +59,26 @@ public class DatabaseTest
         assertEquals(retrievedApp.getUsageFilterId(),app1.getUsageFilterId());
         appDao.deleteApp(app1);
         assertEquals(0,appDao.getAllApps().size());
+        // Test time restriction rules
+        // add some restrictions for some apps
+        TimeRestrictionRuleEntity timeRestriction1 = new TimeRestrictionRuleEntity();
+        timeRestriction1.setMonday(true);
+        timeRestriction1.setStartHour(7);
+        timeRestriction1.setStartMin(30);
+        timeRestriction1.setEndHour(18);
+        timeRestriction1.setUsageFilterId(id1);
+        TimeRestrictionRuleEntity timeRestriction2 = new TimeRestrictionRuleEntity();
+        TimeRestrictionRuleEntity timeRestriction3 = new TimeRestrictionRuleEntity();
+        timeRestriction2.setUsageFilterId(id2);
+        timeRestriction3.setUsageFilterId(id2);
+        TimeRestrictionRulesDao timeRestrictionsDao = db.timeRestrictionRulesDao();
+        assertEquals(0,timeRestrictionsDao.getRulesForUsageFilter(id2).size());
+        timeRestrictionsDao.insert(timeRestriction1,timeRestriction2,timeRestriction3);
+        assertEquals(2,timeRestrictionsDao.getRulesForUsageFilter(id2).size());
+        assertEquals(1,timeRestrictionsDao.getRulesForUsageFilter(id1).size());
+        timeRestrictionsDao.deleteRulesForUsageFilter(2);
+        assertEquals(0,timeRestrictionsDao.getRulesForUsageFilter(id2).size());
+
     }
 
     @Test

@@ -10,14 +10,17 @@ import java.util.List;
 @Dao
 public interface TimeRestrictionRulesDao {
     @Insert
-    long insert(TimeRestrictionRulesEntity... rules);
+    void insert(TimeRestrictionRuleEntity... rules);
 
     @Delete
-    void delete(TimeRestrictionRulesEntity rule);
+    void delete(TimeRestrictionRuleEntity rule);
 
     @Query("SELECT * FROM time_restriction_rules")
-    List<TimeRestrictionRulesEntity> getAll();
+    List<TimeRestrictionRuleEntity> getAll();
 
     @Query("SELECT * FROM time_restriction_rules WHERE usage_filter_id = :usageFilterId")
-    List<TimeRestrictionRulesEntity> getRulesForUsageFilter(int usageFilterId);
+    List<TimeRestrictionRuleEntity> getRulesForUsageFilter(long usageFilterId);
+
+    @Query("DELETE FROM time_restriction_rules WHERE usage_filter_id = :usageFilterId")
+    void deleteRulesForUsageFilter(long usageFilterId);
 }
