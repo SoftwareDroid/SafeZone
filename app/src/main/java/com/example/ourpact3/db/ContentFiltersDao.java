@@ -12,7 +12,7 @@ import java.util.List;
 public interface ContentFiltersDao
 {
     @Insert
-    void insertContentFilter(ContentFiltersEntity contentFilter);
+    long insertContentFilter(ContentFiltersEntity contentFilter);
 
     @Query("SELECT * FROM content_filters")
     List<ContentFiltersEntity> getAllContentFilters();

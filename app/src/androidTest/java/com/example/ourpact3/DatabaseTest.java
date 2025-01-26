@@ -12,6 +12,8 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.ourpact3.db.AppDao;
 import com.example.ourpact3.db.AppEntity;
+import com.example.ourpact3.db.ContentFilterToAppDao;
+import com.example.ourpact3.db.ContentFilterToAppEntity;
 import com.example.ourpact3.db.ContentFiltersEntity;
 import com.example.ourpact3.db.ExceptionListEntity;
 import com.example.ourpact3.db.ExceptionListDao;
@@ -25,6 +27,7 @@ import com.example.ourpact3.db.WordDao;
 import com.example.ourpact3.db.WordEntity;
 import com.example.ourpact3.db.WordListEntity;
 import com.example.ourpact3.model.PipelineButtonAction;
+import com.example.ourpact3.model.PipelineWindowAction;
 
 import org.junit.Test;
 
@@ -41,8 +44,17 @@ public class DatabaseTest
         AppsDatabase db = Room.databaseBuilder(context, AppsDatabase.class, "apps-database")
                 .allowMainThreadQueries()
                 .build();
-        //TODO: an app can have serveral content filters
-        // Create a new instance of the AppsDatabase
+        //Create Sample app Entry
+        UsageFiltersEntity usageFilter1 = new UsageFiltersEntity();
+        long usageFilter1ID = db.usageFiltersDao().insert(usageFilter1);
+        AppEntity app1 = new AppEntity();
+        app1.setUsageFilterId(usageFilter1ID);
+        String sampleAppID = "foobar";
+        app1.setPackageName(sampleAppID);
+        app1.setReadable(true);
+        //insert
+        db.appsDao().insertApp(app1);
+
 
         //create langauge first
         LanguageEntity l1 = new LanguageEntity();
@@ -74,17 +86,45 @@ public class DatabaseTest
         wordDao.insert(w2);
         List<WordEntity> wordsInList = wordDao.getAllWordsInList(animalListID);
 
-        assertEquals(2,wordsInList.size());
+        assertEquals(2, wordsInList.size());
 
         // create one content filter
-        ContentFiltersEntity contentFilter1 = new ContentFiltersEntity();
-        contentFilter1.setEnabled(true);
-        contentFilter1.setKill(true);
-        contentFilter1.setButtonAction(PipelineButtonAction.BACK_BUTTON);
-        contentFilter1.setExplainable(true);
-        contentFilter1.setIgnoreCase(true);
-        contentFilter1.setReadable(true);
-        contentFilter1.setWordListID(animalListID);
+        ContentFiltersEntity animalContentFilter = new ContentFiltersEntity();
+        animalContentFilter.setEnabled(true);
+        animalContentFilter.setKill(true);
+        animalContentFilter.setButtonAction(PipelineButtonAction.BACK_BUTTON);
+        animalContentFilter.setWindowAction(PipelineWindowAction.WARNING);
+        animalContentFilter.setExplainable(true);
+        animalContentFilter.setIgnoreCase(true);
+        animalContentFilter.setReadable(true);
+        animalContentFilter.setWordListID(animalListID);
+        long animalContentFilterID = db.contentFiltersDao().insertContentFilter(animalContentFilter);
+
+        // use a second content filter
+        WordListEntity badList = new WordListEntity();
+        badList.setName("Bad_List");
+        long badListID = db.wordListDao().insert(badList);
+        ContentFiltersEntity badContentFilter = new ContentFiltersEntity();
+        badContentFilter.setWindowAction(PipelineWindowAction.WARNING);
+        badContentFilter.setButtonAction(PipelineButtonAction.NONE);
+        badContentFilter.setWordListID(badListID);
+        long badContentFilterID = db.contentFiltersDao().insertContentFilter(badContentFilter);
+        // set priorities
+        ContentFilterToAppDao contentFilterToAppDao = db.contentFilterToAppDao();
+        ContentFilterToAppEntity filter1 = new ContentFilterToAppEntity();
+        filter1.setContentFilterID(animalContentFilterID);
+        filter1.setPriority(100);
+        filter1.setPackageName(sampleAppID);
+        contentFilterToAppDao.insert(filter1);
+
+        ContentFilterToAppEntity filter2 = new ContentFilterToAppEntity();
+        filter2.setContentFilterID(badContentFilterID);
+        filter2.setPriority(100);
+        filter2.setPackageName(sampleAppID);
+        contentFilterToAppDao.insert(filter2);
+
+        assertEquals(2, contentFilterToAppDao.getByPackageName(sampleAppID).size());
+
     }
 
     @Test
@@ -99,7 +139,7 @@ public class DatabaseTest
                 .build();
         // Create Usage Filter
         UsageFiltersDao daoUsageFilters = db.usageFiltersDao();
-        AppDao appDao =  db.appsDao();
+        AppDao appDao = db.appsDao();
         // Usage Filter Enity
         UsageFiltersEntity usageFilter1 = new UsageFiltersEntity();
         UsageFiltersEntity usageFilter2 = new UsageFiltersEntity();
@@ -111,15 +151,15 @@ public class DatabaseTest
         app1.setPackageName("foobar");
         app1.setReadable(true);
         //insert
-        assertEquals(0,appDao.getAllApps().size());
+        assertEquals(0, appDao.getAllApps().size());
         appDao.insertApp(app1);
-        assertEquals(1,appDao.getAllApps().size());
-        AppEntity retrievedApp =  appDao.getAppByPackageName(app1.getPackageName());
-        assertEquals(retrievedApp.getPackageName(),app1.getPackageName());
-        assertEquals(retrievedApp.getReadable(),app1.getReadable());
-        assertEquals(retrievedApp.getUsageFilterId(),app1.getUsageFilterId());
+        assertEquals(1, appDao.getAllApps().size());
+        AppEntity retrievedApp = appDao.getAppByPackageName(app1.getPackageName());
+        assertEquals(retrievedApp.getPackageName(), app1.getPackageName());
+        assertEquals(retrievedApp.getReadable(), app1.getReadable());
+        assertEquals(retrievedApp.getUsageFilterId(), app1.getUsageFilterId());
         appDao.deleteApp(app1);
-        assertEquals(0,appDao.getAllApps().size());
+        assertEquals(0, appDao.getAllApps().size());
         // Test time restriction rules
         // add some restrictions for some apps
         TimeRestrictionRuleEntity timeRestriction1 = new TimeRestrictionRuleEntity();
@@ -133,17 +173,18 @@ public class DatabaseTest
         timeRestriction2.setUsageFilterId(id2);
         timeRestriction3.setUsageFilterId(id2);
         TimeRestrictionRulesDao timeRestrictionsDao = db.timeRestrictionRulesDao();
-        assertEquals(0,timeRestrictionsDao.getRulesForUsageFilter(id2).size());
-        timeRestrictionsDao.insert(timeRestriction1,timeRestriction2,timeRestriction3);
-        assertEquals(2,timeRestrictionsDao.getRulesForUsageFilter(id2).size());
-        assertEquals(1,timeRestrictionsDao.getRulesForUsageFilter(id1).size());
+        assertEquals(0, timeRestrictionsDao.getRulesForUsageFilter(id2).size());
+        timeRestrictionsDao.insert(timeRestriction1, timeRestriction2, timeRestriction3);
+        assertEquals(2, timeRestrictionsDao.getRulesForUsageFilter(id2).size());
+        assertEquals(1, timeRestrictionsDao.getRulesForUsageFilter(id1).size());
         timeRestrictionsDao.deleteRulesForUsageFilter(2);
-        assertEquals(0,timeRestrictionsDao.getRulesForUsageFilter(id2).size());
+        assertEquals(0, timeRestrictionsDao.getRulesForUsageFilter(id2).size());
 
     }
 
     @Test
-    public void testExceptionListDao() {
+    public void testExceptionListDao()
+    {
         // Get the context
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
@@ -195,7 +236,7 @@ public class DatabaseTest
 
         List<ExceptionListEntity> allExceptions = dao.getAll();
         // we delete one two should remain
-        assertEquals(2,allExceptions.size());
+        assertEquals(2, allExceptions.size());
     }
 
 }

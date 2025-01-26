@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase;
 /**
  * List here all Entities and no DAOs
  */
-@Database(entities = {AppEntity.class, TimeRestrictionRuleEntity.class, UsageFiltersEntity.class, ContentFiltersEntity.class, AppContentFilterEntity.class, WordEntity.class,WordListEntity.class, LanguageEntity.class, ExceptionListEntity.class}, version = 1)
+@Database(entities = {AppEntity.class, TimeRestrictionRuleEntity.class, UsageFiltersEntity.class, ContentFiltersEntity.class, AppContentFilterEntity.class, WordEntity.class,WordListEntity.class, LanguageEntity.class, ExceptionListEntity.class, ContentFilterToAppEntity.class}, version = 1)
 public abstract class AppsDatabase extends RoomDatabase
 {
     /*
@@ -21,4 +21,5 @@ public abstract class AppsDatabase extends RoomDatabase
     public abstract ExceptionListDao exceptionListDao();
     public abstract WordDao wordDao();
     public abstract WordListDao wordListDao();
+    public abstract ContentFilterToAppDao contentFilterToAppDao();
 }
