@@ -480,8 +480,6 @@ public class ExampleAppKeywordFilters
     {
         String appName = "org.schabi.newpipe";
         ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
-
-
         {
             // ignore history page
             PipelineResultKeywordFilter ignoreSettings = new PipelineResultKeywordFilter("");
