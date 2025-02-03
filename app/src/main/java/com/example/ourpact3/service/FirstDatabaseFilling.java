@@ -134,6 +134,7 @@ public class FirstDatabaseFilling
         words.add(createWordEntry("unterwäsche", englishLangID, nsfwListId, SMALL_PUNISHMENT, SMALL_PUNISHMENT));
         words.add(createWordEntry("reizwäsche", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createWordEntry("mini rock", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
+        words.add(createWordEntry("miniskirt", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createWordEntry("hot pants", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("panty", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
         // sex stuff
@@ -155,7 +156,10 @@ public class FirstDatabaseFilling
         words.add(createWordEntry("femdom", englishLangID, nsfwListId, HIGH_PUNISHMENT, BANNED_PUNSIHMENT));
         words.add(createWordEntry("findom", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
         // safe search
-        words.add(createRegexWord("^safe\\.duckduckgo.*&ia=chat$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+
+
+        createRegexWord("^(?!safe\\.)search\\.brave\\.com.*", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT);
+        words.add(createRegexWord("^(?!safe\\.)(duckduckgo)\\..*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
         words.add(createRegexWord("^google\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
         words.add(createRegexWord("^bing\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
         words.add(createRegexWord("^ecosia.\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
@@ -303,10 +307,22 @@ public class FirstDatabaseFilling
         words.add(createWordEntry("ejaculate", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("pecker", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("scrotum", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
+        words.add(createWordEntry("bollocks", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
+        words.add(createWordEntry("boner", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
+        words.add(createWordEntry("gonads", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
+        words.add(createWordEntry("semen", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
         // sex toys
         words.add(createWordEntry("testicle", englishLangID, nsfwListId, HIGH_PUNISHMENT, SMALL_PUNISHMENT));
         words.add(createWordEntry("urethra", englishLangID, nsfwListId, HIGH_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createWordEntry("prostate", englishLangID, nsfwListId, HIGH_PUNISHMENT, MEDIUM_PUNISHMENT));
+
+        //naked words
+        words.add(createWordEntry("naked", germanLangID, nsfwListId, HIGH_PUNISHMENT, MEDIUM_PUNISHMENT));
+        words.add(createWordEntry("naked", englishLangID, nsfwListId, HIGH_PUNISHMENT, MEDIUM_PUNISHMENT));
+        words.add(createWordEntry("undressed", englishLangID, nsfwListId, HIGH_PUNISHMENT, MEDIUM_PUNISHMENT));
+        words.add(createWordEntry("stripped", englishLangID, nsfwListId, HIGH_PUNISHMENT, MEDIUM_PUNISHMENT));
+        words.add(createWordEntry("bare-ass", englishLangID, nsfwListId, HIGH_PUNISHMENT, MEDIUM_PUNISHMENT));
+        words.add(createWordEntry("topless", englishLangID, nsfwListId, HIGH_PUNISHMENT, MEDIUM_PUNISHMENT));
 
 
         words.add(createRegexWord("\\btwat\\b", englishLangID, nsfwListId, HIGH_PUNISHMENT, BANNED_PUNSIHMENT));
@@ -319,45 +335,8 @@ public class FirstDatabaseFilling
         words.add(createRegexWord("\\bpussy\\b", englishLangID, nsfwListId, HIGH_PUNISHMENT, BANNED_PUNSIHMENT));
         words.add(createRegexWord("\\bbum\\b", englishLangID, nsfwListId, SMALL_PUNISHMENT, SMALL_PUNISHMENT));
         words.add(createRegexWord("\\btwerk(ing|s)\\b", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
-        words.add(createRegexWord("\\bball(\\sstretcher|busting)\\b", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
+        words.add(createRegexWord("\\bball(\\sstretcher|\\sstrechting|busting)\\b", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
 
-        /*
-
-//    "rod",
-//    "shaft",
-    "manhood",
-    "family jewels",
-    "balls",
-    "testes",
-    "scrotum",
-    "nuts",
-    "bollocks",
-    "gonads",
-    "semen",
-    "erection",
-    "boner",
-    "prostata",
-    "hard-on"
-         */
-
-        /*
-
-  ],
-  "regExpWords": [
-    "\\bscat\\b"
-  ],
-  "includedTopics": [
-    "porn_femdom",
-    "porn_explicit",
-    "female_body_parts",
-    "adult_nudity",
-    "adult_sex_toys"
-//    "female_names",
-//    "female_clothing"
-  ]
-}
-
-         */
     }
 
 
