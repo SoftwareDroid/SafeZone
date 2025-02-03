@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.room.Room;
 
 import com.example.ourpact3.db.AppsDatabase;
+import com.example.ourpact3.db.ExceptionListEntity;
 import com.example.ourpact3.db.LanguageEntity;
 import com.example.ourpact3.db.WordDao;
 import com.example.ourpact3.db.WordEntity;
@@ -27,6 +28,15 @@ public class FirstDatabaseFilling
         return w1;
     }
 
+    public static ExceptionListEntity createException(String name,boolean readable, boolean writeable)
+    {
+        ExceptionListEntity exceptionList = new ExceptionListEntity();
+        exceptionList.setAppName(name);
+        exceptionList.setReadable(readable);
+        exceptionList.setWritable(writeable);
+        return exceptionList;
+    }
+
     public static WordEntity createWordEntry(String word, long languageID, long wordListID, int readPunishment, int writePunishment)
     {
         WordEntity w1 = new WordEntity();
@@ -40,12 +50,61 @@ public class FirstDatabaseFilling
         return w1;
     }
 
-
+    public void createExceptions(AppsDatabase db, Context context)
+    {
+        ArrayList<ExceptionListEntity> allExceptions = new ArrayList<ExceptionListEntity>();
+        allExceptions.add(createException(context.getPackageName(), true, false));
+        allExceptions.add(createException("com.android.settings", true, false));
+        allExceptions.add(createException("com.android.systemui", true, false));
+        allExceptions.add(createException("com.google.android.inputmethod.latin", true, false));
+        allExceptions.add(createException("com.google.android.apps.maps", true, true));
+        allExceptions.add(createException("net.osmand.plus", true, true));
+        allExceptions.add(createException("com.simplemobiletools.gallery.pro", true, true));
+        allExceptions.add(createException("com.airbnb.android", true, true));
+        allExceptions.add(createException("com.google.android.contacts", true, false));
+        allExceptions.add(createException("com.google.android.deskclock", true, false));
+        allExceptions.add(createException("de.nebenan.app", true, true));
+        allExceptions.add(createException("de.flixbus.app", true, true));
+        allExceptions.add(createException("org.fdroid.fdroid", true, true));
+        allExceptions.add(createException("net.tandem", true, true));
+        allExceptions.add(createException("com.meetup", true, true));
+        allExceptions.add(createException("ch.protonvpn.android", true, true));
+        allExceptions.add(createException("com.beemdevelopment.aegis", true, true));
+        allExceptions.add(createException("io.github.muntashirakon.AppManager", true, true));
+        allExceptions.add(createException("com.governikus.ausweisapp2", true, true));
+        allExceptions.add(createException("com.mediatek.camera", true, true));
+        allExceptions.add(createException("org.thoughtcrime.securesms", true, true));
+        allExceptions.add(createException("ru.vsms", true, true));
+        allExceptions.add(createException("com.whatsapp", true, true));
+        allExceptions.add(createException("capital.scalable.droid", true, true));
+        allExceptions.add(createException("splid.teamturtle.com.splid", true, true));
+        allExceptions.add(createException("com.fsck.k9", true, true));
+        allExceptions.add(createException("com.trello", true, true));
+        allExceptions.add(createException("com.maxistar.textpad", true, true));
+        allExceptions.add(createException("cz.mobilesoft.appblock", true, true));
+        allExceptions.add(createException("com.standardnotes", true, true));
+        allExceptions.add(createException("com.google.android.calculator", true, true));
+        allExceptions.add(createException("com.getyourguide.android", true, true));
+        allExceptions.add(createException("de.c24.bankapp", true, true));
+        allExceptions.add(createException("de.hafas.android.db", true, true));
+        allExceptions.add(createException("ws.xsoh.etar", true, true));
+        allExceptions.add(createException("com.ichi2.anki", true, true));
+        allExceptions.add(createException("net.sourceforge.opencamera", true, true));
+        allExceptions.add(createException("com.epson.epsonsmart", true, true));
+        allExceptions.add(createException("de.mm20.launcher2", true, true));
+        allExceptions.add(createException("de.reimardoeffinger.quickdic", true, true));
+        allExceptions.add(createException("de.mm20.launcher2.release", true, true));
+        db.exceptionListDao().insert(allExceptions);
+    }
     public void createNSFWWordList(Context context)
     {
         AppsDatabase db = Room.databaseBuilder(context, AppsDatabase.class, "apps-database")
                 .allowMainThreadQueries()
                 .build();
+
+
+        createExceptions(db,context);
+
         LanguageEntity englishLang = new LanguageEntity();
         englishLang.setLongLanguageCode("en");
         englishLang.setLongLanguageCode("English");

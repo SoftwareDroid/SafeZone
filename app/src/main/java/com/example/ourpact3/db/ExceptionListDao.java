@@ -11,7 +11,10 @@ import java.util.List;
 @Dao
 public interface ExceptionListDao {
     @Insert
-    void insert(ExceptionListEntity... users);
+    void insert(ExceptionListEntity... exceptions);
+
+    @Insert
+    void insert(List<ExceptionListEntity> exceptions);
 
     @Delete
     void delete(ExceptionListEntity user);
