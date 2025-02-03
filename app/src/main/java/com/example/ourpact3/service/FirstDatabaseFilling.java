@@ -57,13 +57,17 @@ public class FirstDatabaseFilling
         long englishLangID = db.languageDao().insertLanguage(englishLang);
         long germanLangID = db.languageDao().insertLanguage(germanLang);
         // create list
+        WordListEntity safeSearchList = new WordListEntity();
+        safeSearchList.setName("SafeSearch");
+
+
         WordListEntity nsfwWordList = new WordListEntity();
         nsfwWordList.setName("NSFW");
 
         WordListEntity newsWordList = new WordListEntity();
         newsWordList.setName("News");
         long newsListId = db.wordListDao().insert(newsWordList);
-
+        long safeSearchListId = db.wordListDao().insert(safeSearchList);
         long nsfwListId = db.wordListDao().insert(nsfwWordList);
         // german
         int SMALL_PUNISHMENT = 15;
@@ -85,6 +89,8 @@ public class FirstDatabaseFilling
         words.add(createRegexWord("\\b(möse|venusberg|labia|scheide|schamlippen|genitalien|muschi|fotze|vulva|kitzler|klitoris)\\b", germanLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("schwanz", germanLangID, nsfwListId, SMALL_PUNISHMENT, SMALL_PUNISHMENT));
         words.add(createWordEntry("penis", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
+        words.add(createWordEntry("sperma", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
+        words.add(createWordEntry("hoden", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createWordEntry("pimmel", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createWordEntry("entblößt", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createWordEntry("barbusig", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
@@ -148,9 +154,39 @@ public class FirstDatabaseFilling
         words.add(createWordEntry("demütigung", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createWordEntry("femdom", englishLangID, nsfwListId, HIGH_PUNISHMENT, BANNED_PUNSIHMENT));
         words.add(createWordEntry("findom", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
+        // safe search
+        words.add(createRegexWord("^safe\\.duckduckgo.*&ia=chat$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^google\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^bing\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^ecosia.\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^lycos.\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^yahoo\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^excite\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^info\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^webcrawler\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^dogpile\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^baidu\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^search\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^boardreader\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^gigablast\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^mojeek\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^searx\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^brave\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^ecosia\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^metacrawler\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^mywebsearch\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^onesearch\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^lite.qwant\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^startpage\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^searchencrypt\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^torch\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^lite.startpage\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^qwant\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT,  BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^search\\.aol\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("^yandex\\.[a-z]{2,3}.*$", englishLangID, safeSearchListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
 
-        words.add(createRegexWord("^safe\\.duckduckgo.*&ia=chat$", englishLangID, nsfwListId, BANNED_PUNSIHMENT, BANNED_PUNSIHMENT));
         words.add(createRegexWord("\\bcum\\b", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
+        words.add(createRegexWord("\\bsperm\\b", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createRegexWord("\\brimming\\b", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createRegexWord("\\banal\\b", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createRegexWord("\\benema\\b", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
@@ -257,16 +293,24 @@ public class FirstDatabaseFilling
         words.add(createWordEntry("uterus", englishLangID, nsfwListId, SMALL_PUNISHMENT, SMALL_PUNISHMENT));
         words.add(createWordEntry("cervix", englishLangID, nsfwListId, SMALL_PUNISHMENT, SMALL_PUNISHMENT));
         words.add(createWordEntry("pubic hair", englishLangID, nsfwListId, SMALL_PUNISHMENT, SMALL_PUNISHMENT));
-        words.add(createWordEntry("pubic hair", englishLangID, nsfwListId, SMALL_PUNISHMENT, SMALL_PUNISHMENT));
         words.add(createWordEntry("love tunnel", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("lady parts", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
+        words.add(createWordEntry("butt plug", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("private parts", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("nether region", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("pudenda", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("labia", englishLangID, nsfwListId, HIGH_PUNISHMENT, SMALL_PUNISHMENT));
+        words.add(createWordEntry("ejaculate", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
+        words.add(createWordEntry("pecker", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
+        words.add(createWordEntry("scrotum", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
+        // sex toys
+        words.add(createWordEntry("testicle", englishLangID, nsfwListId, HIGH_PUNISHMENT, SMALL_PUNISHMENT));
+        words.add(createWordEntry("urethra", englishLangID, nsfwListId, HIGH_PUNISHMENT, MEDIUM_PUNISHMENT));
+        words.add(createWordEntry("prostate", englishLangID, nsfwListId, HIGH_PUNISHMENT, MEDIUM_PUNISHMENT));
 
 
         words.add(createRegexWord("\\btwat\\b", englishLangID, nsfwListId, HIGH_PUNISHMENT, BANNED_PUNSIHMENT));
+        words.add(createRegexWord("\\bprick\\b", englishLangID, nsfwListId, HIGH_PUNISHMENT, BANNED_PUNSIHMENT));
         words.add(createRegexWord("\\btits\\b", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createRegexWord("\\bbust\\b", englishLangID, nsfwListId, 0, BANNED_PUNSIHMENT));
         words.add(createRegexWord("\\bclit\\b", englishLangID, nsfwListId, HIGH_PUNISHMENT, BANNED_PUNSIHMENT));
@@ -275,6 +319,26 @@ public class FirstDatabaseFilling
         words.add(createRegexWord("\\bpussy\\b", englishLangID, nsfwListId, HIGH_PUNISHMENT, BANNED_PUNSIHMENT));
         words.add(createRegexWord("\\bbum\\b", englishLangID, nsfwListId, SMALL_PUNISHMENT, SMALL_PUNISHMENT));
         words.add(createRegexWord("\\btwerk(ing|s)\\b", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
+        words.add(createRegexWord("\\bball(\\sstretcher|busting)\\b", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
+
+        /*
+
+//    "rod",
+//    "shaft",
+    "manhood",
+    "family jewels",
+    "balls",
+    "testes",
+    "scrotum",
+    "nuts",
+    "bollocks",
+    "gonads",
+    "semen",
+    "erection",
+    "boner",
+    "prostata",
+    "hard-on"
+         */
 
         /*
 
