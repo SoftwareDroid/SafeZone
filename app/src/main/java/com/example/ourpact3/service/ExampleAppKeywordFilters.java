@@ -591,6 +591,7 @@ public class ExampleAppKeywordFilters
         list.add(getYoutubeFilter());
         list.add(getPackageInstallerFilter());
         list.add(getAndroidSettings());
+        list.add(getPackageInstallerFilter());
         list.add(getAppolo());
         list.add(getDefaultFilter());
 

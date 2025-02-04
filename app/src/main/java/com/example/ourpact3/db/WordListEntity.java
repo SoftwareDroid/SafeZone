@@ -12,6 +12,19 @@ public class WordListEntity
     @ColumnInfo(name = "name")
     private String name;
 
+    @ColumnInfo(name = "version")
+    private Integer version;
+
+    public Integer getVersion()
+    {
+        return version;
+    }
+
+    public void setVersion(Integer version)
+    {
+        this.version = version;
+    }
+
     // Getters and setters
     public int getId()
     {
