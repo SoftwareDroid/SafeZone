@@ -181,7 +181,7 @@ public class FirstDatabaseFilling
         words.add(createRegexWord("\\bpo-loch\\b", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, 0));
         words.add(createRegexWord("\\beier\\s*(treten|foltern|folter|tritt)\\b", germanLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createRegexWord("\\b(mädchen|freundin|herrin|schwester|frau)\\s*(lecken|befriedigen)\\b", germanLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
-        words.add(createRegexWord("\\b(möse|venusberg|labia|scheide|schamlippen|genitalien|muschi|fotze|vulva|kitzler|klitoris)\\b", germanLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
+        words.add(createRegexWord("\\b(möse|venusberg|venushügel|labia|scheide|schamlippen|genitalien|muschi|fotze|vulva|kitzler|klitoris)\\b", germanLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("schwanz", germanLangID, nsfwListId, SMALL_PUNISHMENT, SMALL_PUNISHMENT));
         words.add(createWordEntry("penis", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createWordEntry("sperma", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
@@ -199,7 +199,7 @@ public class FirstDatabaseFilling
         words.add(createWordEntry("massagstab", germanLangID, nsfwListId, SMALL_PUNISHMENT, SMALL_PUNISHMENT));
         words.add(createWordEntry("kondom", germanLangID, nsfwListId, SMALL_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createWordEntry("vibrationsring", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
-        words.add(createWordEntry("keuschheitskäfig", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
+        words.add(createWordEntry("keusch", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("peniskäfig", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("sexspielzeug", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createWordEntry("liebeskugel", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
@@ -210,6 +210,7 @@ public class FirstDatabaseFilling
         words.add(createWordEntry("analplug", englishLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("dilator", englishLangID, nsfwListId, SMALL_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("masturbator", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
+        words.add(createWordEntry("fick", englishLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
         // Body parts
         words.add(createWordEntry("arschloch", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("gesäß", germanLangID, nsfwListId, SMALL_PUNISHMENT, SMALL_PUNISHMENT));
@@ -240,7 +241,8 @@ public class FirstDatabaseFilling
         words.add(createWordEntry("gesichtssitzen", germanLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("masturbieren", germanLangID, nsfwListId, HIGH_PUNISHMENT, HIGH_PUNISHMENT));
         words.add(createWordEntry("scheiße", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
-        words.add(createWordEntry("sexuell", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
+        // sexualitität
+        words.add(createWordEntry("sexu", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createWordEntry("orgasmus", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createRegexWord("\\bintim\\b", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
         words.add(createRegexWord("\\bherrin\\b", germanLangID, nsfwListId, MEDIUM_PUNISHMENT, MEDIUM_PUNISHMENT));
