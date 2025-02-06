@@ -1,4 +1,4 @@
-package com.example.ourpact3.service;
+package com.example.ourpact3.config_download;
 
 import com.example.ourpact3.db.AppsDatabase;
 import com.example.ourpact3.db.LanguageEntity;
@@ -14,12 +14,16 @@ import java.util.List;
 
 public class WordEntityParser {
 
+
     public List<WordEntity> parseWordEntities(InputStreamReader reader, AppsDatabase db) throws Exception {
+
+
         List<WordEntity> wordEntities = new ArrayList<>();
         List<WordListEntity> wordLists = new ArrayList<>();
 
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         XmlPullParser parser = factory.newPullParser();
+
         parser.setInput(reader);
 
         int eventType = parser.getEventType();
@@ -30,7 +34,7 @@ public class WordEntityParser {
                 currentElement = parser.getName();
 
                 // Parse WordListEntities
-                if ("WordListEntity".equals(currentElement)) {
+                if (currentElement.equals("WordListEntity")) {
                     String name = parser.getAttributeValue(null, "name");
                     String version = parser.getAttributeValue(null, "version");
                     WordListEntity wordListEntity = new WordListEntity();
@@ -38,7 +42,11 @@ public class WordEntityParser {
                     wordListEntity.setVersion(Integer.valueOf(version));
                     wordLists.add(wordListEntity);
                     // create word list first
-                    db.wordListDao().insert(wordListEntity);
+                    WordListEntity wordList = db.wordListDao().getWordListByName(name);
+                    if(wordList == null)
+                    {
+                        db.wordListDao().insert(wordListEntity);
+                    }
                 }
 
 
@@ -57,7 +65,8 @@ public class WordEntityParser {
 
                     // Get the word list ID from the database
                     String wordListName = parser.getAttributeValue(null, "word_list");
-                    long wordListID = db.wordListDao().getWordListByName(wordListName).getId();
+                    WordListEntity wordList = db.wordListDao().getWordListByName(wordListName);
+                    long wordListID = wordList.getId();
                     wordEntity.setWordListID(wordListID);
 
                     wordEntities.add(wordEntity);

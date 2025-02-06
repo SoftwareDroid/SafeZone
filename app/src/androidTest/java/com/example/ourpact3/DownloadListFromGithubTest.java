@@ -13,8 +13,8 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.example.ourpact3.db.AppsDatabase;
 import com.example.ourpact3.db.LanguageEntity;
 import com.example.ourpact3.db.WordEntity;
-import com.example.ourpact3.service.WordEntityParser;
-import com.example.ourpact3.service.XMLDownloader;
+import com.example.ourpact3.config_download.WordEntityParser;
+import com.example.ourpact3.config_download.XMLDownloader;
 
 import org.junit.Test;
 
