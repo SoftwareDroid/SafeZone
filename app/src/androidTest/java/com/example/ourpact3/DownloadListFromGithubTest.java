@@ -1,8 +1,10 @@
 package com.example.ourpact3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
 import android.util.Log;
@@ -56,7 +58,8 @@ public class DownloadListFromGithubTest
         {
             Log.d("word", w.getText());
         }
-
+        assertFalse(result.wordEntities.isEmpty());
+        assertFalse(result.wordLists.isEmpty());
         // Download app exceptions
         InputStreamReader exceptionStream = downloader.downloadXml("https://raw.githubusercontent.com/SoftwareDroid/SafeZoneData/refs/heads/main/app_exceptions.xml");
         AppExceptionParser newExceptionParser = new AppExceptionParser();
@@ -65,11 +68,12 @@ public class DownloadListFromGithubTest
         {
             Log.d("app", e.getAppName());
         }
-
+        assertFalse(exceptions.isEmpty());
         InputStreamReader contentFiltersStream = downloader.downloadXml("https://raw.githubusercontent.com/SoftwareDroid/SafeZoneData/refs/heads/main/content_filters.xml");
         ContentFilterParser contentFilterParser = new ContentFilterParser();
         List<ContentFilterEntity> contentFilters = contentFilterParser.parseContentFilters(contentFiltersStream, db);
         contentFilters.addAll(result.contentFilters);
+        assertFalse(contentFilters.isEmpty());
         for (ContentFilterEntity e : contentFilters)
         {
             Log.d("ContentFilter", e.getName());

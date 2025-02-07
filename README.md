@@ -17,6 +17,11 @@ It was created out of the need for a robust solution that can effectively block 
 
 Initially developed to block NSFW, e.g. pornographic content, SafeSearch aims to expand its capabilities to include blocking social media, gambling, and other user-defined content in future updates.
 
+## Configs are cached in github
+https://stackoverflow.com/questions/46551413/github-not-update-raw-after-commit
+GitHub serves "raw" pages with Cache-Control: max-age=300
+Which can lead to wrong results
+
 ## For Developers
 Installation and Permissions
 To reset permissions, you may need to reinstall the app. The Draw Overlay Permission is required for certain functionalities.

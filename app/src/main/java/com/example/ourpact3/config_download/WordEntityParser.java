@@ -99,7 +99,7 @@ public class WordEntityParser {
                     if(wordList == null)
                     {
                         Log.d("WordList not found",wordListName);
-                        continue;
+                        return null;
                     }
                     long wordListID = wordList.getId();
                     wordEntity.setWordListID(wordListID);

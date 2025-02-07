@@ -73,9 +73,10 @@ public class ContentFilterParser
                         filter.setWindowAction(windowAction);
                         filter.setButtonAction(buttonAction);
                         filter.setWordListID(wordListEntity.getId());
+                        contentFilters.add(filter);
                     }
 
-                    contentFilters.add(filter);
+
                 }
 
             }
