@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
                         onDelete = ForeignKey.CASCADE
                 ),
                 @ForeignKey(
-                        entity = ContentFiltersEntity.class,
+                        entity = ContentFilterEntity.class,
                         parentColumns = "id",
                         childColumns = "content_filter_id",
                         onDelete = ForeignKey.CASCADE

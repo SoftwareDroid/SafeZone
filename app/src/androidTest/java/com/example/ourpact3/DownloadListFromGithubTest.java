@@ -10,7 +10,11 @@ import android.util.Log;
 import androidx.room.Room;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.example.ourpact3.config_download.AppExceptionParser;
+import com.example.ourpact3.config_download.ContentFilterParser;
 import com.example.ourpact3.db.AppsDatabase;
+import com.example.ourpact3.db.ContentFilterEntity;
+import com.example.ourpact3.db.ExceptionListEntity;
 import com.example.ourpact3.db.LanguageEntity;
 import com.example.ourpact3.db.WordEntity;
 import com.example.ourpact3.config_download.WordEntityParser;
@@ -47,10 +51,28 @@ public class DownloadListFromGithubTest
 
         WordEntityParser wordEntityParser = new WordEntityParser();
 
-        List<WordEntity> words = wordEntityParser.parseWordEntities(wordStream, db);
-        for(WordEntity w: words)
+        WordEntityParser.Result result = wordEntityParser.parseWordEntities(wordStream, db);
+        for (WordEntity w : result.wordEntities)
         {
             Log.d("word", w.getText());
+        }
+
+        // Download app exceptions
+        InputStreamReader exceptionStream = downloader.downloadXml("https://raw.githubusercontent.com/SoftwareDroid/SafeZoneData/refs/heads/main/app_exceptions.xml");
+        AppExceptionParser newExceptionParser = new AppExceptionParser();
+        List<ExceptionListEntity> exceptions = newExceptionParser.parseAppExceptions(exceptionStream, db);
+        for (ExceptionListEntity e : exceptions)
+        {
+            Log.d("app", e.getAppName());
+        }
+
+        InputStreamReader contentFiltersStream = downloader.downloadXml("https://raw.githubusercontent.com/SoftwareDroid/SafeZoneData/refs/heads/main/content_filters.xml");
+        ContentFilterParser contentFilterParser = new ContentFilterParser();
+        List<ContentFilterEntity> contentFilters = contentFilterParser.parseContentFilters(contentFiltersStream, db);
+        contentFilters.addAll(result.contentFilters);
+        for (ContentFilterEntity e : contentFilters)
+        {
+            Log.d("ContentFilter", e.getName());
         }
     }
 }

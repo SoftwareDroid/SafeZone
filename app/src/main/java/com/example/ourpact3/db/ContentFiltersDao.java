@@ -12,18 +12,18 @@ import java.util.List;
 public interface ContentFiltersDao
 {
     @Insert
-    long insertContentFilter(ContentFiltersEntity contentFilter);
+    long insertContentFilter(ContentFilterEntity contentFilter);
 
-    @Query("SELECT * FROM content_filters")
-    List<ContentFiltersEntity> getAllContentFilters();
+    @Query("SELECT * FROM ContentFilterEntity")
+    List<ContentFilterEntity> getAllContentFilters();
 
-    @Query("SELECT * FROM content_filters WHERE id = :id")
-    ContentFiltersEntity getContentFilterById(int id);
+    @Query("SELECT * FROM ContentFilterEntity WHERE id = :id")
+    ContentFilterEntity getContentFilterById(int id);
 
     @Update
-    void updateContentFilter(ContentFiltersEntity contentFilter);
+    void updateContentFilter(ContentFilterEntity contentFilter);
 
     @Delete
-    void deleteContentFilter(ContentFiltersEntity contentFilters);
+    void deleteContentFilter(ContentFilterEntity contentFilters);
 }
 

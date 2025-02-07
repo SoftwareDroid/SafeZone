@@ -12,9 +12,9 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.ourpact3.db.AppDao;
 import com.example.ourpact3.db.AppEntity;
+import com.example.ourpact3.db.ContentFilterEntity;
 import com.example.ourpact3.db.ContentFilterToAppDao;
 import com.example.ourpact3.db.ContentFilterToAppEntity;
-import com.example.ourpact3.db.ContentFiltersEntity;
 import com.example.ourpact3.db.ExceptionListEntity;
 import com.example.ourpact3.db.ExceptionListDao;
 import com.example.ourpact3.db.AppsDatabase;
@@ -89,7 +89,7 @@ public class DatabaseTest
         assertEquals(2, wordsInList.size());
 
         // create one content filter
-        ContentFiltersEntity animalContentFilter = new ContentFiltersEntity();
+        ContentFilterEntity animalContentFilter = new ContentFilterEntity();
         animalContentFilter.setEnabled(true);
         animalContentFilter.setKill(true);
         animalContentFilter.setButtonAction(PipelineButtonAction.BACK_BUTTON);
@@ -104,7 +104,7 @@ public class DatabaseTest
         WordListEntity badList = new WordListEntity();
         badList.setName("Bad_List");
         long badListID = db.wordListDao().insert(badList);
-        ContentFiltersEntity badContentFilter = new ContentFiltersEntity();
+        ContentFilterEntity badContentFilter = new ContentFilterEntity();
         badContentFilter.setWindowAction(PipelineWindowAction.WARNING);
         badContentFilter.setButtonAction(PipelineButtonAction.NONE);
         badContentFilter.setWordListID(badListID);

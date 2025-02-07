@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey;
 @Entity(
         tableName = "ContentFilterToAppEntity",
         foreignKeys = {@ForeignKey(
-                entity = ContentFiltersEntity.class,
+                entity = ContentFilterEntity.class,
                 parentColumns = "id",
                 childColumns = "content_filter_id",
                 onDelete = ForeignKey.CASCADE

@@ -8,16 +8,18 @@ import androidx.room.TypeConverters;
 
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
+import com.example.ourpact3.smart_filter.NodeCheckStrategyType;
 
-@Entity(tableName = "content_filters",
+@Entity(tableName = "ContentFilterEntity",
         foreignKeys = @ForeignKey(
                 entity = WordListEntity.class,
                 parentColumns = "id",
                 childColumns = "word_list_id",
                 onDelete = ForeignKey.CASCADE
         ))
-@TypeConverters({WindowActionConverter.class, PipelineButtonActionConverter.class,BooleanConverter.class})
-public class ContentFiltersEntity {
+@TypeConverters({WindowActionConverter.class,NodeCheckStrategyTypeConverter.class , PipelineButtonActionConverter.class,BooleanConverter.class})
+public class ContentFilterEntity
+{
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private int id;
@@ -41,7 +43,7 @@ public class ContentFiltersEntity {
     private boolean enabled;
 
     @ColumnInfo(name = "user_created")
-    private int userCreated;
+    private boolean userCreated;
 
     @ColumnInfo(name = "app_group")
     private int appGroup;
@@ -62,7 +64,7 @@ public class ContentFiltersEntity {
     private boolean checksOnlyVisible;
 
     @ColumnInfo(name = "what_to_check")
-    private int whatToCheck;
+    private NodeCheckStrategyType whatToCheck;
 
     @ColumnInfo(name = "ignore_case")
     private boolean ignoreCase;
@@ -119,11 +121,11 @@ public class ContentFiltersEntity {
         this.enabled = enabled;
     }
 
-    public int getUserCreated() {
+    public boolean getUserCreated() {
         return userCreated;
     }
 
-    public void setUserCreated(int userCreated) {
+    public void setUserCreated(boolean userCreated) {
         this.userCreated = userCreated;
     }
 
@@ -175,11 +177,11 @@ public class ContentFiltersEntity {
         this.checksOnlyVisible = checksOnlyVisible;
     }
 
-    public int getWhatToCheck() {
+    public NodeCheckStrategyType getWhatToCheck() {
         return whatToCheck;
     }
 
-    public void setWhatToCheck(int whatToCheck) {
+    public void setWhatToCheck(NodeCheckStrategyType whatToCheck) {
         this.whatToCheck = whatToCheck;
     }
 
