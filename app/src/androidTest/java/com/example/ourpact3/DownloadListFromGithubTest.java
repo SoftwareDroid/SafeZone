@@ -49,7 +49,6 @@ public class DownloadListFromGithubTest
             Log.d("word", w.getText());
         }
         assertFalse(result.wordEntities.isEmpty());
-        assertFalse(result.wordLists.isEmpty());
         // Download app exceptions
         InputStreamReader exceptionStream = downloader.downloadXml("https://raw.githubusercontent.com/SoftwareDroid/SafeZoneData/refs/heads/main/app_exceptions.xml");
         AppExceptionParser newExceptionParser = new AppExceptionParser();
@@ -62,7 +61,7 @@ public class DownloadListFromGithubTest
         InputStreamReader contentFiltersStream = downloader.downloadXml("https://raw.githubusercontent.com/SoftwareDroid/SafeZoneData/refs/heads/main/content_filters.xml");
         ContentFilterParser contentFilterParser = new ContentFilterParser();
         List<ContentFilterEntity> contentFilters = contentFilterParser.parseContentFilters(contentFiltersStream, db);
-        contentFilters.addAll(result.contentFilters);
+//        contentFilters.addAll(result.contentFilters);
         assertFalse(contentFilters.isEmpty());
         for (ContentFilterEntity e : contentFilters)
         {

@@ -23,7 +23,6 @@ public class WordEntityParser {
 
     public class Result {
         public List<WordEntity> wordEntities = new ArrayList<>();
-        public List<WordListEntity> wordLists = new ArrayList<>();
     }
 
 
@@ -65,7 +64,7 @@ public class WordEntityParser {
                     wordListEntity.setName(name);
                     wordListEntity.setApp(appName);
                     wordListEntity.setVersion(Integer.valueOf(version));
-                    result.wordLists.add(wordListEntity);
+                    long wordListID = db.wordListDao().insert(wordListEntity);
                     // create word list first
                     WordListEntity wordList = db.wordListDao().getWordListByName(name);
                     if(wordList == null)
@@ -88,7 +87,7 @@ public class WordEntityParser {
                             //this stops further processing
                             filter.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
                             filter.setButtonAction(PipelineButtonAction.NONE);
-                            filter.setWordListID(wordListEntity.getId());
+                            filter.setWordListID(wordListID);
                             long insertedFilterID = db.contentFiltersDao().insertContentFilter(filter);
                             // Create only for valid package ids
                             if(appName.contains("."))
