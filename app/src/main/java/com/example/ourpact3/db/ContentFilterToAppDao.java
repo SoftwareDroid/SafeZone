@@ -27,6 +27,12 @@ public interface ContentFilterToAppDao
 
     @Query("SELECT * FROM ContentFilterToAppEntity")
     List<ContentFilterToAppEntity> getAll();
+    /*
+    Priority 0 is always System
+     */
+    @Query("SELECT * FROM ContentFilterToAppEntity WHERE priority = :priority")
+    ContentFilterToAppEntity getByPriority(int priority);
+
 
     @Query("SELECT * FROM ContentFilterToAppEntity WHERE id = :id")
     ContentFilterToAppEntity getById(int id);

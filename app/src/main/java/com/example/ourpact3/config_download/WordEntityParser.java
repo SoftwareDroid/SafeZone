@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.ourpact3.db.AppsDatabase;
 import com.example.ourpact3.db.ContentFilterEntity;
+import com.example.ourpact3.db.ContentFilterToAppEntity;
 import com.example.ourpact3.db.LanguageEntity;
 import com.example.ourpact3.db.WordEntity;
 import com.example.ourpact3.db.WordListEntity;
@@ -23,8 +24,6 @@ public class WordEntityParser {
     public class Result {
         public List<WordEntity> wordEntities = new ArrayList<>();
         public List<WordListEntity> wordLists = new ArrayList<>();
-        public List<ContentFilterEntity> contentFilters = new ArrayList<>();
-        public List<LanguageEntity> languages = new ArrayList<>();
     }
 
 
@@ -61,8 +60,10 @@ public class WordEntityParser {
                 if (currentElement.equals("WordListEntity")) {
                     String name = parser.getAttributeValue(null, "name");
                     String version = parser.getAttributeValue(null, "version");
+                    String appName = parser.getAttributeValue(null, "app");
                     WordListEntity wordListEntity = new WordListEntity();
                     wordListEntity.setName(name);
+                    wordListEntity.setApp(appName);
                     wordListEntity.setVersion(Integer.valueOf(version));
                     result.wordLists.add(wordListEntity);
                     // create word list first
@@ -81,14 +82,29 @@ public class WordEntityParser {
                             filter.setReadable(true);
                             filter.setWritable(true);
                             filter.setIgnoreCase(true);
-                            filter.setAppGroup(1);
+                            filter.setAppGroup(appName);
                             filter.setWhatToCheck(NodeCheckStrategyType.BOTH);
                             filter.setShortDescription("auto generated from " + name);
                             //this stops further processing
                             filter.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
                             filter.setButtonAction(PipelineButtonAction.NONE);
                             filter.setWordListID(wordListEntity.getId());
-                            result.contentFilters.add(filter);
+                            long insertedFilterID = db.contentFiltersDao().insertContentFilter(filter);
+                            // Create only for valid package ids
+                            if(appName.contains("."))
+                            {
+                                // Only create Exception if not already exists
+                                if(db.contentFilterToAppDao().getByPriority(ContentFilterToAppEntity.DEFAULT_CREATED_EXCEPTION_PRIORITY) == null)
+                                {
+
+                                    ContentFilterToAppEntity contentFilterToAppEntity = new ContentFilterToAppEntity();
+                                    contentFilterToAppEntity.setPackageName(appName);
+                                    contentFilterToAppEntity.setContentFilterID(insertedFilterID);
+                                    // Set a very small ID
+                                    contentFilterToAppEntity.setPriority(ContentFilterToAppEntity.DEFAULT_CREATED_EXCEPTION_PRIORITY);
+                                    db.contentFilterToAppDao().insert(contentFilterToAppEntity);
+                                }
+                            }
                         }
 
                     }

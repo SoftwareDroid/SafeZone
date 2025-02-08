@@ -39,6 +39,8 @@ public class ContentFilterToAppEntity
     private int priority;
 
 
+    public static int DEFAULT_CREATED_EXCEPTION_PRIORITY = 0;
+
     public int getId()
     {
         return id;

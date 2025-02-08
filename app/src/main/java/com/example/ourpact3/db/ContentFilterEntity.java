@@ -46,7 +46,7 @@ public class ContentFilterEntity
     private boolean userCreated;
 
     @ColumnInfo(name = "app_group")
-    private int appGroup;
+    private String appGroup;
 
     @ColumnInfo(name = "readable")
     private boolean readable;
@@ -94,7 +94,7 @@ public class ContentFilterEntity
     }
 
     public void setWindowAction(PipelineWindowAction windowAction) {
-        this.windowAction = windowAction;
+        this. windowAction = windowAction;
     }
 
     public PipelineButtonAction getButtonAction() {
@@ -129,11 +129,11 @@ public class ContentFilterEntity
         this.userCreated = userCreated;
     }
 
-    public int getAppGroup() {
+    public String getAppGroup() {
         return appGroup;
     }
 
-    public void setAppGroup(int appGroup) {
+    public void setAppGroup(String appGroup) {
         this.appGroup = appGroup;
     }
 

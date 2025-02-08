@@ -15,6 +15,15 @@ public class WordListEntity
     @ColumnInfo(name = "version")
     private Integer version;
 
+    @ColumnInfo(name = "app")
+    private String app;
+
+    public void setApp(String packageID)
+    {
+        this.app = packageID;
+    }
+    public String getApp(){return this.app;}
+
     public Integer getVersion()
     {
         return version;

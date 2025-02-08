@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 
 import com.example.ourpact3.ContentFilterService;
+import com.example.ourpact3.db.AppsDatabase;
+import com.example.ourpact3.db.ContentFilterEntity;
 import com.example.ourpact3.unused.DatabaseManager;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.pipeline.CounterAction;
@@ -162,10 +164,26 @@ public class ExampleAppKeywordFilters
 //        topicManager.addTopic(adultChildTopic);
     }
 
+    private AppFilter getAndroidSettings2(AppsDatabase db)
+    {
+        String myAppName = "SafeZone";
+        String appName = "com.android.settings";
+        // Get all Exceptions first
+
+        return null;
+    }
+
     private AppFilter getAndroidSettings() throws CloneNotSupportedException
     {
         String myAppName = "SafeZone";
         String appName = "com.android.settings";
+        // First collect all exceptions
+
+
+
+
+
+
         ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
         // prevent user for disabling the accessabilty service (only works in english)
         {

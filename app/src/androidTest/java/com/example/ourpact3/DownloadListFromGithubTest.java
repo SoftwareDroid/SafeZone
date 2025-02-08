@@ -38,16 +38,6 @@ public class DownloadListFromGithubTest
         AppsDatabase db = Room.databaseBuilder(context, AppsDatabase.class, "apps-database")
                 .allowMainThreadQueries()
                 .build();
-        LanguageEntity enLang = new LanguageEntity();
-        enLang.setShortLanguageCode("en");
-        enLang.setLongLanguageCode("english");
-        db.languageDao().insertLanguage(enLang);
-        LanguageEntity deLang = new LanguageEntity();
-
-        deLang.setShortLanguageCode("de");
-        deLang.setLongLanguageCode("german");
-        db.languageDao().insertLanguage(deLang);
-
         XMLDownloader downloader = new XMLDownloader();
         InputStreamReader wordStream = downloader.downloadXml("https://raw.githubusercontent.com/SoftwareDroid/SafeZoneData/refs/heads/main/word_list.xml");
 
