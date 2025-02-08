@@ -84,6 +84,4 @@ public class ContentFilterParser
         }
         return contentFilters;
     }
-
-
 }

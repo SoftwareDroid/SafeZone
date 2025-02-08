@@ -24,6 +24,7 @@ public class WordEntityParser {
         public List<WordEntity> wordEntities = new ArrayList<>();
         public List<WordListEntity> wordLists = new ArrayList<>();
         public List<ContentFilterEntity> contentFilters = new ArrayList<>();
+        public List<LanguageEntity> languages = new ArrayList<>();
     }
 
 
@@ -43,6 +44,20 @@ public class WordEntityParser {
                 currentElement = parser.getName();
 
                 // Parse WordListEntities
+                if(currentElement.equals("language"))
+                {
+                    String shortCode = parser.getAttributeValue(null, "short");
+                    String longName = parser.getAttributeValue(null, "long");
+                    // create language if not exist
+                    if(db.languageDao().getLanguageByShortCode(shortCode) == null)
+                    {
+                        LanguageEntity language = new LanguageEntity();
+                        language.setShortLanguageCode(shortCode);
+                        language.setLongLanguageCode(longName);
+                        db.languageDao().insertLanguage(language);
+                    }
+                }
+                else
                 if (currentElement.equals("WordListEntity")) {
                     String name = parser.getAttributeValue(null, "name");
                     String version = parser.getAttributeValue(null, "version");
