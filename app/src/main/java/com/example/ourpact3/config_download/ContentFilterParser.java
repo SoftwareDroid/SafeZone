@@ -2,7 +2,6 @@ package com.example.ourpact3.config_download;
 
 import com.example.ourpact3.db.AppsDatabase;
 import com.example.ourpact3.db.ContentFilterEntity;
-import com.example.ourpact3.db.ContentFilterToAppDao;
 import com.example.ourpact3.db.ContentFilterToAppEntity;
 import com.example.ourpact3.db.PipelineButtonActionConverter;
 import com.example.ourpact3.db.WindowActionConverter;
@@ -17,7 +16,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 public class ContentFilterParser
@@ -53,12 +51,12 @@ public class ContentFilterParser
                     boolean writable = Boolean.parseBoolean(parser.getAttributeValue(null, "writable"));
                     boolean ignore_case = Boolean.parseBoolean(parser.getAttributeValue(null, "ignore_case"));
                     String appGroup = parser.getAttributeValue(null, "app_group");
-                    int whatToCheck = Integer.parseInt(parser.getAttributeValue(null, "what_to_check"));
+                    String whatToCheck = parser.getAttributeValue(null, "what_to_check");
                     String shortDescription = parser.getAttributeValue(null, "short_description");
                     String name = parser.getAttributeValue(null, "name");
 
-                    PipelineWindowAction windowAction = WindowActionConverter.fromInteger(Integer.parseInt(parser.getAttributeValue(null, "window_action")));
-                    PipelineButtonAction buttonAction = PipelineButtonActionConverter.fromInteger(Integer.parseInt(parser.getAttributeValue(null, "button_action")));
+                    PipelineWindowAction windowAction = PipelineWindowAction.valueOf(parser.getAttributeValue(null, "window_action"));
+                    PipelineButtonAction buttonAction = PipelineButtonAction.valueOf(parser.getAttributeValue(null, "button_action"));
                     String wordListName = parser.getAttributeValue(null, "word_list");
                     WordListEntity wordListEntity = db.wordListDao().getWordListByName(wordListName);
                     if (wordListEntity != null)
@@ -68,12 +66,12 @@ public class ContentFilterParser
                         filter.setKill(kill);
                         filter.setEnabled(enabled);
                         filter.setUserCreated(userCreated);
-                        filter.setWhatToCheck(NodeCheckStrategyType.fromValue(whatToCheck));
+                        filter.setWhatToCheck(NodeCheckStrategyType.valueOf(whatToCheck));
                         filter.setReadable(readable);
                         filter.setWritable(writable);
                         filter.setIgnoreCase(ignore_case);
                         filter.setAppGroup(appGroup);
-                        filter.setWhatToCheck(NodeCheckStrategyType.BOTH);
+                        filter.setWhatToCheck(NodeCheckStrategyType.ALL);
                         filter.setShortDescription(shortDescription);
                         filter.setWindowAction(windowAction);
                         filter.setButtonAction(buttonAction);

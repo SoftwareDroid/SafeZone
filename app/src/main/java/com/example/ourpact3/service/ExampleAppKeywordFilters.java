@@ -5,7 +5,6 @@ import android.content.pm.ApplicationInfo;
 
 import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.db.AppsDatabase;
-import com.example.ourpact3.db.ContentFilterEntity;
 import com.example.ourpact3.unused.DatabaseManager;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.pipeline.CounterAction;
@@ -328,7 +327,7 @@ public class ExampleAppKeywordFilters
             ignoreHistoryPage.setCounterAction(a);
             // Add test Filter
             ContentSmartFilterBase ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("History", "Recently closed tabs")))),  ignoreHistoryPage);
-            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.NONE_EDITABLE_ONLY);
+            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.READ_ONLY);
             filters.add(ignoreSearch);
         }
 
@@ -342,7 +341,7 @@ public class ExampleAppKeywordFilters
             resultIgnoreSearch.setCounterAction(a);
             // Add test Filter
             ContentSmartFilterBase ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox Suggest")))),  resultIgnoreSearch);
-            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.NONE_EDITABLE_ONLY);
+            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.READ_ONLY);
             filters.add(ignoreSearch);
         }
         {
@@ -354,7 +353,7 @@ public class ExampleAppKeywordFilters
             ignoreStartpage.setCounterAction(a);
             // Add test Filter
             ContentSmartFilterBase ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox", "Jump back in")))),  ignoreStartpage);
-            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.NONE_EDITABLE_ONLY);
+            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.READ_ONLY);
             ignoreSearch.setCheckOnlyVisibleNodes(false);
             filters.add(ignoreSearch);
         }
@@ -508,7 +507,7 @@ public class ExampleAppKeywordFilters
             // Add test Filter
             ContentSmartFilterBase ignoreSearch = new WordListFilterExact(
                     new ArrayList<>(List.of(new ArrayList<>(List.of("Settings", "Content")))),  ignoreSettings);
-            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.NONE_EDITABLE_ONLY);
+            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.READ_ONLY);
             filters.add(ignoreSearch);
         }
         {
@@ -520,7 +519,7 @@ public class ExampleAppKeywordFilters
             ignoreSettings.setCounterAction(a);
             // Add test Filter
             ContentSmartFilterBase ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("Search")))), ignoreSettings);
-            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.NONE_EDITABLE_ONLY);
+            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.READ_ONLY);
             filters.add(ignoreSearch);
         }
 
@@ -570,7 +569,7 @@ public class ExampleAppKeywordFilters
             ignoreSearchSuggestions.setCounterAction(a);
             ContentSmartFilterBase ignoreSearch = new WordListFilterExact(
                     new ArrayList<>(List.of(new ArrayList<>(List.of("Suche nach Episoden und Podcasts")))),  ignoreSearchSuggestions);
-            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.NONE_EDITABLE_ONLY);
+            ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.READ_ONLY);
             filters.add(ignoreSearch);
         }
 

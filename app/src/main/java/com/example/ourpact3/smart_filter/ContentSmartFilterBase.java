@@ -33,7 +33,7 @@ public abstract class ContentSmartFilterBase implements Cloneable
         this.shortDescription = "";
         this.readable = true;
         this.writable = true;
-        this.nodeCheckStrategyType = NodeCheckStrategyType.BOTH;    //Default check everything
+        this.nodeCheckStrategyType = NodeCheckStrategyType.ALL;    //Default check everything
         this.checkOnlyVisibleNodes = true;
     }
 

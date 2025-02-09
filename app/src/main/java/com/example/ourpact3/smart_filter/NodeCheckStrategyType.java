@@ -3,10 +3,9 @@ package com.example.ourpact3.smart_filter;
 // Different addable smart filters int conversion is needed for the database
 public enum NodeCheckStrategyType
 {
-    EDITABLE_ONLY(5),
-    NONE_EDITABLE_ONLY(10),
-    BOTH(15);
-
+    WRITE_ONLY(5),
+    READ_ONLY(10),
+    ALL(15);
     private final int value;
 
     NodeCheckStrategyType(int value) {

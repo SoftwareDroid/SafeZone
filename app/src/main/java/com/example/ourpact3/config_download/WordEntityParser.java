@@ -82,7 +82,7 @@ public class WordEntityParser {
                             filter.setWritable(true);
                             filter.setIgnoreCase(true);
                             filter.setAppGroup(appName);
-                            filter.setWhatToCheck(NodeCheckStrategyType.BOTH);
+                            filter.setWhatToCheck(NodeCheckStrategyType.ALL);
                             filter.setShortDescription("auto generated from " + name);
                             //this stops further processing
                             filter.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
