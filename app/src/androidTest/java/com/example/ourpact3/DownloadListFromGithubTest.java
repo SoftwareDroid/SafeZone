@@ -16,6 +16,7 @@ import com.example.ourpact3.config_download.AppExceptionParser;
 import com.example.ourpact3.config_download.ContentFilterParser;
 import com.example.ourpact3.db.AppsDatabase;
 import com.example.ourpact3.db.ContentFilterEntity;
+import com.example.ourpact3.db.ContentFilterToAppEntity;
 import com.example.ourpact3.db.ExceptionListEntity;
 import com.example.ourpact3.db.LanguageEntity;
 import com.example.ourpact3.db.WordEntity;
@@ -66,6 +67,12 @@ public class DownloadListFromGithubTest
         for (ContentFilterEntity e : contentFilters)
         {
             Log.d("ContentFilter", e.getName());
+        }
+
+        List<ContentFilterToAppEntity> filterInstances = db.contentFilterToAppDao().getAll();
+        for(ContentFilterToAppEntity instance : filterInstances)
+        {
+            Log.d("FilterInstance ", instance.getPackageName());
         }
     }
 }

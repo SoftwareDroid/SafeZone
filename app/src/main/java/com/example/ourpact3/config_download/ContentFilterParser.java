@@ -1,9 +1,11 @@
 package com.example.ourpact3.config_download;
 
+import com.example.ourpact3.db.AppEntity;
 import com.example.ourpact3.db.AppsDatabase;
 import com.example.ourpact3.db.ContentFilterEntity;
 import com.example.ourpact3.db.ContentFilterToAppEntity;
 import com.example.ourpact3.db.PipelineButtonActionConverter;
+import com.example.ourpact3.db.UsageFiltersEntity;
 import com.example.ourpact3.db.WindowActionConverter;
 import com.example.ourpact3.db.WordListEntity;
 import com.example.ourpact3.model.PipelineButtonAction;
@@ -20,8 +22,6 @@ import java.util.List;
 
 public class ContentFilterParser
 {
-
-
     public List<ContentFilterEntity> parseContentFilters(InputStreamReader reader, AppsDatabase db) throws Exception
     {
         List<ContentFilterEntity> contentFilters = new ArrayList<>();
@@ -40,7 +40,28 @@ public class ContentFilterParser
             {
                 currentElement = parser.getName();
                 // Parse WordListEntities
-                if (currentElement.equals("content_filter"))
+                if(currentElement.equals("app_entity"))
+                {
+                    String app = parser.getAttributeValue(null, "app");
+                    String comment = parser.getAttributeValue(null, "comment");
+                    boolean readable = Boolean.parseBoolean(parser.getAttributeValue(null, "readable"));
+                    boolean writable = Boolean.parseBoolean(parser.getAttributeValue(null, "writable"));
+                    boolean enabled = Boolean.parseBoolean(parser.getAttributeValue(null, "enabled"));
+                    boolean checkAllEvents = Boolean.parseBoolean(parser.getAttributeValue(null, "check_all_events"));
+                    AppEntity appEntity = new AppEntity();
+                    appEntity.setPackageName(app);
+                    appEntity.setCheckAllEvents(checkAllEvents);
+                    appEntity.setWritable(writable);
+                    appEntity.setReadable(readable);
+                    appEntity.setEnabled(enabled);
+                    appEntity.setComment(comment);
+                    UsageFiltersEntity usageFilter1 = new UsageFiltersEntity();
+                    usageFilter1.setEnabled(false);
+                    long defaultUsageFilter = db.usageFiltersDao().insert(usageFilter1);
+                    appEntity.setUsageFilterId(defaultUsageFilter);
+                    db.appsDao().insertApp(appEntity);
+                }
+                else if (currentElement.equals("content_filter"))
                 {
                     ContentFilterEntity filter = new ContentFilterEntity();
                     boolean explainable = Boolean.parseBoolean(parser.getAttributeValue(null, "explainable"));
