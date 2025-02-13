@@ -16,14 +16,14 @@ import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ourpact3.R;
-import com.example.ourpact3.smart_filter.ContentSmartFilterBase;
+import com.example.ourpact3.smart_filter.ContentSmartFilter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ContentFilterRuleAdapter extends RecyclerView.Adapter<ContentFilterRuleAdapter.ViewHolder>
 {
-    private List<ContentSmartFilterBase> items;
+    private List<ContentSmartFilter> items;
     private Context context;
     private int selectedItemPosition = RecyclerView.NO_POSITION; // No selection initially
 
@@ -46,7 +46,7 @@ public class ContentFilterRuleAdapter extends RecyclerView.Adapter<ContentFilter
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position)
     {
-        ContentSmartFilterBase rule = items.get(position);
+        ContentSmartFilter rule = items.get(position);
         holder.isEnabledSwitch.setChecked(rule.isEnabled());
         holder.title.setText(rule.getName());
         holder.shortDescription.setText(rule.getShortDescription());
@@ -69,12 +69,12 @@ public class ContentFilterRuleAdapter extends RecyclerView.Adapter<ContentFilter
 
     }
 
-    public List<ContentSmartFilterBase> getAllItems()
+    public List<ContentSmartFilter> getAllItems()
     {
         return items;
     }
 
-    public void addEntry(ContentSmartFilterBase entry)
+    public void addEntry(ContentSmartFilter entry)
     {
         items.add(entry);
         notifyItemInserted(items.size() - 1);
@@ -92,7 +92,7 @@ public class ContentFilterRuleAdapter extends RecyclerView.Adapter<ContentFilter
         TextView shortDescription;
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch isEnabledSwitch;
-        List<ContentSmartFilterBase> items;
+        List<ContentSmartFilter> items;
 
         public ViewHolder(@NonNull View itemView)
         {
@@ -125,7 +125,7 @@ public class ContentFilterRuleAdapter extends RecyclerView.Adapter<ContentFilter
             if (selectedItemPosition > 0)
             {
                 // Get the item to move
-                ContentSmartFilterBase item = items.get(selectedItemPosition);
+                ContentSmartFilter item = items.get(selectedItemPosition);
 
                 // Remove the item from its current position
                 items.remove(selectedItemPosition);
@@ -144,7 +144,7 @@ public class ContentFilterRuleAdapter extends RecyclerView.Adapter<ContentFilter
             if (selectedItemPosition < items.size() - 1)
             {
                 // Get the item to move
-                ContentSmartFilterBase item = items.get(selectedItemPosition);
+                ContentSmartFilter item = items.get(selectedItemPosition);
 
                 // Remove the item from its current position
                 items.remove(selectedItemPosition);

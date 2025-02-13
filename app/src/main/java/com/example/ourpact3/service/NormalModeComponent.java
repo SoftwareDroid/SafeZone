@@ -18,7 +18,7 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
 {
     private IContentFilterService iContentFilterService;
     private final OverlayWindowManager overlayWindowManager;
-    public TreeMap<String, AppFilter> appFilters = new TreeMap<>();
+    public TreeMap<String, AppFilter> appToFilters = new TreeMap<>();
     private ConcurrentLinkedDeque<PipelineResultBase> pipelineResults = new ConcurrentLinkedDeque<PipelineResultBase>();
     public boolean useWarnWindows;
     public boolean useLogging;
@@ -51,12 +51,12 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
         {
             return;
         }
-        AppFilter oldApp2 = appFilters.get(oldApp);
+        AppFilter oldApp2 = appToFilters.get(oldApp);
         if (oldApp2 != null)
         {
             oldApp2.onAppStateChange(false);
         }
-        AppFilter newApp2 = appFilters.get(newApp);
+        AppFilter newApp2 = appToFilters.get(newApp);
         if (newApp2 != null)
         {
             newApp2.onAppStateChange(true);
@@ -139,10 +139,10 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
         String appName = event.getPackageName().toString();
-        AppFilter filter = this.appFilters.get(appName);
-        if (filter == null && this.appFilters.containsKey(""))
+        AppFilter filter = this.appToFilters.get(appName);
+        if (filter == null && this.appToFilters.containsKey(""))
         {
-            filter = this.appFilters.get("");
+            filter = this.appToFilters.get("");
             assert filter != null;
             filter.cancelAllCallbacks();
 
@@ -179,8 +179,8 @@ public class NormalModeComponent implements IServiceEventHandler, IFilterResultC
 
     public void onScreenStateChange(boolean isScreenOn)
     {
-        for (String key : appFilters.keySet()) {
-            AppFilter filter = appFilters.get(key);
+        for (String key : appToFilters.keySet()) {
+            AppFilter filter = appToFilters.get(key);
             assert filter != null;
             filter.onScreenStateChanged(isScreenOn);
         }

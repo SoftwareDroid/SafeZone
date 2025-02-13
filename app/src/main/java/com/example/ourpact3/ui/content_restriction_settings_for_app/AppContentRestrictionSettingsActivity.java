@@ -16,7 +16,7 @@ import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.smart_filter.WordListFilterExact;
-import com.example.ourpact3.smart_filter.ContentSmartFilterBase;
+import com.example.ourpact3.smart_filter.ContentSmartFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +67,7 @@ public class AppContentRestrictionSettingsActivity extends AppCompatActivity
         a.setHasExplainableButton(false);
         preventReinstallingAndLosePermissons.setCounterAction(a);
 
-        ContentSmartFilterBase nsfwBlockRule = new WordListFilterExact( new ArrayList<>(List.of(
+        ContentSmartFilter nsfwBlockRule = new WordListFilterExact( new ArrayList<>(List.of(
                 new ArrayList<>(List.of(appName, "Do you want to install this app?")),
                 new ArrayList<>(List.of(appName, "Do you want to update this app?"))
         )),  preventReinstallingAndLosePermissons);

@@ -22,7 +22,7 @@ public interface WordListDao {
     List<WordListEntity> getAllWordLists();
 
     @Query("SELECT * FROM WordListEntity WHERE id = :id")
-    WordListEntity getWordListById(int id);
+    WordListEntity getWordListById(long id);
 
     @Query("SELECT * FROM WordListEntity WHERE name = :name")
     WordListEntity getWordListByName(String name);

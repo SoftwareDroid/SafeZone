@@ -10,15 +10,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WordListFilterExact extends ContentSmartFilterBase
+public class WordListFilterExact extends ContentSmartFilter
 {
     /*
     listofWords (w and w2) | (w and w2) | (w and w2 and w3 )
      */
     public WordListFilterExact(ArrayList<ArrayList<String>> listOfWords, PipelineResultKeywordFilter result) throws CloneNotSupportedException
     {
-        super(result);
-        this.nodeCheckStrategyType = NodeCheckStrategyType.ALL; // check both by default
+//        super(result);
 
 //    this.editable = searchForEditable;
         for (ArrayList<String> wordGroup : listOfWords)

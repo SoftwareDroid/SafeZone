@@ -6,10 +6,9 @@ import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.topics.TopicManager;
 import com.example.ourpact3.topics.TopicMissingException;
 
-import java.util.ArrayList;
 import java.util.TreeSet;
 
-public class WordListFilterScored extends ContentSmartFilterBase
+public class WordListFilterScored extends ContentSmartFilter
 {
     public static class TopicScoring
     {

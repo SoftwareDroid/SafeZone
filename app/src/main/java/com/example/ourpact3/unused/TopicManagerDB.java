@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.example.ourpact3.topics.Topic;
-
 import java.util.ArrayList;
 
 public class TopicManagerDB

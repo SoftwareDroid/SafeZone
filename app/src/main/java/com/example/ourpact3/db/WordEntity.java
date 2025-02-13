@@ -31,7 +31,7 @@ public class WordEntity
 {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private int id;
+    private long id;
 
     @ColumnInfo(name = "text")
     private String text;
@@ -70,7 +70,7 @@ public class WordEntity
     }
 
     // getters and setters
-    public int getId()
+    public long getId()
     {
         return id;
     }

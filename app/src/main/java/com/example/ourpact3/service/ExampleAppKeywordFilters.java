@@ -16,14 +16,14 @@ import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
 import com.example.ourpact3.topics.InvalidTopicIDException;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
-import com.example.ourpact3.topics.TopicAlreadyExistsException;
-import com.example.ourpact3.topics.TopicLoaderCycleDetectedException;
+import com.example.ourpact3.unused.TopicAlreadyExistsException;
+import com.example.ourpact3.unused.TopicLoaderCycleDetectedException;
 import com.example.ourpact3.topics.TopicManager;
 import com.example.ourpact3.topics.TopicMissingException;
 import com.example.ourpact3.smart_filter.WordListFilterScored.TopicScoring;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.smart_filter.WordListFilterExact;
-import com.example.ourpact3.smart_filter.ContentSmartFilterBase;
+import com.example.ourpact3.smart_filter.ContentSmartFilter;
 import com.example.ourpact3.smart_filter.WordListFilterScored;
 
 import java.time.DayOfWeek;
@@ -183,7 +183,7 @@ public class ExampleAppKeywordFilters
 
 
 
-        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
+        ArrayList<ContentSmartFilter> filters = new ArrayList<ContentSmartFilter>();
         // prevent user for disabling the accessabilty service (only works in english)
         {
             PipelineResultKeywordFilter preventDisabelingAccessabilty = new PipelineResultKeywordFilter("");
@@ -195,7 +195,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             preventDisabelingAccessabilty.setCounterAction(a);
 
-            ContentSmartFilterBase accessibilityOverview = new WordListFilterExact( new ArrayList<>(List.of(
+            ContentSmartFilter accessibilityOverview = new WordListFilterExact( new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Use " + myAppName)),
                     new ArrayList<>(List.of("Stop " + myAppName + "?")),
                     new ArrayList<>(List.of("Downloaded apps")) //accessabilty site block
@@ -216,7 +216,7 @@ public class ExampleAppKeywordFilters
             a.setKillState(CounterAction.KillState.DO_NOT_KILL);
             a.setHasExplainableButton(true);
             preventTurnOfDeviceAdmin.setCounterAction(a);
-            ContentSmartFilterBase searchForDeviceAdmin = new WordListFilterExact( new ArrayList<>(List.of(
+            ContentSmartFilter searchForDeviceAdmin = new WordListFilterExact( new ArrayList<>(List.of(
                     new ArrayList<>(List.of("Device admin apps")),
                     new ArrayList<>(List.of("Add a language")), // prevent switching language
                     new ArrayList<>(List.of("Debugging")), // prevent switching language
@@ -236,7 +236,7 @@ public class ExampleAppKeywordFilters
     {
         String myAppName = "SafeZone";
         String appName = "com.google.android.packageinstaller";
-        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
+        ArrayList<ContentSmartFilter> filters = new ArrayList<ContentSmartFilter>();
         /**
          * This code is only probaly needed in the debug version To prevent disabling via reinstalling
          * When you install an app on an Android device, especially in a development environment using Android Studio,
@@ -255,7 +255,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(false);
             preventReinstallingAndLosePermissons.setCounterAction(a);
 
-            ContentSmartFilterBase reinstallAppPopup = new WordListFilterExact( new ArrayList<>(List.of(
+            ContentSmartFilter reinstallAppPopup = new WordListFilterExact( new ArrayList<>(List.of(
                     new ArrayList<>(List.of(myAppName, "Do you want to install this app?")),
                     new ArrayList<>(List.of(myAppName, "Do you want to update this app?"))
             )),  preventReinstallingAndLosePermissons);
@@ -270,7 +270,7 @@ public class ExampleAppKeywordFilters
     {
 
         String appName = "au.com.shiftyjelly.pocketcasts";
-        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
+        ArrayList<ContentSmartFilter> filters = new ArrayList<ContentSmartFilter>();
         {
             PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
@@ -284,7 +284,7 @@ public class ExampleAppKeywordFilters
 // Create the outer ArrayList and add the inner list to it
             ArrayList<ArrayList<String>> outerList = new ArrayList<>();
             outerList.add(innerList);
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact( outerList,  resultIgnoreSearch);
+            ContentSmartFilter ignoreSearch = new WordListFilterExact( outerList,  resultIgnoreSearch);
             filters.add(ignoreSearch);
         }
         {
@@ -317,7 +317,7 @@ public class ExampleAppKeywordFilters
     private AppFilter getFirefoxFilter() throws TopicMissingException, CloneNotSupportedException
     {
         String appName = "org.mozilla.firefox";
-        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
+        ArrayList<ContentSmartFilter> filters = new ArrayList<ContentSmartFilter>();
         {
             // ignore start page
             PipelineResultKeywordFilter ignoreHistoryPage = new PipelineResultKeywordFilter("");
@@ -326,7 +326,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             ignoreHistoryPage.setCounterAction(a);
             // Add test Filter
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("History", "Recently closed tabs")))),  ignoreHistoryPage);
+            ContentSmartFilter ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("History", "Recently closed tabs")))),  ignoreHistoryPage);
             ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.READ_ONLY);
             filters.add(ignoreSearch);
         }
@@ -340,7 +340,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             resultIgnoreSearch.setCounterAction(a);
             // Add test Filter
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox Suggest")))),  resultIgnoreSearch);
+            ContentSmartFilter ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox Suggest")))),  resultIgnoreSearch);
             ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.READ_ONLY);
             filters.add(ignoreSearch);
         }
@@ -352,7 +352,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             ignoreStartpage.setCounterAction(a);
             // Add test Filter
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox", "Jump back in")))),  ignoreStartpage);
+            ContentSmartFilter ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("Firefox", "Jump back in")))),  ignoreStartpage);
             ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.READ_ONLY);
             ignoreSearch.setCheckOnlyVisibleNodes(false);
             filters.add(ignoreSearch);
@@ -410,7 +410,7 @@ public class ExampleAppKeywordFilters
     private AppFilter getDefaultFilter() throws TopicMissingException, CloneNotSupportedException
     {
         String appName = "";
-        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
+        ArrayList<ContentSmartFilter> filters = new ArrayList<ContentSmartFilter>();
 
 
         // Block stuff
@@ -462,7 +462,7 @@ public class ExampleAppKeywordFilters
     private AppFilter getAppolo() throws CloneNotSupportedException
     {
         String appName = "org.nuclearfog.apollo";
-        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
+        ArrayList<ContentSmartFilter> filters = new ArrayList<ContentSmartFilter>();
 
         AppFilter filter = new AppFilter(service, topicManager, filters, appName, false);
 
@@ -475,7 +475,7 @@ public class ExampleAppKeywordFilters
     private AppFilter getTelegramFilter2() throws CloneNotSupportedException
     {
         String appName = "org.telegram.messenger";
-        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
+        ArrayList<ContentSmartFilter> filters = new ArrayList<ContentSmartFilter>();
         {
             PipelineResultKeywordFilter resultIgnoreSearch = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
@@ -485,7 +485,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             resultIgnoreSearch.setCounterAction(a);
             // Add test Filter
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(
+            ContentSmartFilter ignoreSearch = new WordListFilterExact(
                     new ArrayList<>(List.of(
                             new ArrayList<>(List.of("People Nearby", "Make Myself Visible")))),  resultIgnoreSearch);
             filters.add(ignoreSearch);
@@ -496,7 +496,7 @@ public class ExampleAppKeywordFilters
     private AppFilter getYoutubeFilter() throws TopicMissingException, CloneNotSupportedException
     {
         String appName = "org.schabi.newpipe";
-        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
+        ArrayList<ContentSmartFilter> filters = new ArrayList<ContentSmartFilter>();
         {
             // ignore history page
             PipelineResultKeywordFilter ignoreSettings = new PipelineResultKeywordFilter("");
@@ -505,7 +505,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             ignoreSettings.setCounterAction(a);
             // Add test Filter
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(
+            ContentSmartFilter ignoreSearch = new WordListFilterExact(
                     new ArrayList<>(List.of(new ArrayList<>(List.of("Settings", "Content")))),  ignoreSettings);
             ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.READ_ONLY);
             filters.add(ignoreSearch);
@@ -518,7 +518,7 @@ public class ExampleAppKeywordFilters
             a.setHasExplainableButton(true);
             ignoreSettings.setCounterAction(a);
             // Add test Filter
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("Search")))), ignoreSettings);
+            ContentSmartFilter ignoreSearch = new WordListFilterExact( new ArrayList<>(List.of(new ArrayList<>(List.of("Search")))), ignoreSettings);
             ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.READ_ONLY);
             filters.add(ignoreSearch);
         }
@@ -559,7 +559,7 @@ public class ExampleAppKeywordFilters
     private AppFilter getArdMediathekFilter() throws TopicMissingException, CloneNotSupportedException
     {
         String appName = "de.ard.audiothek";
-        ArrayList<ContentSmartFilterBase> filters = new ArrayList<ContentSmartFilterBase>();
+        ArrayList<ContentSmartFilter> filters = new ArrayList<ContentSmartFilter>();
         {
             // ignore search suggestions
             PipelineResultKeywordFilter ignoreSearchSuggestions = new PipelineResultKeywordFilter("");
@@ -567,7 +567,7 @@ public class ExampleAppKeywordFilters
             a.setWindowAction(PipelineWindowAction.NO_WARNING_AND_STOP);
             a.setHasExplainableButton(true);
             ignoreSearchSuggestions.setCounterAction(a);
-            ContentSmartFilterBase ignoreSearch = new WordListFilterExact(
+            ContentSmartFilter ignoreSearch = new WordListFilterExact(
                     new ArrayList<>(List.of(new ArrayList<>(List.of("Suche nach Episoden und Podcasts")))),  ignoreSearchSuggestions);
             ignoreSearch.setNodeCheckStrategyType(NodeCheckStrategyType.READ_ONLY);
             filters.add(ignoreSearch);

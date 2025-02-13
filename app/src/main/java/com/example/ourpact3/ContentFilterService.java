@@ -17,7 +17,6 @@ import android.view.accessibility.AccessibilityEvent;
 
 import com.example.ourpact3.unused.DatabaseManager;
 import com.example.ourpact3.unused.UsageSmartFilterManager;
-import com.example.ourpact3.learn_mode.LearnModeComponent;
 import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.service.AppPermission;
 import com.example.ourpact3.service.ExampleAppKeywordFilters;
@@ -47,13 +46,12 @@ public class ContentFilterService extends AccessibilityService implements IConte
     private ScreenReceiver screenReceiver;
     private NormalModeComponent normalModeProcessor;
     private AppKiller appKillerService;
-    private LearnModeComponent learnModeComponent;
     private Mode mode = Mode.NORMAL_MODE;
     private final TopicManager topicManager = new TopicManager();
     private CrashHandler crashHandler;
     private CheatKeyManager cheatKeyManager;
     private TreeMap<String, AppPermission> usedAppPermissions;
-    private BroadcastReceiver commandReceiver = new BroadcastReceiver()
+    private final BroadcastReceiver commandReceiver = new BroadcastReceiver()
     {
         @Override
         public void onReceive(Context context, Intent intent)
@@ -84,7 +82,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
         UsageRestrictionsFilter usageRestrictionsFilter = UsageSmartFilterManager.getUsageFilterById(appRuleTuple.usageFilterID);
         assert usageRestrictionsFilter != null;
         DatabaseManager.close();
-        normalModeProcessor.appFilters.get(packageId).setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, usageRestrictionsFilter);
+        normalModeProcessor.appToFilters.get(packageId).setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, usageRestrictionsFilter);
     }
 
     //    private boolean isRunning = false;
@@ -106,7 +104,6 @@ public class ContentFilterService extends AccessibilityService implements IConte
             filter.addAction(Intent.ACTION_SCREEN_OFF);
             registerReceiver(screenReceiver, filter);
         }
-        learnModeComponent = new LearnModeComponent(this, this, this);
         this.setNewMode(Mode.NORMAL_MODE);
 
         normalModeProcessor = new NormalModeComponent(this, this, this);
@@ -129,7 +126,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
             for (AppFilter filter : exampleFilters.getAllExampleFilters())
             {
                 filter.setCallback(normalModeProcessor);
-                normalModeProcessor.appFilters.put(filter.getPackageName(), filter);
+                normalModeProcessor.appToFilters.put(filter.getPackageName(), filter);
             }
             reloadSettings();
             AccessibilityServiceInfo info = new AccessibilityServiceInfo();
@@ -158,14 +155,10 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
-        // the a cheat key is used then don't filte
+        // the a cheat key is used then don't filter
         if (cheatKeyManager.isServiceIsDisabled(getBaseContext()))
         {
             return;
-        }
-        if (event.getPackageName() != null && event.getPackageName().equals("com.android.system.ui"))
-        {
-
         }
         // Schedule the execution of processPipelineResults in the foreground after 500ms
         // Create a new runnable to execute in the foreground after 500ms
@@ -175,15 +168,10 @@ public class ContentFilterService extends AccessibilityService implements IConte
         {
             handler.removeCallbacks(scheduledRunnable);
         }
-        scheduledRunnable = new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                // Execute the method in the foreground
-                normalModeProcessor.processPipelineResults();
-                isHandlerScheduled = false; // Reset the flag after execution
-            }
+        scheduledRunnable = () -> {
+            // Execute the method in the foreground
+            normalModeProcessor.processPipelineResults();
+            isHandlerScheduled = false; // Reset the flag after execution
         };
         isHandlerScheduled = true; // Set the flag to indicate a handler is scheduled
 
@@ -196,11 +184,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
         {
             return;
         }
-        if (mode == Mode.LEARN_OVERLAY_MODE)
-        {
-            this.normalModeProcessor.onAccessibilityEvent(event);
-            this.learnModeComponent.onAccessibilityEvent(event);
-        } else if (mode == Mode.NORMAL_MODE)
+        if (mode == Mode.NORMAL_MODE)
         {
             String appName = event.getPackageName().toString();
             if (!this.isPackageIgnoredForNormalMode(appName))
@@ -237,7 +221,6 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void forwardPipelineResultToLearner(PipelineResultBase result)
     {
-        this.learnModeComponent.onPipelineResult(result);
     }
 
     @Override
@@ -277,18 +260,6 @@ public class ContentFilterService extends AccessibilityService implements IConte
     public void setNewMode(Mode mode)
     {
         this.mode = mode;
-        switch (mode)
-        {
-            case NORMAL_MODE:
-                this.learnModeComponent.stopOverlay();
-                break;
-            case APP_KILL_MODE_1:
-                this.learnModeComponent.stopOverlay();
-                break;
-            case LEARN_OVERLAY_MODE:
-                this.learnModeComponent.createOverlay();
-                break;
-        }
     }
 
     @Override
@@ -324,11 +295,6 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void destroyGUI()
     {
-        if (this.learnModeComponent != null)
-        {
-            this.learnModeComponent.stopOverlay();
-            this.learnModeComponent.stopOverlay();
-        }
         if (this.normalModeProcessor != null)
         {
             this.normalModeProcessor.destroyGUI();
@@ -338,7 +304,6 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void onAppChange(String oldApp, String newApp)
     {
-        this.learnModeComponent.onAppChange(oldApp, newApp);
         if (this.mode == Mode.NORMAL_MODE)
         {
             this.normalModeProcessor.onAppChange(oldApp, newApp);
@@ -348,7 +313,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public void setSpecialSmartFilter(String app, SpecialSmartFilterBase.Name name, SpecialSmartFilterBase filter)
     {
-        AppFilter appFilter = this.normalModeProcessor.appFilters.get(app);
+        AppFilter appFilter = this.normalModeProcessor.appToFilters.get(app);
         if (appFilter != null)
         {
             appFilter.setSpecialSmartFilter(name, filter);
@@ -358,7 +323,7 @@ public class ContentFilterService extends AccessibilityService implements IConte
     @Override
     public SpecialSmartFilterBase getSpecialSmartFilter(String app, SpecialSmartFilterBase.Name name)
     {
-        AppFilter appFilter = this.normalModeProcessor.appFilters.get(app);
+        AppFilter appFilter = this.normalModeProcessor.appToFilters.get(app);
         if (appFilter != null)
         {
             return appFilter.getSpecialSmartFilter(name);
@@ -369,11 +334,6 @@ public class ContentFilterService extends AccessibilityService implements IConte
 
     public static final String COMMAND_RELOAD_SETTINGS = "reload";
     public static final String COMMAND_RELOAD_USAGE_FILTER_FOR_APP = "reload_2";
-
-    private void handleCommand(String command)
-    {
-
-    }
 
     @Override
     public void onDestroy()

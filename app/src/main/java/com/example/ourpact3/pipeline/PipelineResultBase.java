@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.example.ourpact3.smart_filter.AppFilter;
-import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.util.PackageUtil;
@@ -41,20 +40,18 @@ public abstract class PipelineResultBase implements Cloneable
         }
     }
 
-
     public CounterAction getCounterAction()
     {
         return this.counterAction;
     }
-    public void setCounterAction(CounterAction a)
+    public void setCounterAction(CounterAction action)
     {
-        this.counterAction = a;
+        this.counterAction = action;
     }
-    //    private String triggerPackage; // Changed to private
     private CounterAction counterAction = new CounterAction();
-    private String triggerFilter; // Changed to private
-    private ScreenInfoExtractor.Screen screen; // Changed to private
-    private AppFilter currentAppFilter; // Changed to private
+    private String triggerFilter;
+    private ScreenInfoExtractor.Screen screen;
+    private AppFilter currentAppFilter;
 
     public PipelineResultBase()
     {

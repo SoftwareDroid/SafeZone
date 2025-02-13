@@ -1,4 +1,4 @@
-package com.example.ourpact3.learn_mode;
+package com.example.ourpact3.unused.learn_mode;
 
 import com.example.ourpact3.service.ScreenInfoExtractor;
 

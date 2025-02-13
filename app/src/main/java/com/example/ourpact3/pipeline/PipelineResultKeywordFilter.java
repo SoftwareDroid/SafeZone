@@ -2,17 +2,21 @@ package com.example.ourpact3.pipeline;
 
 import android.content.Context;
 import com.example.ourpact3.R; // Adjust the package name as necessary
+import com.example.ourpact3.db.ContentFilterEntity;
+import com.example.ourpact3.db.WordEntity;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+
 public class PipelineResultKeywordFilter extends PipelineResultBase
 {
-    public String inputTriggerWord;
-
-    public PipelineResultKeywordFilter(String triggerPackage)
+    public PipelineResultKeywordFilter(ContentFilterEntity filter)
     {
-//        super(triggerPackage);
+        this.filter = filter;
     }
+    public final ContentFilterEntity filter; // information but the filter
+    public ArrayList<WordEntity> triggerWords = new ArrayList<>();
 
     @NonNull
     @Override
@@ -27,7 +31,6 @@ public class PipelineResultKeywordFilter extends PipelineResultBase
         // cloned.additionalField = new String(this.additionalField); // If it's a String, this is not needed since String is immutable
 
         // If additionalField were a mutable object, you would clone it here
-        cloned.inputTriggerWord = this.inputTriggerWord; // Just a direct assignment since String is immutable
 
         return cloned;
     }

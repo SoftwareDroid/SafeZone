@@ -46,12 +46,14 @@ public class WordEntityParser {
                 {
                     String shortCode = parser.getAttributeValue(null, "short");
                     String longName = parser.getAttributeValue(null, "long");
+                    boolean enabled = Boolean.parseBoolean(parser.getAttributeValue(null, "enabled"));
                     // create language if not exist
                     if(db.languageDao().getLanguageByShortCode(shortCode) == null)
                     {
                         LanguageEntity language = new LanguageEntity();
                         language.setShortLanguageCode(shortCode);
                         language.setLongLanguageCode(longName);
+                        language.setEnabled(enabled);
                         db.languageDao().insertLanguage(language);
                     }
                 }

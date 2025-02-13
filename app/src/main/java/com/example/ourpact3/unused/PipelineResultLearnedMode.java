@@ -1,10 +1,12 @@
-package com.example.ourpact3.pipeline;
+package com.example.ourpact3.unused;
 
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 
 import com.example.ourpact3.R;
+import com.example.ourpact3.pipeline.CounterAction;
+import com.example.ourpact3.pipeline.PipelineResultBase;
 
 public class PipelineResultLearnedMode extends PipelineResultBase
 {

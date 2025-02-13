@@ -1,21 +1,53 @@
 package com.example.ourpact3.topics;
 
-import java.util.regex.Matcher;
+import com.example.ourpact3.db.AppsDatabase;
+import com.example.ourpact3.db.ContentFilterEntity;
+import com.example.ourpact3.db.LanguageEntity;
+import com.example.ourpact3.db.WordEntity;
+import com.example.ourpact3.db.WordListEntity;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
-import java.util.ArrayList;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TopicManager
 {
-//    private HashMap<String, ArrayList<Topic>> topics = new HashMap<String, ArrayList<Topic>>(); // topic id -> topics for all languages
+    public static class WordEntityWrapper
+    {
+        private final WordEntity wordEntity;
+        private Pattern compiledRegex;
 
+        public WordEntityWrapper(WordEntity wordEntity, String regex)
+        {
+            this.wordEntity = wordEntity;
+            if (wordEntity.isRegex())
+            {
+                // Replace double backslashes with a single backslash
+                regex = regex.replace("\\\\", "\\");
+                this.compiledRegex = Pattern.compile(regex);
+            }
+        }
+
+        public WordEntity getWordEntity()
+        {
+            return wordEntity;
+        }
+
+
+    }
+
+    public AppsDatabase db;
+    private final Map<Long, List<WordEntityWrapper>> cachedWordsFromDB = new HashMap<>();
+    private final Map<Long, Boolean> langCodeToEnabled = new HashMap<>();
 
 
     /**
-     * only small letters a-z, numbers and underscore is allowd
+     * only small letters a-z, numbers and underscore is allowed
      *
-     * @param topicID
      * @return if valid
      */
     public static boolean isValidTopicID(String topicID)
@@ -27,137 +59,88 @@ public class TopicManager
         return false;
     }
 
-    public enum TopicMatchMode
+    public static class SearchResult2
     {
-        EQUAL,
-        TOPIC_WORD_IS_INFIX,
-        TOPIC_WORD_IS_PREFIX,
+        public String inputText;
+        public int accumulatedScore = 0;
+        public List<WordEntity> matches;
     }
 
-    public static final String ALL_LANGUAGE_CODE = "*";
-
-    public static class SearchResult
+    public void clearCache()
     {
-        public SearchResult(boolean found, int deep)
-        {
-            this.found = found;
-            this.deep = deep;
-        }
-
-        public boolean found;
-        public int deep;
-        public String trigger;
+        this.langCodeToEnabled.clear();
+        this.cachedWordsFromDB.clear();
     }
 
-    public SearchResult isStringInTopic(String text, String topicId, TopicMatchMode mode, boolean checkAgainstLowerCase, String language, int currentDeepness)
+    private void loadWordlist(long wordListID)
     {
-        //TODO: fix
-        return null;
-        /*SearchResult searchResult = new SearchResult(false, currentDeepness);
-        ArrayList<Topic> topicsInAllLanguages = topics.get(topicId);
-        if (topicsInAllLanguages == null || language == null)
+
+        if (!cachedWordsFromDB.containsKey(wordListID))
         {
-            return searchResult;
+            WordListEntity wordListEntity = db.wordListDao().getWordListById(wordListID);
+
+            if (wordListEntity == null)
+            {
+                throw new NoSuchElementException("Word list missing: " + wordListID);
+            }
+
+            List<WordEntity> wordsInList = db.wordDao().getAllWordsInList(wordListEntity.getId());
+
+            List<WordEntityWrapper> wrappedWords = wordsInList.stream().filter(word -> {
+                        // load only languages which are enabled and cache this for faster access
+                        Boolean languageEnabled = langCodeToEnabled.get(word.getLanguageId());
+                        // language is not found load it from database
+                        if (languageEnabled == null)
+                        {
+                            LanguageEntity languageEntity = db.languageDao().getLanguageById(word.getLanguageId());
+                            langCodeToEnabled.put(languageEntity.getId(), languageEntity.isEnabled());
+                            languageEnabled = languageEntity.isEnabled();
+                        }
+                        return languageEnabled;
+                    })
+                    .map(word -> new WordEntityWrapper(word, word.getText()))
+                    .collect(Collectors.toList());
+            cachedWordsFromDB.put(wordListEntity.getId(), wrappedWords);
         }
-
-        for (Topic topicInOneLang : topicsInAllLanguages)
-        {
-
-            // only check for same language for if check for all is on
-            if (!language.equals(ALL_LANGUAGE_CODE) && !language.equals(topicInOneLang.getLanguage()))
-            {
-                continue;
-            }
-            ArrayList<String> words = topicInOneLang.getScoredWords();
-            if (checkAgainstWords(text, searchResult, topicInOneLang, words, checkAgainstLowerCase, mode))
-            {
-                return searchResult;
-            }
-            if (checkAgainstRegExp(text, searchResult, topicInOneLang))
-            {
-                return searchResult;
-            }
-
-            // Check child topic if existing
-            ArrayList<String> includedTopics = topicInOneLang.getIncludedTopics();
-            if (includedTopics != null)
-            {
-                for (String childrenTopicIds : includedTopics)
-                {
-                    // only check same language recursively. To prevent redundant checks
-                    SearchResult childResult = this.isStringInTopic(text, childrenTopicIds, mode, checkAgainstLowerCase, topicInOneLang.getLanguage(), currentDeepness + 1);
-                    if (childResult.found)
-                    {
-                        return childResult;
-                    }
-
-                }
-            }
-
-        }
-        return searchResult;*/
     }
-/*
-    private boolean checkAgainstRegExp(String text, SearchResult searchResult, Topic topicInOneLang)
-    {
-        // Check against patterns
-        for (Map.Entry<String, Pattern> compiledPattern : topicInOneLang.getCompiledPatterns().entrySet())
-        {
-            Matcher matcher = compiledPattern.getValue().matcher(text);
-            if (matcher.find())
-            {
-                searchResult.trigger = text;
-                searchResult.found = true;
-                return true;
-            }
-        }
-        return false;
-    }*/
 
-    private boolean checkAgainstWords(String text, SearchResult searchResult, Topic topicInOneLang, ArrayList<String> words, boolean checkAgainstLowerCase, TopicMatchMode mode)
+    /**
+     * searches in parallel against a word list
+     * only enabled languages are used
+     *
+     */
+    public SearchResult2 isStringInWordList(String text, boolean isTextEditable, ContentFilterEntity contentFilter)
     {
-        if (words == null || words.isEmpty())
+        SearchResult2 result = new SearchResult2();
+        // check only against lower if wanted
+        String finalText = contentFilter.getIgnoreCase() ? text.toLowerCase() : text;
+        // cache word list from db
+        loadWordlist(contentFilter.getWordListID());
+        List<WordEntityWrapper> wordsInList = cachedWordsFromDB.get(contentFilter.getWordListID());
+        // search in parallel
+
+        assert wordsInList != null;
+        List<WordEntity> matchedEntities = wordsInList.parallelStream()
+                .filter(entity -> {
+                    if (entity.wordEntity.isRegex())
+                    {
+                        // count only the first match
+                        return entity.compiledRegex.matcher(finalText).find();
+                    } else
+                    {
+                        // simple suffix match
+                        return finalText.contains(entity.wordEntity.getText());
+                    }
+                }).map(WordEntityWrapper::getWordEntity)//Map back to only WordEntity
+                .collect(Collectors.toList());
+        // calculate result on matches only
+
+        result.inputText = finalText;
+        result.matches = matchedEntities;
+        for (WordEntity matchedWord : matchedEntities)
         {
-            return false;
+            result.accumulatedScore += isTextEditable ? matchedWord.getWriteScore() : matchedWord.getReadScore();
         }
-        for (String word : words)
-        {
-            if (!topicInOneLang.isLowerCaseTopic() && checkAgainstLowerCase)
-            {
-                word = word.toLowerCase();
-            }
-            searchResult.trigger = word;
-            switch (mode)
-            {
-                case EQUAL:
-                {
-                    if (word.equals(text))
-                    {
-                        searchResult.found = true;
-                        return true;
-                    }
-                    break;
-                }
-                case TOPIC_WORD_IS_INFIX:
-                {
-                    if (text.contains(word))
-                    {
-                        searchResult.found = true;
-                        return true;
-                    }
-                    break;
-                }
-                case TOPIC_WORD_IS_PREFIX:
-                {
-                    if (text.startsWith(word))
-                    {
-                        searchResult.found = true;
-                        return true;
-                    }
-                    break;
-                }
-            }
-        }
-        return false;
+        return result;
     }
 }

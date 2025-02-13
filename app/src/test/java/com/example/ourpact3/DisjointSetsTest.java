@@ -1,6 +1,6 @@
 package com.example.ourpact3;
 
-import com.example.ourpact3.learn_mode.DisjointSets;
+import com.example.ourpact3.unused.learn_mode.DisjointSets;
 
 import org.junit.Test;
 

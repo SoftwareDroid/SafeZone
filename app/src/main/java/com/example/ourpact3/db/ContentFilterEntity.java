@@ -22,7 +22,7 @@ public class ContentFilterEntity
 {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private int id;
+    private long id;
 
     // Counter action
     @ColumnInfo(name = "explainable")
@@ -73,11 +73,11 @@ public class ContentFilterEntity
     private long wordListID;
 
     // getters and setters
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

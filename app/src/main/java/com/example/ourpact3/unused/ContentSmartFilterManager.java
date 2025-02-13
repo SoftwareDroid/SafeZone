@@ -3,7 +3,7 @@ package com.example.ourpact3.unused;
 import android.content.ContentValues;
 
 import com.example.ourpact3.pipeline.CounterAction;
-import com.example.ourpact3.smart_filter.ContentSmartFilterBase;
+import com.example.ourpact3.smart_filter.ContentSmartFilter;
 import com.example.ourpact3.smart_filter.WordListFilterExact;
 import com.example.ourpact3.smart_filter.WordListFilterScored;
 
@@ -16,7 +16,7 @@ public class ContentSmartFilterManager
     /**
      * overwrites all time restrictions for an app which has exactly use usage_filter_id
      */
-    public static void setAllContentFilterRules(String packageId, ArrayList<ContentSmartFilterBase> contentFilters)
+    public static void setAllContentFilterRules(String packageId, ArrayList<ContentSmartFilter> contentFilters)
     {
         // Start a transaction for safety
         DatabaseManager.db.beginTransaction();
@@ -27,7 +27,7 @@ public class ContentSmartFilterManager
             String[] whereArgs = new String[]{String.valueOf(packageId)};
             DatabaseManager.db.delete("app_content_filter", whereClause, whereArgs);
             // Step 2: Insert new rows from the array
-            for (ContentSmartFilterBase rule : contentFilters)
+            for (ContentSmartFilter rule : contentFilters)
             {
                 ContentValues values = new ContentValues();
                 // Counter action
@@ -50,12 +50,12 @@ public class ContentSmartFilterManager
                 int type = 0;
                 if (rule instanceof WordListFilterScored)
                 {
-                    type = ContentSmartFilterBase.TYPE_SCORED;
+                    type = ContentSmartFilter.TYPE_SCORED;
                     // cast to class
                     WordListFilterScored scoredFilter = (WordListFilterScored) rule;
                 } else if (rule instanceof WordListFilterExact)
                 {
-                    type = ContentSmartFilterBase.TYPE_EXACT;
+                    type = ContentSmartFilter.TYPE_EXACT;
                 }
                 values.put("type_of_list", type);
 

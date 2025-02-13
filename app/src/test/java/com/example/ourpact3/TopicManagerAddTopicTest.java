@@ -5,9 +5,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.example.ourpact3.topics.InvalidTopicIDException;
-import com.example.ourpact3.topics.Topic;
-import com.example.ourpact3.topics.TopicAlreadyExistsException;
-import com.example.ourpact3.topics.TopicLoaderCycleDetectedException;
+import com.example.ourpact3.unused.Topic;
+import com.example.ourpact3.unused.TopicAlreadyExistsException;
+import com.example.ourpact3.unused.TopicLoaderCycleDetectedException;
 import com.example.ourpact3.topics.TopicManager;
 
 import java.util.ArrayList;

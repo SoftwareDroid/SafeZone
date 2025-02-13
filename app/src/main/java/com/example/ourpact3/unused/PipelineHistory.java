@@ -1,7 +1,8 @@
-package com.example.ourpact3.pipeline;
+package com.example.ourpact3.unused;
 
+import com.example.ourpact3.pipeline.PipelineResultBase;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
-import com.example.ourpact3.smart_filter.ContentSmartFilterBase;
+import com.example.ourpact3.smart_filter.ContentSmartFilter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,10 +19,10 @@ public class PipelineHistory
     }
 
     private ArrayList<SpecialSmartFilterBase> runSmartFilters1;
-    private ArrayList<ContentSmartFilterBase> runSmartFilters2;
+    private ArrayList<ContentSmartFilter> runSmartFilters2;
     public int number = 0;
 
-    public List<ContentSmartFilterBase> getSmartFilters2()
+    public List<ContentSmartFilter> getSmartFilters2()
     {
         return Collections.unmodifiableList(runSmartFilters2);
     }
@@ -44,7 +45,7 @@ public class PipelineHistory
         number += 1;
     }
 
-    public void addWorProcessorFilter(ContentSmartFilterBase filter, ResultWithExplaination resultWithExplaination)
+    public void addWorProcessorFilter(ContentSmartFilter filter, ResultWithExplaination resultWithExplaination)
     {
         runSmartFilters2.add(filter);
     }

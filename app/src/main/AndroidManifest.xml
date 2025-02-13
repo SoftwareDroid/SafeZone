@@ -59,7 +59,7 @@
             android:label="@string/text_filter_for_app_activity">
         </activity>
 
-        <activity android:name=".learn_mode.HelpDialogLearnMode" />
+        <activity android:name=".unused.learn_mode.HelpDialogLearnMode" />
 
         <service
             android:name=".ContentFilterService"

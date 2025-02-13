@@ -1,6 +1,11 @@
 package com.example.ourpact3.smart_filter;
 
 import com.example.ourpact3.ContentFilterService;
+import com.example.ourpact3.db.AppEntity;
+import com.example.ourpact3.db.AppsDatabase;
+import com.example.ourpact3.db.ContentFilterEntity;
+import com.example.ourpact3.db.ContentFilterToAppEntity;
+import com.example.ourpact3.pipeline.PipelineEndToken;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.service.IFilterResultCallback;
 import com.example.ourpact3.pipeline.PipelineResultBase;
@@ -18,33 +23,49 @@ import com.example.ourpact3.service.ScreenInfoExtractor;
 import com.example.ourpact3.topics.TopicManager;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class AppFilter
 {
-    private ArrayList<AccessibilityEvent> cachedEvents = new ArrayList<>();
+    private final ArrayList<AccessibilityEvent> cachedEvents = new ArrayList<>();
+    private final AppEntity appEntity;
     private boolean checkAllEvents;
-    public AppFilter(ContentFilterService service, TopicManager topicManager, ArrayList<ContentSmartFilterBase> filters, String packageName, boolean checkAllEvents)
+    public AppFilter(ContentFilterService service, TopicManager topicManager, AppEntity appEntity, AppsDatabase db)
 
     {
         this.service = service;
         this.topicManager = topicManager;
-        this.keywordFilters = filters;
-        this.packageName = packageName;
         this.isMagnificationEnabled = service.isMagnificationEnabled();
         this.specialSmartFilters = new TreeMap<>();
-        this.checkAllEvents = true;
+        this.appEntity = appEntity;
+        this.db = db;
+        loadContentFilters();
     }
 
+    private void loadContentFilters()
+    {
+        // load filters
+        keywordFilters.clear();
+        // Sorting through db query
+        List<ContentFilterToAppEntity> filters = db.contentFilterToAppDao().getByPackageName(appEntity.getPackageName());
+        for(ContentFilterToAppEntity filter : filters)
+        {
+            long contentFilterID = filter.getContentFilterID();
+            ContentFilterEntity contentFilter = db.contentFiltersDao().getContentFilterById(contentFilterID);
+            // wrap the db entry into a object with state
+            keywordFilters.add(new ContentSmartFilter(contentFilter,topicManager));
+        }
+    }
 
     public AccessibilityService service;
+    private AppsDatabase db;
     private final boolean isMagnificationEnabled; //needed beacuse node isVisible behaves differnt
-    private final String packageName;
     private boolean pipelineRunning = false;
     private TopicManager topicManager;
     private int delayCount = 0;
-    private final ArrayList<ContentSmartFilterBase> keywordFilters; //TODO: create and sort
+    private final ArrayList<ContentSmartFilter> keywordFilters = new ArrayList<>();
     private final TreeMap<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> specialSmartFilters;
     private IFilterResultCallback callback;
     public void onScreenStateChanged(boolean isScreenOn)
@@ -73,14 +94,14 @@ public class AppFilter
         }
     }
 
-    public ArrayList<ContentSmartFilterBase> getAllFilters()
+    public ArrayList<ContentSmartFilter> getAllFilters()
     {
         return keywordFilters;
     }
 
     public String getPackageName()
     {
-        return packageName;
+        return appEntity.getPackageName();
     }
 
     public void setCallback(IFilterResultCallback callback)
@@ -112,7 +133,7 @@ public class AppFilter
             ScreenInfoExtractor.Screen screen = ScreenInfoExtractor.extractTextElements(rootNode, isMagnificationEnabled);
             // First Check generic filters
 
-            for (ContentSmartFilterBase processor : keywordFilters)
+            for (ContentSmartFilter processor : keywordFilters)
             {
                 processor.reset();
                 processScreen(screen, processor);
@@ -154,7 +175,7 @@ public class AppFilter
     public void processEvent(AccessibilityEvent event)
     {
         // Empty string is default app this is every other app
-        if (event.getPackageName() == null || (!event.getPackageName().toString().equals(packageName) && !isAllOtherApps()))
+        if (event.getPackageName() == null || (!event.getPackageName().toString().equals(appEntity.getPackageName()) && !isAllOtherApps()))
         {
             return;
         }
@@ -225,24 +246,17 @@ public class AppFilter
     }
     private void endOfPipelineReached(ScreenInfoExtractor.Screen screen)
     {
-        //
-//        if(!this.packageName.isEmpty() && !screen.appName.equals(this.packageName))
-//        {
-//            Log.d("mismatch","");
-//            return;
-//        }
-        // mismatch of ids packageName != screen name
-        PipelineResultBase endToken = new PipelineResultKeywordFilter(screen.appName);
+        PipelineResultBase endToken = new PipelineEndToken();
         endToken.getCounterAction().setWindowAction(PipelineWindowAction.END_OF_PIPE_LINE);
         endToken.setScreen(screen);
         this.callback.onPipelineResultBackground(endToken);
     }
 
-    private void processScreen(ScreenInfoExtractor.Screen screen, ContentSmartFilterBase currentFilter)
+    private void processScreen(ScreenInfoExtractor.Screen screen, ContentSmartFilter currentFilter)
     {
         for (ScreenInfoExtractor.Screen.TextNode textNode : screen.getTextNodes())
         {
-            if (textNode.visible || !currentFilter.isCheckOnlyVisibleNodes())
+            if (textNode.visible || !currentFilter.getContentFilterEntity().getChecksOnlyVisible())
             {
                 // feed word into filter
                 PipelineResultBase result = currentFilter.feedWord(textNode);

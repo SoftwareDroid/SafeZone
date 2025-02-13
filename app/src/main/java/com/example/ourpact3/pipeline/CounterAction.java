@@ -1,5 +1,6 @@
 package com.example.ourpact3.pipeline;
 
+import com.example.ourpact3.db.ContentFilterEntity;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 
@@ -19,6 +20,13 @@ public class CounterAction implements Cloneable
     private PipelineWindowAction windowAction;
     private KillState killState = KillState.DO_NOT_KILL;
     private boolean hasExplainableButton;
+
+    public CounterAction(ContentFilterEntity contentFilter)
+    {
+        this.buttonAction = contentFilter.getButtonAction();
+        this.windowAction = contentFilter.getWindowAction();
+        this.killState = contentFilter.getKill() ? KillState.KILL_BEFORE_WINDOW : KillState.DO_NOT_KILL;
+    }
 
     public CounterAction(PipelineWindowAction windowAction, PipelineButtonAction buttonAction, boolean killApp)
     {

@@ -18,7 +18,7 @@ public interface ContentFiltersDao
     List<ContentFilterEntity> getAllContentFilters();
 
     @Query("SELECT * FROM ContentFilterEntity WHERE id = :id")
-    ContentFilterEntity getContentFilterById(int id);
+    ContentFilterEntity getContentFilterById(long id);
 
     @Update
     void updateContentFilter(ContentFilterEntity contentFilter);

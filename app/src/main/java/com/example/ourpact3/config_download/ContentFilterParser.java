@@ -16,9 +16,11 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.InputStreamReader;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class ContentFilterParser
 {
@@ -55,7 +57,10 @@ public class ContentFilterParser
                     appEntity.setReadable(readable);
                     appEntity.setEnabled(enabled);
                     appEntity.setComment(comment);
+                    // default usage filter
                     UsageFiltersEntity usageFilter1 = new UsageFiltersEntity();
+                    usageFilter1.setWindowAction(PipelineWindowAction.WARNING);
+                    usageFilter1.setButtonAction(PipelineButtonAction.BACK_BUTTON);
                     usageFilter1.setEnabled(false);
                     long defaultUsageFilter = db.usageFiltersDao().insert(usageFilter1);
                     appEntity.setUsageFilterId(defaultUsageFilter);
@@ -100,6 +105,10 @@ public class ContentFilterParser
                         long insertedID = db.contentFiltersDao().insertContentFilter(filter);
                         filterNameToID.put(name,insertedID) ;
                     }
+                    else
+                    {
+                        throw new NoSuchElementException("Word List missing: " + wordListName);
+                    }
 
 
                 } else if(currentElement.equals("content_filter_instance"))
@@ -109,13 +118,24 @@ public class ContentFilterParser
                     int priority = Integer.parseInt(parser.getAttributeValue(null, "priority"));
                     ContentFilterToAppEntity filterInstance = new ContentFilterToAppEntity();
                     Long filterID = filterNameToID.get(filterName);
+
                     if(filterID != null)
                     {
                         String app = parser.getAttributeValue(null, "app");
+                        AppEntity appEntity =  db.appsDao().getAppByPackageName(app);
+                        if(appEntity == null)
+                        {
+                            throw new NoSuchElementException("AppEntity is missing " + app);
+                        }
+
                         filterInstance.setContentFilterID(filterID);
                         filterInstance.setPackageName(app);
                         filterInstance.setPriority(priority);
                         db.contentFilterToAppDao().insert(filterInstance);
+                    }
+                    else
+                    {
+                        throw new NoSuchElementException("filter is missing " + filterName);
                     }
                 }
 

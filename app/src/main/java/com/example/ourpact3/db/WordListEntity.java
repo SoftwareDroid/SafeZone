@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 public class WordListEntity
 {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
     @ColumnInfo(name = "name")
     private String name;
 
@@ -35,7 +35,7 @@ public class WordListEntity
     }
 
     // Getters and setters
-    public int getId()
+    public long getId()
     {
         return id;
     }

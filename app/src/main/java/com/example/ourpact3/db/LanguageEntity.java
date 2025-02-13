@@ -9,13 +9,13 @@ import androidx.room.TypeConverters;
 public class LanguageEntity
 {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
     private String longLanguageCode;
     private String shortLanguageCode;
     private boolean enabled;
 
     // Getters and setters
-    public int getId()
+    public long getId()
     {
         return id;
     }

@@ -1,4 +1,4 @@
-package com.example.ourpact3.learn_mode;
+package com.example.ourpact3.unused.learn_mode;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,7 +24,7 @@ import com.example.ourpact3.R;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
-import com.example.ourpact3.pipeline.PipelineResultLearnedMode;
+import com.example.ourpact3.unused.PipelineResultLearnedMode;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.service.IContentFilterService;
 import com.example.ourpact3.service.ScreenInfoExtractor;
