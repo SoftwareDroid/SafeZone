@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ourpact3.R;
-import com.example.ourpact3.unused.DatabaseManager;
 import com.example.ourpact3.ui.app_rule_detail.AppRuleDetailActivitiy;
 import com.example.ourpact3.util.PackageUtil;
 

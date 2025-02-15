@@ -14,7 +14,7 @@ import com.example.ourpact3.unused.TopicAlreadyExistsException;
 import com.example.ourpact3.unused.TopicLoaderCycleDetectedException;
 import com.example.ourpact3.topics.TopicManager;
 import com.example.ourpact3.topics.TopicMissingException;
-import com.example.ourpact3.smart_filter.WordListFilterScored;
+import com.example.ourpact3.unused.WordListFilterScored;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,0 +1,2 @@
+Loading of Filters from Git in my app
+- TODOs in ContentFilterService

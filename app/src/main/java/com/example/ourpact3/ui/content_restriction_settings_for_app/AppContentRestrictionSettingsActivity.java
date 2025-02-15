@@ -15,7 +15,7 @@ import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
-import com.example.ourpact3.smart_filter.WordListFilterExact;
+import com.example.ourpact3.unused.WordListFilterExact;
 import com.example.ourpact3.smart_filter.ContentSmartFilter;
 
 import java.util.ArrayList;

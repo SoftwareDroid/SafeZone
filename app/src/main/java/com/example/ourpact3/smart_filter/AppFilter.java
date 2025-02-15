@@ -27,6 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * The empty app name is every app
+ *
+ */
 public class AppFilter
 {
     private final ArrayList<AccessibilityEvent> cachedEvents = new ArrayList<>();

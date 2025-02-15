@@ -1,11 +1,10 @@
 package com.example.ourpact3.service;
-
+/*
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 
 import com.example.ourpact3.ContentFilterService;
 import com.example.ourpact3.db.AppsDatabase;
-import com.example.ourpact3.unused.DatabaseManager;
 import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.smart_filter.AppFilter;
@@ -16,15 +15,10 @@ import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
 import com.example.ourpact3.topics.InvalidTopicIDException;
 import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
-import com.example.ourpact3.unused.TopicAlreadyExistsException;
-import com.example.ourpact3.unused.TopicLoaderCycleDetectedException;
 import com.example.ourpact3.topics.TopicManager;
 import com.example.ourpact3.topics.TopicMissingException;
-import com.example.ourpact3.smart_filter.WordListFilterScored.TopicScoring;
 import com.example.ourpact3.model.PipelineWindowAction;
-import com.example.ourpact3.smart_filter.WordListFilterExact;
 import com.example.ourpact3.smart_filter.ContentSmartFilter;
-import com.example.ourpact3.smart_filter.WordListFilterScored;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -237,14 +231,7 @@ public class ExampleAppKeywordFilters
         String myAppName = "SafeZone";
         String appName = "com.google.android.packageinstaller";
         ArrayList<ContentSmartFilter> filters = new ArrayList<ContentSmartFilter>();
-        /**
-         * This code is only probaly needed in the debug version To prevent disabling via reinstalling
-         * When you install an app on an Android device, especially in a development environment using Android Studio,
-         * the app is treated as a new installation each time you uninstall
-         * and then reinstall it.
-         * This behavior is particularly relevant for apps that require special permissions, such as accessibility permissions.
-         * Here are a few reasons why you need to request accessibility permission each time you reinstall your debug app
-         */
+
         {
             PipelineResultKeywordFilter preventReinstallingAndLosePermissons = new PipelineResultKeywordFilter("");
             CounterAction a = new CounterAction();
@@ -615,3 +602,4 @@ public class ExampleAppKeywordFilters
         return list;
     }
 }
+*/

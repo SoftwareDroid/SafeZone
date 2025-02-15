@@ -15,11 +15,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.example.ourpact3.unused.DatabaseManager;
-import com.example.ourpact3.unused.UsageSmartFilterManager;
 import com.example.ourpact3.model.CheatKeyManager;
 import com.example.ourpact3.service.AppPermission;
-import com.example.ourpact3.service.ExampleAppKeywordFilters;
 import com.example.ourpact3.service.ScreenReceiver;
 import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
@@ -75,14 +72,15 @@ public class ContentFilterService extends AccessibilityService implements IConte
         {
             return;
         }
+        //TODO: fix
         // reload changes
-        DatabaseManager.open();
+        /*DatabaseManager.open();
         DatabaseManager.AppRuleTuple appRuleTuple = DatabaseManager.getAppRuleByPackageId(packageId);
         assert appRuleTuple != null;
         UsageRestrictionsFilter usageRestrictionsFilter = UsageSmartFilterManager.getUsageFilterById(appRuleTuple.usageFilterID);
         assert usageRestrictionsFilter != null;
         DatabaseManager.close();
-        normalModeProcessor.appToFilters.get(packageId).setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, usageRestrictionsFilter);
+        normalModeProcessor.appToFilters.get(packageId).setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, usageRestrictionsFilter);*/
     }
 
     //    private boolean isRunning = false;
@@ -120,14 +118,14 @@ public class ContentFilterService extends AccessibilityService implements IConte
             // check all topics
 //            topicManager.checkAllTopics();
             // load all example filters
-            ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager, this.getApplicationContext());
+            /*ExampleAppKeywordFilters exampleFilters = new ExampleAppKeywordFilters(this, this.topicManager, this.getApplicationContext());
             this.usedAppPermissions = exampleFilters.getAppPermissionsFromDB(this.getApplicationContext());
             exampleFilters.addExampleTopics();
             for (AppFilter filter : exampleFilters.getAllExampleFilters())
             {
                 filter.setCallback(normalModeProcessor);
                 normalModeProcessor.appToFilters.put(filter.getPackageName(), filter);
-            }
+            }*/
             reloadSettings();
             AccessibilityServiceInfo info = new AccessibilityServiceInfo();
             info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
