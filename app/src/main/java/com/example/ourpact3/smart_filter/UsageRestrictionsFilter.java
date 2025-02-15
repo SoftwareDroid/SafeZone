@@ -2,15 +2,23 @@ package com.example.ourpact3.smart_filter;
 
 import android.view.accessibility.AccessibilityEvent;
 
+import com.example.ourpact3.db.AppsDatabase;
+import com.example.ourpact3.db.TimeRestrictionRuleEntity;
+import com.example.ourpact3.db.UsageFiltersEntity;
 import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.pipeline.PipelineResultBase;
+import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.pipeline.PipelineResultProductivityFilter;
 import com.example.ourpact3.service.ScreenInfoExtractor;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * max number of starts and/or time in s every k hours
@@ -18,7 +26,7 @@ import java.util.ArrayList;
 public class UsageRestrictionsFilter extends SpecialSmartFilterBase
 {
     public Long database_id = null;
-    private final ArrayList<ProductivityTimeRule> timerules; // White or Blacklist for certain times of the week
+    private final List<TimeRestrictionRuleEntityWrapper> timerules; // White or Blacklist for certain times of the week
     private Instant measurementEnd = null;
     private Instant sessionStart = null;
     private Instant sessionEnd = null;
@@ -29,7 +37,7 @@ public class UsageRestrictionsFilter extends SpecialSmartFilterBase
     private boolean blocked;
     public final Integer maxNumberOfUsages;
 
-    public final ArrayList<ProductivityTimeRule> getAllTimeRules()
+    public final List<TimeRestrictionRuleEntityWrapper> getAllTimeRules()
     {
         return timerules;
     }
@@ -54,14 +62,22 @@ public class UsageRestrictionsFilter extends SpecialSmartFilterBase
         this.database_id = id;
     }
 
-    public UsageRestrictionsFilter(CounterAction counterAction, String name, long resetPeriodInSeconds, long limitInSeconds, Integer maxNumberOfUsages, ArrayList<ProductivityTimeRule> timeRules)
+
+    public UsageRestrictionsFilter(@NotNull UsageFiltersEntity usageFiltersEntity,@NotNull AppsDatabase db)
     {
-        super(new PipelineResultProductivityFilter(counterAction), name);//PipelineResultBase
-        this.resetPeriodInSeconds = resetPeriodInSeconds;
-        this.limitInSeconds = limitInSeconds;
+        super(new PipelineResultProductivityFilter());
+        // Save counter action
+        this.result.setCounterAction(new CounterAction(usageFiltersEntity.getWindowAction(),usageFiltersEntity.getButtonAction(),usageFiltersEntity.getKill()));
+
+        this.resetPeriodInSeconds = usageFiltersEntity.getResetPeriod();
+        this.limitInSeconds = this.getLimitInSeconds();
         this.blocked = false;
-        this.maxNumberOfUsages = maxNumberOfUsages;
-        this.timerules = timeRules;
+        this.maxNumberOfUsages = usageFiltersEntity.getMaxStarts();
+        // load time rules
+        List<TimeRestrictionRuleEntity> timeRestriction = db.timeRestrictionRulesDao().getRulesForUsageFilter(usageFiltersEntity.getId());
+        this.timerules = timeRestriction.stream()
+                .map(rule -> new TimeRestrictionRuleEntityWrapper(rule))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -136,7 +152,7 @@ public class UsageRestrictionsFilter extends SpecialSmartFilterBase
     {
         boolean isInWhiteList = false;
         boolean isWhiteListImportant = false;
-        for (ProductivityTimeRule rule : this.timerules)
+        for (TimeRestrictionRuleEntityWrapper rule : this.timerules)
         {
             boolean isApplying = rule.isRuleApplying(currentTimestamp);
             if (!rule.isBlackListMode())

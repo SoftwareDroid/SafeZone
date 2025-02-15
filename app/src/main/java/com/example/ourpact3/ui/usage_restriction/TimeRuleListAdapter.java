@@ -1,7 +1,7 @@
 package com.example.ourpact3.ui.usage_restriction;
 
 import com.example.ourpact3.R;
-import com.example.ourpact3.smart_filter.ProductivityTimeRule;
+import com.example.ourpact3.smart_filter.TimeRestrictionRuleEntityWrapper;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TimeRuleListAdapter extends RecyclerView.Adapter<TimeRuleListAdapter.ViewHolder> {
-    private List<ProductivityTimeRule> items; // List of TimeRule objects
+    private List<TimeRestrictionRuleEntityWrapper> items; // List of TimeRule objects
     private Context context;
 
     public TimeRuleListAdapter(Context context) {
@@ -33,7 +33,7 @@ public class TimeRuleListAdapter extends RecyclerView.Adapter<TimeRuleListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ProductivityTimeRule timeRuleListEntry = items.get(position);
+        TimeRestrictionRuleEntityWrapper timeRuleListEntry = items.get(position);
         holder.itemMainText.setText(timeRuleListEntry.getTimeText());
         holder.weekdaysInRule.setText(timeRuleListEntry.getWeekdayText(context)); // Assuming you have this TextView in your layout
 
@@ -43,9 +43,9 @@ public class TimeRuleListAdapter extends RecyclerView.Adapter<TimeRuleListAdapte
             notifyItemRangeChanged(position, items.size());
         });
     }
-    public List<ProductivityTimeRule> getAllItems(){return items;}
+    public List<TimeRestrictionRuleEntityWrapper> getAllItems(){return items;}
 
-    public void addTimeRule(ProductivityTimeRule entry)
+    public void addTimeRule(TimeRestrictionRuleEntityWrapper entry)
     {
         items.add(entry);
         notifyItemInserted(items.size() - 1);

@@ -23,7 +23,7 @@ import com.example.ourpact3.unused.DatabaseManager;
 import com.example.ourpact3.unused.UsageSmartFilterManager;
 import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
-import com.example.ourpact3.smart_filter.ProductivityTimeRule;
+import com.example.ourpact3.smart_filter.TimeRestrictionRuleEntityWrapper;
 import com.example.ourpact3.ui.settings.ReusableSettingsCheckboxView;
 import com.example.ourpact3.ui.settings.ReusableSettingsCounterActionView;
 import com.example.ourpact3.ui.settings.ReusableSettingsDurationInputView;
@@ -141,7 +141,7 @@ public class UsageRestrictionActivity extends AppCompatActivity
             LocalTime endTime = selectedEndInput.getCurrentTime();
             EnumSet<DayOfWeek> selectedWeekdays = EnumSet.copyOf(weekdaySelector.getSelectedItems());
             //prevents adding the same rule twice
-            for (ProductivityTimeRule entry : adapterTimeRules.getAllItems())
+            for (TimeRestrictionRuleEntityWrapper entry : adapterTimeRules.getAllItems())
             {
                 if (entry.getWeekdays().equals(selectedWeekdays))
                 {
@@ -169,7 +169,7 @@ public class UsageRestrictionActivity extends AppCompatActivity
                 } else
                 {
                     // Create a new TimeRule with example text
-                    ProductivityTimeRule newTimeRule = new ProductivityTimeRule(startTime, endTime, selectedWeekdays, true);
+                    TimeRestrictionRuleEntityWrapper newTimeRule = new TimeRestrictionRuleEntityWrapper(startTime, endTime, selectedWeekdays, true);
                     adapterTimeRules.addTimeRule(newTimeRule);
                     recyclerViewTimeRules.scrollToPosition(adapterTimeRules.getItemCount() - 1); // Scroll to the new item
                 }
@@ -180,8 +180,8 @@ public class UsageRestrictionActivity extends AppCompatActivity
 
     private void loadInitialTimeRules(int usageFilterID)
     {
-        ArrayList<ProductivityTimeRule> rules = UsageSmartFilterManager.getAllTimeRestrictionRules(usageFilterID);
-        for (ProductivityTimeRule rule : rules)
+        ArrayList<TimeRestrictionRuleEntityWrapper> rules = UsageSmartFilterManager.getAllTimeRestrictionRules(usageFilterID);
+        for (TimeRestrictionRuleEntityWrapper rule : rules)
         {
             adapterTimeRules.addTimeRule(rule);
         }
@@ -202,7 +202,7 @@ public class UsageRestrictionActivity extends AppCompatActivity
     private void save()
     {
         // read all from UI
-        List<ProductivityTimeRule> rules = this.adapterTimeRules.getAllItems();
+        List<TimeRestrictionRuleEntityWrapper> rules = this.adapterTimeRules.getAllItems();
         boolean isEnabled = enabledInput.getSwitchElement().isChecked();
         CounterAction action = this.counterActionInput.getCounterAction();
         long limitInSeconds = this.timeLimitInput.getAccumulatedTimeInSeconds();

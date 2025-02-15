@@ -19,11 +19,10 @@ public abstract class SpecialSmartFilterBase
         USAGE_RESTRICTION
     }
 
-    SpecialSmartFilterBase(PipelineResultBase result, String name)
+    SpecialSmartFilterBase(PipelineResultBase result)
     {
         this.result = result;
-        this.result.setTriggerFilter(name);
-        this.name = name;
+        this.result.setTriggerFilter("no_name");
     }
 
     protected PipelineResultBase result;
@@ -39,7 +38,6 @@ public abstract class SpecialSmartFilterBase
         this.enabled = v;
     }
 
-    public final String name;
 
     public CounterAction getCounterAction()
     {

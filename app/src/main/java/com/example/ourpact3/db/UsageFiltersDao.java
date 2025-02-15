@@ -22,7 +22,7 @@ public interface UsageFiltersDao {
     List<UsageFiltersEntity> getAllUsageFilters();
 
     @Query("SELECT * FROM usage_filters WHERE id = :id")
-    UsageFiltersEntity getUsageFilterById(int id);
+    UsageFiltersEntity getUsageFilterById(long id);
 
     @Update
     void updateUsageFilter(UsageFiltersEntity usageFilter);

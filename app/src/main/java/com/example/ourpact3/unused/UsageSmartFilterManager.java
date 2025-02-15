@@ -8,7 +8,7 @@ import com.example.ourpact3.model.PipelineButtonAction;
 import com.example.ourpact3.model.PipelineWindowAction;
 import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
-import com.example.ourpact3.smart_filter.ProductivityTimeRule;
+import com.example.ourpact3.smart_filter.TimeRestrictionRuleEntityWrapper;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -21,7 +21,7 @@ public class UsageSmartFilterManager
     /**
      * overwrites all time restrictions for an app which has exactly use usage_filter_id
      */
-    public static void setAllTimeRestrictionRules(long usageFilterId, ArrayList<ProductivityTimeRule> timeRules)
+    public static void setAllTimeRestrictionRules(long usageFilterId, ArrayList<TimeRestrictionRuleEntityWrapper> timeRules)
     {
 
         // Start a transaction for safety
@@ -33,7 +33,7 @@ public class UsageSmartFilterManager
             String[] whereArgs = new String[]{String.valueOf(usageFilterId)};
             DatabaseManager.db.delete("time_restriction_rules", whereClause, whereArgs);
             // Step 2: Insert new rows from the array
-            for (ProductivityTimeRule rule : timeRules)
+            for (TimeRestrictionRuleEntityWrapper rule : timeRules)
             {
                 ContentValues values = new ContentValues();
                 values.put("usage_filter_id", usageFilterId);
@@ -69,9 +69,9 @@ public class UsageSmartFilterManager
      * Retrieves all time restriction rules for an app with the specified usage_filter_id.
      */
     @SuppressLint("Range")  //supress warning of colomn return -1 if they cannot be found by name
-    public static ArrayList<ProductivityTimeRule> getAllTimeRestrictionRules(int usageFilterId)
+    public static ArrayList<TimeRestrictionRuleEntityWrapper> getAllTimeRestrictionRules(int usageFilterId)
     {
-        ArrayList<ProductivityTimeRule> timeRules = new ArrayList<>();
+        ArrayList<TimeRestrictionRuleEntityWrapper> timeRules = new ArrayList<>();
         Cursor cursor = null;
 
         try
@@ -135,7 +135,7 @@ public class UsageSmartFilterManager
                     boolean isBlackListMode = cursor.getInt(cursor.getColumnIndex("black_list")) == 1;
 
                     // Create a new ProductivityTimeRule object
-                    ProductivityTimeRule rule = new ProductivityTimeRule(startTime, endTime, weekdays, isBlackListMode);
+                    TimeRestrictionRuleEntityWrapper rule = new TimeRestrictionRuleEntityWrapper(startTime, endTime, weekdays, isBlackListMode);
 
                     // Add the rule to the list
                     timeRules.add(rule);

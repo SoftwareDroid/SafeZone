@@ -11,7 +11,7 @@ import com.example.ourpact3.pipeline.CounterAction;
 import com.example.ourpact3.smart_filter.AppFilter;
 import com.example.ourpact3.smart_filter.ExponentialPunishFilter;
 import com.example.ourpact3.smart_filter.NodeCheckStrategyType;
-import com.example.ourpact3.smart_filter.ProductivityTimeRule;
+import com.example.ourpact3.smart_filter.TimeRestrictionRuleEntityWrapper;
 import com.example.ourpact3.smart_filter.SpecialSmartFilterBase;
 import com.example.ourpact3.smart_filter.UsageRestrictionsFilter;
 import com.example.ourpact3.topics.InvalidTopicIDException;
@@ -466,8 +466,8 @@ public class ExampleAppKeywordFilters
 
         AppFilter filter = new AppFilter(service, topicManager, filters, appName, false);
 
-        ArrayList<ProductivityTimeRule> timeRules = new ArrayList<>();
-        timeRules.add(new ProductivityTimeRule(LocalTime.of(11,0),LocalTime.of(12,0),EnumSet.of(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY),true));
+        ArrayList<TimeRestrictionRuleEntityWrapper> timeRules = new ArrayList<>();
+        timeRules.add(new TimeRestrictionRuleEntityWrapper(LocalTime.of(11,0),LocalTime.of(12,0),EnumSet.of(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY),true));
         filter.setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, new UsageRestrictionsFilter(new CounterAction(PipelineWindowAction.WARNING,PipelineButtonAction.BACK_BUTTON,true), "Time limit", 6, 200, 3,timeRules));
         return filter;
     }

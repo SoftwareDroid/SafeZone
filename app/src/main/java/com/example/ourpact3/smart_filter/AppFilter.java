@@ -5,8 +5,8 @@ import com.example.ourpact3.db.AppEntity;
 import com.example.ourpact3.db.AppsDatabase;
 import com.example.ourpact3.db.ContentFilterEntity;
 import com.example.ourpact3.db.ContentFilterToAppEntity;
+import com.example.ourpact3.db.UsageFiltersEntity;
 import com.example.ourpact3.pipeline.PipelineEndToken;
-import com.example.ourpact3.pipeline.PipelineResultKeywordFilter;
 import com.example.ourpact3.service.IFilterResultCallback;
 import com.example.ourpact3.pipeline.PipelineResultBase;
 
@@ -32,6 +32,7 @@ public class AppFilter
     private final ArrayList<AccessibilityEvent> cachedEvents = new ArrayList<>();
     private final AppEntity appEntity;
     private boolean checkAllEvents;
+
     public AppFilter(ContentFilterService service, TopicManager topicManager, AppEntity appEntity, AppsDatabase db)
 
     {
@@ -50,17 +51,29 @@ public class AppFilter
         keywordFilters.clear();
         // Sorting through db query
         List<ContentFilterToAppEntity> filters = db.contentFilterToAppDao().getByPackageName(appEntity.getPackageName());
-        for(ContentFilterToAppEntity filter : filters)
+        for (ContentFilterToAppEntity filter : filters)
         {
             long contentFilterID = filter.getContentFilterID();
             ContentFilterEntity contentFilter = db.contentFiltersDao().getContentFilterById(contentFilterID);
             // wrap the db entry into a object with state
-            keywordFilters.add(new ContentSmartFilter(contentFilter,topicManager));
+            keywordFilters.add(new ContentSmartFilter(contentFilter, topicManager));
+        }
+        loadUsageFilter();
+    }
+
+    private void loadUsageFilter()
+    {
+        long usageFilterID = this.appEntity.getUsageFilterId();
+        UsageFiltersEntity usageFilter = db.usageFiltersDao().getUsageFilterById(usageFilterID);
+        if (usageFilter != null)
+        {
+            UsageRestrictionsFilter usageRestrictionsFilter = new UsageRestrictionsFilter(usageFilter, db);
+            this.setSpecialSmartFilter(SpecialSmartFilterBase.Name.USAGE_RESTRICTION, usageRestrictionsFilter);
         }
     }
 
     public AccessibilityService service;
-    private AppsDatabase db;
+    private final AppsDatabase db;
     private final boolean isMagnificationEnabled; //needed beacuse node isVisible behaves differnt
     private boolean pipelineRunning = false;
     private TopicManager topicManager;
@@ -68,13 +81,16 @@ public class AppFilter
     private final ArrayList<ContentSmartFilter> keywordFilters = new ArrayList<>();
     private final TreeMap<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> specialSmartFilters;
     private IFilterResultCallback callback;
+
+    public boolean isAllOtherApps() {return this.appEntity.getPackageName().isEmpty();}
+
     public void onScreenStateChanged(boolean isScreenOn)
     {
-        for(SpecialSmartFilterBase.Name key : specialSmartFilters.keySet())
+        for (SpecialSmartFilterBase.Name key : specialSmartFilters.keySet())
         {
             SpecialSmartFilterBase filter = specialSmartFilters.get(key);
             assert filter != null;
-            if(!filter.isEnabled())
+            if (!filter.isEnabled())
             {
                 continue;
             }
@@ -84,8 +100,9 @@ public class AppFilter
 
     public void onAppStateChange(boolean active)
     {
-        for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet()) {
-            if(!entry.getValue().isEnabled())
+        for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet())
+        {
+            if (!entry.getValue().isEnabled())
             {
                 continue;
             }
@@ -111,6 +128,7 @@ public class AppFilter
             this.callback = callback;
         }
     }
+
     public SpecialSmartFilterBase getSpecialSmartFilter(SpecialSmartFilterBase.Name name)
     {
         return this.specialSmartFilters.get(name);
@@ -147,20 +165,20 @@ public class AppFilter
 
         }
     };
-    public boolean isAllOtherApps()
-    {
-        return packageName.isEmpty();
-    }
+//    public boolean isAllOtherApps()
+//    {
+//        return packageName.isEmpty();
+//    }
 
     public void processOldCachedEvents()
     {
-        if(checkAllEvents)
+        if (checkAllEvents)
         {
-            if(!cachedEvents.isEmpty())
+            if (!cachedEvents.isEmpty())
             {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
                 {
-                    if(!handler.hasCallbacks(searchRunnable))
+                    if (!handler.hasCallbacks(searchRunnable))
                     {
                         AccessibilityEvent oldEvent = cachedEvents.remove(cachedEvents.size() - 1);
                         this.processEvent(oldEvent);
@@ -191,7 +209,7 @@ public class AppFilter
                 // Traversing the TreeMap in ascending order of keys
                 for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet())
                 {
-                    if(!entry.getValue().isEnabled())
+                    if (!entry.getValue().isEnabled())
                     {
                         continue;
                     }
@@ -203,9 +221,9 @@ public class AppFilter
                         PipelineResultBase resultCopy = result.clone();
                         resultCopy.setCurrentAppFilter(this);
                         // set package name in empty screen
-                        resultCopy.setScreen(new ScreenInfoExtractor.Screen(null,null,event.getPackageName().toString()));
+                        resultCopy.setScreen(new ScreenInfoExtractor.Screen(null, null, event.getPackageName().toString()));
                         this.callback.onPipelineResultBackground(resultCopy);
-                        if(resultCopy.getCounterAction().isBlockingAction())
+                        if (resultCopy.getCounterAction().isBlockingAction())
                         {
 
                             return;
@@ -215,11 +233,11 @@ public class AppFilter
 //            case AccessibilityEvent.TYPE_VIEW_CLICKED:
                 if (handler.hasCallbacks(searchRunnable))
                 {
-                    if(checkAllEvents)
+                    if (checkAllEvents)
                     {
                         cachedEvents.add(event);
                     }
-                    Log.d("DEBUG Q","Has callbacks");
+                    Log.d("DEBUG Q", "Has callbacks");
                     return;
                 }
                 // We delay an wait for more evens and postpone it at nax maxNumDelays times
@@ -244,6 +262,7 @@ public class AppFilter
     {
         handler.removeCallbacks(searchRunnable);
     }
+
     private void endOfPipelineReached(ScreenInfoExtractor.Screen screen)
     {
         PipelineResultBase endToken = new PipelineEndToken();
@@ -266,7 +285,7 @@ public class AppFilter
                     // Feed result to generic event filters
                     for (Map.Entry<SpecialSmartFilterBase.Name, SpecialSmartFilterBase> entry : specialSmartFilters.entrySet())
                     {
-                        if(!entry.getValue().isEnabled())
+                        if (!entry.getValue().isEnabled())
                         {
                             continue;
                         }
