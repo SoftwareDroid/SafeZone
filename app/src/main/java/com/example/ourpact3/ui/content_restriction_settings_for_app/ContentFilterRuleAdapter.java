@@ -16,6 +16,7 @@ import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ourpact3.R;
+import com.example.ourpact3.db.ContentFilterEntity;
 import com.example.ourpact3.smart_filter.ContentSmartFilter;
 
 import java.util.ArrayList;
@@ -23,8 +24,8 @@ import java.util.List;
 
 public class ContentFilterRuleAdapter extends RecyclerView.Adapter<ContentFilterRuleAdapter.ViewHolder>
 {
-    private List<ContentSmartFilter> items;
-    private Context context;
+    private final List<ContentSmartFilter> items;
+    private final Context context;
     private int selectedItemPosition = RecyclerView.NO_POSITION; // No selection initially
 
     public ContentFilterRuleAdapter(Context context)
@@ -43,20 +44,22 @@ public class ContentFilterRuleAdapter extends RecyclerView.Adapter<ContentFilter
         return viewHolder;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position)
     {
         ContentSmartFilter rule = items.get(position);
-        holder.isEnabledSwitch.setChecked(rule.isEnabled());
-        holder.title.setText(rule.getName());
-        holder.shortDescription.setText(rule.getShortDescription());
+        ContentFilterEntity contentFilterEntity = rule.getContentFilterEntity();
+        holder.isEnabledSwitch.setChecked(contentFilterEntity.isEnabled());
+        holder.title.setText(contentFilterEntity.getName());
+        holder.shortDescription.setText(contentFilterEntity.getShortDescription());
         // Highlight selected item
         holder.itemView.setBackgroundColor(position == selectedItemPosition ? context.getColor(R.color.white)  : context.getColor(R.color.gray));
         // Set the OnCheckedChangeListener for the Switch
         holder.isEnabledSwitch.setOnCheckedChangeListener(null); // Clear previous listener to avoid unwanted triggers
         holder.isEnabledSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             // Update the isEnabled attribute of the rule
-            rule.setEnabled(isChecked);
+            contentFilterEntity.setEnabled(isChecked);
         });
         ActionModeCallback myActionMode = new ActionModeCallback();
         // Set the OnLongClickListener to start Contextual Action Mode
@@ -191,6 +194,7 @@ public class ContentFilterRuleAdapter extends RecyclerView.Adapter<ContentFilter
             return false; // Return false if no action was handled
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         @Override
         public void onDestroyActionMode(ActionMode mode)
         {

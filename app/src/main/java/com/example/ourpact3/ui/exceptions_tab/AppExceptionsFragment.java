@@ -2,6 +2,7 @@ package com.example.ourpact3.ui.exceptions_tab;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,9 @@ import android.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.ourpact3.db.AppsDatabase;
+import com.example.ourpact3.db.ExceptionListEntity;
 import com.example.ourpact3.ui.dialog.AppListDialog;
 import com.example.ourpact3.util.PreferencesKeys;
 import com.example.ourpact3.unused.DatabaseManager;
@@ -81,10 +85,11 @@ public class AppExceptionsFragment extends Fragment
 
     public void deleteException(int position)
     {
+        /*
         DatabaseManager dbManger = new DatabaseManager(getContext());
         dbManger.open();
         dbManger.deleteException(adapter.getDBidFromPos(position));
-        dbManger.close();
+        dbManger.close();*/
         loadExceptions();
     }
 
@@ -93,13 +98,15 @@ public class AppExceptionsFragment extends Fragment
         AppListDialog.showAppListDialog(getActivity(), getActivity().getPackageManager(), new AppListDialog.AppListDialogListener() {
             @Override
             public void onAppSelected(String packageName) {
+
                 // Add the selected app to appsShown
                 unaddableApps.add(packageName);
                 // Add the selected app to the adapter
-                DatabaseManager dbManger = new DatabaseManager(getContext());
-                dbManger.open();
-                dbManger.insertException(packageName, true, true);
-                dbManger.close();
+                ExceptionListEntity exp = new ExceptionListEntity();
+                exp.setPackageName(packageName);
+                exp.setReadable(true);
+                exp.setWritable(true);
+                AppsDatabase.getInstance(getContext()).exceptionListDao().insert(exp);
                 loadExceptions();
             }
 
@@ -124,24 +131,27 @@ public class AppExceptionsFragment extends Fragment
 
                 // Get all exceptions from the database
                 unaddableApps.clear();
-                DatabaseManager dbManger = new DatabaseManager(getContext());
-                dbManger.open();
-                List<DatabaseManager.ExceptionTuple> exceptions = dbManger.getAllExceptions();
-                for (DatabaseManager.ExceptionTuple tuple : exceptions)
+
+                List<ExceptionListEntity> exceptions = AppsDatabase.getInstance(getContext()).exceptionListDao().getAll();;
+                for (ExceptionListEntity tuple : exceptions)
                 {
                     // We have to set the name as it is needed in search
-                    tuple.appName = PackageUtil.getAppName(getContext(), tuple.packageID);
-                    unaddableApps.add(tuple.packageID);
+                    String appName = PackageUtil.getAppName(getContext(), tuple.getPackageName());
+                    if(tuple.getAppName() == null)
+                    {
+                        tuple.setAppName(appName);
+                    }
+                    unaddableApps.add(tuple.getPackageName());
                     if(preventDisabling)
                     {
-                        tuple.writable = false;
+                        tuple.setWritable(false);
                     }
                 }
-                dbManger.close();
 
                 // Update the UI on the main thread
                 handler.post(new Runnable()
                 {
+                    @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void run()
                     {

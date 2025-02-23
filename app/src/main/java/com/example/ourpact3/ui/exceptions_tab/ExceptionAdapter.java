@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ourpact3.R;
 
-import com.example.ourpact3.unused.DatabaseManager;
+import com.example.ourpact3.db.ExceptionListEntity;
 import com.example.ourpact3.util.PackageUtil;
 
 import java.util.ArrayList;
@@ -30,23 +30,23 @@ public class ExceptionAdapter extends RecyclerView.Adapter<ExceptionAdapter.View
         void onMenuItemClick(MenuItem item, int position);
     }
 
-    private List<DatabaseManager.ExceptionTuple> exceptions;
-    private List<DatabaseManager.ExceptionTuple> filteredExceptions;
-    private Context context;
-    private OnMenuItemClickListener listener;
+    private List<ExceptionListEntity> exceptions;
+    private List<ExceptionListEntity> filteredExceptions;
+    private final Context context;
+    private final OnMenuItemClickListener listener;
 
     public String getDBidFromPos(int pos)
     {
-        DatabaseManager.ExceptionTuple t = filteredExceptions.get(pos);
-        if (t != null)
+        ExceptionListEntity entity = filteredExceptions.get(pos);
+        if (entity != null)
         {
-            return t.packageID;
+            return entity.getPackageName();
         }
         return "";
     }
 
 
-    public ExceptionAdapter(Context context, List<DatabaseManager.ExceptionTuple> exceptions, OnMenuItemClickListener listener)
+    public ExceptionAdapter(Context context, List<ExceptionListEntity> exceptions, OnMenuItemClickListener listener)
     {
         this.context = context;
         this.exceptions = exceptions;
@@ -54,7 +54,8 @@ public class ExceptionAdapter extends RecyclerView.Adapter<ExceptionAdapter.View
         this.listener = listener;
     }
 
-    public void setExceptions(List<DatabaseManager.ExceptionTuple> exceptions)
+    @SuppressLint("NotifyDataSetChanged")
+    public void setExceptions(List<ExceptionListEntity> exceptions)
     {
         this.exceptions = exceptions;
         this.filteredExceptions = exceptions;
@@ -73,23 +74,23 @@ public class ExceptionAdapter extends RecyclerView.Adapter<ExceptionAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
-        DatabaseManager.ExceptionTuple exception = filteredExceptions.get(position);
+        ExceptionListEntity exception = filteredExceptions.get(position);
 
-        String fullName = PackageUtil.getAppName(context, exception.packageID);
-        if(exception.packageID.equals(fullName))
+        String fullName = PackageUtil.getAppName(context, exception.getPackageName());
+        if(exception.getPackageName().equals(fullName))
         {
             fullName +=  " " + context.getString(R.string.app_not_found);
         }
-        holder.lockImageView.setVisibility(exception.writable ? View.INVISIBLE : View.VISIBLE);
+        holder.lockImageView.setVisibility(exception.isWritable() ? View.INVISIBLE : View.VISIBLE);
         holder.textView.setText(fullName);
-        PackageUtil.getAppIcon(context, exception.packageID, holder.imageView);
+        PackageUtil.getAppIcon(context, exception.getPackageName(), holder.imageView);
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                showPopupMenu(v, position, !exception.writable);
+                showPopupMenu(v, position, !exception.isWritable());
             }
         });
     }
@@ -135,16 +136,16 @@ public class ExceptionAdapter extends RecyclerView.Adapter<ExceptionAdapter.View
         protected FilterResults performFiltering(CharSequence constraint)
         {
             String query = constraint.toString().toLowerCase();
-            List<DatabaseManager.ExceptionTuple> filtered = new ArrayList<>();
+            List<ExceptionListEntity> filtered = new ArrayList<>();
 
             if (query.isEmpty())
             {
                 filtered = exceptions;
             } else
             {
-                for (DatabaseManager.ExceptionTuple item : exceptions)
+                for (ExceptionListEntity item : exceptions)
                 {
-                    if (item.packageID.toLowerCase().contains(query) || item.appName.toLowerCase().contains(query))
+                    if (item.getPackageName().toLowerCase().contains(query) || item.getAppName().toLowerCase().contains(query))
                     {
                         filtered.add(item);
                     }
@@ -162,7 +163,7 @@ public class ExceptionAdapter extends RecyclerView.Adapter<ExceptionAdapter.View
         {
             if (filterResults.count > 0)
             {
-                filteredExceptions = (List<DatabaseManager.ExceptionTuple>) filterResults.values;
+                filteredExceptions = (List<ExceptionListEntity>) filterResults.values;
                 notifyDataSetChanged();
             } else
             {

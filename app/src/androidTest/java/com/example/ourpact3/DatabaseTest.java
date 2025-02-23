@@ -224,7 +224,7 @@ public class DatabaseTest
         // Assert that the retrieved data matches the inserted data
         assertEquals(exceptionList.getPackageName(), retrievedExceptionList.getPackageName());
         assertEquals(exceptionList.getReadable(), retrievedExceptionList.getReadable());
-        assertEquals(exceptionList.getWritable(), retrievedExceptionList.getWritable());
+        assertEquals(exceptionList.isWritable(), retrievedExceptionList.isWritable());
 
         // Delete the ExceptionList entity from the database
         dao.delete(exceptionList);

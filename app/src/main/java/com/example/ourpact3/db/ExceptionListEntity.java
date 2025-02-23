@@ -55,7 +55,7 @@ public class ExceptionListEntity
         this.readable = readable;
     }
 
-    public boolean getWritable()
+    public boolean isWritable()
     {
         return writable;
     }

@@ -113,7 +113,7 @@ public class ContentFilterEntity
         this.kill = kill;
     }
 
-    public boolean getEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
