@@ -151,15 +151,15 @@ public class DatabaseTest
         app1.setPackageName("foobar");
         app1.setReadable(true);
         //insert
-        assertEquals(0, appDao.getAllApps().size());
+        assertEquals(0, appDao.getAll().size());
         appDao.insertApp(app1);
-        assertEquals(1, appDao.getAllApps().size());
+        assertEquals(1, appDao.getAll().size());
         AppEntity retrievedApp = appDao.getAppByPackageName(app1.getPackageName());
         assertEquals(retrievedApp.getPackageName(), app1.getPackageName());
         assertEquals(retrievedApp.getReadable(), app1.getReadable());
         assertEquals(retrievedApp.getUsageFilterId(), app1.getUsageFilterId());
         appDao.deleteApp(app1);
-        assertEquals(0, appDao.getAllApps().size());
+        assertEquals(0, appDao.getAll().size());
         // Test time restriction rules
         // add some restrictions for some apps
         TimeRestrictionRuleEntity timeRestriction1 = new TimeRestrictionRuleEntity();
@@ -195,18 +195,18 @@ public class DatabaseTest
 
         // Create a new ExceptionList entity
         ExceptionListEntity exceptionList = new ExceptionListEntity();
-        exceptionList.setAppName("example");
+        exceptionList.setPackageName("example");
         exceptionList.setReadable(true);
         exceptionList.setWritable(false);
 
         // Create a new ExceptionList entity
         ExceptionListEntity exceptionList2 = new ExceptionListEntity();
-        exceptionList2.setAppName("example2");
+        exceptionList2.setPackageName("example2");
         exceptionList2.setReadable(true);
         exceptionList2.setWritable(false);
 
         ExceptionListEntity exceptionList3 = new ExceptionListEntity();
-        exceptionList3.setAppName("example3");
+        exceptionList3.setPackageName("example3");
 
 
         // Insert the ExceptionList entity into the database
@@ -222,7 +222,7 @@ public class DatabaseTest
         assertNotNull(retrievedExceptionList);
 
         // Assert that the retrieved data matches the inserted data
-        assertEquals(exceptionList.getAppName(), retrievedExceptionList.getAppName());
+        assertEquals(exceptionList.getPackageName(), retrievedExceptionList.getPackageName());
         assertEquals(exceptionList.getReadable(), retrievedExceptionList.getReadable());
         assertEquals(exceptionList.getWritable(), retrievedExceptionList.getWritable());
 

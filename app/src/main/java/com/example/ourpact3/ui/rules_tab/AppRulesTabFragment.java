@@ -2,6 +2,7 @@ package com.example.ourpact3.ui.rules_tab;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,7 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ourpact3.R;
-import com.example.ourpact3.unused.DatabaseManager;
+import com.example.ourpact3.db.AppEntity;
+import com.example.ourpact3.db.AppsDatabase;
+import com.example.ourpact3.db.ExceptionListEntity;
 import com.example.ourpact3.ui.dialog.AppListDialog;
 import com.example.ourpact3.util.PackageUtil;
 import com.example.ourpact3.util.PreferencesKeys;
@@ -32,8 +35,8 @@ public class AppRulesTabFragment extends Fragment
     private RecyclerView recyclerView;
     //    private ListView listView;
     private AppRulesAdapter adapter;
-    private TreeSet<String> unaddableApps = new TreeSet<>();
-    private Handler handler = new Handler(Looper.getMainLooper()); // load db in background
+    private final TreeSet<String> unaddableApps = new TreeSet<>();
+    private final Handler handler = new Handler(Looper.getMainLooper()); // load db in background
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -96,10 +99,11 @@ public class AppRulesTabFragment extends Fragment
                 // Add the selected app to appsShown
                 unaddableApps.add(packageName);
                 // Add the selected app to the adapter
-                DatabaseManager dbManger = new DatabaseManager(getContext());
-                dbManger.open();
-                dbManger.insertException(packageName, true, true);
-                dbManger.close();
+                ExceptionListEntity exceptionList = new ExceptionListEntity();
+                exceptionList.setPackageName(packageName);
+                exceptionList.setReadable(true);
+                exceptionList.setWritable(true);
+                AppsDatabase.getInstance(getContext()).exceptionListDao().insert(exceptionList);
                 loadAppRules();
             }
 
@@ -110,61 +114,44 @@ public class AppRulesTabFragment extends Fragment
         });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void loadAppRules()
     {
         // Create a new thread to load data from the database
-        new Thread(new Runnable()
-        {
+        new Thread(() -> {
+            SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
+            preventDisabling = sharedPreferences.getBoolean(PreferencesKeys.PREVENT_DISABLING,PreferencesKeys.PREVENT_DISABLING_DEFAULT_VALUE);
 
-            @Override
-            public void run()
+            // Get all Rules from the database
+            unaddableApps.clear();
+            for (AppEntity tuple : AppsDatabase.getInstance(getContext()).appsDao().getAll())
             {
-                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PreferencesKeys.MAIN_PREFERENCES, MODE_PRIVATE);
-                preventDisabling = sharedPreferences.getBoolean(PreferencesKeys.PREVENT_DISABLING,PreferencesKeys.PREVENT_DISABLING_DEFAULT_VALUE);
-
-                // Get all Rules from the database
-                unaddableApps.clear();
-                DatabaseManager dbManger = new DatabaseManager(getContext());
-                dbManger.open();
-                List<DatabaseManager.AppRuleTuple> rules = dbManger.getAllAppRules();
-                for (DatabaseManager.AppRuleTuple tuple : rules)
+                // We have to set the name as it is needed in search
+                if(tuple.getAppName() == null)
                 {
-                    // We have to set the name as it is needed in search
-                    tuple.appName = PackageUtil.getAppName(getContext(), tuple.packageID);
-                    unaddableApps.add(tuple.packageID);
-                    if(preventDisabling)
-                    {
-                        tuple.writeable = false;
-                    }
+                    tuple.setAppName(PackageUtil.getAppName(getContext(),tuple.getPackageName()));
                 }
-                dbManger.close();
-
-                // Update the UI on the main thread
-                handler.post(new Runnable()
+                unaddableApps.add(tuple.getPackageName());
+                if(preventDisabling)
                 {
-                    @Override
-                    public void run()
-                    {
-                        adapter.setAppRules(rules);
-                        adapter.notifyDataSetChanged();
-                        // Show or hide the FAB button based on preventDisabling
-                        final FloatingActionButton floatingActionButton = getView().findViewById(R.id.fab);
-                        if (preventDisabling) {
-                            floatingActionButton.setVisibility(View.INVISIBLE);
-                        } else {
-                            floatingActionButton.setVisibility(View.VISIBLE);
-                            floatingActionButton.setOnClickListener(new View.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(View v)
-                                {
-                                    showAppListDialog();
-                                }
-                            });
-                        }
-                    }
-                });
+                    tuple.setWritable(false);
+                }
             }
+
+            // Update the UI on the main thread
+            handler.post(() -> {
+                List<AppEntity> allExceptions = AppsDatabase.getInstance(getContext()).appsDao().getAll();
+                adapter.setAppRules(allExceptions);
+                adapter.notifyDataSetChanged();
+                // Show or hide the FAB button based on preventDisabling
+                final FloatingActionButton floatingActionButton = getView().findViewById(R.id.fab);
+                if (preventDisabling) {
+                    floatingActionButton.setVisibility(View.INVISIBLE);
+                } else {
+                    floatingActionButton.setVisibility(View.VISIBLE);
+                    floatingActionButton.setOnClickListener(v -> showAppListDialog());
+                }
+            });
         }).start();
     }
 }

@@ -15,7 +15,7 @@ public interface AppDao
     void insertApp(AppEntity app);
 
     @Query("SELECT * FROM AppEntity")
-    List<AppEntity> getAllApps();
+    List<AppEntity> getAll();
 
     @Query("SELECT * FROM AppEntity WHERE package_name = :packageName")
     AppEntity getAppByPackageName(String packageName);

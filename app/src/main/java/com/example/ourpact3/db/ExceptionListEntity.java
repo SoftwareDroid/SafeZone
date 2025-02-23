@@ -14,6 +14,8 @@ public class ExceptionListEntity
 
     @PrimaryKey
     @NotNull
+    private String packageName;
+
     private String appName;
 
     private boolean readable;
@@ -22,27 +24,44 @@ public class ExceptionListEntity
 
     // Getters and setters
     @NonNull
-    public String getAppName() {
+    public String getPackageName()
+    {
+        return packageName;
+    }
+
+    public void setPackageName(@NonNull String packageName)
+    {
+        this.packageName = packageName;
+    }
+
+    public String getAppName()
+    {
         return appName;
     }
 
-    public void setAppName(@NonNull String appName) {
+    public void setAppName(@NonNull String appName)
+    {
         this.appName = appName;
     }
 
-    public boolean getReadable() {
+
+    public boolean getReadable()
+    {
         return readable;
     }
 
-    public void setReadable(boolean readable) {
+    public void setReadable(boolean readable)
+    {
         this.readable = readable;
     }
 
-    public boolean getWritable() {
+    public boolean getWritable()
+    {
         return writable;
     }
 
-    public void setWritable(boolean writable) {
+    public void setWritable(boolean writable)
+    {
         this.writable = writable;
     }
 }

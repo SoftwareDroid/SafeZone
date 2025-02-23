@@ -19,7 +19,7 @@ public interface ExceptionListDao {
     @Delete
     void delete(ExceptionListEntity user);
 
-    @Query("SELECT * FROM exception_list WHERE appName = :appName")
+    @Query("SELECT * FROM exception_list WHERE packageName = :appName")
     ExceptionListEntity getExceptionListByAppName(String appName);
 
     @Query("SELECT * FROM exception_list")

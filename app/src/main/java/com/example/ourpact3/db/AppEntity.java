@@ -26,6 +26,10 @@ public class AppEntity
     @NotNull
     private String packageName;
 
+    @ColumnInfo(name = "app_name")
+    private String appName;
+
+
     @ColumnInfo(name = "writable")
     private boolean writable;
 
@@ -60,6 +64,15 @@ public class AppEntity
     public void setWritable(boolean writable) {
         this.writable = writable;
     }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String name) {
+        appName = name;
+    }
+
 
     public boolean getReadable() {
         return readable;

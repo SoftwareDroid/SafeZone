@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ourpact3.R;
+import com.example.ourpact3.db.AppEntity;
 import com.example.ourpact3.ui.app_rule_detail.AppRuleDetailActivitiy;
 import com.example.ourpact3.util.PackageUtil;
 
@@ -30,23 +31,13 @@ public class AppRulesAdapter extends RecyclerView.Adapter<AppRulesAdapter.ViewHo
         void onMenuItemClick(MenuItem item, int position);
     }
 
-    private List<DatabaseManager.AppRuleTuple> appRules;
-    private List<DatabaseManager.AppRuleTuple> filteredExceptions;
-    private Context context;
-    private OnMenuItemClickListener listener;
-
-    public String getDBidFromPos(int pos)
-    {
-        DatabaseManager.AppRuleTuple t = filteredExceptions.get(pos);
-        if (t != null)
-        {
-            return t.packageID;
-        }
-        return "";
-    }
+    private List<AppEntity> appRules;
+    private List<AppEntity> filteredExceptions;
+    private final Context context;
+    private final OnMenuItemClickListener listener;
 
 
-    public AppRulesAdapter(Context context, List<DatabaseManager.AppRuleTuple> exceptions, OnMenuItemClickListener listener)
+    public AppRulesAdapter(Context context, List<AppEntity> exceptions, OnMenuItemClickListener listener)
     {
         this.context = context;
         this.appRules = exceptions;
@@ -54,7 +45,8 @@ public class AppRulesAdapter extends RecyclerView.Adapter<AppRulesAdapter.ViewHo
         this.listener = listener;
     }
 
-    public void setAppRules(List<DatabaseManager.AppRuleTuple> exceptions)
+    @SuppressLint("NotifyDataSetChanged")
+    public void setAppRules(List<AppEntity> exceptions)
     {
         this.appRules = exceptions;
         this.filteredExceptions = exceptions;
@@ -71,34 +63,29 @@ public class AppRulesAdapter extends RecyclerView.Adapter<AppRulesAdapter.ViewHo
 
     @SuppressLint("RecyclerView")
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position)
     {
-        DatabaseManager.AppRuleTuple rule = filteredExceptions.get(position);
-        String fullName = PackageUtil.getAppName(context, rule.packageID);
-        if (rule.packageID.equals(fullName))
+        AppEntity rule = filteredExceptions.get(position);
+        String fullName = PackageUtil.getAppName(context, rule.getPackageName());
+        if (rule.getPackageName().equals(fullName))
         {
             fullName += " " + context.getString(R.string.app_not_found);
         }
-        holder.lockImageView.setVisibility(rule.writeable ? View.INVISIBLE : View.VISIBLE);
+        holder.lockImageView.setVisibility(rule.getWritable() ? View.INVISIBLE : View.VISIBLE);
         holder.textView.setText(fullName);
-        PackageUtil.getAppIcon(context, rule.packageID, holder.imageView);
+        PackageUtil.getAppIcon(context, rule.getPackageName(), holder.imageView);
         holder.itemView.setTag(position);
-        holder.itemView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
+        holder.itemView.setOnClickListener(v -> {
+            if(rule.getReadable())
             {
-                if(rule.readable)
-                {
-                    Intent intent = new Intent(v.getContext(), AppRuleDetailActivitiy.class);
-                    intent.putExtra("app_id", rule.packageID);
-                    intent.putExtra("app_name", rule.appName);
-                    intent.putExtra("usage_filter_id", rule.usageFilterID);
-                    intent.putExtra("writeable", rule.writeable);
-                    v.getContext().startActivity(intent);
-                }
-//                showPopupMenu(v, position, !rule.writeable);
+                Intent intent = new Intent(v.getContext(), AppRuleDetailActivitiy.class);
+                intent.putExtra("app_id", rule.getPackageName());
+                intent.putExtra("app_name", rule.getAppName());
+                intent.putExtra("usage_filter_id", rule.getUsageFilterId());
+                intent.putExtra("writeable", rule.getWritable());
+                v.getContext().startActivity(intent);
             }
+//                showPopupMenu(v, position, !rule.writeable);
         });
     }
 
@@ -114,14 +101,9 @@ public class AppRulesAdapter extends RecyclerView.Adapter<AppRulesAdapter.ViewHo
             menuItem.setEnabled(false);
             menuItem.setCheckable(false);
         }
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
-        {
-            @Override
-            public boolean onMenuItemClick(MenuItem item)
-            {
-                listener.onMenuItemClick(item, position);
-                return true;
-            }
+        popupMenu.setOnMenuItemClickListener(item -> {
+            listener.onMenuItemClick(item, position);
+            return true;
         });
         popupMenu.show();
     }
@@ -143,16 +125,16 @@ public class AppRulesAdapter extends RecyclerView.Adapter<AppRulesAdapter.ViewHo
         protected FilterResults performFiltering(CharSequence constraint)
         {
             String query = constraint.toString().toLowerCase();
-            List<DatabaseManager.AppRuleTuple> filtered = new ArrayList<>();
+            List<AppEntity> filtered = new ArrayList<>();
 
             if (query.isEmpty())
             {
                 filtered = appRules;
             } else
             {
-                for (DatabaseManager.AppRuleTuple item : appRules)
+                for (AppEntity item : appRules)
                 {
-                    if (item.packageID.toLowerCase().contains(query) || item.appName.toLowerCase().contains(query))
+                    if (item.getPackageName().toLowerCase().contains(query) || item.getPackageName().toLowerCase().contains(query))
                     {
                         filtered.add(item);
                     }
@@ -165,12 +147,13 @@ public class AppRulesAdapter extends RecyclerView.Adapter<AppRulesAdapter.ViewHo
             return results;
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults)
         {
             if (filterResults.count > 0)
             {
-                filteredExceptions = (List<DatabaseManager.AppRuleTuple>) filterResults.values;
+                filteredExceptions = (List<AppEntity>) filterResults.values;
                 notifyDataSetChanged();
             } else
             {

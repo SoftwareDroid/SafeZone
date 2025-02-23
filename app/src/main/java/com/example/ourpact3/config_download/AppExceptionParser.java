@@ -38,7 +38,7 @@ public class AppExceptionParser
                     boolean visible = Boolean.parseBoolean(parser.getAttributeValue(null, "visible"));
                     boolean editable = Boolean.parseBoolean(parser.getAttributeValue(null, "editable"));
                     ExceptionListEntity newException = new ExceptionListEntity();
-                    newException.setAppName(app);
+                    newException.setPackageName(app);
                     newException.setReadable(visible);
                     newException.setWritable(editable);
                     appExceptions.add(newException);

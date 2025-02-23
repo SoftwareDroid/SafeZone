@@ -18,7 +18,6 @@ import com.example.ourpact3.db.AppsDatabase;
 import com.example.ourpact3.db.ContentFilterEntity;
 import com.example.ourpact3.db.ContentFilterToAppEntity;
 import com.example.ourpact3.db.ExceptionListEntity;
-import com.example.ourpact3.db.LanguageEntity;
 import com.example.ourpact3.db.WordEntity;
 import com.example.ourpact3.config_download.WordEntityParser;
 import com.example.ourpact3.config_download.XMLDownloader;
@@ -27,7 +26,6 @@ import com.example.ourpact3.topics.TopicManager;
 import org.junit.Test;
 
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -60,7 +58,7 @@ public class DownloadListFromGithubTest
         List<ExceptionListEntity> exceptions = newExceptionParser.parseAppExceptions(exceptionStream, db);
         for (ExceptionListEntity e : exceptions)
         {
-            Log.d("app", e.getAppName());
+            Log.d("app", e.getPackageName());
         }
         assertFalse(exceptions.isEmpty());
         InputStreamReader contentFiltersStream = downloader.downloadXml("https://raw.githubusercontent.com/SoftwareDroid/SafeZoneData/refs/heads/main/content_filters.xml");
